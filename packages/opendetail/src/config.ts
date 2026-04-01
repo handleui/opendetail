@@ -1,0 +1,70 @@
+import { readFile } from "node:fs/promises";
+import path from "node:path";
+import { parse as parseToml } from "smol-toml";
+import { z } from "zod";
+import {
+  DEFAULT_BASE_PATH,
+  OPENDETAIL_CONFIG_FILE,
+  OPENDETAIL_VERSION,
+} from "./constants";
+import { OpenDetailConfigError } from "./errors";
+import type { OpenDetailConfig } from "./types";
+import { normalizeBasePath } from "./utils";
+
+const OpenDetailConfigSchema = z
+  .object({
+    base_path: z.string().default(DEFAULT_BASE_PATH),
+    exclude: z.array(z.string()).default([]),
+    include: z.array(z.string()).min(1),
+    version: z.literal(OPENDETAIL_VERSION),
+  })
+  .strict();
+
+export const resolveConfigPath = (
+  cwd: string,
+  configPath = OPENDETAIL_CONFIG_FILE
+): string => path.resolve(cwd, configPath);
+
+export const readOpenDetailConfig = async ({
+  configPath,
+  cwd = process.cwd(),
+}: {
+  configPath?: string;
+  cwd?: string;
+} = {}): Promise<OpenDetailConfig> => {
+  const resolvedConfigPath = resolveConfigPath(cwd, configPath);
+  let configFile: string;
+
+  try {
+    configFile = await readFile(resolvedConfigPath, "utf8");
+  } catch (error) {
+    throw new OpenDetailConfigError(
+      `OpenDetail config not found at ${resolvedConfigPath}. Add \`${OPENDETAIL_CONFIG_FILE}\` before building the index.`,
+      { cause: error }
+    );
+  }
+
+  let parsedConfig: unknown;
+
+  try {
+    parsedConfig = parseToml(configFile);
+  } catch (error) {
+    throw new OpenDetailConfigError(
+      `Failed to parse ${resolvedConfigPath} as TOML.`,
+      { cause: error }
+    );
+  }
+
+  const validationResult = OpenDetailConfigSchema.safeParse(parsedConfig);
+
+  if (!validationResult.success) {
+    throw new OpenDetailConfigError(
+      `Invalid OpenDetail config in ${resolvedConfigPath}: ${z.prettifyError(validationResult.error)}`
+    );
+  }
+
+  return {
+    ...validationResult.data,
+    base_path: normalizeBasePath(validationResult.data.base_path),
+  };
+};

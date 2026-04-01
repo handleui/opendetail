@@ -1,0 +1,4 @@
+version = 1
+include = ["content/**/*.md", "content/**/*.mdx"]
+exclude = []
+base_path = "/docs"

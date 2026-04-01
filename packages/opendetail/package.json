@@ -1,0 +1,79 @@
+{
+  "name": "opendetail",
+  "version": "0.1.0",
+  "description": "MDX-powered documentation assistant for grounded answers in your app.",
+  "type": "module",
+  "license": "MIT",
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/handleui/opendetail.git",
+    "directory": "packages/opendetail"
+  },
+  "homepage": "https://github.com/handleui/opendetail/tree/main/packages/opendetail",
+  "bugs": {
+    "url": "https://github.com/handleui/opendetail/issues"
+  },
+  "keywords": [
+    "assistant",
+    "docs",
+    "documentation",
+    "markdown",
+    "mdx",
+    "nextjs",
+    "openai",
+    "search"
+  ],
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./next": {
+      "types": "./dist/next.d.ts",
+      "default": "./dist/next.js"
+    }
+  },
+  "bin": {
+    "opendetail": "dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsup",
+    "check-types": "tsc --project tsconfig.json --noEmit",
+    "test": "vitest run",
+    "publint": "publint",
+    "prepack": "npm run build",
+    "prepublishOnly": "npm run check-types && npm run test && npm run publint"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "fast-glob": "^3.3.3",
+    "github-slugger": "^2.0.0",
+    "gray-matter": "^4.0.3",
+    "mdast-util-to-string": "^4.0.0",
+    "minisearch": "^7.2.0",
+    "openai": "^6.33.0",
+    "remark-mdx": "^3.1.1",
+    "remark-parse": "^11.0.0",
+    "smol-toml": "^1.6.1",
+    "unified": "^11.0.5",
+    "unist-util-visit": "^5.1.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "publint": "^0.3.18",
+    "tsup": "^8.5.1",
+    "typescript": "^6.0.2",
+    "vitest": "^4.1.2"
+  }
+}
