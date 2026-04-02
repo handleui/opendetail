@@ -26,9 +26,9 @@ Run the registry build from the repo root:
 bun run registry:build
 ```
 
-That writes generated JSON payloads into `apps/www/public/r` so the Next app can host docs, demos, and registry output from the same deployment.
+That writes generated JSON payloads into `apps/web/public/r` so the Next app can host docs, demos, and registry output from the same deployment.
 
-`registry/` and `registry.json` stay editable. `apps/www/public/r` is generated output and should not be treated as source.
+`registry/` and `registry.json` stay editable. `apps/web/public/r` is generated output and should not be treated as source.
 
 ## Foundations
 

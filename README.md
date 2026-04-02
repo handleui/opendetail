@@ -5,7 +5,7 @@ Monorepo for `opendetail`, a thin integration layer on top of the OpenAI Respons
 ## Workspace
 
 - `packages/opendetail`: core runtime, setup CLI, and thin framework adapters like `opendetail/next`
-- `apps/www`: public Next.js site scaffold for docs, demos, and hosted registry JSON
+- `apps/web`: public Next.js site scaffold for docs, demos, and hosted registry JSON
 - `registry/`: source of truth for shadcn-compatible transport, hook, style, and UI assets
 - `registry.json`: root registry entrypoint for shadcn CLI builds
 - Turborepo remains at the root for `build`, `dev`, `check-types`, and `test`
@@ -34,17 +34,17 @@ bun run lint
 bun run registry:build
 ```
 
-`registry/` and `registry.json` are the source of truth. `bun run registry:build` generates shadcn registry payloads into `apps/www/public/r`, and that output should be treated as generated build output rather than hand-edited source.
+`registry/` and `registry.json` are the source of truth. `bun run registry:build` generates shadcn registry payloads into `apps/web/public/r`, and that output should be treated as generated build output rather than hand-edited source.
 
 ## Local Setup
 
-For the demo app in `apps/www`, use the app directory as the env source of truth.
+For the demo app in `apps/web`, use the app directory as the env source of truth.
 
 ```sh
-cp apps/www/.env.example apps/www/.env.local
+cp apps/web/.env.example apps/web/.env.local
 ```
 
-Then set `OPENAI_API_KEY` in `apps/www/.env.local` before running `bun run dev`.
+Then set `OPENAI_API_KEY` in `apps/web/.env.local` before running `bun run dev`.
 
 ## Publish
 
@@ -56,7 +56,7 @@ cd packages/opendetail && npm publish
 ```
 
 Release notes and version bumps are now managed only for `packages/opendetail`.
-`apps/www` is ignored by Changesets, so the versioning flow stays focused on the
+`apps/web` is ignored by Changesets, so the versioning flow stays focused on the
 package you publish.
 
 Recommended flow:

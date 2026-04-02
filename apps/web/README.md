@@ -19,15 +19,15 @@ bun run check-types
 
 ## Local Setup
 
-`apps/www` is the env source of truth for the demo app.
+`apps/web` is the env source of truth for the demo app.
 
 ```sh
-cp apps/www/.env.example apps/www/.env.local
+cp apps/web/.env.example apps/web/.env.local
 ```
 
-Set `OPENAI_API_KEY` in `apps/www/.env.local` before starting the app.
+Set `OPENAI_API_KEY` in `apps/web/.env.local` before starting the app.
 
-From the app root (`apps/www`), you can bootstrap OpenDetail files with:
+From the app root (`apps/web`), you can bootstrap OpenDetail files with:
 
 ```sh
 bunx opendetail setup --with-media
@@ -47,4 +47,4 @@ To build the registry payload that this app will eventually serve:
 bun run registry:build
 ```
 
-That writes generated JSON files into `apps/www/public/r`.
+That writes generated JSON files into `apps/web/public/r`.
