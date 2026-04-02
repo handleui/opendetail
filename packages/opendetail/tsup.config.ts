@@ -6,7 +6,6 @@ export default defineConfig({
   entry: {
     cli: "src/cli.ts",
     index: "src/index.ts",
-    next: "src/next.ts",
   },
   format: ["esm"],
   shims: false,

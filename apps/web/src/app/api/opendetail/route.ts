@@ -1,6 +1,5 @@
-import { buildOpenDetailIndex } from "../../../../../../packages/opendetail/src";
-import { toOpenDetailPublicError } from "../../../../../../packages/opendetail/src/errors";
-import { createNextRouteHandler } from "../../../../../../packages/opendetail/src/next";
+import { buildOpenDetailIndex, toOpenDetailPublicError } from "opendetail";
+import { createNextRouteHandler } from "opendetail-next";
 
 export const runtime = "nodejs";
 

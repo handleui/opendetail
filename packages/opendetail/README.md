@@ -24,7 +24,7 @@ Under the hood, it uses the OpenAI Responses API. The product value is not a new
 Install the package:
 
 ```bash
-npm i opendetail
+npm i opendetail opendetail-next
 ```
 
 Bootstrap the current self-hosted path with one command:
@@ -82,7 +82,7 @@ bunx opendetail build
 Add a Route Handler with the thin setup helper:
 
 ```ts
-import { createNextRoute } from "opendetail/next";
+import { createNextRoute } from "opendetail-next";
 
 export const { POST, runtime } = createNextRoute();
 ```
@@ -90,7 +90,7 @@ export const { POST, runtime } = createNextRoute();
 Or wire it manually:
 
 ```ts
-import { createNextRouteHandler } from "opendetail/next";
+import { createNextRouteHandler } from "opendetail-next";
 
 export const runtime = "nodejs";
 export const POST = createNextRouteHandler();
@@ -133,10 +133,10 @@ Hosted mode is intentionally small in this phase.
 
 This phase documents and scaffolds the hosted path. It does not yet ship the OpenDetail-managed proxy backend itself.
 
-With the registry transport and hook, the intended hosted setup shape is:
+With `opendetail-react`, the intended hosted setup shape is:
 
 ```ts
-import { useOpenDetail } from "@/registry/hooks/use-opendetail/use-opendetail";
+import { useOpenDetail } from "opendetail-react";
 
 const endpoint = process.env.NEXT_PUBLIC_OPENDETAIL_ENDPOINT;
 const authToken = process.env.NEXT_PUBLIC_OPENDETAIL_AUTH_TOKEN;

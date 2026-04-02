@@ -8,6 +8,12 @@ const nextConfig: NextConfig = {
   reactCompiler: true,
   allowedDevOrigins: ["opendetail.localhost"],
   serverExternalPackages: ["@takumi-rs/image-response"],
+  transpilePackages: [
+    "opendetail",
+    "opendetail-react",
+    "opendetail-next",
+    "opendetail-fumadocs",
+  ],
   turbopack: {
     root: path.join(process.cwd(), "../.."),
   },

@@ -12,6 +12,12 @@ export const OPENDETAIL_RUNTIME_FAILURE_MESSAGE =
   "OpenDetail could not complete the request.";
 export const MISSING_API_KEY_MESSAGE = "OPENAI_API_KEY is required at runtime.";
 const OPENAI_PROVIDER_NAME = "openai";
+const OPENAI_PROVIDER_ERROR_FIELDS = [
+  "code",
+  "param",
+  "requestID",
+  "status",
+] as const;
 
 const PUBLIC_ERROR_DEFAULTS = {
   invalid_request: {
@@ -232,6 +238,20 @@ const getNestedProviderErrorRecords = (value: Record<string, unknown>) => {
   };
 };
 
+const hasOpenAIProviderMetadata = (
+  value: Record<string, unknown>,
+  nestedError: Record<string, unknown> | null,
+  responseError: Record<string, unknown> | null
+): boolean =>
+  OPENAI_PROVIDER_ERROR_FIELDS.some(
+    (field) =>
+      getFirstString(
+        getStringValue(value, field),
+        nestedError ? getStringValue(nestedError, field) : null,
+        responseError ? getStringValue(responseError, field) : null
+      ) !== null
+  ) || getProviderStatus(value, nestedError, responseError) !== null;
+
 const getProviderField = (
   key: string,
   value: Record<string, unknown>,
@@ -289,7 +309,10 @@ const toOpenAIPublicError = (
     responseError
   );
 
-  if (resolvedMessage === null) {
+  if (
+    resolvedMessage === null &&
+    !hasOpenAIProviderMetadata(value, nestedError, responseError)
+  ) {
     return null;
   }
 
@@ -317,7 +340,6 @@ const toOpenAIPublicError = (
       : null;
 
   return createOpenDetailPublicError(code, {
-    message: resolvedMessage,
     param,
     provider,
     providerCode,
@@ -358,9 +380,7 @@ export const toOpenDetailPublicError = (
   }
 
   if (error instanceof Error && error.message.trim().length > 0) {
-    return createOpenDetailPublicError("request_failed", {
-      message: error.message,
-    });
+    return createOpenDetailPublicError("request_failed");
   }
 
   return createOpenDetailPublicError("request_failed");

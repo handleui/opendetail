@@ -5,13 +5,15 @@ description: The transport client for NDJSON responses, statuses, and request ha
 
 # Client
 
-The registry transport layer exposes `createOpenDetailClient`.
+`opendetail-react` exposes `createOpenDetailClient`.
 
 Use it when you want the streaming contract without the React hook.
 
 ## Basic usage
 
 ```ts
+import { createOpenDetailClient } from "opendetail-react";
+
 const client = createOpenDetailClient({
   endpoint: "/api/opendetail",
 });

@@ -1,0 +1,64 @@
+{
+  "name": "opendetail-react",
+  "version": "0.4.0",
+  "description": "React transport, hooks, components, and styles for OpenDetail.",
+  "type": "module",
+  "license": "MIT",
+  "sideEffects": [
+    "./src/styles/opendetail-base.css",
+    "./src/styles/opendetail-midnight.css",
+    "./src/styles/opendetail-signal.css"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/handleui/opendetail.git",
+    "directory": "packages/opendetail-react"
+  },
+  "homepage": "https://github.com/handleui/opendetail/tree/main/packages/opendetail-react",
+  "bugs": {
+    "url": "https://github.com/handleui/opendetail/issues"
+  },
+  "files": [
+    "dist",
+    "src/styles",
+    "README.md",
+    "LICENSE"
+  ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./styles/opendetail-base.css": "./src/styles/opendetail-base.css",
+    "./styles/opendetail-midnight.css": "./src/styles/opendetail-midnight.css",
+    "./styles/opendetail-signal.css": "./src/styles/opendetail-signal.css"
+  },
+  "scripts": {
+    "build": "tsup",
+    "check-types": "tsc --project tsconfig.json --noEmit",
+    "test": "vitest run",
+    "publint": "publint",
+    "prepack": "npm run build",
+    "prepublishOnly": "npm run check-types && npm run test && npm run publint"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "dependencies": {
+    "lucide-react": "^1.7.0",
+    "motion": "^12.38.0",
+    "streamdown": "^2.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "publint": "^0.3.18",
+    "tsup": "^8.5.1",
+    "typescript": "^6.0.2",
+    "vitest": "^4.1.2"
+  }
+}

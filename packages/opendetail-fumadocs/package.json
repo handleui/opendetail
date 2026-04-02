@@ -1,0 +1,59 @@
+{
+  "name": "opendetail-fumadocs",
+  "version": "0.4.0",
+  "description": "Fumadocs source integration helpers for OpenDetail.",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/handleui/opendetail.git",
+    "directory": "packages/opendetail-fumadocs"
+  },
+  "homepage": "https://github.com/handleui/opendetail/tree/main/packages/opendetail-fumadocs",
+  "bugs": {
+    "url": "https://github.com/handleui/opendetail/issues"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./sidebar": {
+      "types": "./dist/sidebar.d.ts",
+      "default": "./dist/sidebar.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "check-types": "tsc --project tsconfig.json --noEmit",
+    "test": "vitest run",
+    "publint": "publint",
+    "prepack": "npm run build",
+    "prepublishOnly": "npm run check-types && npm run test && npm run publint"
+  },
+  "peerDependencies": {
+    "next": "^16.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "dependencies": {
+    "opendetail-next": "workspace:*",
+    "opendetail-react": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "publint": "^0.3.18",
+    "tsup": "^8.5.1",
+    "typescript": "^6.0.2",
+    "vitest": "^4.1.2"
+  }
+}

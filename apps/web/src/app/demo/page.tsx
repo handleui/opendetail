@@ -1,6 +1,6 @@
 import { DemoPageClient } from "@/components/demo-page-client";
-import { getSourcePageUrls } from "@/lib/source";
+import { knownSourcePageUrls } from "@/lib/source";
 
 export default function DemoPage() {
-  return <DemoPageClient knownSourcePageUrls={getSourcePageUrls()} />;
+  return <DemoPageClient knownSourcePageUrls={knownSourcePageUrls} />;
 }

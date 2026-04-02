@@ -48,4 +48,4 @@ To build the registry payload that this app will eventually serve:
 bun run registry:build
 ```
 
-That writes generated JSON files into `apps/web/public/r`.
+That writes generated JSON files into `apps/web/public/r` from package-owned source mapped through `registry.json`.

@@ -4,9 +4,12 @@ Monorepo for `opendetail`, a thin integration layer on top of the OpenAI Respons
 
 ## Workspace
 
-- `packages/opendetail`: core runtime, setup CLI, and thin framework adapters like `opendetail/next`
+- `packages/opendetail`: core runtime, indexing, errors, and setup CLI
+- `packages/opendetail-react`: transport, hook, components, blocks, and styles
+- `packages/opendetail-next`: Next.js route and link integration
+- `packages/opendetail-fumadocs`: Fumadocs source validation helpers and wrappers
 - `apps/web`: the public Next.js app for marketing, docs, demos, and hosted registry JSON
-- `registry/`: source of truth for shadcn-compatible transport, hook, style, and UI assets
+- `registry/`: thin packaging layer for shadcn-compatible generated assets
 - `registry.json`: root registry entrypoint for shadcn CLI builds
 - Turborepo remains at the root for `build`, `dev`, `check-types`, and `test`
 - Ultracite owns formatting and linting
@@ -19,7 +22,7 @@ Monorepo for `opendetail`, a thin integration layer on top of the OpenAI Respons
 - local retrieval and grounding
 - setup scaffolding for app integration
 - a stable NDJSON transport contract
-- installable transport, hook, and style foundations
+- first-class React, Next, and Fumadocs integrations
 
 The result is a faster path to a narrow, cited assistant without standing up a broader agent platform.
 
@@ -34,7 +37,7 @@ bun run lint
 bun run registry:build
 ```
 
-`registry/` and `registry.json` are the source of truth. `bun run registry:build` generates shadcn registry payloads into `apps/web/public/r`, and that output should be treated as generated build output rather than hand-edited source.
+`packages/` are the source of truth. `registry.json` maps installable registry items to package-owned source files, and `bun run registry:build` generates shadcn registry payloads into `apps/web/public/r`.
 
 ## Local Setup
 
@@ -55,21 +58,18 @@ bun run release:check
 cd packages/opendetail && npm publish
 ```
 
-Release notes and version bumps are now managed only for `packages/opendetail`.
-`apps/web` is ignored by Changesets, so the versioning flow stays focused on the
-package you publish.
+Release notes and version bumps are managed for the publishable packages under
+`packages/`. `apps/web` is ignored by Changesets.
 
 Recommended flow:
 
 1. Run `bun run changeset` and describe the change in plain language.
-2. Choose the bump type for `opendetail`.
-3. Run `bun run changeset:version` to update `packages/opendetail/package.json`
-   and generate or update `packages/opendetail/CHANGELOG.md`.
-4. Review the diff, commit it, and publish manually from `packages/opendetail`
-   with `npm publish`.
+2. Choose the bump type for the packages you changed.
+3. Run `bun run changeset:version` to update package manifests and changelogs.
+4. Review the diff, commit it, and publish the affected packages manually.
 
 Useful helpers:
 
 - `bun run changeset:status`: inspect pending release entries
-- `bun run release:check`: run package-only typecheck, tests, and publint
-- `bun run release:pack`: inspect the tarball before publishing
+- `bun run release:check`: run typecheck, tests, and publint for every publishable package
+- `bun run release:pack`: inspect tarballs before publishing

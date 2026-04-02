@@ -11,7 +11,7 @@
       "categories": ["opendetail", "lib"],
       "files": [
         {
-          "path": "registry/lib/opendetail-client/opendetail-client.ts",
+          "path": "packages/opendetail-react/src/lib/opendetail-client/opendetail-client.ts",
           "type": "registry:lib"
         }
       ]
@@ -25,7 +25,7 @@
       "registryDependencies": ["opendetail-client"],
       "files": [
         {
-          "path": "registry/hooks/use-opendetail/use-opendetail.ts",
+          "path": "packages/opendetail-react/src/hooks/use-opendetail/use-opendetail.ts",
           "type": "registry:hook"
         }
       ]
@@ -43,7 +43,7 @@
       ],
       "files": [
         {
-          "path": "registry/ui/assistant-shell/assistant-shell.tsx",
+          "path": "packages/opendetail-react/src/ui/assistant-shell/assistant-shell.tsx",
           "type": "registry:ui"
         }
       ]
@@ -58,7 +58,7 @@
       "registryDependencies": ["opendetail-client", "use-opendetail"],
       "files": [
         {
-          "path": "registry/ui/assistant-input/assistant-input.tsx",
+          "path": "packages/opendetail-react/src/ui/assistant-input/assistant-input.tsx",
           "type": "registry:ui"
         }
       ]
@@ -73,7 +73,7 @@
       "registryDependencies": ["opendetail-base"],
       "files": [
         {
-          "path": "registry/ui/assistant-thread/assistant-thread.tsx",
+          "path": "packages/opendetail-react/src/ui/assistant-thread/assistant-thread.tsx",
           "type": "registry:ui"
         }
       ]
@@ -87,7 +87,7 @@
       "registryDependencies": ["opendetail-base"],
       "files": [
         {
-          "path": "registry/ui/assistant-user-message/assistant-user-message.tsx",
+          "path": "packages/opendetail-react/src/ui/assistant-user-message/assistant-user-message.tsx",
           "type": "registry:ui"
         }
       ]
@@ -108,11 +108,11 @@
       ],
       "files": [
         {
-          "path": "registry/ui/assistant-response/assistant-response.tsx",
+          "path": "packages/opendetail-react/src/ui/assistant-response/assistant-response.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/ui/assistant-sources/source-links.tsx",
+          "path": "packages/opendetail-react/src/ui/assistant-sources/source-links.tsx",
           "type": "registry:ui"
         }
       ]
@@ -131,11 +131,11 @@
       ],
       "files": [
         {
-          "path": "registry/ui/assistant-sources/assistant-sources.tsx",
+          "path": "packages/opendetail-react/src/ui/assistant-sources/assistant-sources.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/ui/assistant-sources/source-links.tsx",
+          "path": "packages/opendetail-react/src/ui/assistant-sources/source-links.tsx",
           "type": "registry:ui"
         }
       ]
@@ -149,7 +149,7 @@
       "registryDependencies": ["opendetail-base"],
       "files": [
         {
-          "path": "registry/ui/assistant-status/assistant-status.tsx",
+          "path": "packages/opendetail-react/src/ui/assistant-status/assistant-status.tsx",
           "type": "registry:ui"
         }
       ]
@@ -163,7 +163,7 @@
       "registryDependencies": ["assistant-status"],
       "files": [
         {
-          "path": "registry/ui/assistant-error/assistant-error.tsx",
+          "path": "packages/opendetail-react/src/ui/assistant-error/assistant-error.tsx",
           "type": "registry:ui"
         }
       ]
@@ -178,7 +178,7 @@
       "registryDependencies": ["assistant-shell", "opendetail-base"],
       "files": [
         {
-          "path": "registry/blocks/assistant-overlay/assistant-overlay.tsx",
+          "path": "packages/opendetail-react/src/blocks/assistant-overlay/assistant-overlay.tsx",
           "type": "registry:component"
         }
       ]
@@ -199,7 +199,7 @@
       ],
       "files": [
         {
-          "path": "registry/blocks/assistant-modal/assistant-modal.tsx",
+          "path": "packages/opendetail-react/src/blocks/assistant-modal/assistant-modal.tsx",
           "type": "registry:component"
         }
       ]
@@ -220,7 +220,7 @@
       ],
       "files": [
         {
-          "path": "registry/blocks/assistant-sidebar/assistant-sidebar.tsx",
+          "path": "packages/opendetail-react/src/blocks/assistant-sidebar/assistant-sidebar.tsx",
           "type": "registry:component"
         }
       ]
@@ -235,7 +235,7 @@
       "registryDependencies": ["assistant-sidebar", "use-opendetail"],
       "files": [
         {
-          "path": "registry/blocks/assistant-sidebar-shell/assistant-sidebar-shell.tsx",
+          "path": "packages/opendetail-react/src/blocks/assistant-sidebar-shell/assistant-sidebar-shell.tsx",
           "type": "registry:component"
         }
       ]
@@ -264,7 +264,7 @@
       },
       "files": [
         {
-          "path": "registry/themes/opendetail-base/opendetail-base.css",
+          "path": "packages/opendetail-react/src/styles/opendetail-base.css",
           "type": "registry:file",
           "target": "styles/opendetail-base.css"
         }
@@ -280,7 +280,7 @@
       "registryDependencies": ["opendetail-base"],
       "files": [
         {
-          "path": "registry/themes/opendetail-midnight/opendetail-midnight.css",
+          "path": "packages/opendetail-react/src/styles/opendetail-midnight.css",
           "type": "registry:file",
           "target": "styles/opendetail-midnight.css"
         }
@@ -296,7 +296,7 @@
       "registryDependencies": ["opendetail-base"],
       "files": [
         {
-          "path": "registry/themes/opendetail-signal/opendetail-signal.css",
+          "path": "packages/opendetail-react/src/styles/opendetail-signal.css",
           "type": "registry:file",
           "target": "styles/opendetail-signal.css"
         }

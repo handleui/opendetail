@@ -208,6 +208,14 @@ const askIntegrationModeQuestion = async ({
   );
 };
 
+const escapeTomlString = (value: string): string =>
+  value
+    .replaceAll("\\", "\\\\")
+    .replaceAll('"', '\\"')
+    .replaceAll("\n", "\\n")
+    .replaceAll("\r", "\\r")
+    .replaceAll("\t", "\\t");
+
 const shouldRunInteractiveSetup = (
   flags: Map<string, string | true>
 ): boolean => {
@@ -324,14 +332,14 @@ const createConfigTemplate = ({
   withMedia: boolean;
 }): string =>
   `version = 1
-include = ["${includePattern}"]
+include = ["${escapeTomlString(includePattern)}"]
 exclude = []
-base_path = "${basePath}"
+base_path = "${escapeTomlString(basePath)}"
 ${
   withMedia
     ? `
 [media]
-include = ["${mediaIncludePattern}"]
+include = ["${escapeTomlString(mediaIncludePattern)}"]
 exclude = []
 base_path = "/content-media"`
     : ""
@@ -339,7 +347,7 @@ base_path = "/content-media"`
 `;
 
 const createNextRouteTemplate = (): string =>
-  `import { createNextRoute } from "opendetail/next";
+  `import { createNextRoute } from "opendetail-next";
 
 export const { POST, runtime } = createNextRoute();
 `;
@@ -474,7 +482,7 @@ const handleSetupCommand = async ({
 
   logger.log(
     setupAnswers.integrationMode === "self-hosted"
-      ? "Setup complete. Set OPENAI_API_KEY in your runtime environment."
+      ? "Setup complete. Make sure opendetail-next is installed and set OPENAI_API_KEY in your runtime environment."
       : `Hosted scaffolding complete. Next set ${HOSTED_ENDPOINT_ENV_VAR} in your app environment and configure transport headers if your hosted endpoint requires auth.`
   );
 };

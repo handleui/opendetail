@@ -78,8 +78,37 @@ describe("runCli", () => {
       readFile(path.join(cwd, ".opendetail/index.json"), "utf8")
     ).resolves.toContain('"chunks"');
     expect(logger.logMock).toHaveBeenCalledWith(
-      "Setup complete. Set OPENAI_API_KEY in your runtime environment."
+      "Setup complete. Make sure opendetail-next is installed and set OPENAI_API_KEY in your runtime environment."
     );
+  });
+
+  test("escapes TOML values in generated config", async () => {
+    const cwd = await createWorkspace();
+    const logger = createLogger();
+    temporaryWorkspaces.push(cwd);
+    vi.stubEnv("OPENAI_API_KEY", "test-key");
+
+    await runCli(
+      [
+        "setup",
+        "--cwd",
+        cwd,
+        "--no-interactive",
+        "--base-path",
+        '/docs/"quoted"\nnext',
+        "--include",
+        'content/**/*.{md,mdx}"tail',
+        "--skip-build",
+      ],
+      { logger }
+    );
+
+    await expect(
+      readFile(path.join(cwd, "opendetail.toml"), "utf8")
+    ).resolves.toContain('base_path = "/docs/\\"quoted\\"\\nnext"');
+    await expect(
+      readFile(path.join(cwd, "opendetail.toml"), "utf8")
+    ).resolves.toContain('include = ["content/**/*.{md,mdx}\\"tail"]');
   });
 
   test("scaffolds hosted integration without generating a route", async () => {

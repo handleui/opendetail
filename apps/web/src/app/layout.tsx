@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
+import { FumadocsAssistantSidebar } from "opendetail-fumadocs/sidebar";
 import type { ReactNode } from "react";
 import "./globals.css";
-import { SiteAssistantSidebar } from "@/components/site-assistant-sidebar";
-import { getSourcePageUrls } from "@/lib/source";
+import { knownSourcePageUrls } from "@/lib/source";
 
 const geist = Geist({
   subsets: ["latin"],
@@ -35,14 +35,12 @@ export default function RootLayout({
 }: Readonly<{
   children: ReactNode;
 }>) {
-  const knownSourcePageUrls = getSourcePageUrls();
-
   return (
     <html lang="en" suppressHydrationWarning>
       <body
         className={`${geist.variable} bg-white font-sans text-black antialiased [--font-sans:var(--font-geist)]`}
       >
-        <SiteAssistantSidebar
+        <FumadocsAssistantSidebar
           emptyState="Ask the docs"
           inputId="opendetail-site-question"
           knownSourcePageUrls={knownSourcePageUrls}
@@ -52,7 +50,7 @@ export default function RootLayout({
           placeholder="Ask about these docs"
         >
           {children}
-        </SiteAssistantSidebar>
+        </FumadocsAssistantSidebar>
       </body>
     </html>
   );

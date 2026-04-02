@@ -1,10 +1,9 @@
 "use client";
 
+import { createFumadocsSourceTargetResolver } from "opendetail-fumadocs";
+import { renderNextSourceLink } from "opendetail-next/link";
+import { AssistantModal, useOpenDetail } from "opendetail-react";
 import { useMemo } from "react";
-import { renderFumadocsSourceLink } from "@/components/opendetail-source-link";
-import { createFumadocsSourceTargetResolver } from "@/lib/opendetail-source-links";
-import { AssistantModal } from "@/registry/blocks/assistant-modal/assistant-modal";
-import { useOpenDetail } from "@/registry/hooks/use-opendetail/use-opendetail";
 
 const DEMO_SECTIONS = [
   {
@@ -88,7 +87,7 @@ export const DemoPageClient = ({
         onSubmitQuestion={submit}
         placeholder="Ask about the product docs"
         question={question}
-        renderSourceLink={renderFumadocsSourceLink}
+        renderSourceLink={renderNextSourceLink}
         requestState={status}
         resolveSourceTarget={resolveSourceTarget}
       />

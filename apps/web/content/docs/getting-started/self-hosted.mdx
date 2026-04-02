@@ -18,6 +18,14 @@ Use it when you want your own app route, your own runtime, and your own `OPENAI_
 
 ## Scaffold it
 
+Install the runtime packages first:
+
+```bash
+npm i opendetail opendetail-next
+```
+
+Then scaffold the default setup:
+
 ```bash
 bunx opendetail setup --with-media
 ```
@@ -25,7 +33,7 @@ bunx opendetail setup --with-media
 That writes a route like this:
 
 ```ts
-import { createNextRoute } from "opendetail/next";
+import { createNextRoute } from "opendetail-next";
 
 export const { POST, runtime } = createNextRoute();
 ```
@@ -33,7 +41,7 @@ export const { POST, runtime } = createNextRoute();
 You can also wire the handler manually:
 
 ```ts
-import { createNextRouteHandler } from "opendetail/next";
+import { createNextRouteHandler } from "opendetail-next";
 
 export const runtime = "nodejs";
 export const POST = createNextRouteHandler();
