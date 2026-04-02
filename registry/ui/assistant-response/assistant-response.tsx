@@ -1,9 +1,12 @@
 import type { ReactNode } from "react";
 
 import {
-  AssistantSources,
   type AssistantSourceItem,
+  AssistantSources,
 } from "../assistant-sources/assistant-sources";
+
+const IMAGE_WIDTH = 549;
+const IMAGE_HEIGHT = 254;
 
 export interface AssistantResponseImage {
   alt?: string;
@@ -95,7 +98,13 @@ export const AssistantResponse = ({
       {hasImage ? (
         <div className="opendetail-response__image">
           {image?.src ? (
-            <img alt={image.alt ?? ""} loading="lazy" src={image.src} />
+            <img
+              alt={image.alt ?? ""}
+              height={IMAGE_HEIGHT}
+              loading="lazy"
+              src={image.src}
+              width={IMAGE_WIDTH}
+            />
           ) : null}
         </div>
       ) : null}
@@ -116,10 +125,7 @@ export const AssistantResponse = ({
 
           {meta?.durationLabel ? (
             <span className="opendetail-meta-item">
-              <span
-                aria-hidden="true"
-                className="opendetail-meta-item__icon"
-              />
+              <span aria-hidden="true" className="opendetail-meta-item__icon" />
               <span>{meta.durationLabel}</span>
             </span>
           ) : null}

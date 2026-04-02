@@ -53,7 +53,10 @@ export const AssistantThread = ({
     return (
       <section aria-label={ariaLabel} className={getClassName(className)}>
         {items.map((item, index) => (
-          <div className="opendetail-thread__item" key={getItemKey(item, index)}>
+          <div
+            className="opendetail-thread__item"
+            key={getItemKey(item, index)}
+          >
             {item}
           </div>
         ))}

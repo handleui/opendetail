@@ -36,7 +36,11 @@
       "title": "Assistant Shell",
       "description": "Centered thread and input composition matching the canonical OpenDetail shell frame.",
       "categories": ["opendetail", "ui"],
-      "registryDependencies": ["opendetail-base", "opendetail-client", "use-opendetail"],
+      "registryDependencies": [
+        "opendetail-base",
+        "opendetail-client",
+        "use-opendetail"
+      ],
       "files": [
         {
           "path": "registry/ui/assistant-shell/assistant-shell.tsx",
@@ -118,7 +122,11 @@
       "description": "Expandable source-count metadata and citations list for assistant responses.",
       "categories": ["opendetail", "ui"],
       "dependencies": ["motion@^12.38.0"],
-      "registryDependencies": ["opendetail-base", "opendetail-client", "use-opendetail"],
+      "registryDependencies": [
+        "opendetail-base",
+        "opendetail-client",
+        "use-opendetail"
+      ],
       "files": [
         {
           "path": "registry/ui/assistant-sources/assistant-sources.tsx",

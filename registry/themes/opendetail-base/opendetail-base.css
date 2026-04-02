@@ -1,7 +1,6 @@
 @import "tw-shimmer";
 
 :root {
-  color-scheme: light;
   --opendetail-color-accent: #c7ef2b;
   --opendetail-color-background: #ffffff;
   --opendetail-color-badge-background: #e0eeff;
@@ -26,12 +25,13 @@
   --opendetail-space-md: 1rem;
   --opendetail-space-sm: 0.625rem;
   --opendetail-text-md-letter-spacing: -0.04em;
+  color-scheme: light;
 }
 
 .opendetail-input-root {
   --opendetail-input-current-width: var(--opendetail-input-width-compact);
-  max-width: var(--opendetail-input-current-width);
   width: 100%;
+  max-width: var(--opendetail-input-current-width);
 }
 
 .opendetail-input-root--compact {
@@ -47,18 +47,18 @@
   flex-direction: column;
   gap: var(--opendetail-space-lg);
   justify-content: space-between;
-  margin-inline: auto;
+  width: 100%;
   max-width: var(--opendetail-shell-max-width);
   min-height: var(--opendetail-shell-min-height);
   padding-block: var(--opendetail-shell-padding-top)
     var(--opendetail-shell-padding-bottom);
-  width: 100%;
+  margin-inline: auto;
 }
 
 .opendetail-shell__thread,
 .opendetail-shell__input {
-  align-items: center;
   display: flex;
+  align-items: center;
   justify-content: center;
   width: 100%;
 }
@@ -75,51 +75,51 @@
 }
 
 .opendetail-user-message {
-  align-items: flex-start;
-  color: var(--opendetail-color-meta);
   display: flex;
   gap: 1.25rem;
+  align-items: flex-start;
   width: 100%;
+  color: var(--opendetail-color-meta);
 }
 
 .opendetail-user-message__badge {
-  align-items: center;
-  background: var(--opendetail-color-badge-background);
-  border-radius: var(--opendetail-radius-badge);
-  color: var(--opendetail-color-badge-foreground);
   display: inline-flex;
   flex: none;
-  font-size: 0.6875rem;
-  height: 1rem;
+  align-items: center;
   justify-content: center;
-  letter-spacing: -0.04em;
-  line-height: 1rem;
-  margin-top: 0.125rem;
   width: 1rem;
+  height: 1rem;
+  margin-top: 0.125rem;
+  font-size: 0.6875rem;
+  line-height: 1rem;
+  color: var(--opendetail-color-badge-foreground);
+  letter-spacing: -0.04em;
+  background: var(--opendetail-color-badge-background);
+  border-radius: var(--opendetail-radius-badge);
 }
 
 .opendetail-user-message__content {
   flex: 1 1 0%;
-  font-size: 1rem;
-  letter-spacing: var(--opendetail-text-md-letter-spacing);
-  line-height: 1.3125rem;
   min-width: 0;
+  font-size: 1rem;
+  line-height: 1.3125rem;
+  letter-spacing: var(--opendetail-text-md-letter-spacing);
 }
 
 .opendetail-response {
-  color: var(--opendetail-color-foreground);
   display: flex;
   flex-direction: column;
   gap: var(--opendetail-space-md);
   width: 100%;
+  color: var(--opendetail-color-foreground);
 }
 
 .opendetail-response__lead,
 .opendetail-response-markdown {
-  font-size: 1rem;
-  letter-spacing: var(--opendetail-text-md-letter-spacing);
-  line-height: 1.3125rem;
   width: 100%;
+  font-size: 1rem;
+  line-height: 1.3125rem;
+  letter-spacing: var(--opendetail-text-md-letter-spacing);
 }
 
 .opendetail-response-markdown > :first-child {
@@ -134,18 +134,18 @@
   margin-block: 0;
 }
 
+.opendetail-response-markdown ul,
+.opendetail-response-markdown ol {
+  padding-left: 1.25rem;
+  margin-block: 0;
+}
+
 .opendetail-response-markdown p + p,
 .opendetail-response-markdown p + ul,
 .opendetail-response-markdown p + ol,
 .opendetail-response-markdown ul + p,
 .opendetail-response-markdown ol + p {
   margin-top: var(--opendetail-space-md);
-}
-
-.opendetail-response-markdown ul,
-.opendetail-response-markdown ol {
-  margin-block: 0;
-  padding-left: 1.25rem;
 }
 
 .opendetail-response-markdown li + li {
@@ -158,22 +158,22 @@
 }
 
 .opendetail-response__image {
-  background: var(--opendetail-color-placeholder);
-  border-radius: var(--opendetail-radius-panel);
-  min-height: 15.875rem;
-  overflow: hidden;
   position: relative;
   width: 100%;
+  min-height: 15.875rem;
+  overflow: hidden;
+  background: var(--opendetail-color-placeholder);
+  border-radius: var(--opendetail-radius-panel);
 }
 
 .opendetail-response__image img {
   display: block;
+  width: 100%;
   height: 100%;
   object-fit: cover;
   transition:
     opacity 160ms ease,
     transform 160ms ease;
-  width: 100%;
 }
 
 .opendetail-response__image:hover img {
@@ -182,29 +182,29 @@
 }
 
 .opendetail-response__footer {
-  align-items: center;
-  color: var(--opendetail-color-meta);
   display: flex;
   flex-wrap: wrap;
   gap: var(--opendetail-space-md);
+  align-items: center;
   width: 100%;
+  color: var(--opendetail-color-meta);
 }
 
 .opendetail-meta-item {
-  align-items: center;
   display: inline-flex;
-  font-size: 0.8125rem;
   gap: var(--opendetail-space-sm);
-  letter-spacing: -0.04em;
+  align-items: center;
+  font-size: 0.8125rem;
   line-height: 1.0625rem;
+  letter-spacing: -0.04em;
 }
 
 .opendetail-meta-item__icon {
-  background: var(--opendetail-color-placeholder);
   display: inline-flex;
   flex: none;
-  height: 0.625rem;
   width: 0.625rem;
+  height: 0.625rem;
+  background: var(--opendetail-color-placeholder);
 }
 
 .opendetail-sources {
@@ -214,16 +214,16 @@
 }
 
 .opendetail-sources__trigger {
+  display: inline-flex;
+  gap: var(--opendetail-space-sm);
   align-items: center;
+  padding: 0;
+  margin: 0;
+  color: inherit;
+  cursor: pointer;
   background: transparent;
   border: 0;
   border-radius: 999px;
-  color: inherit;
-  cursor: pointer;
-  display: inline-flex;
-  gap: var(--opendetail-space-sm);
-  margin: 0;
-  padding: 0;
   transition:
     color 160ms ease,
     opacity 160ms ease;
@@ -232,8 +232,8 @@
 .opendetail-sources__trigger:hover,
 .opendetail-sources__trigger:focus-visible {
   color: var(--opendetail-color-foreground);
-  opacity: 1;
   outline: none;
+  opacity: 1;
 }
 
 .opendetail-sources__trigger:focus-visible {
@@ -258,8 +258,8 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  overflow: hidden;
   width: 100%;
+  overflow: hidden;
 }
 
 .opendetail-sources__item {
@@ -267,16 +267,16 @@
 }
 
 .opendetail-sources__link {
+  display: block;
+  padding: 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.125rem;
+  color: var(--opendetail-color-foreground);
+  letter-spacing: -0.03em;
+  text-decoration: none;
   background: var(--opendetail-color-surface);
   border: 1px solid transparent;
   border-radius: var(--opendetail-radius-panel);
-  color: var(--opendetail-color-foreground);
-  display: block;
-  font-size: 0.875rem;
-  letter-spacing: -0.03em;
-  line-height: 1.125rem;
-  padding: 0.75rem;
-  text-decoration: none;
   transition:
     background-color 160ms ease,
     border-color 160ms ease,
@@ -285,9 +285,9 @@
 
 .opendetail-sources__link:hover,
 .opendetail-sources__link:focus-visible {
+  outline: none;
   background: var(--opendetail-color-hover);
   border-color: var(--opendetail-color-border);
-  outline: none;
   transform: translateY(-1px);
 }
 
