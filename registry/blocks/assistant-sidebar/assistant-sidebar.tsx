@@ -1,14 +1,15 @@
-import type { ReactNode } from "react";
+import {
+  AssistantShell,
+  type AssistantShellProps,
+} from "../../ui/assistant-shell/assistant-shell";
 
-interface AssistantSidebarProps {
-  children?: ReactNode;
-}
+export interface AssistantSidebarProps extends AssistantShellProps {}
 
-export const AssistantSidebar = ({ children }: AssistantSidebarProps) => (
+export const AssistantSidebar = (props: AssistantSidebarProps) => (
   <section
-    aria-label="OpenDetail assistant sidebar placeholder"
-    data-opendetail-placeholder="assistant-sidebar"
+    aria-label="OpenDetail assistant sidebar"
+    data-opendetail-component="assistant-sidebar"
   >
-    {children}
+    <AssistantShell {...props} />
   </section>
 );

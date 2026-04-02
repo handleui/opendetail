@@ -16,7 +16,7 @@ const defaultLabels: Record<AssistantStatusVariant, string> = {
 
 const thinkingShimmerStyle: CSSProperties = {
   ["--shimmer-color" as string]: "#080808",
-  ["--shimmer-speed" as string]: "36",
+  ["--shimmer-speed" as string]: "220",
   ["--shimmer-spread" as string]: "6ch",
   ["--shimmer-width" as string]: "120",
 };

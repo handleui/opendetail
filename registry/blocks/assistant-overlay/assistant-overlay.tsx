@@ -1,14 +1,15 @@
-import type { ReactNode } from "react";
+import {
+  AssistantShell,
+  type AssistantShellProps,
+} from "../../ui/assistant-shell/assistant-shell";
 
-interface AssistantOverlayProps {
-  children?: ReactNode;
-}
+export interface AssistantOverlayProps extends AssistantShellProps {}
 
-export const AssistantOverlay = ({ children }: AssistantOverlayProps) => (
+export const AssistantOverlay = (props: AssistantOverlayProps) => (
   <section
-    aria-label="OpenDetail assistant overlay placeholder"
-    data-opendetail-placeholder="assistant-overlay"
+    aria-label="OpenDetail assistant overlay"
+    data-opendetail-component="assistant-overlay"
   >
-    {children}
+    <AssistantShell {...props} />
   </section>
 );

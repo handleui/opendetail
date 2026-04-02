@@ -52,9 +52,30 @@ export interface AssistantInputProps {
   placeholder?: string;
   readOnly?: boolean;
   requestState?: OpenDetailClientStatus;
+  size?: "compact" | "shell";
   status?: AssistantInputStatus | null;
   value?: string;
 }
+
+type AssistantInputSize = NonNullable<AssistantInputProps["size"]>;
+
+const getRootClassName = ({
+  className,
+  size,
+}: {
+  className?: string;
+  size: AssistantInputSize;
+}): string =>
+  [
+    "opendetail-input-root",
+    size === "shell"
+      ? "opendetail-input-root--shell"
+      : "opendetail-input-root--compact",
+    "relative flex w-full flex-col items-center",
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
 
 const isButtonTarget = (target: EventTarget | null) =>
   target instanceof Element && target.closest("button") !== null;
@@ -260,6 +281,7 @@ export const AssistantInput = ({
   placeholder = DEFAULT_PLACEHOLDER,
   readOnly = false,
   requestState = "idle",
+  size = "compact",
   status,
   value,
 }: AssistantInputProps) => {
@@ -324,10 +346,7 @@ export const AssistantInput = ({
 
   return (
     <motion.div
-      className={[
-        "opendetail-input-root relative flex w-full max-w-[450px] flex-col items-center",
-        className ?? "",
-      ].join(" ")}
+      className={getRootClassName({ className, size })}
       layout
       transition={MOTION_LAYOUT_TRANSITION}
     >

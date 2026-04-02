@@ -34,9 +34,9 @@
       "name": "assistant-shell",
       "type": "registry:ui",
       "title": "Assistant Shell",
-      "description": "Primitive shell wrapper for future opendetail assistant compositions.",
+      "description": "Centered thread and input composition matching the canonical OpenDetail shell frame.",
       "categories": ["opendetail", "ui"],
-      "registryDependencies": ["opendetail-client", "use-opendetail"],
+      "registryDependencies": ["opendetail-base", "opendetail-client", "use-opendetail"],
       "files": [
         {
           "path": "registry/ui/assistant-shell/assistant-shell.tsx",
@@ -64,12 +64,46 @@
       ]
     },
     {
+      "name": "assistant-thread",
+      "type": "registry:ui",
+      "title": "Assistant Thread",
+      "description": "Thread container for OpenDetail conversations with optional Motion-based reveal.",
+      "categories": ["opendetail", "ui"],
+      "dependencies": ["motion@^12.38.0"],
+      "registryDependencies": ["opendetail-base"],
+      "files": [
+        {
+          "path": "registry/ui/assistant-thread/assistant-thread.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "assistant-user-message",
+      "type": "registry:ui",
+      "title": "Assistant User Message",
+      "description": "Question row primitive with the OpenDetail badge and muted query styling from the shell design.",
+      "categories": ["opendetail", "ui"],
+      "registryDependencies": ["opendetail-base"],
+      "files": [
+        {
+          "path": "registry/ui/assistant-user-message/assistant-user-message.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "assistant-response",
       "type": "registry:ui",
       "title": "Assistant Response",
-      "description": "Primitive response placeholder for future streamed answer rendering.",
+      "description": "Assistant answer primitive with lead text, optional image, markdown slot content, and response metadata.",
       "categories": ["opendetail", "ui"],
-      "registryDependencies": ["opendetail-client", "use-opendetail"],
+      "registryDependencies": [
+        "assistant-sources",
+        "opendetail-base",
+        "opendetail-client",
+        "use-opendetail"
+      ],
       "files": [
         {
           "path": "registry/ui/assistant-response/assistant-response.tsx",
@@ -81,9 +115,10 @@
       "name": "assistant-sources",
       "type": "registry:ui",
       "title": "Assistant Sources",
-      "description": "Primitive placeholder for future citations and source lists.",
+      "description": "Expandable source-count metadata and citations list for assistant responses.",
       "categories": ["opendetail", "ui"],
-      "registryDependencies": ["opendetail-client", "use-opendetail"],
+      "dependencies": ["motion@^12.38.0"],
+      "registryDependencies": ["opendetail-base", "opendetail-client", "use-opendetail"],
       "files": [
         {
           "path": "registry/ui/assistant-sources/assistant-sources.tsx",
@@ -124,10 +159,10 @@
       "name": "assistant-overlay",
       "type": "registry:block",
       "title": "Assistant Overlay",
-      "description": "Placeholder overlay shell for future assistant compositions.",
-      "docs": "Scaffold-only wrapper. Real overlay composition lands after thread, sources, and message designs exist.",
+      "description": "Thin overlay wrapper around the assistant shell composition.",
+      "docs": "Uses the shell directly and stays intentionally unopinionated in this pass.",
       "categories": ["opendetail", "block"],
-      "registryDependencies": ["assistant-shell"],
+      "registryDependencies": ["assistant-shell", "opendetail-base"],
       "files": [
         {
           "path": "registry/blocks/assistant-overlay/assistant-overlay.tsx",
@@ -139,10 +174,10 @@
       "name": "assistant-modal",
       "type": "registry:block",
       "title": "Assistant Modal",
-      "description": "Placeholder modal shell for future assistant compositions.",
-      "docs": "Scaffold-only wrapper. Real modal composition lands after thread, sources, and message designs exist.",
+      "description": "Thin modal wrapper around the assistant shell composition.",
+      "docs": "Uses the shell directly and stays intentionally unopinionated in this pass.",
       "categories": ["opendetail", "block"],
-      "registryDependencies": ["assistant-shell"],
+      "registryDependencies": ["assistant-shell", "opendetail-base"],
       "files": [
         {
           "path": "registry/blocks/assistant-modal/assistant-modal.tsx",
@@ -154,10 +189,10 @@
       "name": "assistant-sidebar",
       "type": "registry:block",
       "title": "Assistant Sidebar",
-      "description": "Placeholder sidebar shell for future assistant compositions.",
-      "docs": "Scaffold-only wrapper. Real sidebar composition lands after thread, sources, and message designs exist.",
+      "description": "Thin sidebar wrapper around the assistant shell composition.",
+      "docs": "Uses the shell directly and stays intentionally unopinionated in this pass.",
       "categories": ["opendetail", "block"],
-      "registryDependencies": ["assistant-shell"],
+      "registryDependencies": ["assistant-shell", "opendetail-base"],
       "files": [
         {
           "path": "registry/blocks/assistant-sidebar/assistant-sidebar.tsx",
@@ -169,8 +204,8 @@
       "name": "opendetail-base",
       "type": "registry:theme",
       "title": "OpenDetail Base Theme",
-      "description": "Minimal shared theme entry that imports tw-shimmer for the thinking pill.",
-      "docs": "Import the installed stylesheet from your app's global CSS entry after `@import \"tailwindcss\";`, for example `@import \"@/styles/opendetail-base.css\";`.",
+      "description": "Shared theme tokens and semantic classes for OpenDetail assistant primitives.",
+      "docs": "Import the installed stylesheet from your app's global CSS entry after `@import \"tailwindcss\";`, for example `@import \"@/styles/opendetail-base.css\";`. It includes the tw-shimmer import plus the shared OpenDetail tokens and semantic component classes.",
       "categories": ["opendetail", "theme"],
       "dependencies": ["tw-shimmer@0.4.9"],
       "files": [

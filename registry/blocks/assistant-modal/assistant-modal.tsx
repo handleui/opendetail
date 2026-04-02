@@ -1,14 +1,15 @@
-import type { ReactNode } from "react";
+import {
+  AssistantShell,
+  type AssistantShellProps,
+} from "../../ui/assistant-shell/assistant-shell";
 
-interface AssistantModalProps {
-  children?: ReactNode;
-}
+export interface AssistantModalProps extends AssistantShellProps {}
 
-export const AssistantModal = ({ children }: AssistantModalProps) => (
+export const AssistantModal = (props: AssistantModalProps) => (
   <section
-    aria-label="OpenDetail assistant modal placeholder"
-    data-opendetail-placeholder="assistant-modal"
+    aria-label="OpenDetail assistant modal"
+    data-opendetail-component="assistant-modal"
   >
-    {children}
+    <AssistantShell {...props} />
   </section>
 );
