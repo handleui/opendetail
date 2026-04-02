@@ -11,6 +11,7 @@ export const DEFAULT_FALLBACK_TEXT =
   "I couldn't find that in the configured docs.";
 export const DEFAULT_CHUNK_CHARACTER_LIMIT = 1200;
 export const DEFAULT_MAX_RETRIEVED_CHUNKS = 6;
+export const DEFAULT_MAX_RETURNED_IMAGES = 3;
 export const MAX_QUESTION_LENGTH = 4000;
 export const BUILD_FILE_READ_CONCURRENCY = 8;
 export const NDJSON_CONTENT_TYPE = "application/x-ndjson; charset=utf-8";

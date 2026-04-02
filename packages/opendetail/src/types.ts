@@ -11,7 +11,20 @@ export interface OpenDetailConfig {
   base_path: string;
   exclude: string[];
   include: string[];
+  media?: OpenDetailMediaConfig;
   version: 1;
+}
+
+export interface OpenDetailMediaConfig {
+  base_path: string;
+  exclude: string[];
+  include: string[];
+}
+
+export interface OpenDetailChunkImage {
+  alt: string | null;
+  title: string | null;
+  url: string;
 }
 
 export interface OpenDetailChunk {
@@ -19,6 +32,7 @@ export interface OpenDetailChunk {
   filePath: string;
   headings: string[];
   id: string;
+  images?: OpenDetailChunkImage[];
   relativePath: string;
   text: string;
   title: string;
@@ -51,12 +65,17 @@ export interface OpenDetailSource {
   url: string;
 }
 
+export interface OpenDetailImage extends OpenDetailChunkImage {
+  sourceIds: string[];
+}
+
 export interface OpenDetailAnswerInput {
   question: string;
 }
 
 export interface OpenDetailAnswerResult {
   fallback: boolean;
+  images: OpenDetailImage[];
   model: string;
   sources: OpenDetailSource[];
   text: string;
@@ -64,6 +83,7 @@ export interface OpenDetailAnswerResult {
 
 export interface OpenDetailStreamResult {
   fallback: boolean;
+  images: OpenDetailImage[];
   model: string;
   sources: OpenDetailSource[];
   stream: ReadableStream<Uint8Array>;
@@ -99,6 +119,11 @@ export interface OpenDetailSourcesEvent {
   type: "sources";
 }
 
+export interface OpenDetailImagesEvent {
+  images: OpenDetailImage[];
+  type: "images";
+}
+
 export interface OpenDetailDeltaEvent {
   text: string;
   type: "delta";
@@ -117,6 +142,7 @@ export interface OpenDetailErrorEvent {
 export type OpenDetailStreamEvent =
   | OpenDetailMetaEvent
   | OpenDetailSourcesEvent
+  | OpenDetailImagesEvent
   | OpenDetailDeltaEvent
   | OpenDetailDoneEvent
   | OpenDetailErrorEvent;

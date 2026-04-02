@@ -1,0 +1,9 @@
+version = 1
+include = ["content/**/*.md", "content/**/*.mdx"]
+exclude = []
+base_path = "/docs"
+
+[media]
+include = ["content/**/*.{png,webp,svg}"]
+exclude = []
+base_path = "/content-media"

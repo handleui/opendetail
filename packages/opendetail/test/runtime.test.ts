@@ -7,7 +7,11 @@ import { describe, expect, test, vi } from "vitest";
 import { buildOpenDetailIndex } from "../src/build";
 import { DEFAULT_FALLBACK_TEXT } from "../src/constants";
 import { createOpenDetail } from "../src/runtime";
-import { createMiniSearchIndex, retrieveRelevantChunks } from "../src/search";
+import {
+  createMiniSearchIndex,
+  parseOpenDetailIndexArtifact,
+  retrieveRelevantChunks,
+} from "../src/search";
 import {
   createFixtureWorkspace,
   readNdjsonEvents,
@@ -108,6 +112,23 @@ describe("OpenDetail runtime", () => {
     }
   });
 
+  test("ranks relevant chunks with image alt and title metadata", async () => {
+    const cwd = await createFixtureWorkspace("media");
+
+    try {
+      const { artifact } = await buildOpenDetailIndex({ cwd });
+      const miniSearch = createMiniSearchIndex(artifact.chunks);
+      const chunks = retrieveRelevantChunks(
+        miniSearch,
+        "workflow widget diagram"
+      );
+
+      expect(chunks[0]?.url).toBe("/docs/visual-guide#referenced-media");
+    } finally {
+      await removeWorkspace(cwd);
+    }
+  });
+
   test("returns the fixed fallback without calling OpenAI when nothing matches", async () => {
     const cwd = await createFixtureWorkspace("basic");
 
@@ -124,7 +145,58 @@ describe("OpenDetail runtime", () => {
 
       expect(result.text).toBe(DEFAULT_FALLBACK_TEXT);
       expect(result.fallback).toBe(true);
+      expect(result.images).toEqual([]);
       expect(create).not.toHaveBeenCalled();
+    } finally {
+      await removeWorkspace(cwd);
+    }
+  });
+
+  test("returns relevant images alongside the text answer", async () => {
+    const cwd = await createFixtureWorkspace("media");
+
+    try {
+      const { artifact } = await buildOpenDetailIndex({ cwd });
+      const { client, create } = createMockClient();
+      const assistant = createOpenDetail({
+        client,
+        indexData: artifact,
+      });
+      const result = await assistant.answer({
+        question: "Show me the workflow widget diagram",
+      });
+
+      expect(result.fallback).toBe(false);
+      expect(result.images).toEqual([
+        {
+          alt: "Hero diagram",
+          sourceIds: ["1"],
+          title: "Hero Diagram",
+          url: "/content-media/hero.png",
+        },
+        {
+          alt: "Workflow widget diagram",
+          sourceIds: ["1"],
+          title: "Widget Diagram",
+          url: "/content-media/widget.png",
+        },
+        {
+          alt: "Root relative diagram",
+          sourceIds: ["1"],
+          title: "Root Diagram",
+          url: "/images/root-diagram.png",
+        },
+      ]);
+      expect(create).toHaveBeenCalledTimes(1);
+      expect(create.mock.calls[0]?.[0]).toMatchObject({
+        input: expect.stringContaining("alt: Workflow widget diagram"),
+      });
+      expect(create.mock.calls[0]?.[0]).toMatchObject({
+        input: expect.stringContaining("title: Widget Diagram"),
+      });
+      expect(create.mock.calls[0]?.[0]).toMatchObject({
+        input: expect.not.stringContaining("/content-media/widget.png"),
+      });
     } finally {
       await removeWorkspace(cwd);
     }
@@ -151,14 +223,18 @@ describe("OpenDetail runtime", () => {
       });
       expect(events[1]?.type).toBe("sources");
       expect(events[2]).toEqual({
+        images: [],
+        type: "images",
+      });
+      expect(events[3]).toEqual({
         text: "Install `opendetail` ",
         type: "delta",
       });
-      expect(events[3]).toEqual({
+      expect(events[4]).toEqual({
         text: "with `npm i opendetail` [1].",
         type: "delta",
       });
-      expect(events[4]).toEqual({
+      expect(events[5]).toEqual({
         text: "Install `opendetail` with `npm i opendetail` [1].",
         type: "done",
       });
@@ -174,6 +250,50 @@ describe("OpenDetail runtime", () => {
           verbosity: "low",
         },
       });
+    } finally {
+      await removeWorkspace(cwd);
+    }
+  });
+
+  test("emits images before text deltas in the stream contract", async () => {
+    const cwd = await createFixtureWorkspace("media");
+
+    try {
+      const { artifact } = await buildOpenDetailIndex({ cwd });
+      const assistant = createOpenDetail({
+        client: createMockClient().client,
+        indexData: artifact,
+      });
+      const result = await assistant.stream({
+        question: "Show me the workflow widget diagram",
+      });
+      const events = await readNdjsonEvents(result.stream);
+
+      expect(result.images).toEqual([
+        {
+          alt: "Hero diagram",
+          sourceIds: ["1"],
+          title: "Hero Diagram",
+          url: "/content-media/hero.png",
+        },
+        {
+          alt: "Workflow widget diagram",
+          sourceIds: ["1"],
+          title: "Widget Diagram",
+          url: "/content-media/widget.png",
+        },
+        {
+          alt: "Root relative diagram",
+          sourceIds: ["1"],
+          title: "Root Diagram",
+          url: "/images/root-diagram.png",
+        },
+      ]);
+      expect(events[2]).toEqual({
+        images: result.images,
+        type: "images",
+      });
+      expect(events[3]?.type).toBe("delta");
     } finally {
       await removeWorkspace(cwd);
     }
@@ -261,6 +381,11 @@ describe("OpenDetail runtime", () => {
         model: "gpt-5.4-mini",
         type: "meta",
       });
+      expect(events[1]?.type).toBe("sources");
+      expect(events[2]).toEqual({
+        images: [],
+        type: "images",
+      });
       expect(events.at(-1)).toEqual({
         message:
           "The model could not complete the answer because the response was filtered.",
@@ -269,5 +394,33 @@ describe("OpenDetail runtime", () => {
     } finally {
       await removeWorkspace(cwd);
     }
+  });
+
+  test("loads older index artifacts that do not include chunk images", () => {
+    const artifact = parseOpenDetailIndexArtifact({
+      chunks: [
+        {
+          anchor: null,
+          filePath: "/tmp/guide.md",
+          headings: ["Guide"],
+          id: "guide.md",
+          relativePath: "guide.md",
+          text: "Guide body",
+          title: "Guide",
+          url: "/docs/guide",
+        },
+      ],
+      config: {
+        base_path: "/docs",
+        exclude: [],
+        include: ["content/**/*.md"],
+        version: 1,
+      },
+      generatedAt: new Date().toISOString(),
+      manifestHash: "hash",
+      version: 1,
+    });
+
+    expect(artifact.chunks[0]?.images).toEqual([]);
   });
 });

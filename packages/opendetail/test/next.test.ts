@@ -159,6 +159,10 @@ describe("createNextRouteHandler", () => {
         type: "meta",
       });
       expect(events[1]?.type).toBe("sources");
+      expect(events[2]).toEqual({
+        images: [],
+        type: "images",
+      });
       expect(events.at(-1)).toEqual({
         text: "Use `base_path` to prepend a route prefix [1].",
         type: "done",

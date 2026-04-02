@@ -16,6 +16,14 @@ const OpenDetailConfigSchema = z
     base_path: z.string().default(DEFAULT_BASE_PATH),
     exclude: z.array(z.string()).default([]),
     include: z.array(z.string()).min(1),
+    media: z
+      .object({
+        base_path: z.string(),
+        exclude: z.array(z.string()).default([]),
+        include: z.array(z.string()).min(1),
+      })
+      .strict()
+      .optional(),
     version: z.literal(OPENDETAIL_VERSION),
   })
   .strict();
@@ -63,8 +71,18 @@ export const readOpenDetailConfig = async ({
     );
   }
 
+  const { media, ...config } = validationResult.data;
+
   return {
-    ...validationResult.data,
-    base_path: normalizeBasePath(validationResult.data.base_path),
+    ...config,
+    base_path: normalizeBasePath(config.base_path),
+    ...(media
+      ? {
+          media: {
+            ...media,
+            base_path: normalizeBasePath(media.base_path),
+          },
+        }
+      : {}),
   };
 };

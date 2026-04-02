@@ -28,6 +28,16 @@ exclude = []
 base_path = "/docs"
 ```
 
+If your docs reference local repo images and your app serves those files at a
+public URL, add optional media mapping:
+
+```toml
+[media]
+include = ["content/**/*.{png,jpg,jpeg,webp,avif,gif,svg}"]
+exclude = []
+base_path = "/content-media"
+```
+
 Build the index:
 
 ```bash
@@ -57,6 +67,7 @@ The route streams NDJSON events:
 
 - `meta`
 - `sources`
+- `images`
 - `delta`
 - `done`
 - `error`
@@ -75,6 +86,19 @@ const result = await assistant.answer({
 });
 ```
 
+The result includes grounded image metadata in `result.images` when the matched
+docs contain supported image references. `image.sourceIds` map back to the
+entries in `result.sources`.
+
+Supported image references:
+
+- `http://` and `https://` URLs are returned as-is
+- root-relative `/...` URLs are returned as-is
+- local relative paths such as `./hero.png` are returned only when `[media]` is configured
+- unsupported absolute schemes and protocol-relative URLs are ignored
+
+The runtime returns at most 3 images per answer or stream.
+
 ## CLI
 
 The package ships with its own CLI. The main command in `0.1.0` is:
@@ -92,6 +116,7 @@ That is standard npm package behavior. When installed locally, the same binary i
 ### 1. Build time
 
 - Read the files matched by `opendetail.toml`
+- Optionally map referenced local media files to public URLs
 - Parse Markdown and MDX content
 - Split content by heading sections
 - Create a local JSON index at `.opendetail/index.json`

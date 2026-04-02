@@ -87,4 +87,86 @@ ${bigParagraphs}
     expect(chunks[0]?.text).toContain("Paragraph 1");
     expect(chunks[1]?.text).not.toContain("Paragraph 1");
   });
+
+  test("extracts markdown image metadata for a section", () => {
+    const chunks = extractMarkdownChunks({
+      config: {
+        base_path: "/docs",
+      },
+      fileContent: `# Visual Guide
+
+![Architecture overview](./diagram.png "Diagram title")
+`,
+      filePath: "/tmp/visual-guide.md",
+      relativePath: "visual-guide.md",
+      resolveImage: (image) => ({
+        ...image,
+        url: `mapped:${image.url}`,
+      }),
+    });
+
+    expect(chunks[0]?.images).toEqual([
+      {
+        alt: "Architecture overview",
+        title: "Diagram title",
+        url: "mapped:./diagram.png",
+      },
+    ]);
+  });
+
+  test("resolves reference-style markdown images", () => {
+    const chunks = extractMarkdownChunks({
+      config: {
+        base_path: "/docs",
+      },
+      fileContent: `# Visual Guide
+
+![Hero diagram][hero]
+
+[hero]: ./hero.png "Hero title"
+`,
+      filePath: "/tmp/visual-guide.md",
+      relativePath: "visual-guide.md",
+      resolveImage: (image) => image,
+    });
+
+    expect(chunks[0]?.images).toEqual([
+      {
+        alt: "Hero diagram",
+        title: "Hero title",
+        url: "./hero.png",
+      },
+    ]);
+  });
+
+  test("extracts simple MDX image elements with literal src values", () => {
+    const chunks = extractMarkdownChunks({
+      config: {
+        base_path: "/docs",
+      },
+      fileContent: `# Visual Guide
+
+<Image src="./widget.png" alt="Workflow widget diagram" title="Widget title" />
+<img src="/images/root.png" alt="Root image" title="Root title" />
+`,
+      filePath: "/tmp/visual-guide.mdx",
+      relativePath: "visual-guide.mdx",
+      resolveImage: (image) => image,
+    });
+
+    expect(chunks[0]?.images).toEqual([
+      {
+        alt: "Workflow widget diagram",
+        title: "Widget title",
+        url: "./widget.png",
+      },
+      {
+        alt: "Root image",
+        title: "Root title",
+        url: "/images/root.png",
+      },
+    ]);
+    expect(chunks[0]?.text).toContain("Workflow widget diagram");
+    expect(chunks[0]?.text).toContain("Widget title");
+  });
 });

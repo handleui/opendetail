@@ -9,6 +9,7 @@ import type {
 import { resolveIndexPath } from "./build";
 import {
   DEFAULT_FALLBACK_TEXT,
+  DEFAULT_MAX_RETURNED_IMAGES,
   DEFAULT_MODEL,
   DEFAULT_REASONING_EFFORT,
   DEFAULT_STORE,
@@ -26,6 +27,7 @@ import type {
   OpenDetailAnswerInput,
   OpenDetailAnswerResult,
   OpenDetailAssistant,
+  OpenDetailImage,
   OpenDetailIndexArtifact,
   OpenDetailSource,
   OpenDetailStreamEvent,
@@ -78,6 +80,45 @@ const mapSources = (
     url: chunk.url,
   }));
 
+const collectRelevantImages = (
+  chunks: OpenDetailIndexArtifact["chunks"]
+): OpenDetailImage[] => {
+  const imagesByUrl = new Map<string, OpenDetailImage>();
+  const images: OpenDetailImage[] = [];
+
+  for (const [chunkIndex, chunk] of chunks.entries()) {
+    const sourceId = String(chunkIndex + 1);
+
+    for (const chunkImage of chunk.images ?? []) {
+      const existingImage = imagesByUrl.get(chunkImage.url);
+
+      if (existingImage) {
+        if (!existingImage.sourceIds.includes(sourceId)) {
+          existingImage.sourceIds.push(sourceId);
+        }
+
+        continue;
+      }
+
+      if (images.length >= DEFAULT_MAX_RETURNED_IMAGES) {
+        continue;
+      }
+
+      const nextImage: OpenDetailImage = {
+        alt: chunkImage.alt,
+        sourceIds: [sourceId],
+        title: chunkImage.title,
+        url: chunkImage.url,
+      };
+
+      imagesByUrl.set(chunkImage.url, nextImage);
+      images.push(nextImage);
+    }
+  }
+
+  return images;
+};
+
 const createFallbackStream = (
   controller: ReadableStreamDefaultController<Uint8Array>
 ): void => {
@@ -100,10 +141,33 @@ const formatContext = (chunks: OpenDetailIndexArtifact["chunks"]): string =>
 url: ${chunk.url}
 title: ${chunk.title}
 headings: ${chunk.headings.join(" > ")}
+images:
+${formatImageContext(chunk.images)}
 content:
 ${chunk.text}`
     )
     .join("\n\n");
+
+const formatImageContext = (
+  images: OpenDetailIndexArtifact["chunks"][number]["images"]
+): string => {
+  if (!images?.length) {
+    return "none";
+  }
+
+  return images
+    .map((image, index) => {
+      const details = [
+        image.alt ? `alt: ${image.alt}` : null,
+        image.title ? `title: ${image.title}` : null,
+      ].filter(Boolean);
+
+      return details.length > 0
+        ? `- image ${index + 1}: ${details.join(", ")}`
+        : `- image ${index + 1}`;
+    })
+    .join("\n");
+};
 
 const SYSTEM_INSTRUCTIONS = `You are a documentation assistant.
 Answer only from the provided sources.
@@ -432,11 +496,13 @@ export const createOpenDetail = ({
   ): Promise<OpenDetailAnswerResult> => {
     const { question } = parseOpenDetailAnswerInput(rawInput);
     const retrievedChunks = retrieveRelevantChunks(miniSearch, question);
+    const images = collectRelevantImages(retrievedChunks);
     const sources = mapSources(retrievedChunks);
 
     if (retrievedChunks.length === 0) {
       return {
         fallback: true,
+        images,
         model,
         sources,
         text: DEFAULT_FALLBACK_TEXT,
@@ -455,6 +521,7 @@ export const createOpenDetail = ({
 
     return {
       fallback: false,
+      images,
       model: response.model,
       sources,
       text: resolveResponseText(response),
@@ -466,6 +533,7 @@ export const createOpenDetail = ({
   ): Promise<OpenDetailStreamResult> => {
     const { question } = parseOpenDetailAnswerInput(rawInput);
     const retrievedChunks = retrieveRelevantChunks(miniSearch, question);
+    const images = collectRelevantImages(retrievedChunks);
     const sources = mapSources(retrievedChunks);
     const fallback = retrievedChunks.length === 0;
     const abortController = new AbortController();
@@ -478,6 +546,10 @@ export const createOpenDetail = ({
         emitEvent(controller, {
           sources,
           type: "sources",
+        });
+        emitEvent(controller, {
+          images,
+          type: "images",
         });
 
         if (fallback) {
@@ -519,6 +591,7 @@ export const createOpenDetail = ({
 
     return Promise.resolve({
       fallback,
+      images,
       model,
       sources,
       stream: responseStream,

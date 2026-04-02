@@ -3,7 +3,7 @@
 import { ArrowRight } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import type { FormEvent, MouseEvent, RefObject } from "react";
-import { useId, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 
 import type { OpenDetailClientStatus } from "../../lib/opendetail-client/opendetail-client";
 import {
@@ -13,16 +13,16 @@ import {
 
 const DEFAULT_PLACEHOLDER = "What has Rodrigo worked on?";
 const DEFAULT_NAME = "question";
-const INPUT_WIDTH = 450;
-const SINGLE_LINE_HEIGHT = 20;
-const HORIZONTAL_CHROME = 50;
+const ERROR_GRACE_PERIOD_MS = 3000;
 const MAX_QUESTION_LENGTH = 4000;
+const PILL_GAP = 16;
+const PILL_HEIGHT = 28;
+const SINGLE_LINE_HEIGHT = 24;
 const LAYOUT_TRANSITION = {
-  damping: 32,
-  mass: 0.85,
-  stiffness: 420,
-  type: "spring",
+  duration: 0.22,
+  ease: [0.22, 1, 0.36, 1],
 } as const;
+const MOTION_LAYOUT_TRANSITION = { layout: LAYOUT_TRANSITION } as const;
 
 export interface AssistantInputRequest {
   question: string;
@@ -56,15 +56,12 @@ export interface AssistantInputProps {
   value?: string;
 }
 
-const getMeasureWidth = (width: number) =>
-  Math.max(width - HORIZONTAL_CHROME, SINGLE_LINE_HEIGHT);
-
 const isButtonTarget = (target: EventTarget | null) =>
   target instanceof Element && target.closest("button") !== null;
 
 const getButtonClasses = (isActive: boolean, isDisabled: boolean): string =>
   [
-    "flex size-5 shrink-0 items-center justify-center rounded transition-colors",
+    "flex size-7 shrink-0 items-center justify-center rounded-md transition-colors",
     isDisabled ? "cursor-not-allowed" : "cursor-pointer",
     isActive ? "bg-black text-white" : "bg-zinc-200 text-zinc-400",
   ].join(" ");
@@ -83,72 +80,68 @@ const getStatusFromRequestState = (
   return null;
 };
 
-const useSurfaceWidth = (surfaceRef: RefObject<HTMLFormElement | null>) => {
-  const [surfaceWidth, setSurfaceWidth] = useState(INPUT_WIDTH);
+const useDisplayedStatus = (status: AssistantInputStatus | null) => {
+  const [displayedStatus, setDisplayedStatus] =
+    useState<AssistantInputStatus | null>(status);
+  const errorShownAtRef = useRef<number | null>(
+    status?.variant === "error" ? Date.now() : null
+  );
+  const timeoutRef = useRef<number | null>(null);
 
-  useLayoutEffect(() => {
-    const surface = surfaceRef.current;
-
-    if (!surface) {
-      return;
-    }
-
-    const resizeObserver = new ResizeObserver(([entry]) => {
-      setSurfaceWidth(entry.contentRect.width);
-    });
-
-    setSurfaceWidth(surface.clientWidth);
-    resizeObserver.observe(surface);
-
+  useEffect(() => {
     return () => {
-      resizeObserver.disconnect();
+      if (timeoutRef.current !== null) {
+        window.clearTimeout(timeoutRef.current);
+      }
     };
-  }, [surfaceRef]);
+  }, []);
 
-  return surfaceWidth;
-};
+  useEffect(() => {
+    if (timeoutRef.current !== null) {
+      window.clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
 
-const useMeasuredMultiline = ({
-  hasValue,
-  measureRef,
-  question,
-  width,
-}: {
-  hasValue: boolean;
-  measureRef: RefObject<HTMLDivElement | null>;
-  question: string;
-  width: number;
-}) => {
-  const [isMultiline, setIsMultiline] = useState(question.trim().length > 0);
+    if (status !== null) {
+      setDisplayedStatus(status);
 
-  useLayoutEffect(() => {
-    const measure = measureRef.current;
+      if (status.variant === "error") {
+        errorShownAtRef.current = Date.now();
+      }
 
-    if (!measure) {
       return;
     }
 
-    const shouldWrap =
-      hasValue &&
-      question.length > 0 &&
-      width > 0 &&
-      measure.offsetHeight > SINGLE_LINE_HEIGHT + 1;
+    if (
+      displayedStatus?.variant === "error" &&
+      errorShownAtRef.current !== null
+    ) {
+      const elapsed = Date.now() - errorShownAtRef.current;
+      const remaining = Math.max(0, ERROR_GRACE_PERIOD_MS - elapsed);
 
-    setIsMultiline(shouldWrap);
-  }, [hasValue, measureRef, question, width]);
+      timeoutRef.current = window.setTimeout(() => {
+        setDisplayedStatus(null);
+        timeoutRef.current = null;
+      }, remaining);
 
-  return isMultiline;
+      return;
+    }
+
+    setDisplayedStatus(null);
+  }, [displayedStatus?.variant, status]);
+
+  return displayedStatus;
 };
 
-const useTextareaHeight = ({
-  isMultiline,
+const useTextareaLayout = ({
   question,
   textareaRef,
 }: {
-  isMultiline: boolean;
   question: string;
   textareaRef: RefObject<HTMLTextAreaElement | null>;
 }) => {
+  const [isMultiline, setIsMultiline] = useState(false);
+
   useLayoutEffect(() => {
     const textarea = textareaRef.current;
 
@@ -156,45 +149,77 @@ const useTextareaHeight = ({
       return;
     }
 
-    textarea.style.height = `${SINGLE_LINE_HEIGHT}px`;
+    textarea.style.height = "auto";
+    const nextHeight = Math.max(SINGLE_LINE_HEIGHT, textarea.scrollHeight);
+    textarea.style.height = `${nextHeight}px`;
+    setIsMultiline(question.length > 0 && nextHeight > SINGLE_LINE_HEIGHT + 1);
+  }, [question, textareaRef]);
 
-    if (!isMultiline && question.length === 0) {
-      return;
-    }
-
-    textarea.style.height = `${Math.max(SINGLE_LINE_HEIGHT, textarea.scrollHeight)}px`;
-  }, [isMultiline, question, textareaRef]);
+  return isMultiline;
 };
 
 const AssistantInputStatusPill = ({
+  id,
   status,
 }: {
+  id: string;
   status: AssistantInputStatus | null;
-}) => (
-  <AnimatePresence initial={false} mode="wait">
-    {status ? (
-      <motion.div
-        animate={
-          status.variant === "error"
-            ? { opacity: 1, x: [0, -2, 2, -1, 1, 0], y: 0 }
-            : { opacity: 1, x: 0, y: 0 }
-        }
-        className="shrink-0"
-        exit={{ opacity: 0, y: 1 }}
-        initial={{ opacity: 0, y: 1.5 }}
-        key={`${status.variant}-${status.label ?? ""}`}
-        transition={{
-          duration: status.variant === "error" ? 0.32 : 0.18,
-          ease: "easeOut",
-          times:
-            status.variant === "error" ? [0, 0.2, 0.4, 0.6, 0.8, 1] : undefined,
-        }}
-      >
-        <AssistantStatus label={status.label} variant={status.variant} />
-      </motion.div>
-    ) : null}
-  </AnimatePresence>
-);
+}) => {
+  const displayedStatus = useDisplayedStatus(status);
+  const hasStatus = displayedStatus !== null;
+  const isError = displayedStatus?.variant === "error";
+
+  return (
+    <motion.div
+      animate={{ height: hasStatus ? PILL_GAP + PILL_HEIGHT : 0 }}
+      className="flex w-full justify-center overflow-hidden"
+      initial={false}
+      transition={LAYOUT_TRANSITION}
+    >
+      <div className="flex h-7 items-start justify-center overflow-hidden">
+        <AnimatePresence initial={false}>
+          {displayedStatus ? (
+            <motion.div
+              animate={
+                displayedStatus.variant === "error"
+                  ? { opacity: 1, x: [0, -2, 2, -1, 1, 0], y: 0 }
+                  : { opacity: 1, x: 0, y: 0 }
+              }
+              className="shrink-0"
+              exit={
+                isError ? { opacity: 0, y: 0 } : { opacity: 0, y: -PILL_HEIGHT }
+              }
+              initial={
+                isError
+                  ? { opacity: 1, x: 0, y: 0 }
+                  : { opacity: 0, y: PILL_HEIGHT }
+              }
+              key="status-pill"
+              transition={
+                displayedStatus.variant === "error"
+                  ? {
+                      duration: 0.32,
+                      ease: "easeOut",
+                      times: [0, 0.2, 0.4, 0.6, 0.8, 1],
+                    }
+                  : {
+                      duration: 0.18,
+                      ease: [0.22, 1, 0.36, 1],
+                    }
+              }
+            >
+              <AssistantStatus
+                id={id}
+                label={displayedStatus.label}
+                variant={displayedStatus.variant}
+              />
+            </motion.div>
+          ) : null}
+        </AnimatePresence>
+      </div>
+    </motion.div>
+  );
+};
 
 const AssistantInputActionButton = ({
   isActionDisabled,
@@ -209,14 +234,14 @@ const AssistantInputActionButton = ({
     aria-label={isStopMode ? "Stop request" : "Send question"}
     className={getButtonClasses(isActive, isActionDisabled)}
     disabled={isActionDisabled}
-    layout
-    transition={LAYOUT_TRANSITION}
+    layout="position"
+    transition={MOTION_LAYOUT_TRANSITION}
     type="submit"
   >
     {isStopMode ? (
-      <span aria-hidden="true" className="size-2 rounded-[1px] bg-white" />
+      <span aria-hidden="true" className="size-3 rounded-[2px] bg-white" />
     ) : (
-      <ArrowRight aria-hidden="true" className="size-3" strokeWidth={2} />
+      <ArrowRight aria-hidden="true" className="size-4" strokeWidth={2} />
     )}
   </motion.button>
 );
@@ -240,28 +265,19 @@ export const AssistantInput = ({
 }: AssistantInputProps) => {
   const fallbackId = useId();
   const inputId = id ?? fallbackId;
+  const statusId = `${inputId}-status`;
   const isControlled = value !== undefined;
   const [internalValue, setInternalValue] = useState(defaultValue ?? "");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const surfaceRef = useRef<HTMLFormElement>(null);
-  const measureRef = useRef<HTMLDivElement>(null);
 
   const currentValue = value ?? internalValue;
   const request = { question: currentValue.trim() };
   const hasValue = request.question.length > 0;
   const resolvedStatus = status ?? getStatusFromRequestState(requestState);
-  const isStopMode = resolvedStatus !== null;
+  const isStopMode = resolvedStatus?.variant === "thinking";
   const isActionDisabled = disabled || !(isStopMode || hasValue);
-  const surfaceWidth = useSurfaceWidth(surfaceRef);
-  const isMultiline = useMeasuredMultiline({
-    hasValue,
-    measureRef,
-    question: currentValue,
-    width: surfaceWidth,
-  });
-
-  useTextareaHeight({
-    isMultiline,
+  const isMultiline = useTextareaLayout({
     question: currentValue,
     textareaRef,
   });
@@ -307,39 +323,51 @@ export const AssistantInput = ({
   };
 
   return (
-    <div className="relative flex w-full max-w-[450px] flex-col items-center">
-      <AssistantInputStatusPill status={resolvedStatus} />
+    <motion.div
+      className={[
+        "opendetail-input-root relative flex w-full max-w-[450px] flex-col items-center",
+        className ?? "",
+      ].join(" ")}
+      layout
+      transition={MOTION_LAYOUT_TRANSITION}
+    >
+      <AssistantInputStatusPill id={statusId} status={resolvedStatus} />
 
       <motion.form
         aria-busy={isStopMode || undefined}
         className={[
-          "min-h-10 w-full overflow-hidden rounded-xl bg-zinc-50 p-2.5",
-          resolvedStatus ? "mt-4" : "",
+          "min-h-12 w-full overflow-hidden rounded-xl bg-zinc-50 p-2.5",
           isMultiline
             ? "flex flex-col items-end gap-2.5"
             : "flex items-center gap-2.5",
           disabled ? "cursor-not-allowed" : "cursor-text",
-          className ?? "",
         ].join(" ")}
         data-opendetail-placeholder="assistant-input"
         layout
         onMouseDown={handleSurfaceMouseDown}
         onSubmit={handleSubmit}
         ref={surfaceRef}
-        transition={LAYOUT_TRANSITION}
+        style={{ borderRadius: 12 }}
+        transition={MOTION_LAYOUT_TRANSITION}
       >
-        <label
+        <motion.label
           className={isMultiline ? "w-full" : "min-w-0 flex-1"}
           htmlFor={inputId}
+          layout="position"
+          transition={MOTION_LAYOUT_TRANSITION}
         >
           <span className="sr-only">Ask a question</span>
           <textarea
+            aria-describedby={resolvedStatus ? statusId : undefined}
+            aria-invalid={resolvedStatus?.variant === "error" || undefined}
             autoFocus={autoFocus}
             className={[
-              "w-full resize-none overflow-hidden border-0 bg-transparent p-0 font-normal text-black text-sm leading-5 tracking-[-0.04em] outline-none placeholder:text-zinc-400",
+              "block w-full resize-none overflow-hidden border-0 bg-transparent p-0 font-normal text-base text-black leading-6 tracking-[-0.04em] outline-none placeholder:text-zinc-400",
+              isMultiline ? "" : "-translate-y-px pl-0.5",
               disabled ? "cursor-not-allowed" : "cursor-text",
             ].join(" ")}
             disabled={disabled}
+            enterKeyHint={isStopMode ? "done" : "send"}
             id={inputId}
             maxLength={maxLength}
             name={name}
@@ -354,7 +382,7 @@ export const AssistantInput = ({
             style={{ height: `${SINGLE_LINE_HEIGHT}px` }}
             value={currentValue}
           />
-        </label>
+        </motion.label>
 
         <AssistantInputActionButton
           isActionDisabled={isActionDisabled}
@@ -362,15 +390,6 @@ export const AssistantInput = ({
           isStopMode={isStopMode}
         />
       </motion.form>
-
-      <div
-        aria-hidden="true"
-        className="pointer-events-none invisible absolute top-0 left-0 whitespace-pre-wrap break-words font-normal text-sm leading-5 tracking-[-0.04em]"
-        ref={measureRef}
-        style={{ width: `${getMeasureWidth(surfaceWidth)}px` }}
-      >
-        {currentValue || "\u200B"}
-      </div>
-    </div>
+    </motion.div>
   );
 };
