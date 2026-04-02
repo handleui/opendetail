@@ -67,6 +67,7 @@ export interface AssistantSidebarProps {
   children?: ReactNode;
   className?: string;
   defaultOpen?: boolean;
+  emptyState?: ReactNode;
   hotkeyEnabled?: boolean;
   input?: ReactNode;
   inputId?: string;
@@ -92,6 +93,7 @@ export const AssistantSidebar = ({
   children,
   className,
   defaultOpen = false,
+  emptyState = "Ask the docs",
   hotkeyEnabled = true,
   input,
   inputId,
@@ -233,7 +235,7 @@ export const AssistantSidebar = ({
       placeholder={placeholder}
       requestState={requestState}
       showShellUnderlay={false}
-      size="compact"
+      size="shell"
       value={question}
     />
   );
@@ -247,7 +249,20 @@ export const AssistantSidebar = ({
         className="opendetail-sidebar__panel"
         data-opendetail-component="assistant-sidebar"
       >
-        <div className="opendetail-sidebar__body">{resolvedThread}</div>
+        <div
+          className={[
+            "opendetail-sidebar__body",
+            messages.length === 0 ? "opendetail-sidebar__body--empty" : "",
+          ]
+            .filter(Boolean)
+            .join(" ")}
+        >
+          {messages.length === 0 ? (
+            <p className="opendetail-sidebar__empty">{emptyState}</p>
+          ) : (
+            resolvedThread
+          )}
+        </div>
         <div className="opendetail-sidebar__input">{resolvedInput}</div>
       </aside>
     </div>

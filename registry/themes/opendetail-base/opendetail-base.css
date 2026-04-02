@@ -350,18 +350,25 @@
 .opendetail-sidebar {
   display: flex;
   width: 100%;
-  min-height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  overscroll-behavior: none;
 }
 
 .opendetail-sidebar__content {
   flex: 1 1 auto;
   min-width: 0;
+  height: 100dvh;
+  overflow-y: auto;
+  overscroll-behavior: none;
 }
 
 .opendetail-sidebar__panel {
   display: flex;
+  flex: none;
   flex-direction: column;
   width: 0;
+  height: 100dvh;
   min-width: 0;
   overflow: hidden;
   background: var(--opendetail-color-background);
@@ -384,8 +391,15 @@
 
 .opendetail-sidebar__body {
   flex: 1;
+  min-height: 0;
   padding: var(--opendetail-sidebar-padding);
   overflow-y: auto;
+}
+
+.opendetail-sidebar__body--empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .opendetail-sidebar__thread {
@@ -394,12 +408,17 @@
   padding-bottom: 0;
 }
 
+.opendetail-sidebar__empty {
+  font-size: 1.125rem;
+  line-height: 1.5rem;
+  color: var(--opendetail-color-meta);
+  letter-spacing: var(--opendetail-text-md-letter-spacing);
+}
+
 .opendetail-sidebar__input {
   display: flex;
   justify-content: center;
   padding: var(--opendetail-sidebar-padding);
-  border-top: 1px solid
-    color-mix(in srgb, var(--opendetail-color-border) 88%, white);
 }
 
 .opendetail-user-message {

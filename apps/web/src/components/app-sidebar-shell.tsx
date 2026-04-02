@@ -1,20 +1,20 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { AssistantSidebar } from "../../../../registry/blocks/assistant-sidebar/assistant-sidebar";
 import { useOpenDetail } from "../../../../registry/hooks/use-opendetail/use-opendetail";
 
-export const DocsAssistantSidebar = () => {
+export const AppSidebarShell = ({ children }: { children: ReactNode }) => {
   const { messages, question, setQuestion, status, stop, submit } =
     useOpenDetail({
       persistence: {
-        key: "opendetail-docs-sidebar",
+        key: "opendetail-site-sidebar",
       },
     });
 
   return (
     <AssistantSidebar
-      inputId="opendetail-docs-question"
-      label="Ask the docs"
+      inputId="opendetail-site-question"
       messages={messages}
       onQuestionChange={setQuestion}
       onStop={stop}
@@ -22,7 +22,8 @@ export const DocsAssistantSidebar = () => {
       placeholder="Ask about these docs"
       question={question}
       requestState={status}
-      shortcutLabel="Cmd/Ctrl J"
-    />
+    >
+      {children}
+    </AssistantSidebar>
   );
 };

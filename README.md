@@ -5,7 +5,7 @@ Monorepo for `opendetail`, a thin integration layer on top of the OpenAI Respons
 ## Workspace
 
 - `packages/opendetail`: core runtime, setup CLI, and thin framework adapters like `opendetail/next`
-- `apps/web`: public Next.js site scaffold for docs, demos, and hosted registry JSON
+- `apps/web`: the public Next.js app for marketing, docs, demos, and hosted registry JSON
 - `registry/`: source of truth for shadcn-compatible transport, hook, style, and UI assets
 - `registry.json`: root registry entrypoint for shadcn CLI builds
 - Turborepo remains at the root for `build`, `dev`, `check-types`, and `test`
@@ -38,7 +38,7 @@ bun run registry:build
 
 ## Local Setup
 
-For the demo app in `apps/web`, use the app directory as the env source of truth.
+For the site app in `apps/web`, use the app directory as the env source of truth.
 
 ```sh
 cp apps/web/.env.example apps/web/.env.local

@@ -1,4 +1,0 @@
-version = 1
-include = ["content/docs/**/*.md", "content/docs/**/*.mdx"]
-exclude = []
-base_path = "/docs"

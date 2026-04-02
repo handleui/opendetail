@@ -1,10 +1,11 @@
-This app was scaffolded with the official [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app) CLI.
+This is the single public app for `opendetail`.
 
 ## Role
 
-- Public website for `opendetail`
-- Future home for docs and demos
-- Future host for generated shadcn registry JSON at `public/r`
+- Marketing site at `/`
+- Documentation site at `/docs`
+- Demo surface at `/demo`
+- Host for generated shadcn registry JSON at `public/r`
 - Not the place for shared assistant runtime logic
 
 The backend and adapters stay in `packages/opendetail`. Registry source files live in `registry`.
@@ -19,7 +20,7 @@ bun run check-types
 
 ## Local Setup
 
-`apps/web` is the env source of truth for the demo app.
+`apps/web` is the env source of truth for the public site.
 
 ```sh
 cp apps/web/.env.example apps/web/.env.local

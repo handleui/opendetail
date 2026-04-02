@@ -6,7 +6,7 @@ const withMDX = createMDX();
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
-  allowedDevOrigins: ["opendetail.localhost", "opendetail.docs.localhost"],
+  allowedDevOrigins: ["opendetail.localhost"],
   serverExternalPackages: ["@takumi-rs/image-response"],
   turbopack: {
     root: path.join(process.cwd(), "../.."),

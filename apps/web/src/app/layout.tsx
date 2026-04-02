@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
-import { RootProvider } from "fumadocs-ui/provider/next";
 import { Geist } from "next/font/google";
 import type { ReactNode } from "react";
-import { DocsAssistantSidebar } from "@/components/docs-assistant-sidebar";
+import { AppSidebarShell } from "@/components/app-sidebar-shell";
 import "./globals.css";
 
 const geist = Geist({
@@ -36,12 +35,11 @@ export default function RootLayout({
   children: ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geist.variable} bg-white font-sans text-black antialiased [--font-sans:var(--font-geist)]`}
       >
-        <RootProvider>{children}</RootProvider>
-        <DocsAssistantSidebar />
+        <AppSidebarShell>{children}</AppSidebarShell>
       </body>
     </html>
   );

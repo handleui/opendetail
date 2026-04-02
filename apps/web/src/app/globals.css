@@ -6,7 +6,15 @@
 @source "../../../../registry";
 
 html {
+  height: 100%;
   scrollbar-gutter: stable;
+  overscroll-behavior: none;
+}
+
+body {
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
 }
 
 html > body[data-scroll-locked] {
