@@ -2,7 +2,7 @@
 
 import { ArrowRight } from "lucide-react";
 import { motion } from "motion/react";
-import type { FormEvent, KeyboardEvent, MouseEvent, RefObject } from "react";
+import type { FormEvent, KeyboardEvent, MouseEvent } from "react";
 import { useLayoutEffect, useRef, useState } from "react";
 
 import type { OpenDetailClientStatus } from "../../lib/opendetail-client/opendetail-client";
@@ -10,7 +10,11 @@ import type { OpenDetailClientStatus } from "../../lib/opendetail-client/opendet
 const DEFAULT_PLACEHOLDER = "What has Rodrigo worked on?";
 const DEFAULT_NAME = "question";
 const MAX_QUESTION_LENGTH = 4000;
-const SINGLE_LINE_HEIGHT = 24;
+const DEFAULT_MAX_ROWS = 6;
+const TEXTAREA_LINE_HEIGHT = 24;
+const TEXTAREA_VERTICAL_PADDING = 8;
+const SINGLE_LINE_HEIGHT = TEXTAREA_LINE_HEIGHT + TEXTAREA_VERTICAL_PADDING;
+const SCROLL_TOLERANCE = 1;
 const LAYOUT_TRANSITION = {
   duration: 0.22,
   ease: [0.22, 1, 0.36, 1],
@@ -38,6 +42,7 @@ export interface AssistantInputProps {
   disabled?: boolean;
   id?: string;
   maxLength?: number;
+  maxRows?: number;
   name?: string;
   onStop?: () => void;
   onSubmit?: SubmitHandler;
@@ -64,7 +69,7 @@ const getRootClassName = ({
     size === "shell"
       ? "opendetail-input-root--shell"
       : "opendetail-input-root--compact",
-    "relative flex w-full flex-col items-center",
+    "relative isolate flex w-full flex-col items-center",
     className,
   ]
     .filter(Boolean)
@@ -75,37 +80,28 @@ const isButtonTarget = (target: EventTarget | null) =>
 
 const getButtonClasses = (isActive: boolean, isDisabled: boolean): string =>
   [
-    "flex size-7 shrink-0 items-center justify-center rounded-md transition-colors",
-    isDisabled ? "cursor-not-allowed" : "cursor-pointer",
-    isActive ? "bg-black text-white" : "bg-zinc-200 text-zinc-400",
+    "opendetail-input__action",
+    isActive ? "opendetail-input__action--active" : "",
+    isDisabled ? "opendetail-input__action--disabled" : "",
   ].join(" ");
 
 const getInputId = ({ id, name }: { id?: string; name: string }): string =>
   id ?? `opendetail-input-${name}`;
 
-const useTextareaLayout = ({
-  question,
-  textareaRef,
-}: {
-  question: string;
-  textareaRef: RefObject<HTMLTextAreaElement | null>;
-}) => {
-  const [isMultiline, setIsMultiline] = useState(false);
+const getTextareaMaxHeight = (maxRows: number): number =>
+  Math.max(1, maxRows) * TEXTAREA_LINE_HEIGHT + TEXTAREA_VERTICAL_PADDING;
 
-  useLayoutEffect(() => {
-    const textarea = textareaRef.current;
+const getTextareaScrollState = (textarea: HTMLTextAreaElement) => {
+  const canScrollUp = textarea.scrollTop > SCROLL_TOLERANCE;
+  const canScrollDown =
+    textarea.scrollTop + textarea.clientHeight <
+    textarea.scrollHeight - SCROLL_TOLERANCE;
 
-    if (!textarea) {
-      return;
-    }
-
-    textarea.style.height = "auto";
-    const nextHeight = Math.max(SINGLE_LINE_HEIGHT, textarea.scrollHeight);
-    textarea.style.height = `${nextHeight}px`;
-    setIsMultiline(question.length > 0 && nextHeight > SINGLE_LINE_HEIGHT + 1);
-  }, [question, textareaRef]);
-
-  return isMultiline;
+  return {
+    canScrollDown,
+    canScrollUp,
+    isScrollable: canScrollUp || canScrollDown,
+  };
 };
 
 const AssistantInputActionButton = ({
@@ -126,7 +122,7 @@ const AssistantInputActionButton = ({
     type="submit"
   >
     {isStopMode ? (
-      <span aria-hidden="true" className="size-3 rounded-[2px] bg-white" />
+      <span aria-hidden="true" className="size-3 rounded-[2px] bg-current" />
     ) : (
       <ArrowRight aria-hidden="true" className="size-4" strokeWidth={2} />
     )}
@@ -140,6 +136,7 @@ export const AssistantInput = ({
   disabled = false,
   id,
   maxLength = MAX_QUESTION_LENGTH,
+  maxRows = DEFAULT_MAX_ROWS,
   name = DEFAULT_NAME,
   onStop,
   onSubmit,
@@ -153,6 +150,12 @@ export const AssistantInput = ({
   const inputId = getInputId({ id, name });
   const isControlled = value !== undefined;
   const [internalValue, setInternalValue] = useState(defaultValue ?? "");
+  const [layoutState, setLayoutState] = useState({
+    canScrollDown: false,
+    canScrollUp: false,
+    isMultiline: false,
+    isScrollable: false,
+  });
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const surfaceRef = useRef<HTMLFormElement>(null);
 
@@ -161,10 +164,79 @@ export const AssistantInput = ({
   const hasValue = request.question.length > 0;
   const isStopMode = requestState === "pending" || requestState === "streaming";
   const isActionDisabled = disabled || !(isStopMode || hasValue);
-  const isMultiline = useTextareaLayout({
-    question: currentValue,
-    textareaRef,
-  });
+  const { canScrollDown, canScrollUp, isMultiline } = layoutState;
+
+  useLayoutEffect(() => {
+    const textarea = textareaRef.current;
+
+    if (!textarea) {
+      return;
+    }
+
+    const syncLayoutState = () => {
+      textarea.style.height = "auto";
+
+      const maxHeight = getTextareaMaxHeight(maxRows);
+      const nextHeight = Math.min(
+        Math.max(SINGLE_LINE_HEIGHT, textarea.scrollHeight),
+        maxHeight
+      );
+
+      textarea.style.height = `${nextHeight}px`;
+
+      const nextScrollState = getTextareaScrollState(textarea);
+      textarea.style.overflowY = nextScrollState.isScrollable
+        ? "auto"
+        : "hidden";
+
+      setLayoutState({
+        ...nextScrollState,
+        isMultiline:
+          currentValue.length > 0 && nextHeight > SINGLE_LINE_HEIGHT + 1,
+      });
+    };
+
+    syncLayoutState();
+
+    if (typeof ResizeObserver === "undefined") {
+      return;
+    }
+
+    const resizeObserver = new ResizeObserver(() => {
+      syncLayoutState();
+    });
+
+    resizeObserver.observe(textarea);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [currentValue, maxRows]);
+
+  const handleScroll = () => {
+    const textarea = textareaRef.current;
+
+    if (!textarea) {
+      return;
+    }
+
+    setLayoutState((currentState) => {
+      const nextScrollState = getTextareaScrollState(textarea);
+
+      if (
+        currentState.canScrollDown === nextScrollState.canScrollDown &&
+        currentState.canScrollUp === nextScrollState.canScrollUp &&
+        currentState.isScrollable === nextScrollState.isScrollable
+      ) {
+        return currentState;
+      }
+
+      return {
+        ...currentState,
+        ...nextScrollState,
+      };
+    });
+  };
 
   const handleChange = (nextValue: string) => {
     if (!isControlled) {
@@ -227,21 +299,23 @@ export const AssistantInput = ({
       layout
       transition={MOTION_LAYOUT_TRANSITION}
     >
+      {size === "shell" ? (
+        <span aria-hidden="true" className="opendetail-input__underlay" />
+      ) : null}
       <motion.form
         aria-busy={isStopMode || undefined}
         className={[
-          "min-h-12 w-full overflow-hidden rounded-xl bg-zinc-50 p-2.5",
-          isMultiline
-            ? "flex flex-col items-end gap-2.5"
-            : "flex items-center gap-2.5",
-          disabled ? "cursor-not-allowed" : "cursor-text",
+          "opendetail-input__surface",
+          isMultiline ? "opendetail-input__surface--multiline" : "",
+          disabled
+            ? "opendetail-input__surface--disabled"
+            : "opendetail-input__surface--interactive",
         ].join(" ")}
         data-opendetail-placeholder="assistant-input"
         layout
         onMouseDown={handleSurfaceMouseDown}
         onSubmit={handleSubmit}
         ref={surfaceRef}
-        style={{ borderRadius: 12 }}
         transition={MOTION_LAYOUT_TRANSITION}
       >
         <motion.label
@@ -251,30 +325,53 @@ export const AssistantInput = ({
           transition={MOTION_LAYOUT_TRANSITION}
         >
           <span className="sr-only">Ask a question</span>
-          <textarea
-            autoFocus={autoFocus}
-            className={[
-              "block w-full resize-none overflow-hidden border-0 bg-transparent p-0 font-normal text-base text-black leading-6 tracking-[-0.04em] outline-none placeholder:text-zinc-400",
-              isMultiline ? "" : "-translate-y-px pl-0.5",
-              disabled ? "cursor-not-allowed" : "cursor-text",
-            ].join(" ")}
-            disabled={disabled}
-            enterKeyHint={isStopMode ? "done" : "send"}
-            id={inputId}
-            maxLength={maxLength}
-            name={name}
-            onChange={(event) => {
-              handleChange(event.target.value);
-            }}
-            onKeyDown={handleTextareaKeyDown}
-            placeholder={placeholder}
-            readOnly={readOnly}
-            ref={textareaRef}
-            rows={1}
-            spellCheck={false}
-            style={{ height: `${SINGLE_LINE_HEIGHT}px` }}
-            value={currentValue}
-          />
+          <span className="opendetail-input__field">
+            <textarea
+              autoFocus={autoFocus}
+              className={[
+                "opendetail-input__textarea",
+                isMultiline ? "" : "opendetail-input__textarea--single-line",
+              ].join(" ")}
+              disabled={disabled}
+              enterKeyHint={isStopMode ? "done" : "send"}
+              id={inputId}
+              maxLength={maxLength}
+              name={name}
+              onChange={(event) => {
+                handleChange(event.target.value);
+              }}
+              onKeyDown={handleTextareaKeyDown}
+              onScroll={handleScroll}
+              placeholder={placeholder}
+              readOnly={readOnly}
+              ref={textareaRef}
+              rows={1}
+              spellCheck={false}
+              style={{
+                height: `${SINGLE_LINE_HEIGHT}px`,
+                maxHeight: `${getTextareaMaxHeight(maxRows)}px`,
+              }}
+              value={currentValue}
+            />
+            <span
+              aria-hidden="true"
+              className={[
+                "opendetail-input__fade opendetail-input__fade--top",
+                canScrollUp ? "opendetail-input__fade--visible" : "",
+              ]
+                .filter(Boolean)
+                .join(" ")}
+            />
+            <span
+              aria-hidden="true"
+              className={[
+                "opendetail-input__fade opendetail-input__fade--bottom",
+                canScrollDown ? "opendetail-input__fade--visible" : "",
+              ]
+                .filter(Boolean)
+                .join(" ")}
+            />
+          </span>
         </motion.label>
 
         <AssistantInputActionButton

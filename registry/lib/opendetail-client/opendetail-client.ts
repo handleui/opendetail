@@ -43,6 +43,7 @@ export interface OpenDetailClientRequest {
 export interface OpenDetailClientSource {
   headings: string[];
   id: string;
+  kind?: "local" | "remote";
   title: string;
   url: string;
 }
@@ -137,6 +138,11 @@ const isStringArray = (value: unknown): value is string[] =>
 
 const isNullableString = (value: unknown): value is string | null =>
   value === null || typeof value === "string";
+
+const isSourceKind = (
+  value: unknown
+): value is "local" | "remote" | undefined =>
+  value === undefined || value === "local" || value === "remote";
 
 const resolveRequestHeaders = (
   headers: OpenDetailTransportOptions["headers"]
@@ -236,6 +242,7 @@ const isSource = (value: unknown): value is OpenDetailClientSource =>
   isRecord(value) &&
   isStringArray(value.headings) &&
   typeof value.id === "string" &&
+  isSourceKind(value.kind) &&
   typeof value.title === "string" &&
   typeof value.url === "string";
 

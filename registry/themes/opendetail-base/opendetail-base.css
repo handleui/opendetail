@@ -4,16 +4,31 @@
   --opendetail-color-badge-background: #e0eeff;
   --opendetail-color-badge-foreground: #3c57dc;
   --opendetail-color-border: #ececec;
+  --opendetail-color-error: #dc2626;
   --opendetail-color-foreground: #080808;
   --opendetail-color-hover: #f3f3f3;
+  --opendetail-color-input-action-background: #e4e4e7;
+  --opendetail-color-input-action-foreground: #a1a1aa;
   --opendetail-color-meta: #a4a4a4;
+  --opendetail-color-overlay: rgb(255 255 255 / 0.72);
   --opendetail-color-placeholder: #e8e8e8;
+  --opendetail-color-placeholder-foreground: #a1a1aa;
   --opendetail-color-surface: #f9f9f9;
+  --opendetail-input-action-size: 1.75rem;
   --opendetail-input-width-compact: 28.125rem;
   --opendetail-input-width-shell: 34.375rem;
+  --opendetail-input-fade-size: 0.625rem;
+  --opendetail-input-surface-min-height: 3rem;
+  --opendetail-input-surface-padding: 0.625rem;
   --opendetail-radius-badge: 0.125rem;
   --opendetail-radius-button: 0.25rem;
+  --opendetail-radius-control: 0.5rem;
   --opendetail-radius-panel: 0.75rem;
+  --opendetail-modal-close-offset: 1.5rem;
+  --opendetail-modal-overlay-blur: 16px;
+  --opendetail-modal-padding-inline: 1.5rem;
+  --opendetail-modal-thread-padding-bottom: 8rem;
+  --opendetail-modal-thread-padding-top: 5.5rem;
   --opendetail-shell-max-width: 34.375rem;
   --opendetail-shell-min-height: 56.375rem;
   --opendetail-shell-padding-bottom: 2rem;
@@ -39,6 +54,150 @@
   --opendetail-input-current-width: var(--opendetail-input-width-shell);
 }
 
+.opendetail-input__underlay {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  bottom: calc(var(--opendetail-space-lg) * -1);
+  z-index: 0;
+  pointer-events: none;
+  background: var(--opendetail-color-background);
+}
+
+.opendetail-input__surface {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  gap: var(--opendetail-space-sm);
+  align-items: center;
+  width: 100%;
+  min-height: var(--opendetail-input-surface-min-height);
+  padding: var(--opendetail-input-surface-padding);
+  overflow: hidden;
+  background: var(--opendetail-color-surface);
+  border-radius: var(--opendetail-radius-panel);
+}
+
+.opendetail-input__surface--multiline {
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.opendetail-input__surface--interactive {
+  cursor: text;
+}
+
+.opendetail-input__surface--disabled {
+  cursor: not-allowed;
+}
+
+.opendetail-input__field {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
+.opendetail-input__textarea {
+  display: block;
+  width: 100%;
+  padding-block: 0.25rem;
+  padding-inline: 0;
+  -ms-overflow-style: none;
+  overscroll-behavior: contain;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  color: var(--opendetail-color-foreground);
+  letter-spacing: var(--opendetail-text-md-letter-spacing);
+  resize: none;
+  outline: none;
+  scrollbar-width: none;
+  background: transparent;
+  border: 0;
+}
+
+.opendetail-input__textarea::placeholder {
+  color: var(--opendetail-color-placeholder-foreground);
+}
+
+.opendetail-input__textarea--single-line {
+  padding-left: 0.125rem;
+  transform: translateY(-1px);
+}
+
+.opendetail-input__textarea:disabled {
+  cursor: not-allowed;
+}
+
+.opendetail-input__textarea::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.opendetail-input__fade {
+  position: absolute;
+  right: 0;
+  left: 0;
+  z-index: 1;
+  height: var(--opendetail-input-fade-size);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 160ms ease;
+}
+
+.opendetail-input__fade--visible {
+  opacity: 1;
+}
+
+.opendetail-input__fade--top {
+  top: 0;
+  background: linear-gradient(
+    to bottom,
+    var(--opendetail-color-surface),
+    rgb(249 249 249 / 0)
+  );
+}
+
+.opendetail-input__fade--bottom {
+  bottom: 0;
+  background: linear-gradient(
+    to top,
+    var(--opendetail-color-surface),
+    rgb(249 249 249 / 0)
+  );
+}
+
+.opendetail-input__action {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--opendetail-input-action-size);
+  height: var(--opendetail-input-action-size);
+  color: var(--opendetail-color-input-action-foreground);
+  cursor: pointer;
+  background: var(--opendetail-color-input-action-background);
+  border: 0;
+  border-radius: var(--opendetail-radius-control);
+  transition:
+    background-color 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
+}
+
+.opendetail-input__action--active {
+  color: var(--opendetail-color-background);
+  background: var(--opendetail-color-foreground);
+}
+
+.opendetail-input__action--disabled {
+  cursor: not-allowed;
+}
+
+.opendetail-input__action:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
 .opendetail-shell {
   display: flex;
   flex-direction: column;
@@ -60,20 +219,131 @@
   width: 100%;
 }
 
+.opendetail-shell__thread {
+  align-items: flex-start;
+}
+
+.opendetail-shell__input {
+  position: sticky;
+  bottom: var(--opendetail-shell-padding-bottom);
+  z-index: 10;
+  flex-shrink: 0;
+  margin-top: auto;
+}
+
 .opendetail-thread {
   display: flex;
   flex-direction: column;
   gap: var(--opendetail-space-lg);
   width: calc(var(--opendetail-shell-max-width) - 0.0625rem);
+  padding-bottom: var(--opendetail-space-lg);
 }
 
 .opendetail-thread__item {
   width: 100%;
 }
 
+.opendetail-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+}
+
+.opendetail-modal__scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: var(--opendetail-color-overlay);
+  opacity: 0;
+  backdrop-filter: blur(var(--opendetail-modal-overlay-blur));
+  transition: opacity 180ms ease;
+}
+
+.opendetail-modal__scrim--visible {
+  pointer-events: auto;
+  opacity: 1;
+}
+
+.opendetail-modal__thread-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  padding: var(--opendetail-modal-thread-padding-top)
+    var(--opendetail-modal-padding-inline)
+    var(--opendetail-modal-thread-padding-bottom);
+  overflow-y: auto;
+  pointer-events: auto;
+}
+
+.opendetail-modal__thread {
+  width: 100%;
+  max-width: calc(var(--opendetail-shell-max-width) - 0.0625rem);
+  margin-inline: auto;
+}
+
+.opendetail-modal__input-layer {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 40;
+  display: flex;
+  justify-content: center;
+  padding: 0 var(--opendetail-modal-padding-inline)
+    var(--opendetail-shell-padding-bottom);
+  pointer-events: auto;
+}
+
+.opendetail-modal__close {
+  position: absolute;
+  top: var(--opendetail-modal-close-offset);
+  right: var(--opendetail-modal-close-offset);
+  z-index: 35;
+  pointer-events: auto;
+}
+
+.opendetail-modal__close-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.25rem;
+  padding-inline: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1;
+  color: color-mix(in srgb, var(--opendetail-color-foreground) 65%, white);
+  letter-spacing: -0.03em;
+  cursor: pointer;
+  background: var(--opendetail-color-background);
+  border: 1px solid
+    color-mix(in srgb, var(--opendetail-color-foreground) 10%, white);
+  border-radius: 999px;
+  box-shadow: 0 12px 30px rgb(8 8 8 / 0.06);
+  transition:
+    color 160ms ease,
+    background-color 160ms ease,
+    transform 160ms ease;
+}
+
+.opendetail-modal__close-button:hover,
+.opendetail-modal__close-button:focus-visible {
+  color: var(--opendetail-color-foreground);
+  outline: none;
+  background: color-mix(
+    in srgb,
+    var(--opendetail-color-background) 92%,
+    var(--opendetail-color-hover)
+  );
+}
+
+.opendetail-modal__close-button:active {
+  transform: scale(0.98);
+}
+
 .opendetail-user-message {
   display: flex;
-  gap: 1.25rem;
+  gap: 1rem;
   align-items: flex-start;
   width: 100%;
   color: var(--opendetail-color-meta);
@@ -118,7 +388,7 @@
 }
 
 .opendetail-status--error {
-  color: #dc2626;
+  color: var(--opendetail-color-error);
 }
 
 .opendetail-status__label {
@@ -157,6 +427,17 @@
   margin-block: 0;
 }
 
+.opendetail-response-markdown h1,
+.opendetail-response-markdown h2,
+.opendetail-response-markdown h3,
+.opendetail-response-markdown h4,
+.opendetail-response-markdown h5,
+.opendetail-response-markdown h6 {
+  margin: 0;
+  font-weight: 500;
+  letter-spacing: calc(var(--opendetail-text-md-letter-spacing) * 0.5);
+}
+
 .opendetail-response-markdown ul,
 .opendetail-response-markdown ol {
   padding-left: 1.25rem;
@@ -171,8 +452,51 @@
   margin-top: var(--opendetail-space-md);
 }
 
+.opendetail-response-markdown p + h1,
+.opendetail-response-markdown p + h2,
+.opendetail-response-markdown p + h3,
+.opendetail-response-markdown p + h4,
+.opendetail-response-markdown p + h5,
+.opendetail-response-markdown p + h6,
+.opendetail-response-markdown ul + h1,
+.opendetail-response-markdown ul + h2,
+.opendetail-response-markdown ul + h3,
+.opendetail-response-markdown ul + h4,
+.opendetail-response-markdown ul + h5,
+.opendetail-response-markdown ul + h6,
+.opendetail-response-markdown ol + h1,
+.opendetail-response-markdown ol + h2,
+.opendetail-response-markdown ol + h3,
+.opendetail-response-markdown ol + h4,
+.opendetail-response-markdown ol + h5,
+.opendetail-response-markdown ol + h6,
+.opendetail-response-markdown h1 + p,
+.opendetail-response-markdown h2 + p,
+.opendetail-response-markdown h3 + p,
+.opendetail-response-markdown h4 + p,
+.opendetail-response-markdown h5 + p,
+.opendetail-response-markdown h6 + p,
+.opendetail-response-markdown h1 + ul,
+.opendetail-response-markdown h2 + ul,
+.opendetail-response-markdown h3 + ul,
+.opendetail-response-markdown h4 + ul,
+.opendetail-response-markdown h5 + ul,
+.opendetail-response-markdown h6 + ul,
+.opendetail-response-markdown h1 + ol,
+.opendetail-response-markdown h2 + ol,
+.opendetail-response-markdown h3 + ol,
+.opendetail-response-markdown h4 + ol,
+.opendetail-response-markdown h5 + ol,
+.opendetail-response-markdown h6 + ol {
+  margin-top: var(--opendetail-space-md);
+}
+
 .opendetail-response-markdown li + li {
   margin-top: 0.375rem;
+}
+
+.opendetail-response-markdown li > p {
+  margin: 0;
 }
 
 .opendetail-response-markdown a {
@@ -180,10 +504,39 @@
   text-underline-offset: 0.18em;
 }
 
+.opendetail-response-markdown code {
+  padding-inline: 0.25rem;
+  font-size: 0.92em;
+  background: rgb(8 8 8 / 0.05);
+  border-radius: 0.35rem;
+}
+
+.opendetail-response-markdown pre {
+  padding: 0.875rem 1rem;
+  margin: 0;
+  overflow-x: auto;
+  background: rgb(8 8 8 / 0.04);
+  border-radius: 0.875rem;
+}
+
+.opendetail-response-markdown pre code {
+  padding: 0;
+  background: transparent;
+}
+
+.opendetail-response-markdown blockquote {
+  padding-left: 0.875rem;
+  margin: 0;
+  color: var(--opendetail-color-meta);
+  border-left: 2px solid rgb(8 8 8 / 0.12);
+}
+
 .opendetail-response__image {
   width: 100%;
   min-height: 15.875rem;
+  overflow: hidden;
   background: var(--opendetail-color-placeholder);
+  border-radius: 12px;
 }
 
 .opendetail-response__image img {
@@ -194,12 +547,47 @@
 }
 
 .opendetail-citation-marker {
-  display: inline-block;
-  width: 0.5rem;
-  height: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0.75rem;
+  height: 0.75rem;
   margin-inline: 0.125rem;
   vertical-align: middle;
-  background: var(--opendetail-color-meta);
+  color: var(--opendetail-color-meta);
+}
+
+.opendetail-citation-marker--local {
+  transform: translateY(0.16em);
+}
+
+.opendetail-citation-marker--remote {
+  overflow: hidden;
+  background: white;
+  border: 1px solid
+    color-mix(in srgb, var(--opendetail-color-border) 78%, white);
+  border-radius: 0.1875rem;
+}
+
+.opendetail-citation-marker__number {
+  font-size: 0.625rem;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.opendetail-citation-marker__favicon {
+  display: block;
+  width: 0.75rem;
+  height: 0.75rem;
+  object-fit: cover;
+}
+
+.opendetail-citation-marker__fallback {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 0.75rem;
+  height: 0.75rem;
 }
 
 .opendetail-response__footer {
@@ -220,96 +608,12 @@
   letter-spacing: -0.04em;
 }
 
-.opendetail-meta-item__icon {
-  display: inline-flex;
-  flex: none;
-  width: 0.625rem;
-  height: 0.625rem;
-  background: var(--opendetail-color-placeholder);
-}
-
 .opendetail-sources {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.opendetail-sources__trigger {
   display: inline-flex;
-  gap: var(--opendetail-space-sm);
-  align-items: center;
-  padding: 0;
-  margin: 0;
-  color: inherit;
-  cursor: pointer;
-  background: transparent;
-  border: 0;
-  border-radius: 999px;
-  transition:
-    color 160ms ease,
-    opacity 160ms ease;
 }
 
-.opendetail-sources__trigger:hover,
-.opendetail-sources__trigger:focus-visible {
-  color: var(--opendetail-color-foreground);
-  outline: none;
-  opacity: 1;
-}
-
-.opendetail-sources__trigger:focus-visible {
-  box-shadow: 0 0 0 2px rgb(from var(--opendetail-color-foreground) r g b / 14%);
-}
-
-.opendetail-sources__trigger[data-disabled="true"] {
-  cursor: default;
-}
-
-.opendetail-sources__trigger:hover .opendetail-meta-item__icon,
-.opendetail-sources__trigger:focus-visible .opendetail-meta-item__icon,
-.opendetail-sources__trigger[data-state="open"] .opendetail-meta-item__icon {
-  background: color-mix(
-    in srgb,
-    var(--opendetail-color-meta) 65%,
-    var(--opendetail-color-placeholder)
-  );
-}
-
-.opendetail-sources__panel {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  width: 100%;
-  overflow: hidden;
-}
-
-.opendetail-sources__item {
-  list-style: none;
-}
-
-.opendetail-sources__link {
-  display: block;
-  padding: 0.75rem;
-  font-size: 0.875rem;
-  line-height: 1.125rem;
-  color: var(--opendetail-color-foreground);
-  letter-spacing: -0.03em;
-  text-decoration: none;
-  background: var(--opendetail-color-surface);
-  border: 1px solid transparent;
-  border-radius: var(--opendetail-radius-panel);
-  transition:
-    background-color 160ms ease,
-    border-color 160ms ease,
-    transform 160ms ease;
-}
-
-.opendetail-sources__link:hover,
-.opendetail-sources__link:focus-visible {
-  outline: none;
-  background: var(--opendetail-color-hover);
-  border-color: var(--opendetail-color-border);
-  transform: translateY(-1px);
+.opendetail-meta-item__arrow {
+  flex: none;
 }
 
 @keyframes opendetail-spin {
@@ -320,6 +624,9 @@
 
 @media (max-width: 40rem) {
   :root {
+    --opendetail-modal-close-offset: 1rem;
+    --opendetail-modal-padding-inline: 1rem;
+    --opendetail-modal-thread-padding-top: 4.75rem;
     --opendetail-shell-padding-top: 2rem;
   }
 

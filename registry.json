@@ -98,6 +98,7 @@
       "title": "Assistant Response",
       "description": "Assistant answer primitive with inline loading and error states, optional image, markdown slot content, and response metadata.",
       "categories": ["opendetail", "ui"],
+      "dependencies": ["streamdown@^2.5.0"],
       "registryDependencies": [
         "assistant-status",
         "assistant-sources",
@@ -178,10 +179,16 @@
       "name": "assistant-modal",
       "type": "registry:block",
       "title": "Assistant Modal",
-      "description": "Thin modal wrapper around the assistant shell composition.",
-      "docs": "Uses the shell directly and stays intentionally unopinionated in this pass.",
+      "description": "Canonical full-page assistant overlay with a floating input and thread layer.",
+      "docs": "Composes the input, user-message, response, and thread primitives into the installable website-style overlay shell.",
       "categories": ["opendetail", "block"],
-      "registryDependencies": ["assistant-shell", "opendetail-base"],
+      "registryDependencies": [
+        "assistant-input",
+        "assistant-response",
+        "assistant-thread",
+        "assistant-user-message",
+        "opendetail-base"
+      ],
       "files": [
         {
           "path": "registry/blocks/assistant-modal/assistant-modal.tsx",

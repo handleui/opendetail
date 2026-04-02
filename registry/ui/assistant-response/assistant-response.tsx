@@ -1,4 +1,6 @@
-import { Fragment, type ReactNode } from "react";
+import { Cloud, type LucideIcon } from "lucide-react";
+import type { ReactNode } from "react";
+import { type AllowedTags, Streamdown } from "streamdown";
 
 import {
   type AssistantSourceItem,
@@ -9,6 +11,10 @@ import { AssistantStatus } from "../assistant-status/assistant-status";
 const IMAGE_WIDTH = 549;
 const IMAGE_HEIGHT = 254;
 const CITATION_REGEX = /\[(\d+)\]/gu;
+const CITATION_TAG = "citation";
+const ALLOWED_MARKDOWN_TAGS: AllowedTags = {
+  [CITATION_TAG]: ["ref"],
+};
 
 export interface AssistantResponseImage {
   alt?: string;
@@ -37,57 +43,113 @@ export interface AssistantResponseProps {
 const getClassName = (className?: string): string =>
   ["opendetail-response", className].filter(Boolean).join(" ");
 
-const renderInlineCitationMarkers = (text: string): ReactNode => {
-  const matches = [...text.matchAll(CITATION_REGEX)];
+const getSourceForCitation = ({
+  citationNumber,
+  sources,
+}: {
+  citationNumber: string;
+  sources: AssistantSourceItem[];
+}): AssistantSourceItem | null => {
+  const matchedSource =
+    sources.find((source) => source.id === citationNumber) ??
+    sources[Number(citationNumber) - 1];
 
-  if (matches.length === 0) {
-    return text;
-  }
+  return matchedSource ?? null;
+};
 
-  const nodes: ReactNode[] = [];
-  let lastIndex = 0;
+const getCitationTitle = ({
+  citationNumber,
+  source,
+}: {
+  citationNumber: string;
+  source: AssistantSourceItem | null;
+}): string =>
+  source?.title.trim().length
+    ? `Citation ${citationNumber}: ${source.title}`
+    : `Citation ${citationNumber}`;
 
-  for (const match of matches) {
-    const matchedText = match[0];
-    const citationNumber = match[1];
-    const matchIndex = match.index ?? 0;
+const getRemoteFaviconUrl = (source: AssistantSourceItem): string | null => {
+  try {
+    const url = new URL(source.url);
 
-    if (matchIndex > lastIndex) {
-      nodes.push(
-        <Fragment key={`text-${lastIndex}`}>
-          {text.slice(lastIndex, matchIndex)}
-        </Fragment>
-      );
+    if (url.protocol !== "http:" && url.protocol !== "https:") {
+      return null;
     }
 
-    nodes.push(
-      <span
-        aria-label={`Citation ${citationNumber}`}
-        className="opendetail-citation-marker"
-        key={`citation-${matchIndex}-${matchedText}`}
-        role="img"
-        title={`Citation ${citationNumber}`}
-      />
-    );
-
-    lastIndex = matchIndex + matchedText.length;
+    return `https://www.google.com/s2/favicons?domain=${url.hostname}&sz=64`;
+  } catch {
+    return null;
   }
-
-  if (lastIndex < text.length) {
-    nodes.push(
-      <Fragment key={`text-${lastIndex}`}>{text.slice(lastIndex)}</Fragment>
-    );
-  }
-
-  return nodes;
 };
+
+const CitationFallback = ({ icon: Icon }: { icon: LucideIcon }) => (
+  <span aria-hidden="true" className="opendetail-citation-marker__fallback">
+    <Icon size={9} strokeWidth={1.8} />
+  </span>
+);
+
+const CitationMarker = ({
+  citationNumber,
+  source,
+}: {
+  citationNumber: string;
+  source: AssistantSourceItem | null;
+}) => {
+  const isRemoteSource = source?.kind === "remote";
+  const faviconUrl =
+    isRemoteSource && source ? getRemoteFaviconUrl(source) : null;
+  const citationTitle = getCitationTitle({
+    citationNumber,
+    source,
+  });
+  let citationContent: ReactNode = (
+    <span className="opendetail-citation-marker__number">{citationNumber}</span>
+  );
+
+  if (isRemoteSource) {
+    citationContent = faviconUrl ? (
+      <img
+        alt=""
+        className="opendetail-citation-marker__favicon"
+        height={12}
+        loading="lazy"
+        src={faviconUrl}
+        width={12}
+      />
+    ) : (
+      <CitationFallback icon={Cloud} />
+    );
+  }
+
+  return (
+    <span
+      aria-label={citationTitle}
+      className={`opendetail-citation-marker ${
+        isRemoteSource
+          ? "opendetail-citation-marker--remote"
+          : "opendetail-citation-marker--local"
+      }`}
+      role="img"
+      title={citationTitle}
+    >
+      {citationContent}
+    </span>
+  );
+};
+
+const replaceCitationMarkers = (markdown: string): string =>
+  markdown.replace(CITATION_REGEX, (_match, citationNumber: string) => {
+    return `<${CITATION_TAG} ref="${citationNumber}"></${CITATION_TAG}>`;
+  });
 
 const getTextBlock = ({
   className,
   content,
+  sources,
 }: {
   className: string;
   content: ReactNode;
+  sources: AssistantSourceItem[];
 }) => {
   if (content === null || content === undefined || content === false) {
     return null;
@@ -98,7 +160,37 @@ const getTextBlock = ({
   }
 
   if (typeof content === "string") {
-    return <p className={className}>{renderInlineCitationMarkers(content)}</p>;
+    return (
+      <Streamdown
+        allowedTags={ALLOWED_MARKDOWN_TAGS}
+        className={className}
+        components={{
+          citation: (props) => {
+            const citationNumber =
+              (typeof props.ref === "string" ? props.ref : null) ??
+              (typeof props.node?.properties?.ref === "string"
+                ? props.node.properties.ref
+                : null);
+
+            if (!citationNumber) {
+              return null;
+            }
+
+            return (
+              <CitationMarker
+                citationNumber={citationNumber}
+                source={getSourceForCitation({
+                  citationNumber,
+                  sources,
+                })}
+              />
+            );
+          },
+        }}
+      >
+        {replaceCitationMarkers(content)}
+      </Streamdown>
+    );
   }
 
   return <div className={className}>{content}</div>;
@@ -111,17 +203,25 @@ const getSourceLabel = ({
   meta?: AssistantResponseMeta | null;
   sources: AssistantSourceItem[];
 }): string | undefined => {
-  if (meta?.sourceLabel) {
-    return meta.sourceLabel;
-  }
-
   const count = meta?.sourceCount ?? sources.length;
+  const durationLabel = meta?.durationLabel;
+  const resolvedSourceLabel =
+    meta?.sourceLabel ??
+    (count > 0 ? `${count} source${count === 1 ? "" : "s"}` : null);
 
-  if (count <= 0) {
+  if (!(resolvedSourceLabel || durationLabel)) {
     return undefined;
   }
 
-  return `${count} source${count === 1 ? "" : "s"}`;
+  if (resolvedSourceLabel && durationLabel) {
+    return `Consulted ${resolvedSourceLabel} in ${durationLabel}`;
+  }
+
+  if (resolvedSourceLabel) {
+    return `Consulted ${resolvedSourceLabel}`;
+  }
+
+  return `Completed in ${durationLabel}`;
 };
 
 export const AssistantResponse = ({
@@ -163,13 +263,14 @@ export const AssistantResponse = ({
     sources,
   });
   const hasImage = image?.placeholder || image?.src;
-  const hasMeta = sourceCount > 0 || Boolean(meta?.durationLabel);
+  const hasMeta = Boolean(sourceLabel);
 
   return (
     <article className={getClassName(className)}>
       {getTextBlock({
         className: "opendetail-response__lead",
         content: lead,
+        sources,
       })}
 
       {hasImage ? (
@@ -189,6 +290,7 @@ export const AssistantResponse = ({
       {getTextBlock({
         className: "opendetail-response-markdown",
         content: children,
+        sources,
       })}
 
       {hasMeta ? (
@@ -199,13 +301,6 @@ export const AssistantResponse = ({
             defaultOpen={defaultSourcesOpen}
             items={sources}
           />
-
-          {meta?.durationLabel ? (
-            <span className="opendetail-meta-item">
-              <span aria-hidden="true" className="opendetail-meta-item__icon" />
-              <span>{meta.durationLabel}</span>
-            </span>
-          ) : null}
         </footer>
       ) : null}
     </article>

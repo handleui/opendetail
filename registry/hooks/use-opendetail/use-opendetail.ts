@@ -140,7 +140,7 @@ const toDurationLabel = (startedAt: number): string => {
     Math.round((Date.now() - startedAt) / 1000)
   );
 
-  return `${durationInSeconds}s`;
+  return `${durationInSeconds} second${durationInSeconds === 1 ? "" : "s"}`;
 };
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
@@ -160,6 +160,11 @@ const isNullableBoolean = (value: unknown): value is boolean | null =>
 
 const isNullableOpenAiProvider = (value: unknown): value is "openai" | null =>
   value === null || value === "openai";
+
+const isSourceKind = (
+  value: unknown
+): value is "local" | "remote" | undefined =>
+  value === undefined || value === "local" || value === "remote";
 
 const isOpenDetailClientErrorCode = (
   value: unknown
@@ -181,6 +186,7 @@ const isOpenDetailClientSource = (
   isRecord(value) &&
   isStringArray(value.headings) &&
   typeof value.id === "string" &&
+  isSourceKind(value.kind) &&
   typeof value.title === "string" &&
   typeof value.url === "string";
 
