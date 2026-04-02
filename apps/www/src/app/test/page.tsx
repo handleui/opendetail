@@ -53,7 +53,8 @@ export default function TestPage() {
               }
 
               const { body, lead } = splitResponseText(message.text);
-              const primaryImage = message.images[0];
+              const primaryImage =
+                message.status === "complete" ? message.images[0] : undefined;
               const fallbackLead =
                 lead ??
                 (message.status === "error"

@@ -158,12 +158,9 @@
 }
 
 .opendetail-response__image {
-  position: relative;
   width: 100%;
   min-height: 15.875rem;
-  overflow: hidden;
   background: var(--opendetail-color-placeholder);
-  border-radius: var(--opendetail-radius-panel);
 }
 
 .opendetail-response__image img {
@@ -171,14 +168,15 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition:
-    opacity 160ms ease,
-    transform 160ms ease;
 }
 
-.opendetail-response__image:hover img {
-  opacity: 0.98;
-  transform: scale(1.01);
+.opendetail-citation-marker {
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  margin-inline: 0.125rem;
+  vertical-align: middle;
+  background: var(--opendetail-color-meta);
 }
 
 .opendetail-response__footer {

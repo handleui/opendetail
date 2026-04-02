@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { Fragment, type ReactNode } from "react";
 
 import {
   type AssistantSourceItem,
@@ -7,6 +7,7 @@ import {
 
 const IMAGE_WIDTH = 549;
 const IMAGE_HEIGHT = 254;
+const CITATION_REGEX = /\[(\d+)\]/gu;
 
 export interface AssistantResponseImage {
   alt?: string;
@@ -33,6 +34,51 @@ export interface AssistantResponseProps {
 const getClassName = (className?: string): string =>
   ["opendetail-response", className].filter(Boolean).join(" ");
 
+const renderInlineCitationMarkers = (text: string): ReactNode => {
+  const matches = [...text.matchAll(CITATION_REGEX)];
+
+  if (matches.length === 0) {
+    return text;
+  }
+
+  const nodes: ReactNode[] = [];
+  let lastIndex = 0;
+
+  for (const match of matches) {
+    const matchedText = match[0];
+    const citationNumber = match[1];
+    const matchIndex = match.index ?? 0;
+
+    if (matchIndex > lastIndex) {
+      nodes.push(
+        <Fragment key={`text-${lastIndex}`}>
+          {text.slice(lastIndex, matchIndex)}
+        </Fragment>
+      );
+    }
+
+    nodes.push(
+      <span
+        aria-label={`Citation ${citationNumber}`}
+        className="opendetail-citation-marker"
+        key={`citation-${matchIndex}-${matchedText}`}
+        role="img"
+        title={`Citation ${citationNumber}`}
+      />
+    );
+
+    lastIndex = matchIndex + matchedText.length;
+  }
+
+  if (lastIndex < text.length) {
+    nodes.push(
+      <Fragment key={`text-${lastIndex}`}>{text.slice(lastIndex)}</Fragment>
+    );
+  }
+
+  return nodes;
+};
+
 const getTextBlock = ({
   className,
   content,
@@ -44,8 +90,12 @@ const getTextBlock = ({
     return null;
   }
 
-  if (typeof content === "number" || typeof content === "string") {
+  if (typeof content === "number") {
     return <p className={className}>{content}</p>;
+  }
+
+  if (typeof content === "string") {
+    return <p className={className}>{renderInlineCitationMarkers(content)}</p>;
   }
 
   return <div className={className}>{content}</div>;
