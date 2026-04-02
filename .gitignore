@@ -36,5 +36,8 @@ yarn-error.log*
 dist/
 
 # generated registry payloads
-apps/www/public/r/*
-!apps/www/public/r/.gitkeep
+apps/web/public/r/*
+!apps/web/public/r/.gitkeep
+
+# runtime logs
+**/.openlogs/
