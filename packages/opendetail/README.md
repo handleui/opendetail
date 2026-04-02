@@ -19,36 +19,46 @@ Install the package:
 npm i opendetail
 ```
 
-Create `opendetail.toml` in your app root:
+Bootstrap setup with one command:
+
+```bash
+bunx opendetail setup --with-media
+```
+
+That command can generate `opendetail.toml`, scaffold a Next.js route at
+`src/app/api/opendetail/route.ts`, and build `.opendetail/index.json`.
+
+If you prefer manual setup, create `opendetail.toml` in your app root:
 
 ```toml
 version = 1
-include = ["content/**/*.md", "content/**/*.mdx"]
+include = ["content/**/*.{md,mdx}"]
 exclude = []
 base_path = "/docs"
-```
 
-If your docs reference local repo images and your app serves those files at a
-public URL, add optional media mapping:
-
-```toml
 [media]
 include = ["content/**/*.{png,jpg,jpeg,webp,avif,gif,svg}"]
 exclude = []
 base_path = "/content-media"
 ```
 
-Build the index:
+Then run:
 
 ```bash
-npx opendetail build
+bunx opendetail build
 ```
-
-This writes `.opendetail/index.json`.
 
 ## Next.js
 
-Add a Route Handler and keep it on the Node runtime:
+Add a Route Handler with the thin setup helper:
+
+```ts
+import { createNextRoute } from "opendetail/next";
+
+export const { POST, runtime } = createNextRoute();
+```
+
+Or wire it manually:
 
 ```ts
 import { createNextRouteHandler } from "opendetail/next";
@@ -120,13 +130,30 @@ The runtime returns at most 3 images per answer or stream.
 
 ## CLI
 
-The package ships with its own CLI. The main command is:
+The package ships with a setup-focused CLI:
 
 ```bash
-npx opendetail build
+# scaffold config + route + index
+bunx opendetail setup --with-media
+
+# rebuild index when content changes
+bunx opendetail build
+
+# run setup diagnostics
+bunx opendetail doctor
 ```
 
-That is standard npm package behavior. When installed locally, the same binary is also available through your package manager.
+Useful setup flags:
+
+- `--cwd <path>`: advanced use for monorepos; most apps run this from project root
+- `--route <path>`: choose a custom Next.js route file
+- `--base-path <url>`: set generated source URL base path
+- `--skip-build`: scaffold files without generating the index
+- `--force`: overwrite existing scaffold files
+- `--interactive` / `--no-interactive`: enable or skip the setup wizard prompts
+
+Most repos can run commands directly from the app root as `bunx opendetail <command>`.
+Each command prints `Opendetail v<version>` so logs show exactly which CLI version ran.
 
 ## How it works
 

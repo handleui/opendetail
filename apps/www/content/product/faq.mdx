@@ -38,6 +38,10 @@ The built index lives in your app at `.opendetail/index.json`. At runtime, `open
 
 Today the package ships a core Node runtime and a thin Next.js adapter via `opendetail/next`. That means Next.js is the first framework-specific path right now, while the runtime itself stays framework-light.
 
+## Is setup still manual?
+
+The CLI includes a setup flow (`opendetail setup`) that can scaffold config, route wiring, and an initial index, plus a diagnostics command (`opendetail doctor`) for fast verification.
+
 ## Is it only for developer docs?
 
 No. Developer docs are a natural fit, but the shape also works for product guides, onboarding, help content, and internal knowledge. If the content is in Markdown and MDX and answers real questions, it can fit.

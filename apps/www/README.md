@@ -27,6 +27,12 @@ cp apps/www/.env.example apps/www/.env.local
 
 Set `OPENAI_API_KEY` in `apps/www/.env.local` before starting the app.
 
+From the app root (`apps/www`), you can bootstrap OpenDetail files with:
+
+```sh
+bunx opendetail setup --with-media
+```
+
 `bun run dev` runs the app through `openlogs` and `portless` on proxy port `443`.
 
 ```sh

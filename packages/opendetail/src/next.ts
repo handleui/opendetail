@@ -133,4 +133,14 @@ export const createNextRouteHandler = (
   };
 };
 
+export const createNextRoute = (
+  options: CreateOpenDetailOptions = {}
+): {
+  POST: (request: Request) => Promise<Response>;
+  runtime: "nodejs";
+} => ({
+  POST: createNextRouteHandler(options),
+  runtime: "nodejs",
+});
+
 export type { CreateOpenDetailOptions as CreateNextRouteHandlerOptions } from "./types";

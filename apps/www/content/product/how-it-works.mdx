@@ -10,7 +10,7 @@ order: 2
 
 ## Build time
 
-You start with `opendetail.toml` in your app root. That file tells `opendetail` which Markdown and MDX files to include, which ones to exclude, and which base path should be used when it generates source URLs.
+You can start with `opendetail setup`, which scaffolds the defaults most teams need: config, route file, and initial index. Under the hood, that setup still centers on `opendetail.toml`, where you define which Markdown and MDX files to include, which ones to exclude, and which base path should be used when source URLs are generated.
 
 When you run the build command, `opendetail` reads the matched files and turns them into a local index at `.opendetail/index.json`. Content is split by heading sections so the runtime can retrieve smaller, more relevant pieces instead of entire files. The output is local and file-based, which keeps the setup light and makes the index easy to inspect.
 
@@ -22,7 +22,7 @@ Once the relevant sections are selected, `opendetail` sends only those sections 
 
 ## Runtime shape
 
-The current package is server-only. You can use the core runtime directly in Node, or use the thin Next.js adapter that exposes a route handler. In Next.js, that route must run on the Node.js runtime.
+The current package is server-only. You can use the core runtime directly in Node, or use the thin Next.js adapter that exposes a route handler with a one-line `createNextRoute()` helper. In Next.js, that route must run on the Node.js runtime.
 
 Responses can be streamed, and the response shape includes source information alongside the generated answer. If the configured docs do not contain enough information, `opendetail` falls back instead of pretending it knows more than the content says.
 

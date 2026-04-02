@@ -7,7 +7,7 @@ import { describe, expect, test, vi } from "vitest";
 import { buildOpenDetailIndex } from "../src/build";
 import { MAX_QUESTION_LENGTH } from "../src/constants";
 import { OpenDetailMissingApiKeyError } from "../src/errors";
-import { createNextRouteHandler } from "../src/next";
+import { createNextRoute, createNextRouteHandler } from "../src/next";
 import type { OpenDetailAssistant } from "../src/types";
 import { createFixtureWorkspace, removeWorkspace } from "./helpers";
 
@@ -356,5 +356,14 @@ describe("createNextRouteHandler", () => {
       vi.unstubAllEnvs();
       await removeWorkspace(cwd);
     }
+  });
+});
+
+describe("createNextRoute", () => {
+  test("returns POST handler and nodejs runtime", () => {
+    const route = createNextRoute();
+
+    expect(typeof route.POST).toBe("function");
+    expect(route.runtime).toBe("nodejs");
   });
 });
