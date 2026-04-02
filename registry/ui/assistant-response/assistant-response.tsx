@@ -4,6 +4,7 @@ import {
   type AssistantSourceItem,
   AssistantSources,
 } from "../assistant-sources/assistant-sources";
+import { AssistantStatus } from "../assistant-status/assistant-status";
 
 const IMAGE_WIDTH = 549;
 const IMAGE_HEIGHT = 254;
@@ -25,10 +26,12 @@ export interface AssistantResponseProps {
   children?: ReactNode;
   className?: string;
   defaultSourcesOpen?: boolean;
+  error?: string | null;
   image?: AssistantResponseImage | null;
   lead?: ReactNode;
   meta?: AssistantResponseMeta | null;
   sources?: AssistantSourceItem[];
+  status?: "complete" | "error" | "pending" | "streaming";
 }
 
 const getClassName = (className?: string): string =>
@@ -125,11 +128,35 @@ export const AssistantResponse = ({
   children,
   className,
   defaultSourcesOpen = false,
+  error = null,
   image = null,
   lead,
   meta = null,
+  status = "complete",
   sources = [],
 }: AssistantResponseProps) => {
+  const fallbackError =
+    error ??
+    (typeof lead === "string" && lead.length > 0 ? lead : null) ??
+    (typeof children === "string" && children.length > 0 ? children : null) ??
+    "OpenDetail request failed.";
+
+  if (status === "pending") {
+    return (
+      <article className={getClassName(className)}>
+        <AssistantStatus variant="thinking" />
+      </article>
+    );
+  }
+
+  if (status === "error") {
+    return (
+      <article className={getClassName(className)}>
+        <AssistantStatus label={fallbackError} variant="error" />
+      </article>
+    );
+  }
+
   const sourceCount = meta?.sourceCount ?? sources.length;
   const sourceLabel = getSourceLabel({
     meta,

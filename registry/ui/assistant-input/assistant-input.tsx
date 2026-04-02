@@ -1,22 +1,15 @@
 "use client";
 
 import { ArrowRight } from "lucide-react";
-import { AnimatePresence, motion } from "motion/react";
-import type { FormEvent, MouseEvent, RefObject } from "react";
-import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
+import { motion } from "motion/react";
+import type { FormEvent, KeyboardEvent, MouseEvent, RefObject } from "react";
+import { useId, useLayoutEffect, useRef, useState } from "react";
 
 import type { OpenDetailClientStatus } from "../../lib/opendetail-client/opendetail-client";
-import {
-  AssistantStatus,
-  type AssistantStatusVariant,
-} from "../assistant-status/assistant-status";
 
 const DEFAULT_PLACEHOLDER = "What has Rodrigo worked on?";
 const DEFAULT_NAME = "question";
-const ERROR_GRACE_PERIOD_MS = 3000;
 const MAX_QUESTION_LENGTH = 4000;
-const PILL_GAP = 16;
-const PILL_HEIGHT = 28;
 const SINGLE_LINE_HEIGHT = 24;
 const LAYOUT_TRANSITION = {
   duration: 0.22,
@@ -30,7 +23,7 @@ export interface AssistantInputRequest {
 
 export interface AssistantInputStatus {
   label?: string;
-  variant: AssistantStatusVariant;
+  variant: "error" | "thinking";
 }
 
 type SubmitHandler = (
@@ -87,73 +80,6 @@ const getButtonClasses = (isActive: boolean, isDisabled: boolean): string =>
     isActive ? "bg-black text-white" : "bg-zinc-200 text-zinc-400",
   ].join(" ");
 
-const getStatusFromRequestState = (
-  requestState: OpenDetailClientStatus
-): AssistantInputStatus | null => {
-  if (requestState === "error") {
-    return { variant: "error" };
-  }
-
-  if (requestState === "pending" || requestState === "streaming") {
-    return { variant: "thinking" };
-  }
-
-  return null;
-};
-
-const useDisplayedStatus = (status: AssistantInputStatus | null) => {
-  const [displayedStatus, setDisplayedStatus] =
-    useState<AssistantInputStatus | null>(status);
-  const errorShownAtRef = useRef<number | null>(
-    status?.variant === "error" ? Date.now() : null
-  );
-  const timeoutRef = useRef<number | null>(null);
-
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current !== null) {
-        window.clearTimeout(timeoutRef.current);
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    if (timeoutRef.current !== null) {
-      window.clearTimeout(timeoutRef.current);
-      timeoutRef.current = null;
-    }
-
-    if (status !== null) {
-      setDisplayedStatus(status);
-
-      if (status.variant === "error") {
-        errorShownAtRef.current = Date.now();
-      }
-
-      return;
-    }
-
-    if (
-      displayedStatus?.variant === "error" &&
-      errorShownAtRef.current !== null
-    ) {
-      const elapsed = Date.now() - errorShownAtRef.current;
-      const remaining = Math.max(0, ERROR_GRACE_PERIOD_MS - elapsed);
-
-      timeoutRef.current = window.setTimeout(() => {
-        setDisplayedStatus(null);
-        timeoutRef.current = null;
-      }, remaining);
-
-      return;
-    }
-
-    setDisplayedStatus(null);
-  }, [displayedStatus?.variant, status]);
-
-  return displayedStatus;
-};
-
 const useTextareaLayout = ({
   question,
   textareaRef,
@@ -177,69 +103,6 @@ const useTextareaLayout = ({
   }, [question, textareaRef]);
 
   return isMultiline;
-};
-
-const AssistantInputStatusPill = ({
-  id,
-  status,
-}: {
-  id: string;
-  status: AssistantInputStatus | null;
-}) => {
-  const displayedStatus = useDisplayedStatus(status);
-  const hasStatus = displayedStatus !== null;
-  const isError = displayedStatus?.variant === "error";
-
-  return (
-    <motion.div
-      animate={{ height: hasStatus ? PILL_GAP + PILL_HEIGHT : 0 }}
-      className="flex w-full justify-center overflow-hidden"
-      initial={false}
-      transition={LAYOUT_TRANSITION}
-    >
-      <div className="flex h-7 items-start justify-center overflow-hidden">
-        <AnimatePresence initial={false}>
-          {displayedStatus ? (
-            <motion.div
-              animate={
-                displayedStatus.variant === "error"
-                  ? { opacity: 1, x: [0, -2, 2, -1, 1, 0], y: 0 }
-                  : { opacity: 1, x: 0, y: 0 }
-              }
-              className="shrink-0"
-              exit={
-                isError ? { opacity: 0, y: 0 } : { opacity: 0, y: -PILL_HEIGHT }
-              }
-              initial={
-                isError
-                  ? { opacity: 1, x: 0, y: 0 }
-                  : { opacity: 0, y: PILL_HEIGHT }
-              }
-              key="status-pill"
-              transition={
-                displayedStatus.variant === "error"
-                  ? {
-                      duration: 0.32,
-                      ease: "easeOut",
-                      times: [0, 0.2, 0.4, 0.6, 0.8, 1],
-                    }
-                  : {
-                      duration: 0.18,
-                      ease: [0.22, 1, 0.36, 1],
-                    }
-              }
-            >
-              <AssistantStatus
-                id={id}
-                label={displayedStatus.label}
-                variant={displayedStatus.variant}
-              />
-            </motion.div>
-          ) : null}
-        </AnimatePresence>
-      </div>
-    </motion.div>
-  );
 };
 
 const AssistantInputActionButton = ({
@@ -282,12 +145,10 @@ export const AssistantInput = ({
   readOnly = false,
   requestState = "idle",
   size = "compact",
-  status,
   value,
 }: AssistantInputProps) => {
   const fallbackId = useId();
   const inputId = id ?? fallbackId;
-  const statusId = `${inputId}-status`;
   const isControlled = value !== undefined;
   const [internalValue, setInternalValue] = useState(defaultValue ?? "");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -296,8 +157,7 @@ export const AssistantInput = ({
   const currentValue = value ?? internalValue;
   const request = { question: currentValue.trim() };
   const hasValue = request.question.length > 0;
-  const resolvedStatus = status ?? getStatusFromRequestState(requestState);
-  const isStopMode = resolvedStatus?.variant === "thinking";
+  const isStopMode = requestState === "pending" || requestState === "streaming";
   const isActionDisabled = disabled || !(isStopMode || hasValue);
   const isMultiline = useTextareaLayout({
     question: currentValue,
@@ -344,14 +204,27 @@ export const AssistantInput = ({
     textareaRef.current?.focus();
   };
 
+  const handleTextareaKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (
+      event.key !== "Enter" ||
+      event.shiftKey ||
+      event.nativeEvent.isComposing ||
+      disabled ||
+      readOnly
+    ) {
+      return;
+    }
+
+    event.preventDefault();
+    surfaceRef.current?.requestSubmit();
+  };
+
   return (
     <motion.div
       className={getRootClassName({ className, size })}
       layout
       transition={MOTION_LAYOUT_TRANSITION}
     >
-      <AssistantInputStatusPill id={statusId} status={resolvedStatus} />
-
       <motion.form
         aria-busy={isStopMode || undefined}
         className={[
@@ -377,8 +250,6 @@ export const AssistantInput = ({
         >
           <span className="sr-only">Ask a question</span>
           <textarea
-            aria-describedby={resolvedStatus ? statusId : undefined}
-            aria-invalid={resolvedStatus?.variant === "error" || undefined}
             autoFocus={autoFocus}
             className={[
               "block w-full resize-none overflow-hidden border-0 bg-transparent p-0 font-normal text-base text-black leading-6 tracking-[-0.04em] outline-none placeholder:text-zinc-400",
@@ -393,6 +264,7 @@ export const AssistantInput = ({
             onChange={(event) => {
               handleChange(event.target.value);
             }}
+            onKeyDown={handleTextareaKeyDown}
             placeholder={placeholder}
             readOnly={readOnly}
             ref={textareaRef}
