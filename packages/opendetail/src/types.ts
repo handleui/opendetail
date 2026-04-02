@@ -105,11 +105,17 @@ export interface OpenDetailStreamResult {
 }
 
 export interface CreateOpenDetailOptions {
+  assistantInstructions?: string;
+  assistantInstructionsPath?: string;
   client?: OpenAI | null;
   cwd?: string;
   indexData?: OpenDetailIndexArtifact;
   indexPath?: string;
   model?: string;
+  promptCacheKey?: string;
+  promptCacheRetention?: NonNullable<
+    ResponseCreateParamsBase["prompt_cache_retention"]
+  >;
   reasoningEffort?: NonNullable<
     NonNullable<ResponseCreateParamsBase["reasoning"]>["effort"]
   >;

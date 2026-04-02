@@ -1,4 +1,6 @@
+import { createHash } from "node:crypto";
 import { existsSync, readFileSync } from "node:fs";
+import path from "node:path";
 import OpenAI from "openai";
 import type {
   Response,
@@ -11,10 +13,13 @@ import {
   DEFAULT_FALLBACK_TEXT,
   DEFAULT_MAX_RETURNED_IMAGES,
   DEFAULT_MODEL,
+  DEFAULT_PROMPT_CACHE_RETENTION,
   DEFAULT_REASONING_EFFORT,
   DEFAULT_STORE,
   DEFAULT_VERBOSITY,
   OPENDETAIL_INDEX_FILE,
+  OPENDETAIL_INSTRUCTIONS_FILE,
+  OPENDETAIL_PREFERRED_INSTRUCTIONS_FILE,
 } from "./constants";
 import {
   CONTENT_FILTERED_RESPONSE_MESSAGE,
@@ -177,19 +182,100 @@ Never invent facts outside the provided sources.
 Every factual statement must cite one or more sources with [1], [2], etc.
 If the provided sources are insufficient, answer exactly: ${DEFAULT_FALLBACK_TEXT}`;
 
+const createInstructionsHash = (instructions: string): string =>
+  createHash("sha256").update(instructions).digest("hex");
+
+const resolveAssistantInstructions = ({
+  assistantInstructions,
+  assistantInstructionsPath,
+  cwd,
+}: {
+  assistantInstructions?: string;
+  assistantInstructionsPath?: string;
+  cwd: string;
+}): string => {
+  if (assistantInstructions) {
+    return assistantInstructions.trim();
+  }
+
+  const instructionCandidates = assistantInstructionsPath
+    ? [path.resolve(cwd, assistantInstructionsPath)]
+    : [
+        path.resolve(cwd, OPENDETAIL_PREFERRED_INSTRUCTIONS_FILE),
+        path.resolve(cwd, OPENDETAIL_INSTRUCTIONS_FILE),
+      ];
+
+  for (const instructionsPath of instructionCandidates) {
+    if (!existsSync(instructionsPath)) {
+      continue;
+    }
+
+    return readFileSync(instructionsPath, "utf8").trim();
+  }
+
+  return "";
+};
+
+const buildSystemInstructions = (assistantInstructions: string): string => {
+  if (assistantInstructions.length === 0) {
+    return SYSTEM_INSTRUCTIONS;
+  }
+
+  return `${SYSTEM_INSTRUCTIONS}
+
+Project-specific instructions loaded from ${OPENDETAIL_INSTRUCTIONS_FILE}:
+${assistantInstructions}`;
+};
+
+const createPromptCacheKey = ({
+  instructionsHash,
+  manifestHash,
+  promptCacheKey,
+  retrievedChunks,
+}: {
+  instructionsHash: string;
+  manifestHash: string;
+  promptCacheKey?: string;
+  retrievedChunks: OpenDetailIndexArtifact["chunks"];
+}): string => {
+  if (promptCacheKey) {
+    return promptCacheKey;
+  }
+
+  const cacheMaterial = JSON.stringify({
+    instructionsHash,
+    manifestHash,
+    sourceChunkIds: retrievedChunks.map((chunk) => chunk.id),
+  });
+
+  return `opendetail:${createHash("sha256").update(cacheMaterial).digest("hex")}`;
+};
+
 const createOpenAIRequest = ({
+  instructionsHash,
+  manifestHash,
   model,
+  promptCacheKey,
+  promptCacheRetention,
   question,
   reasoningEffort,
   retrievedChunks,
   store,
+  systemInstructions,
   verbosity,
 }: {
+  instructionsHash: string;
+  manifestHash: string;
   model: string;
+  promptCacheKey?: string;
+  promptCacheRetention: NonNullable<
+    ResponseCreateParamsNonStreaming["prompt_cache_retention"]
+  >;
   question: string;
   reasoningEffort: NonNullable<CreateOpenDetailOptions["reasoningEffort"]>;
   retrievedChunks: OpenDetailIndexArtifact["chunks"];
   store: boolean;
+  systemInstructions: string;
   verbosity: NonNullable<CreateOpenDetailOptions["verbosity"]>;
 }): ResponseCreateParamsNonStreaming => ({
   input: `Question:
@@ -197,8 +283,15 @@ ${question}
 
 Sources:
 ${formatContext(retrievedChunks)}`,
-  instructions: SYSTEM_INSTRUCTIONS,
+  instructions: systemInstructions,
   model,
+  prompt_cache_key: createPromptCacheKey({
+    instructionsHash,
+    manifestHash,
+    promptCacheKey,
+    retrievedChunks,
+  }),
+  prompt_cache_retention: promptCacheRetention,
   reasoning: {
     effort: reasoningEffort,
   },
@@ -398,32 +491,49 @@ const handleOpenAIStreamEvent = ({
 const streamOpenAIResponse = async ({
   controller,
   getClient,
+  instructionsHash,
+  manifestHash,
   model,
+  promptCacheKey,
+  promptCacheRetention,
   question,
   reasoningEffort,
   retrievedChunks,
   store,
+  systemInstructions,
   verbosity,
   abortSignal,
 }: {
   controller: ReadableStreamDefaultController<Uint8Array>;
   getClient: () => OpenAI;
+  instructionsHash: string;
+  manifestHash: string;
   model: string;
+  promptCacheKey?: string;
+  promptCacheRetention: NonNullable<
+    ResponseCreateParamsNonStreaming["prompt_cache_retention"]
+  >;
   question: string;
   reasoningEffort: NonNullable<CreateOpenDetailOptions["reasoningEffort"]>;
   retrievedChunks: OpenDetailIndexArtifact["chunks"];
   store: boolean;
+  systemInstructions: string;
   verbosity: NonNullable<CreateOpenDetailOptions["verbosity"]>;
   abortSignal: AbortSignal;
 }): Promise<void> => {
   let finalText = "";
   const request = createStreamingRequest(
     createOpenAIRequest({
+      instructionsHash,
+      manifestHash,
       model,
+      promptCacheKey,
+      promptCacheRetention,
       question,
       reasoningEffort,
       retrievedChunks,
       store,
+      systemInstructions,
       verbosity,
     })
   );
@@ -476,11 +586,15 @@ const createOpenAIClientFactory = (
 };
 
 export const createOpenDetail = ({
+  assistantInstructions,
+  assistantInstructionsPath,
   client,
   cwd = process.cwd(),
   indexData,
   indexPath,
   model = DEFAULT_MODEL,
+  promptCacheKey,
+  promptCacheRetention = DEFAULT_PROMPT_CACHE_RETENTION,
   reasoningEffort = DEFAULT_REASONING_EFFORT,
   store = DEFAULT_STORE,
   verbosity = DEFAULT_VERBOSITY,
@@ -488,6 +602,15 @@ export const createOpenDetail = ({
   assertNodeRuntime();
 
   const artifact = indexData ?? readIndexArtifact(cwd, indexPath);
+  const resolvedAssistantInstructions = resolveAssistantInstructions({
+    assistantInstructions,
+    assistantInstructionsPath,
+    cwd,
+  });
+  const systemInstructions = buildSystemInstructions(
+    resolvedAssistantInstructions
+  );
+  const instructionsHash = createInstructionsHash(systemInstructions);
   const miniSearch = createMiniSearchIndex(artifact.chunks);
   const getClient = createOpenAIClientFactory(client);
 
@@ -514,11 +637,16 @@ export const createOpenDetail = ({
     }
 
     const request = createOpenAIRequest({
+      instructionsHash,
+      manifestHash: artifact.manifestHash,
       model,
+      promptCacheKey,
+      promptCacheRetention,
       question,
       reasoningEffort,
       retrievedChunks,
       store,
+      systemInstructions,
       verbosity,
     });
     const response = await getClient().responses.create(request);
@@ -565,11 +693,16 @@ export const createOpenDetail = ({
           abortSignal: abortController.signal,
           controller,
           getClient,
+          instructionsHash,
+          manifestHash: artifact.manifestHash,
           model,
+          promptCacheKey,
+          promptCacheRetention,
           question,
           reasoningEffort,
           retrievedChunks,
           store,
+          systemInstructions,
           verbosity,
         })
           .catch((error: unknown) => {
