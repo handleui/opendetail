@@ -1,6 +1,6 @@
 {
   "name": "opendetail",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "MDX-powered documentation assistant for grounded answers in your app.",
   "type": "module",
   "license": "MIT",
