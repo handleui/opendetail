@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import type { ReactNode } from "react";
-import { AppSidebarShell } from "@/components/app-sidebar-shell";
 import "./globals.css";
+import { AssistantSidebarShell } from "../../../../registry/blocks/assistant-sidebar-shell/assistant-sidebar-shell";
 
 const geist = Geist({
   subsets: ["latin"],
@@ -39,7 +39,16 @@ export default function RootLayout({
       <body
         className={`${geist.variable} bg-white font-sans text-black antialiased [--font-sans:var(--font-geist)]`}
       >
-        <AppSidebarShell>{children}</AppSidebarShell>
+        <AssistantSidebarShell
+          emptyState="Ask the docs"
+          inputId="opendetail-site-question"
+          persistence={{
+            key: "opendetail-site-sidebar",
+          }}
+          placeholder="Ask about these docs"
+        >
+          {children}
+        </AssistantSidebarShell>
       </body>
     </html>
   );

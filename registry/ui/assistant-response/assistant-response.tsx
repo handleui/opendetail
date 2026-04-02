@@ -2,10 +2,7 @@ import { Cloud, type LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
 import { type AllowedTags, Streamdown } from "streamdown";
 
-import {
-  type AssistantSourceItem,
-  AssistantSources,
-} from "../assistant-sources/assistant-sources";
+import type { AssistantSourceItem } from "../assistant-sources/assistant-sources";
 import { AssistantStatus } from "../assistant-status/assistant-status";
 
 const IMAGE_WIDTH = 549;
@@ -196,42 +193,14 @@ const getTextBlock = ({
   return <div className={className}>{content}</div>;
 };
 
-const getSourceLabel = ({
-  meta,
-  sources,
-}: {
-  meta?: AssistantResponseMeta | null;
-  sources: AssistantSourceItem[];
-}): string | undefined => {
-  const count = meta?.sourceCount ?? sources.length;
-  const durationLabel = meta?.durationLabel;
-  const resolvedSourceLabel =
-    meta?.sourceLabel ??
-    (count > 0 ? `${count} source${count === 1 ? "" : "s"}` : null);
-
-  if (!(resolvedSourceLabel || durationLabel)) {
-    return undefined;
-  }
-
-  if (resolvedSourceLabel && durationLabel) {
-    return `Consulted ${resolvedSourceLabel} in ${durationLabel}`;
-  }
-
-  if (resolvedSourceLabel) {
-    return `Consulted ${resolvedSourceLabel}`;
-  }
-
-  return `Completed in ${durationLabel}`;
-};
-
 export const AssistantResponse = ({
   children,
   className,
-  defaultSourcesOpen = false,
+  defaultSourcesOpen: _defaultSourcesOpen = false,
   error = null,
   image = null,
   lead,
-  meta = null,
+  meta: _meta = null,
   status = "complete",
   sources = [],
 }: AssistantResponseProps) => {
@@ -256,14 +225,7 @@ export const AssistantResponse = ({
       </article>
     );
   }
-
-  const sourceCount = meta?.sourceCount ?? sources.length;
-  const sourceLabel = getSourceLabel({
-    meta,
-    sources,
-  });
   const hasImage = image?.placeholder || image?.src;
-  const hasMeta = Boolean(sourceLabel);
 
   return (
     <article className={getClassName(className)}>
@@ -293,16 +255,16 @@ export const AssistantResponse = ({
         sources,
       })}
 
-      {hasMeta ? (
-        <footer className="opendetail-response__footer">
-          <AssistantSources
-            count={sourceCount}
-            countLabel={sourceLabel}
-            defaultOpen={defaultSourcesOpen}
-            items={sources}
-          />
-        </footer>
-      ) : null}
+      {/*
+      <footer className="opendetail-response__footer">
+        <AssistantSources
+          count={sourceCount}
+          countLabel={sourceLabel}
+          defaultOpen={defaultSourcesOpen}
+          items={sources}
+        />
+      </footer>
+      */}
     </article>
   );
 };

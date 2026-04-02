@@ -218,6 +218,24 @@
       ]
     },
     {
+      "name": "assistant-sidebar-shell",
+      "type": "registry:block",
+      "title": "Assistant Sidebar Shell",
+      "description": "App-shell wrapper that mounts the assistant sidebar next to the main content and wires it to useOpenDetail.",
+      "docs": "Use this when the sidebar should be the application shell itself instead of a separately mounted widget.",
+      "categories": ["opendetail", "block"],
+      "registryDependencies": [
+        "assistant-sidebar",
+        "use-opendetail"
+      ],
+      "files": [
+        {
+          "path": "registry/blocks/assistant-sidebar-shell/assistant-sidebar-shell.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "opendetail-base",
       "type": "registry:style",
       "title": "OpenDetail Base Style",

@@ -37,6 +37,7 @@ The first-class install surface is:
 - `opendetail-client`: the transport contract for self-hosted and hosted endpoints
 - `use-opendetail`: the React hook that manages request and stream state
 - `opendetail-base`: the base style contract for tokens and semantic classes
+- app-shell blocks such as `assistant-sidebar-shell`
 - style variants such as `opendetail-midnight` and `opendetail-signal`
 
 `opendetail-client` and `use-opendetail` should stay aligned around the same transport options: `endpoint`, `headers`, `credentials`, and an overridable `fetch` implementation.

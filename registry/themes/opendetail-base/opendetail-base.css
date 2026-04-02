@@ -368,8 +368,8 @@
   flex: none;
   flex-direction: column;
   width: 0;
-  height: 100dvh;
   min-width: 0;
+  height: 100dvh;
   overflow: hidden;
   background: var(--opendetail-color-background);
   border-left: 0 solid transparent;
@@ -423,10 +423,10 @@
 
 .opendetail-user-message {
   display: flex;
-  gap: 1rem;
   align-items: flex-start;
+  justify-content: flex-end;
   width: 100%;
-  color: var(--opendetail-color-meta);
+  color: var(--opendetail-color-foreground);
 }
 
 .opendetail-user-message__badge {
@@ -446,11 +446,16 @@
 }
 
 .opendetail-user-message__content {
-  flex: 1 1 0%;
+  flex: 0 1 auto;
+  width: fit-content;
   min-width: 0;
+  max-width: min(100%, 80%);
+  padding: 0.5rem;
   font-size: 1rem;
   line-height: 1.3125rem;
   letter-spacing: var(--opendetail-text-md-letter-spacing);
+  background: var(--opendetail-color-surface);
+  border-radius: var(--opendetail-radius-panel);
 }
 
 .opendetail-response {
@@ -492,7 +497,7 @@
   width: 100%;
   font-size: 1rem;
   line-height: 1.3125rem;
-  letter-spacing: var(--opendetail-text-md-letter-spacing);
+  letter-spacing: -0.03em;
 }
 
 .opendetail-response-markdown > :first-child {
