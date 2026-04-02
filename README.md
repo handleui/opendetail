@@ -38,5 +38,6 @@ Then set `OPENAI_API_KEY` in `apps/www/.env.local` before running `bun run dev`.
 
 ```sh
 cd packages/opendetail
+npm publish --dry-run
 npm publish
 ```

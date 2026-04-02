@@ -72,6 +72,16 @@ The route streams NDJSON events:
 - `done`
 - `error`
 
+Before starting your app, set `OPENAI_API_KEY` in the app runtime environment.
+If setup fails before streaming starts, the Next.js adapter returns JSON shaped
+like `{ error, code, retryable }`.
+
+When a stream fails after it starts, the `error` event includes:
+
+- `message`
+- `code`
+- `retryable`
+
 ## Core API
 
 If you want to use the runtime directly:
@@ -101,7 +111,7 @@ The runtime returns at most 3 images per answer or stream.
 
 ## CLI
 
-The package ships with its own CLI. The main command in `0.1.0` is:
+The package ships with its own CLI. The main command is:
 
 ```bash
 npx opendetail build
