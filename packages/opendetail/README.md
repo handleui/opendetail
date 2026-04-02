@@ -42,12 +42,6 @@ exclude = []
 base_path = "/content-media"
 ```
 
-<<<<<<< ours
-<<<<<<< ours
-Then run:
-=======
-=======
->>>>>>> theirs
 To include remote documentation as a grounded resource at answer time, configure
 optional remote resources powered by the OpenAI Responses API tools:
 
@@ -62,7 +56,6 @@ search_context_size = "low"
 ```
 
 Build the index:
->>>>>>> theirs
 
 ```bash
 bunx opendetail build

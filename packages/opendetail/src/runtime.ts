@@ -461,13 +461,6 @@ const createOpenAIRequest = ({
   systemInstructions: string;
   verbosity: NonNullable<CreateOpenDetailOptions["verbosity"]>;
 }): ResponseCreateParamsNonStreaming => ({
-<<<<<<< ours
-<<<<<<< ours
-  input: `Sources:
-${formatContext(retrievedChunks)}
-=======
-=======
->>>>>>> theirs
   ...(remoteTools.length > 0
     ? {
         include: [
@@ -477,9 +470,8 @@ ${formatContext(retrievedChunks)}
         ],
       }
     : {}),
-  input: `Question:
-${question}
->>>>>>> theirs
+  input: `Sources:
+${formatContext(retrievedChunks)}
 
 Question:
 ${question}`,
@@ -816,16 +808,9 @@ export const createOpenDetail = ({
   indexData,
   indexPath,
   model = DEFAULT_MODEL,
-<<<<<<< ours
-<<<<<<< ours
   promptCacheKey,
   promptCacheRetention = DEFAULT_PROMPT_CACHE_RETENTION,
-=======
   remoteResources,
->>>>>>> theirs
-=======
-  remoteResources,
->>>>>>> theirs
   reasoningEffort = DEFAULT_REASONING_EFFORT,
   store = DEFAULT_STORE,
   verbosity = DEFAULT_VERBOSITY,
