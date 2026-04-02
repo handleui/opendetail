@@ -90,6 +90,15 @@ const updateAssistantMessage = (
     return updateMessage(message);
   });
 
+const removeAssistantMessage = (
+  messages: OpenDetailThreadMessage[],
+  assistantMessageId: string
+): OpenDetailThreadMessage[] =>
+  messages.filter(
+    (message) =>
+      message.role !== "assistant" || message.id !== assistantMessageId
+  );
+
 const applyStreamEvent = ({
   assistantMessageId,
   event,
@@ -189,15 +198,22 @@ export const useOpenDetail = (
     }
 
     setMessages((currentMessages) =>
-      updateAssistantMessage(
-        currentMessages,
-        activeAssistantMessageId,
-        (message) => ({
-          ...message,
-          durationLabel: toDurationLabel(startedAt),
-          status: message.text.length > 0 ? "complete" : "error",
-        })
+      currentMessages.some(
+        (message) =>
+          message.role === "assistant" &&
+          message.id === activeAssistantMessageId &&
+          message.text.length === 0
       )
+        ? removeAssistantMessage(currentMessages, activeAssistantMessageId)
+        : updateAssistantMessage(
+            currentMessages,
+            activeAssistantMessageId,
+            (message) => ({
+              ...message,
+              durationLabel: toDurationLabel(startedAt),
+              status: "complete",
+            })
+          )
     );
   };
 

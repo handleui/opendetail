@@ -41,7 +41,7 @@ const PUBLIC_ERROR_DEFAULTS = {
   },
   request_failed: {
     message: OPENDETAIL_RUNTIME_FAILURE_MESSAGE,
-    retryable: true,
+    retryable: false,
   },
 } as const satisfies Record<
   OpenDetailErrorCode,

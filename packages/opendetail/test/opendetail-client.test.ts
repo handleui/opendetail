@@ -28,6 +28,32 @@ describe("createOpenDetailClient", () => {
     });
   });
 
+  test("falls back when the server returns an unknown error code", async () => {
+    const fetchImplementation = vi.fn<typeof fetch>(async () =>
+      Response.json(
+        {
+          code: "totally_unknown",
+          error: "Unexpected upstream error.",
+          retryable: true,
+        },
+        { status: 500 }
+      )
+    );
+    const client = createOpenDetailClient({
+      fetch: fetchImplementation,
+    });
+
+    await expect(
+      client.submit({
+        question: "What does base_path do?",
+      })
+    ).rejects.toMatchObject({
+      code: "request_failed",
+      message: "Unexpected upstream error.",
+      retryable: false,
+    });
+  });
+
   test("preserves typed stream errors while keeping the message visible", async () => {
     const streamBody = [
       JSON.stringify({
@@ -72,6 +98,25 @@ describe("createOpenDetailClient", () => {
         "The model could not complete the answer before reaching the output token limit.",
       retryable: false,
       type: "error",
+    });
+  });
+
+  test("falls back to a typed transport error for malformed stream payloads", async () => {
+    const fetchImplementation = vi.fn<typeof fetch>(
+      async () => new Response("<html>bad gateway</html>", { status: 200 })
+    );
+    const client = createOpenDetailClient({
+      fetch: fetchImplementation,
+    });
+
+    await expect(
+      client.submit({
+        question: "How do I install opendetail?",
+      })
+    ).rejects.toMatchObject({
+      code: "request_failed",
+      message: "OpenDetail request failed.",
+      retryable: false,
     });
   });
 });

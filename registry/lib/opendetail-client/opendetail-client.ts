@@ -9,6 +9,16 @@ export type OpenDetailClientErrorCode =
   | "model_incomplete"
   | "request_failed";
 
+const OPENDETAIL_CLIENT_ERROR_CODES = [
+  "invalid_request",
+  "invalid_runtime",
+  "method_not_allowed",
+  "missing_api_key",
+  "missing_index",
+  "model_incomplete",
+  "request_failed",
+] as const satisfies OpenDetailClientErrorCode[];
+
 export interface OpenDetailClientOptions {
   endpoint?: string;
   fetch?: typeof fetch;
@@ -112,8 +122,14 @@ class OpenDetailClientRequestError extends Error {
 const createFallbackPublicError = (): OpenDetailClientPublicError => ({
   code: "request_failed",
   message: FALLBACK_ERROR_MESSAGE,
-  retryable: true,
+  retryable: false,
 });
+
+const isOpenDetailClientErrorCode = (
+  value: unknown
+): value is OpenDetailClientErrorCode =>
+  typeof value === "string" &&
+  OPENDETAIL_CLIENT_ERROR_CODES.includes(value as OpenDetailClientErrorCode);
 
 const createError = (
   publicError: OpenDetailClientPublicError
@@ -141,16 +157,20 @@ const resolvePublicError = (
     resolvedMessage = error;
   }
 
-  if (
-    typeof code !== "string" ||
-    resolvedMessage === null ||
-    typeof retryable !== "boolean"
-  ) {
+  if (resolvedMessage === null || typeof retryable !== "boolean") {
     return null;
   }
 
+  if (!isOpenDetailClientErrorCode(code)) {
+    return {
+      code: "request_failed",
+      message: resolvedMessage,
+      retryable: false,
+    };
+  }
+
   return {
-    code: code as OpenDetailClientErrorCode,
+    code,
     message: resolvedMessage,
     retryable,
   };
@@ -193,7 +213,13 @@ const parseStreamEvent = (line: string): OpenDetailClientStreamEvent | null => {
     return null;
   }
 
-  const parsedValue: unknown = JSON.parse(trimmedLine);
+  let parsedValue: unknown;
+
+  try {
+    parsedValue = JSON.parse(trimmedLine);
+  } catch {
+    throw createError(createFallbackPublicError());
+  }
 
   if (
     !parsedValue ||
@@ -202,6 +228,22 @@ const parseStreamEvent = (line: string): OpenDetailClientStreamEvent | null => {
     typeof parsedValue.type !== "string"
   ) {
     return null;
+  }
+
+  if (parsedValue.type === "error") {
+    const publicError = resolvePublicError(parsedValue);
+
+    if (!publicError) {
+      return {
+        ...createFallbackPublicError(),
+        type: "error",
+      };
+    }
+
+    return {
+      ...publicError,
+      type: "error",
+    };
   }
 
   return parsedValue as OpenDetailClientStreamEvent;

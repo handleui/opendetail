@@ -26,7 +26,7 @@ import {
 const HTTP_URL_REGEX = /^https?:\/\//iu;
 const ABSOLUTE_URL_SCHEME_REGEX = /^[a-z][a-z\d+.-]*:/iu;
 const PROTOCOL_RELATIVE_URL_REGEX = /^\/\//u;
-const RESOURCE_URL_REGEX = /^(?<pathname>[^?#]*)(?<suffix>[?#].*)?$/u;
+const RESOURCE_URL_REGEX = /^([^?#]*)([?#].*)?$/u;
 
 interface MatchedWorkspaceFile {
   filePath: string;
@@ -193,8 +193,8 @@ const splitResourceUrl = (
   const matchedResourceUrl = RESOURCE_URL_REGEX.exec(value);
 
   return {
-    pathname: matchedResourceUrl?.groups?.pathname ?? value,
-    suffix: matchedResourceUrl?.groups?.suffix ?? "",
+    pathname: matchedResourceUrl?.[1] ?? value,
+    suffix: matchedResourceUrl?.[2] ?? "",
   };
 };
 

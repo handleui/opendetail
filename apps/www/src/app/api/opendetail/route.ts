@@ -1,13 +1,15 @@
-import { buildOpenDetailIndex } from "../../../../../../packages/opendetail/dist/index.js";
-import { createNextRouteHandler } from "../../../../../../packages/opendetail/dist/next.js";
+import { buildOpenDetailIndex } from "../../../../../../packages/opendetail/src";
+import { toOpenDetailPublicError } from "../../../../../../packages/opendetail/src/errors";
+import { createNextRouteHandler } from "../../../../../../packages/opendetail/src/next";
 
 export const runtime = "nodejs";
+
+const cwd = process.cwd();
+const handleOpenDetailRequest = createNextRouteHandler({ cwd });
 
 let productionBuildPromise: Promise<void> | null = null;
 
 const ensureIndex = async () => {
-  const cwd = process.cwd();
-
   if (process.env.NODE_ENV !== "production") {
     await buildOpenDetailIndex({ cwd });
     return;
@@ -26,16 +28,17 @@ export const POST = async (request: Request): Promise<Response> => {
   try {
     await ensureIndex();
   } catch (error) {
+    const publicError = toOpenDetailPublicError(error);
+
     return Response.json(
       {
-        error:
-          error instanceof Error && error.message.length > 0
-            ? error.message
-            : "OpenDetail index build failed.",
+        code: publicError.code,
+        error: publicError.message,
+        retryable: publicError.retryable,
       },
       { status: 500 }
     );
   }
 
-  return createNextRouteHandler({ cwd: process.cwd() })(request);
+  return handleOpenDetailRequest(request);
 };

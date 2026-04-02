@@ -6,7 +6,9 @@ import type {
 import { describe, expect, test, vi } from "vitest";
 import { buildOpenDetailIndex } from "../src/build";
 import { MAX_QUESTION_LENGTH } from "../src/constants";
+import { OpenDetailMissingApiKeyError } from "../src/errors";
 import { createNextRouteHandler } from "../src/next";
+import type { OpenDetailAssistant } from "../src/types";
 import { createFixtureWorkspace, removeWorkspace } from "./helpers";
 
 function* createMockResponseEventStream(): Generator<ResponseStreamEvent> {
@@ -69,6 +71,37 @@ const createMockClient = (): OpenAI =>
   }) as OpenAI;
 
 describe("createNextRouteHandler", () => {
+  const createMockAssistant = (): OpenDetailAssistant => ({
+    answer: () =>
+      Promise.resolve({
+        fallback: false,
+        images: [],
+        model: "gpt-5.4-mini",
+        sources: [],
+        text: "Ready.",
+      }),
+    stream: () =>
+      Promise.resolve({
+        fallback: false,
+        images: [],
+        model: "gpt-5.4-mini",
+        sources: [],
+        stream: new ReadableStream<Uint8Array>({
+          start(controller) {
+            controller.enqueue(
+              new TextEncoder().encode(
+                `${JSON.stringify({
+                  text: "Ready.",
+                  type: "done",
+                })}\n`
+              )
+            );
+            controller.close();
+          },
+        }),
+      }),
+  });
+
   test("validates the request body", async () => {
     const handler = createNextRouteHandler();
     const response = await handler(
@@ -279,6 +312,47 @@ describe("createNextRouteHandler", () => {
         retryable: false,
       });
     } finally {
+      vi.unstubAllEnvs();
+      await removeWorkspace(cwd);
+    }
+  });
+
+  test("does not cache fixable initialization errors in development", async () => {
+    const cwd = await createFixtureWorkspace("basic");
+    vi.stubEnv("NODE_ENV", "development");
+
+    try {
+      const { artifact } = await buildOpenDetailIndex({ cwd });
+      const runtimeModule = await import("../src/runtime");
+      const createOpenDetailSpy = vi
+        .spyOn(runtimeModule, "createOpenDetail")
+        .mockImplementationOnce(() => {
+          throw new OpenDetailMissingApiKeyError();
+        })
+        .mockImplementationOnce(createMockAssistant);
+      const handler = createNextRouteHandler({
+        cwd,
+        indexData: artifact,
+      });
+      const createRequest = () =>
+        new Request("http://localhost/api/opendetail", {
+          body: JSON.stringify({
+            question: "What does base_path do?",
+          }),
+          headers: {
+            "content-type": "application/json",
+          },
+          method: "POST",
+        });
+
+      const firstResponse = await handler(createRequest());
+      const secondResponse = await handler(createRequest());
+
+      expect(firstResponse.status).toBe(500);
+      expect(secondResponse.status).toBe(200);
+      expect(createOpenDetailSpy).toHaveBeenCalledTimes(2);
+    } finally {
+      vi.restoreAllMocks();
       vi.unstubAllEnvs();
       await removeWorkspace(cwd);
     }

@@ -1,17 +1,17 @@
 import { NDJSON_CONTENT_TYPE } from "./constants";
 import { createOpenDetailPublicError, toOpenDetailPublicError } from "./errors";
-import type { CreateOpenDetailOptions, OpenDetailAssistant } from "./types";
+import type {
+  CreateOpenDetailOptions,
+  OpenDetailAssistant,
+  OpenDetailPublicError,
+} from "./types";
 import {
   INVALID_REQUEST_BODY_MESSAGE,
   OpenDetailAnswerInputSchema,
 } from "./validation";
 
 const jsonError = (
-  publicError: {
-    code: string;
-    message: string;
-    retryable: boolean;
-  },
+  publicError: OpenDetailPublicError,
   status: number,
   headers?: HeadersInit
 ): Response =>
@@ -27,7 +27,18 @@ const jsonError = (
 const getInitializationErrorResponse = (error: unknown): Response =>
   jsonError(toOpenDetailPublicError(error), 500);
 
-const shouldCacheInitializationError = (): boolean => true;
+const isProductionEnvironment = (): boolean =>
+  typeof process !== "undefined" && process.env.NODE_ENV === "production";
+
+const shouldCacheInitializationError = (): boolean => isProductionEnvironment();
+
+const getInvalidRequestResponse = (): Response =>
+  jsonError(
+    createOpenDetailPublicError("invalid_request", {
+      message: INVALID_REQUEST_BODY_MESSAGE,
+    }),
+    400
+  );
 
 const createAssistantLoader = (
   options: CreateOpenDetailOptions
@@ -57,7 +68,7 @@ const createAssistantLoader = (
           return assistant;
         })
         .catch((error: unknown) => {
-          if (shouldCacheInitializationError(error)) {
+          if (shouldCacheInitializationError()) {
             cachedError = error;
           }
 
@@ -89,23 +100,13 @@ export const createNextRouteHandler = (
     try {
       body = await request.json();
     } catch {
-      return jsonError(
-        createOpenDetailPublicError("invalid_request", {
-          message: INVALID_REQUEST_BODY_MESSAGE,
-        }),
-        400
-      );
+      return getInvalidRequestResponse();
     }
 
     const parsedBody = OpenDetailAnswerInputSchema.safeParse(body);
 
     if (!parsedBody.success) {
-      return jsonError(
-        createOpenDetailPublicError("invalid_request", {
-          message: INVALID_REQUEST_BODY_MESSAGE,
-        }),
-        400
-      );
+      return getInvalidRequestResponse();
     }
 
     let assistant: OpenDetailAssistant;
