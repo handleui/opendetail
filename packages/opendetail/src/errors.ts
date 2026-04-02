@@ -1,3 +1,53 @@
+import type { OpenDetailErrorCode, OpenDetailPublicError } from "./types";
+
+export const NODE_RUNTIME_REQUIRED_MESSAGE =
+  'OpenDetail requires the Node.js runtime. In Next.js route handlers, add `export const runtime = "nodejs"`.';
+export const INCOMPLETE_RESPONSE_MESSAGE =
+  "The model could not complete the answer.";
+export const CONTENT_FILTERED_RESPONSE_MESSAGE =
+  "The model could not complete the answer because the response was filtered.";
+export const MAX_OUTPUT_TOKENS_RESPONSE_MESSAGE =
+  "The model could not complete the answer before reaching the output token limit.";
+export const OPENDETAIL_RUNTIME_FAILURE_MESSAGE =
+  "OpenDetail could not complete the request.";
+export const MISSING_API_KEY_MESSAGE = "OPENAI_API_KEY is required at runtime.";
+
+const PUBLIC_ERROR_DEFAULTS = {
+  invalid_request: {
+    message: "OpenDetail received an invalid request.",
+    retryable: false,
+  },
+  invalid_runtime: {
+    message: NODE_RUNTIME_REQUIRED_MESSAGE,
+    retryable: false,
+  },
+  method_not_allowed: {
+    message:
+      "Method not allowed. Use POST with a JSON body shaped like { question: string }.",
+    retryable: false,
+  },
+  missing_api_key: {
+    message: MISSING_API_KEY_MESSAGE,
+    retryable: false,
+  },
+  missing_index: {
+    message:
+      "OpenDetail index is missing. Run `npx opendetail build` before starting the production server. The default location is `.opendetail/index.json`.",
+    retryable: false,
+  },
+  model_incomplete: {
+    message: INCOMPLETE_RESPONSE_MESSAGE,
+    retryable: false,
+  },
+  request_failed: {
+    message: OPENDETAIL_RUNTIME_FAILURE_MESSAGE,
+    retryable: true,
+  },
+} as const satisfies Record<
+  OpenDetailErrorCode,
+  { message: string; retryable: boolean }
+>;
+
 export class OpenDetailError extends Error {
   constructor(message: string, options?: ErrorOptions) {
     super(message, options);
@@ -24,3 +74,57 @@ export class OpenDetailIndexNotFoundError extends OpenDetailError {
     this.name = "OpenDetailIndexNotFoundError";
   }
 }
+
+export class OpenDetailMissingApiKeyError extends OpenDetailConfigError {
+  constructor() {
+    super(MISSING_API_KEY_MESSAGE);
+    this.name = "OpenDetailMissingApiKeyError";
+  }
+}
+
+export class OpenDetailInvalidRuntimeError extends OpenDetailError {
+  constructor() {
+    super(NODE_RUNTIME_REQUIRED_MESSAGE);
+    this.name = "OpenDetailInvalidRuntimeError";
+  }
+}
+
+export class OpenDetailModelIncompleteError extends OpenDetailError {
+  constructor(message: string) {
+    super(message);
+    this.name = "OpenDetailModelIncompleteError";
+  }
+}
+
+export const createOpenDetailPublicError = (
+  code: OpenDetailErrorCode,
+  overrides: Partial<Omit<OpenDetailPublicError, "code">> = {}
+): OpenDetailPublicError => ({
+  code,
+  message: overrides.message ?? PUBLIC_ERROR_DEFAULTS[code].message,
+  retryable: overrides.retryable ?? PUBLIC_ERROR_DEFAULTS[code].retryable,
+});
+
+export const toOpenDetailPublicError = (
+  error: unknown
+): OpenDetailPublicError => {
+  if (error instanceof OpenDetailMissingApiKeyError) {
+    return createOpenDetailPublicError("missing_api_key");
+  }
+
+  if (error instanceof OpenDetailIndexNotFoundError) {
+    return createOpenDetailPublicError("missing_index");
+  }
+
+  if (error instanceof OpenDetailInvalidRuntimeError) {
+    return createOpenDetailPublicError("invalid_runtime");
+  }
+
+  if (error instanceof OpenDetailModelIncompleteError) {
+    return createOpenDetailPublicError("model_incomplete", {
+      message: error.message,
+    });
+  }
+
+  return createOpenDetailPublicError("request_failed");
+};

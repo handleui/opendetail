@@ -1,0 +1,4 @@
+version = 1
+include = ["content/product/**/*.md", "content/product/**/*.mdx"]
+exclude = []
+base_path = "/product"

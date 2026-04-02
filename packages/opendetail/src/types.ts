@@ -73,6 +73,21 @@ export interface OpenDetailAnswerInput {
   question: string;
 }
 
+export type OpenDetailErrorCode =
+  | "invalid_request"
+  | "invalid_runtime"
+  | "method_not_allowed"
+  | "missing_api_key"
+  | "missing_index"
+  | "model_incomplete"
+  | "request_failed";
+
+export interface OpenDetailPublicError {
+  code: OpenDetailErrorCode;
+  message: string;
+  retryable: boolean;
+}
+
 export interface OpenDetailAnswerResult {
   fallback: boolean;
   images: OpenDetailImage[];
@@ -135,7 +150,9 @@ export interface OpenDetailDoneEvent {
 }
 
 export interface OpenDetailErrorEvent {
+  code: OpenDetailErrorCode;
   message: string;
+  retryable: boolean;
   type: "error";
 }
 

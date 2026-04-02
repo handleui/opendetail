@@ -1,0 +1,11 @@
+
+portless
+
+-- opendetail.localhost (auto-resolves to 127.0.0.1)
+Proxy not running. Start it? [Y/n/skip] yProxy not running. Start it? [Y/n/skip] Y
+
+Starting proxy (requires sudo)...
+HTTP proxy started on port 1355
+Proxy failed to start (timed out waiting for it to listen).
+Try starting the proxy manually to see the error:
+  sudo portless proxy start

@@ -24,6 +24,16 @@ bun run registry:build
 
 `registry/` and `registry.json` are the source of truth. `bun run registry:build` generates shadcn registry payloads into `apps/www/public/r`, and that output should be treated as generated build output rather than hand-edited source.
 
+## Local Setup
+
+For the demo app in `apps/www`, use the app directory as the env source of truth.
+
+```sh
+cp apps/www/.env.example apps/www/.env.local
+```
+
+Then set `OPENAI_API_KEY` in `apps/www/.env.local` before running `bun run dev`.
+
 ## Publish
 
 ```sh

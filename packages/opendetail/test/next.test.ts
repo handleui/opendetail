@@ -83,7 +83,9 @@ describe("createNextRouteHandler", () => {
 
     expect(response.status).toBe(400);
     await expect(response.json()).resolves.toEqual({
+      code: "invalid_request",
       error: `Request body must be valid JSON with the shape { question: string } and a question length of at most ${MAX_QUESTION_LENGTH} characters.`,
+      retryable: false,
     });
   });
 
@@ -98,8 +100,10 @@ describe("createNextRouteHandler", () => {
     expect(response.status).toBe(405);
     expect(response.headers.get("allow")).toBe("POST");
     await expect(response.json()).resolves.toEqual({
+      code: "method_not_allowed",
       error:
         "Method not allowed. Use POST with a JSON body shaped like { question: string }.",
+      retryable: false,
     });
   });
 
@@ -119,7 +123,9 @@ describe("createNextRouteHandler", () => {
 
     expect(response.status).toBe(400);
     await expect(response.json()).resolves.toEqual({
+      code: "invalid_request",
       error: `Request body must be valid JSON with the shape { question: string } and a question length of at most ${MAX_QUESTION_LENGTH} characters.`,
+      retryable: false,
     });
   });
 
@@ -194,9 +200,11 @@ describe("createNextRouteHandler", () => {
       const payload = await response.json();
 
       expect(payload).toMatchObject({
+        code: "missing_index",
         error: expect.stringContaining(
           "Run `npx opendetail build` before starting the production server."
         ),
+        retryable: false,
       });
       expect(payload).not.toMatchObject({
         error: expect.stringContaining(cwd),
@@ -238,6 +246,40 @@ describe("createNextRouteHandler", () => {
       expect(createOpenDetailSpy).toHaveBeenCalledTimes(1);
     } finally {
       vi.restoreAllMocks();
+      await removeWorkspace(cwd);
+    }
+  });
+
+  test("returns a typed setup error when OPENAI_API_KEY is missing", async () => {
+    const cwd = await createFixtureWorkspace("basic");
+    vi.stubEnv("OPENAI_API_KEY", "");
+
+    try {
+      const { artifact } = await buildOpenDetailIndex({ cwd });
+      const handler = createNextRouteHandler({
+        cwd,
+        indexData: artifact,
+      });
+      const response = await handler(
+        new Request("http://localhost/api/opendetail", {
+          body: JSON.stringify({
+            question: "What does base_path do?",
+          }),
+          headers: {
+            "content-type": "application/json",
+          },
+          method: "POST",
+        })
+      );
+
+      expect(response.status).toBe(500);
+      await expect(response.json()).resolves.toEqual({
+        code: "missing_api_key",
+        error: "OPENAI_API_KEY is required at runtime.",
+        retryable: false,
+      });
+    } finally {
+      vi.unstubAllEnvs();
       await removeWorkspace(cwd);
     }
   });

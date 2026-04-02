@@ -1,0 +1,10 @@
+[34m[1m[22m[39m
+[34m[1mportless[22m[39m
+[34m[1m[22m[39m
+[90m-- opendetail.localhost (auto-resolves to 127.0.0.1)[39m
+[1G[0J[33mProxy not running. Start it? [Y/n/skip] [39m[41Gy[1G[0J[33mProxy not running. Start it? [Y/n/skip] [39m[41GY
+[33mStarting proxy (requires sudo)...[39m
+[32mHTTP proxy started on port 1355[39m
+[31mProxy failed to start (timed out waiting for it to listen).[39m
+[34mTry starting the proxy manually to see the error:[39m
+[36m  sudo portless proxy start[39m

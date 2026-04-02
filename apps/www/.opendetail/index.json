@@ -1,0 +1,292 @@
+{
+  "chunks": [
+    {
+      "anchor": null,
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/faq.mdx",
+      "headings": ["FAQ"],
+      "id": "faq.mdx",
+      "images": [],
+      "relativePath": "faq.mdx",
+      "text": "FAQ",
+      "title": "FAQ",
+      "url": "/product/faq"
+    },
+    {
+      "anchor": "does-opendetail-ship-a-chat-ui",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/faq.mdx",
+      "headings": ["FAQ", "Does opendetail ship a chat UI?"],
+      "id": "faq.mdx#does-opendetail-ship-a-chat-ui",
+      "images": [],
+      "relativePath": "faq.mdx",
+      "text": "Does opendetail ship a chat UI?\n\nNo. opendetail is the engine. The current package focuses on the build step, local index, runtime, and Next.js adapter. If you want a chat surface, you bring that separately.",
+      "title": "FAQ",
+      "url": "/product/faq#does-opendetail-ship-a-chat-ui"
+    },
+    {
+      "anchor": "do-i-need-a-vector-database-or-external-search-service",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/faq.mdx",
+      "headings": [
+        "FAQ",
+        "Do I need a vector database or external search service?"
+      ],
+      "id": "faq.mdx#do-i-need-a-vector-database-or-external-search-service",
+      "images": [],
+      "relativePath": "faq.mdx",
+      "text": "Do I need a vector database or external search service?\n\nNo. Today the default flow builds a local JSON index and searches it locally. That keeps the setup small and easy to reason about.",
+      "title": "FAQ",
+      "url": "/product/faq#do-i-need-a-vector-database-or-external-search-service"
+    },
+    {
+      "anchor": "what-content-gets-indexed",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/faq.mdx",
+      "headings": ["FAQ", "What content gets indexed?"],
+      "id": "faq.mdx#what-content-gets-indexed",
+      "images": [],
+      "relativePath": "faq.mdx",
+      "text": "What content gets indexed?\n\nWhatever matches the include globs in opendetail.toml, minus anything in exclude. The main target is Markdown and MDX content that already explains your product clearly.",
+      "title": "FAQ",
+      "url": "/product/faq#what-content-gets-indexed"
+    },
+    {
+      "anchor": "does-mdx-still-work-if-the-file-uses-components",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/faq.mdx",
+      "headings": ["FAQ", "Does MDX still work if the file uses components?"],
+      "id": "faq.mdx#does-mdx-still-work-if-the-file-uses-components",
+      "images": [],
+      "relativePath": "faq.mdx",
+      "text": "Does MDX still work if the file uses components?\n\nYes, but the important part is the text. opendetail keeps useful MDX text and headings; imports, exports, and MDX-only syntax are not the point of retrieval.",
+      "title": "FAQ",
+      "url": "/product/faq#does-mdx-still-work-if-the-file-uses-components"
+    },
+    {
+      "anchor": "can-it-answer-from-outside-my-docs",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/faq.mdx",
+      "headings": ["FAQ", "Can it answer from outside my docs?"],
+      "id": "faq.mdx#can-it-answer-from-outside-my-docs",
+      "images": [],
+      "relativePath": "faq.mdx",
+      "text": "Can it answer from outside my docs?\n\nNo. The runtime is designed to answer only from the retrieved sources. It should cite those sources instead of filling gaps with general knowledge.",
+      "title": "FAQ",
+      "url": "/product/faq#can-it-answer-from-outside-my-docs"
+    },
+    {
+      "anchor": "what-happens-when-the-docs-are-not-enough",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/faq.mdx",
+      "headings": ["FAQ", "What happens when the docs are not enough?"],
+      "id": "faq.mdx#what-happens-when-the-docs-are-not-enough",
+      "images": [],
+      "relativePath": "faq.mdx",
+      "text": "What happens when the docs are not enough?\n\nIt falls back with a plain answer: I couldn't find that in the configured docs. That behavior is intentional. The product is more useful when it fails clearly than when it improvises.",
+      "title": "FAQ",
+      "url": "/product/faq#what-happens-when-the-docs-are-not-enough"
+    },
+    {
+      "anchor": "where-does-the-data-live",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/faq.mdx",
+      "headings": ["FAQ", "Where does the data live?"],
+      "id": "faq.mdx#where-does-the-data-live",
+      "images": [],
+      "relativePath": "faq.mdx",
+      "text": "Where does the data live?\n\nThe built index lives in your app at .opendetail/index.json. At runtime, opendetail loads that local index and sends only the retrieved sections to the model. You still need OPENAI_API_KEY at runtime.",
+      "title": "FAQ",
+      "url": "/product/faq#where-does-the-data-live"
+    },
+    {
+      "anchor": "what-frameworks-are-supported-today",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/faq.mdx",
+      "headings": ["FAQ", "What frameworks are supported today?"],
+      "id": "faq.mdx#what-frameworks-are-supported-today",
+      "images": [],
+      "relativePath": "faq.mdx",
+      "text": "What frameworks are supported today?\n\nToday the package ships a core Node runtime and a thin Next.js adapter via opendetail/next. That means Next.js is the first framework-specific path right now, while the runtime itself stays framework-light.",
+      "title": "FAQ",
+      "url": "/product/faq#what-frameworks-are-supported-today"
+    },
+    {
+      "anchor": "is-it-only-for-developer-docs",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/faq.mdx",
+      "headings": ["FAQ", "Is it only for developer docs?"],
+      "id": "faq.mdx#is-it-only-for-developer-docs",
+      "images": [],
+      "relativePath": "faq.mdx",
+      "text": "Is it only for developer docs?\n\nNo. Developer docs are a natural fit, but the shape also works for product guides, onboarding, help content, and internal knowledge. If the content is in Markdown and MDX and answers real questions, it can fit.",
+      "title": "FAQ",
+      "url": "/product/faq#is-it-only-for-developer-docs"
+    },
+    {
+      "anchor": "does-it-replace-docs",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/faq.mdx",
+      "headings": ["FAQ", "Does it replace docs?"],
+      "id": "faq.mdx#does-it-replace-docs",
+      "images": [],
+      "relativePath": "faq.mdx",
+      "text": "Does it replace docs?\n\nNo. opendetail works because the docs or knowledge content already exist. It makes that material easier to ask, retrieve, and cite inside an app.",
+      "title": "FAQ",
+      "url": "/product/faq#does-it-replace-docs"
+    },
+    {
+      "anchor": null,
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/how-it-works.mdx",
+      "headings": ["How It Works"],
+      "id": "how-it-works.mdx",
+      "images": [],
+      "relativePath": "how-it-works.mdx",
+      "text": "How It Works\n\nopendetail follows a small two-part flow: build once from your Markdown and MDX, then answer questions from the resulting local index. The design stays simple on purpose so the product remains easy to reason about and easy to inspect.",
+      "title": "How It Works",
+      "url": "/product/how-it-works"
+    },
+    {
+      "anchor": "build-time",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/how-it-works.mdx",
+      "headings": ["How It Works", "Build time"],
+      "id": "how-it-works.mdx#build-time",
+      "images": [],
+      "relativePath": "how-it-works.mdx",
+      "text": "Build time\n\nYou start with opendetail.toml in your app root. That file tells opendetail which Markdown and MDX files to include, which ones to exclude, and which base path should be used when it generates source URLs.\n\nWhen you run the build command, opendetail reads the matched files and turns them into a local index at .opendetail/index.json. Content is split by heading sections so the runtime can retrieve smaller, more relevant pieces instead of entire files. The output is local and file-based, which keeps the setup light and makes the index easy to inspect.",
+      "title": "How It Works",
+      "url": "/product/how-it-works#build-time"
+    },
+    {
+      "anchor": "request-time",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/how-it-works.mdx",
+      "headings": ["How It Works", "Request time"],
+      "id": "how-it-works.mdx#request-time",
+      "images": [],
+      "relativePath": "how-it-works.mdx",
+      "text": "Request time\n\nAt request time, the runtime loads the local index into memory and searches it for the most relevant sections. Today that retrieval step is lexical and local. There is no separate vector database, sync layer, or external search service in the default flow.\n\nOnce the relevant sections are selected, opendetail sends only those sections to the model along with strict instructions: answer only from the provided sources, cite factual claims, and do not invent missing information. That is what makes it a grounded assistant rather than a general chat layer.",
+      "title": "How It Works",
+      "url": "/product/how-it-works#request-time"
+    },
+    {
+      "anchor": "runtime-shape",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/how-it-works.mdx",
+      "headings": ["How It Works", "Runtime shape"],
+      "id": "how-it-works.mdx#runtime-shape",
+      "images": [],
+      "relativePath": "how-it-works.mdx",
+      "text": "Runtime shape\n\nThe current package is server-only. You can use the core runtime directly in Node, or use the thin Next.js adapter that exposes a route handler. In Next.js, that route must run on the Node.js runtime.\n\nResponses can be streamed, and the response shape includes source information alongside the generated answer. If the configured docs do not contain enough information, opendetail falls back instead of pretending it knows more than the content says.",
+      "title": "How It Works",
+      "url": "/product/how-it-works#runtime-shape"
+    },
+    {
+      "anchor": "what-this-design-buys-you",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/how-it-works.mdx",
+      "headings": ["How It Works", "What this design buys you"],
+      "id": "how-it-works.mdx#what-this-design-buys-you",
+      "images": [],
+      "relativePath": "how-it-works.mdx",
+      "text": "What this design buys you\n\nThis design keeps the product small, inspectable, and honest. Your content stays the source of truth. The local index stays close to the app. The answer path stays narrow enough that a reader can understand where the response came from and why.",
+      "title": "How It Works",
+      "url": "/product/how-it-works#what-this-design-buys-you"
+    },
+    {
+      "anchor": null,
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/overview.mdx",
+      "headings": ["Overview"],
+      "id": "overview.mdx",
+      "images": [],
+      "relativePath": "overview.mdx",
+      "text": "Overview\n\nopendetail is a grounded assistant for apps that already have useful Markdown and MDX content. It turns that content into answers that stay tied to your own source material instead of drifting into general chat.",
+      "title": "Overview",
+      "url": "/product/overview"
+    },
+    {
+      "anchor": "what-opendetail-is",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/overview.mdx",
+      "headings": ["Overview", "What opendetail is"],
+      "id": "overview.mdx#what-opendetail-is",
+      "images": [],
+      "relativePath": "overview.mdx",
+      "text": "What opendetail is\n\nAt its core, opendetail is the engine behind a product knowledge experience. You point it at content you already maintain, build a local index, and let your app answer questions from that material. The goal is simple: make your product easier to understand without moving your content into a separate platform or asking a team to rebuild what they already wrote.\n\nThe current package stays intentionally small. It ships the runtime, a build step, and a thin Next.js adapter. That makes it a good fit when you want grounded answers inside your product, but you do not want to stand up extra search infrastructure or adopt a full assistant platform just to answer common questions well.",
+      "title": "Overview",
+      "url": "/product/overview#what-opendetail-is"
+    },
+    {
+      "anchor": "where-it-fits",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/overview.mdx",
+      "headings": ["Overview", "Where it fits"],
+      "id": "overview.mdx#where-it-fits",
+      "images": [],
+      "relativePath": "overview.mdx",
+      "text": "Where it fits\n\nopendetail fits best when the hard part is not \"how do we make a chatbot,\" but \"how do we keep answers close to what we already wrote.\" It works well for product explainers, help content, onboarding material, internal guides, and developer docs that already live in Markdown and MDX.\n\nIt is especially useful when a team wants a narrow assistant that can answer common product questions, cite its sources, and fail plainly when the answer is not in the content. That shape is often more useful than a broader assistant that sounds confident but cannot show where an answer came from.",
+      "title": "Overview",
+      "url": "/product/overview#where-it-fits"
+    },
+    {
+      "anchor": "who-it-is-for",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/overview.mdx",
+      "headings": ["Overview", "Who it is for"],
+      "id": "overview.mdx#who-it-is-for",
+      "images": [],
+      "relativePath": "overview.mdx",
+      "text": "Who it is for\n\nopendetail is for teams that:\n\nalready have product knowledge in Markdown and MDXwant grounded answers inside an app or routecare more about clarity and citations than open-ended chatprefer a local index and a small server-only surface\n\nIt can serve technical and non-technical content alike, as long as the source material is clear enough to answer real questions. The product is only as useful as the content behind it, which is why clear headings, concrete language, and maintained source files matter so much here.",
+      "title": "Overview",
+      "url": "/product/overview#who-it-is-for"
+    },
+    {
+      "anchor": "what-it-is-not",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/overview.mdx",
+      "headings": ["Overview", "What it is not"],
+      "id": "overview.mdx#what-it-is-not",
+      "images": [],
+      "relativePath": "overview.mdx",
+      "text": "What it is not\n\nopendetail is not a hosted knowledge base, a UI kit, or a general-purpose assistant that answers from anywhere. It does not ship a chat interface, authoring workflow, or broad agent behavior. It does not try to replace your source content. It depends on it.\n\nThat boundary is part of the product. opendetail is useful because it stays close to the words you chose, the routes you own, and the questions your product actually needs to answer.",
+      "title": "Overview",
+      "url": "/product/overview#what-it-is-not"
+    },
+    {
+      "anchor": null,
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/visual-references.mdx",
+      "headings": ["Visual References"],
+      "id": "visual-references.mdx",
+      "images": [
+        {
+          "alt": "Thread shell reference",
+          "title": "Thread Shell Reference",
+          "url": "/opendetail-test/thread-shell.svg"
+        }
+      ],
+      "relativePath": "visual-references.mdx",
+      "text": "Visual References\n\nopendetail can carry image references from your docs into the answer payload. That lets a UI show a visual next to the response instead of only rendering text and citations.\n\nThread shell reference",
+      "title": "Visual References",
+      "url": "/product/visual-references"
+    },
+    {
+      "anchor": "what-the-first-visual-demonstrates",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/visual-references.mdx",
+      "headings": ["Visual References", "What the first visual demonstrates"],
+      "id": "visual-references.mdx#what-the-first-visual-demonstrates",
+      "images": [
+        {
+          "alt": "Streaming response reference",
+          "title": "Streaming Response Reference",
+          "url": "/opendetail-test/stream-reference.svg"
+        }
+      ],
+      "relativePath": "visual-references.mdx",
+      "text": "What the first visual demonstrates\n\nThe shell reference shows a narrow reading column with a fixed composer anchored near the bottom of the viewport. It is useful when a product wants the input to stay reachable while the answer stream grows above it.\n\nStreaming response reference",
+      "title": "Visual References",
+      "url": "/product/visual-references#what-the-first-visual-demonstrates"
+    },
+    {
+      "anchor": "what-the-second-visual-demonstrates",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/visual-references.mdx",
+      "headings": ["Visual References", "What the second visual demonstrates"],
+      "id": "visual-references.mdx#what-the-second-visual-demonstrates",
+      "images": [],
+      "relativePath": "visual-references.mdx",
+      "text": "What the second visual demonstrates\n\nThe streaming response reference emphasizes the assistant answer card, source metadata, and the way an image can arrive before the full body copy has finished streaming. That makes it a good test case for the live UI surface in the website app.",
+      "title": "Visual References",
+      "url": "/product/visual-references#what-the-second-visual-demonstrates"
+    }
+  ],
+  "config": {
+    "base_path": "/product",
+    "exclude": [],
+    "include": ["content/product/**/*.md", "content/product/**/*.mdx"],
+    "version": 1
+  },
+  "generatedAt": "2026-04-02T03:42:06.983Z",
+  "manifestHash": "fc503489dd4cf03db54f02c26565ea226009c72eb6d28e3547704ee26900f983",
+  "version": 1
+}

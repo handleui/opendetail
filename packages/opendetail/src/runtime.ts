@@ -16,7 +16,18 @@ import {
   DEFAULT_VERBOSITY,
   OPENDETAIL_INDEX_FILE,
 } from "./constants";
-import { OpenDetailError, OpenDetailIndexNotFoundError } from "./errors";
+import {
+  CONTENT_FILTERED_RESPONSE_MESSAGE,
+  INCOMPLETE_RESPONSE_MESSAGE,
+  MAX_OUTPUT_TOKENS_RESPONSE_MESSAGE,
+  OPENDETAIL_RUNTIME_FAILURE_MESSAGE,
+  OpenDetailError,
+  OpenDetailIndexNotFoundError,
+  OpenDetailInvalidRuntimeError,
+  OpenDetailMissingApiKeyError,
+  OpenDetailModelIncompleteError,
+  toOpenDetailPublicError,
+} from "./errors";
 import {
   createMiniSearchIndex,
   parseOpenDetailIndexArtifact,
@@ -37,22 +48,13 @@ import { ensureTrailingNewline } from "./utils";
 import { parseOpenDetailAnswerInput } from "./validation";
 
 const encoder = new TextEncoder();
-const NODE_RUNTIME_REQUIRED_MESSAGE =
-  'OpenDetail requires the Node.js runtime. In Next.js route handlers, add `export const runtime = "nodejs"`.';
-const INCOMPLETE_RESPONSE_MESSAGE = "The model could not complete the answer.";
-const CONTENT_FILTERED_RESPONSE_MESSAGE =
-  "The model could not complete the answer because the response was filtered.";
-const MAX_OUTPUT_TOKENS_RESPONSE_MESSAGE =
-  "The model could not complete the answer before reaching the output token limit.";
-const OPENDETAIL_RUNTIME_FAILURE_MESSAGE =
-  "OpenDetail could not complete the request.";
 
 const assertNodeRuntime = (): void => {
   if (
     typeof process === "undefined" ||
     typeof process.versions?.node !== "string"
   ) {
-    throw new OpenDetailError(NODE_RUNTIME_REQUIRED_MESSAGE);
+    throw new OpenDetailInvalidRuntimeError();
   }
 };
 
@@ -256,7 +258,9 @@ const resolveResponseText = (response: Response): string => {
     response.status === "incomplete" ||
     response.incomplete_details !== null
   ) {
-    throw new OpenDetailError(getIncompleteResponseMessage(response));
+    throw new OpenDetailModelIncompleteError(
+      getIncompleteResponseMessage(response)
+    );
   }
 
   const refusal = getResponseRefusal(response);
@@ -280,28 +284,18 @@ const emitEvent = (
   controller.enqueue(serializeNdjsonEvent(event));
 };
 
-const getStreamFailureMessage = (event: ResponseStreamEvent): string => {
+const getStreamFailurePublicError = (event: ResponseStreamEvent) => {
   if (event.type === "response.incomplete") {
-    return getIncompleteResponseMessage(event.response);
+    return toOpenDetailPublicError(
+      new OpenDetailModelIncompleteError(
+        getIncompleteResponseMessage(event.response)
+      )
+    );
   }
 
-  return OPENDETAIL_RUNTIME_FAILURE_MESSAGE;
-};
-
-const getPublicStreamErrorMessage = (error: unknown): string => {
-  if (
-    error instanceof OpenDetailError &&
-    [
-      NODE_RUNTIME_REQUIRED_MESSAGE,
-      INCOMPLETE_RESPONSE_MESSAGE,
-      CONTENT_FILTERED_RESPONSE_MESSAGE,
-      MAX_OUTPUT_TOKENS_RESPONSE_MESSAGE,
-    ].includes(error.message)
-  ) {
-    return error.message;
-  }
-
-  return OPENDETAIL_RUNTIME_FAILURE_MESSAGE;
+  return toOpenDetailPublicError(
+    new OpenDetailError(OPENDETAIL_RUNTIME_FAILURE_MESSAGE)
+  );
 };
 
 const handleOpenAIStreamEvent = ({
@@ -359,8 +353,11 @@ const handleOpenAIStreamEvent = ({
     event.type === "response.failed" ||
     event.type === "response.incomplete"
   ) {
+    const publicError = getStreamFailurePublicError(event);
     emitEvent(controller, {
-      message: getStreamFailureMessage(event),
+      code: publicError.code,
+      message: publicError.message,
+      retryable: publicError.retryable,
       type: "error",
     });
 
@@ -377,8 +374,11 @@ const handleOpenAIStreamEvent = ({
         finalText: resolveResponseText(event.response),
       };
     } catch (error) {
+      const publicError = toOpenDetailPublicError(error);
       emitEvent(controller, {
-        message: getPublicStreamErrorMessage(error),
+        code: publicError.code,
+        message: publicError.message,
+        retryable: publicError.retryable,
         type: "error",
       });
 
@@ -464,7 +464,7 @@ const createOpenAIClientFactory = (
     const apiKey = process.env.OPENAI_API_KEY;
 
     if (!apiKey) {
-      throw new OpenDetailError("OPENAI_API_KEY is required at runtime.");
+      throw new OpenDetailMissingApiKeyError();
     }
 
     cachedClient = new OpenAI({
@@ -490,6 +490,10 @@ export const createOpenDetail = ({
   const artifact = indexData ?? readIndexArtifact(cwd, indexPath);
   const miniSearch = createMiniSearchIndex(artifact.chunks);
   const getClient = createOpenAIClientFactory(client);
+
+  if (!client) {
+    getClient();
+  }
 
   const answer = async (
     rawInput: OpenDetailAnswerInput
@@ -573,8 +577,11 @@ export const createOpenDetail = ({
               return;
             }
 
+            const publicError = toOpenDetailPublicError(error);
             emitEvent(controller, {
-              message: getPublicStreamErrorMessage(error),
+              code: publicError.code,
+              message: publicError.message,
+              retryable: publicError.retryable,
               type: "error",
             });
           })

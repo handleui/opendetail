@@ -6,6 +6,7 @@ import type {
 import { describe, expect, test, vi } from "vitest";
 import { buildOpenDetailIndex } from "../src/build";
 import { DEFAULT_FALLBACK_TEXT } from "../src/constants";
+import { OpenDetailMissingApiKeyError } from "../src/errors";
 import { createOpenDetail } from "../src/runtime";
 import {
   createMiniSearchIndex,
@@ -148,6 +149,24 @@ describe("OpenDetail runtime", () => {
       expect(result.images).toEqual([]);
       expect(create).not.toHaveBeenCalled();
     } finally {
+      await removeWorkspace(cwd);
+    }
+  });
+
+  test("fails fast when OPENAI_API_KEY is missing and no client is injected", async () => {
+    const cwd = await createFixtureWorkspace("basic");
+    vi.stubEnv("OPENAI_API_KEY", "");
+
+    try {
+      const { artifact } = await buildOpenDetailIndex({ cwd });
+
+      expect(() =>
+        createOpenDetail({
+          indexData: artifact,
+        })
+      ).toThrowError(OpenDetailMissingApiKeyError);
+    } finally {
+      vi.unstubAllEnvs();
       await removeWorkspace(cwd);
     }
   });
@@ -387,8 +406,10 @@ describe("OpenDetail runtime", () => {
         type: "images",
       });
       expect(events.at(-1)).toEqual({
+        code: "model_incomplete",
         message:
           "The model could not complete the answer because the response was filtered.",
+        retryable: false,
         type: "error",
       });
     } finally {
