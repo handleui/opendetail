@@ -12,6 +12,7 @@ export interface OpenDetailConfig {
   exclude: string[];
   include: string[];
   media?: OpenDetailMediaConfig;
+  remote_resources?: OpenDetailRemoteResourcesConfig;
   version: 1;
 }
 
@@ -19,6 +20,21 @@ export interface OpenDetailMediaConfig {
   base_path: string;
   exclude: string[];
   include: string[];
+}
+
+export interface OpenDetailRemoteWebSearchConfig {
+  allowed_domains?: string[];
+  search_context_size?: "low" | "medium" | "high";
+}
+
+export interface OpenDetailRemoteFileSearchConfig {
+  max_num_results?: number;
+  vector_store_ids: string[];
+}
+
+export interface OpenDetailRemoteResourcesConfig {
+  file_search?: OpenDetailRemoteFileSearchConfig;
+  web_search?: OpenDetailRemoteWebSearchConfig;
 }
 
 export interface OpenDetailChunkImage {
@@ -61,6 +77,7 @@ export interface BuildOpenDetailIndexResult {
 export interface OpenDetailSource {
   headings: string[];
   id: string;
+  kind?: "local" | "remote";
   title: string;
   url: string;
 }
@@ -113,6 +130,7 @@ export interface CreateOpenDetailOptions {
   reasoningEffort?: NonNullable<
     NonNullable<ResponseCreateParamsBase["reasoning"]>["effort"]
   >;
+  remoteResources?: OpenDetailRemoteResourcesConfig;
   store?: boolean;
   verbosity?: NonNullable<
     NonNullable<ResponseCreateParamsBase["text"]>["verbosity"]

@@ -4,7 +4,9 @@ import type {
   Response,
   ResponseCreateParamsNonStreaming,
   ResponseCreateParamsStreaming,
+  ResponseOutputText,
   ResponseStreamEvent,
+  Tool,
 } from "openai/resources/responses/responses";
 import { resolveIndexPath } from "./build";
 import {
@@ -40,6 +42,7 @@ import type {
   OpenDetailAssistant,
   OpenDetailImage,
   OpenDetailIndexArtifact,
+  OpenDetailRemoteResourcesConfig,
   OpenDetailSource,
   OpenDetailStreamEvent,
   OpenDetailStreamResult,
@@ -78,9 +81,107 @@ const mapSources = (
   chunks.map((chunk, index) => ({
     headings: chunk.headings,
     id: String(index + 1),
+    kind: "local",
     title: chunk.title,
     url: chunk.url,
   }));
+
+const createRemoteTools = (
+  remoteResources: OpenDetailRemoteResourcesConfig | undefined
+): Tool[] => {
+  const tools: Tool[] = [];
+
+  if (remoteResources?.file_search) {
+    tools.push({
+      max_num_results: remoteResources.file_search.max_num_results,
+      type: "file_search",
+      vector_store_ids: remoteResources.file_search.vector_store_ids,
+    });
+  }
+
+  if (remoteResources?.web_search) {
+    tools.push({
+      filters: remoteResources.web_search.allowed_domains
+        ? {
+            allowed_domains: remoteResources.web_search.allowed_domains,
+          }
+        : undefined,
+      search_context_size: remoteResources.web_search.search_context_size,
+      type: "web_search",
+    });
+  }
+
+  return tools;
+};
+
+const extractOutputTextParts = (response: Response): ResponseOutputText[] => {
+  const outputTextParts: ResponseOutputText[] = [];
+
+  for (const outputItem of response.output) {
+    if (outputItem.type !== "message") {
+      continue;
+    }
+
+    for (const contentPart of outputItem.content) {
+      if (contentPart.type !== "output_text") {
+        continue;
+      }
+
+      outputTextParts.push(contentPart);
+    }
+  }
+
+  return outputTextParts;
+};
+
+const extractRemoteSourcesFromResponse = (
+  response: Response,
+  localSourceCount: number
+): OpenDetailSource[] => {
+  const seenRemoteUrls = new Set<string>();
+  const remoteSources: OpenDetailSource[] = [];
+
+  for (const contentPart of extractOutputTextParts(response)) {
+    for (const annotation of contentPart.annotations) {
+      if (annotation.type === "url_citation") {
+        if (seenRemoteUrls.has(annotation.url)) {
+          continue;
+        }
+
+        seenRemoteUrls.add(annotation.url);
+        remoteSources.push({
+          headings: [],
+          id: String(localSourceCount + remoteSources.length + 1),
+          kind: "remote",
+          title: annotation.title,
+          url: annotation.url,
+        });
+        continue;
+      }
+
+      if (annotation.type !== "file_citation") {
+        continue;
+      }
+
+      const fileCitationUrl = `vector-store-file://${annotation.file_id}`;
+
+      if (seenRemoteUrls.has(fileCitationUrl)) {
+        continue;
+      }
+
+      seenRemoteUrls.add(fileCitationUrl);
+      remoteSources.push({
+        headings: [],
+        id: String(localSourceCount + remoteSources.length + 1),
+        kind: "remote",
+        title: annotation.filename,
+        url: fileCitationUrl,
+      });
+    }
+  }
+
+  return remoteSources;
+};
 
 const collectRelevantImages = (
   chunks: OpenDetailIndexArtifact["chunks"]
@@ -182,6 +283,7 @@ const createOpenAIRequest = ({
   model,
   question,
   reasoningEffort,
+  remoteTools,
   retrievedChunks,
   store,
   verbosity,
@@ -189,10 +291,20 @@ const createOpenAIRequest = ({
   model: string;
   question: string;
   reasoningEffort: NonNullable<CreateOpenDetailOptions["reasoningEffort"]>;
+  remoteTools: Tool[];
   retrievedChunks: OpenDetailIndexArtifact["chunks"];
   store: boolean;
   verbosity: NonNullable<CreateOpenDetailOptions["verbosity"]>;
 }): ResponseCreateParamsNonStreaming => ({
+  ...(remoteTools.length > 0
+    ? {
+        include: [
+          "file_search_call.results",
+          "web_search_call.action.sources",
+          "web_search_call.results",
+        ],
+      }
+    : {}),
   input: `Question:
 ${question}
 
@@ -204,6 +316,7 @@ ${formatContext(retrievedChunks)}`,
     effort: reasoningEffort,
   },
   store,
+  ...(remoteTools.length > 0 ? { tools: remoteTools } : {}),
   text: {
     format: {
       type: "text",
@@ -401,6 +514,7 @@ const streamOpenAIResponse = async ({
   getClient,
   model,
   question,
+  remoteTools,
   reasoningEffort,
   retrievedChunks,
   store,
@@ -411,6 +525,7 @@ const streamOpenAIResponse = async ({
   getClient: () => OpenAI;
   model: string;
   question: string;
+  remoteTools: Tool[];
   reasoningEffort: NonNullable<CreateOpenDetailOptions["reasoningEffort"]>;
   retrievedChunks: OpenDetailIndexArtifact["chunks"];
   store: boolean;
@@ -422,6 +537,7 @@ const streamOpenAIResponse = async ({
     createOpenAIRequest({
       model,
       question,
+      remoteTools,
       reasoningEffort,
       retrievedChunks,
       store,
@@ -431,8 +547,23 @@ const streamOpenAIResponse = async ({
   const openAIStream = await getClient().responses.create(request, {
     signal: abortSignal,
   });
+  const localSources = mapSources(retrievedChunks);
 
   for await (const event of openAIStream) {
+    if (event.type === "response.completed") {
+      const remoteSources = extractRemoteSourcesFromResponse(
+        event.response,
+        localSources.length
+      );
+
+      if (remoteSources.length > 0) {
+        emitEvent(controller, {
+          sources: [...localSources, ...remoteSources],
+          type: "sources",
+        });
+      }
+    }
+
     const nextState = handleOpenAIStreamEvent({
       controller,
       event,
@@ -482,6 +613,7 @@ export const createOpenDetail = ({
   indexData,
   indexPath,
   model = DEFAULT_MODEL,
+  remoteResources,
   reasoningEffort = DEFAULT_REASONING_EFFORT,
   store = DEFAULT_STORE,
   verbosity = DEFAULT_VERBOSITY,
@@ -490,6 +622,9 @@ export const createOpenDetail = ({
 
   const artifact = indexData ?? readIndexArtifact(cwd, indexPath);
   const miniSearch = createMiniSearchIndex(artifact.chunks);
+  const remoteTools = createRemoteTools(
+    remoteResources ?? artifact.config.remote_resources
+  );
   const getClient = createOpenAIClientFactory(client);
 
   if (!client) {
@@ -502,7 +637,8 @@ export const createOpenDetail = ({
     const { question } = parseOpenDetailAnswerInput(rawInput);
     const retrievedChunks = retrieveRelevantChunks(miniSearch, question);
     const images = collectRelevantImages(retrievedChunks);
-    const sources = mapSources(retrievedChunks);
+    const localSources = mapSources(retrievedChunks);
+    const sources = [...localSources];
 
     if (retrievedChunks.length === 0) {
       return {
@@ -517,18 +653,23 @@ export const createOpenDetail = ({
     const request = createOpenAIRequest({
       model,
       question,
+      remoteTools,
       reasoningEffort,
       retrievedChunks,
       store,
       verbosity,
     });
     const response = await getClient().responses.create(request);
+    const remoteSources = extractRemoteSourcesFromResponse(
+      response,
+      localSources.length
+    );
 
     return {
       fallback: false,
       images,
       model: response.model,
-      sources,
+      sources: [...sources, ...remoteSources],
       text: resolveResponseText(response),
     };
   };
@@ -539,7 +680,8 @@ export const createOpenDetail = ({
     const { question } = parseOpenDetailAnswerInput(rawInput);
     const retrievedChunks = retrieveRelevantChunks(miniSearch, question);
     const images = collectRelevantImages(retrievedChunks);
-    const sources = mapSources(retrievedChunks);
+    const localSources = mapSources(retrievedChunks);
+    const sources = [...localSources];
     const fallback = retrievedChunks.length === 0;
     const abortController = new AbortController();
     const responseStream = new ReadableStream<Uint8Array>({
@@ -549,7 +691,7 @@ export const createOpenDetail = ({
           type: "meta",
         });
         emitEvent(controller, {
-          sources,
+          sources: localSources,
           type: "sources",
         });
         emitEvent(controller, {
@@ -568,6 +710,7 @@ export const createOpenDetail = ({
           getClient,
           model,
           question,
+          remoteTools,
           reasoningEffort,
           retrievedChunks,
           store,

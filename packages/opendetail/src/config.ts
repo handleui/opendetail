@@ -24,6 +24,25 @@ const OpenDetailConfigSchema = z
       })
       .strict()
       .optional(),
+    remote_resources: z
+      .object({
+        file_search: z
+          .object({
+            max_num_results: z.number().int().min(1).max(50).optional(),
+            vector_store_ids: z.array(z.string().min(1)).min(1),
+          })
+          .strict()
+          .optional(),
+        web_search: z
+          .object({
+            allowed_domains: z.array(z.string().min(1)).min(1).optional(),
+            search_context_size: z.enum(["low", "medium", "high"]).optional(),
+          })
+          .strict()
+          .optional(),
+      })
+      .strict()
+      .optional(),
     version: z.literal(OPENDETAIL_VERSION),
   })
   .strict();

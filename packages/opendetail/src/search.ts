@@ -44,6 +44,22 @@ const OpenDetailConfigSchema = z.object({
       include: z.array(z.string()),
     })
     .optional(),
+  remote_resources: z
+    .object({
+      file_search: z
+        .object({
+          max_num_results: z.number().int().min(1).max(50).optional(),
+          vector_store_ids: z.array(z.string()),
+        })
+        .optional(),
+      web_search: z
+        .object({
+          allowed_domains: z.array(z.string()).optional(),
+          search_context_size: z.enum(["low", "medium", "high"]).optional(),
+        })
+        .optional(),
+    })
+    .optional(),
   version: z.literal(OPENDETAIL_VERSION),
 });
 

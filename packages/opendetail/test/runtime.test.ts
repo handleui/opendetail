@@ -357,6 +357,92 @@ describe("OpenDetail runtime", () => {
     }
   });
 
+  test("adds remote sources from response annotations when remote resources are configured", async () => {
+    const cwd = await createFixtureWorkspace("basic");
+
+    try {
+      const { artifact } = await buildOpenDetailIndex({ cwd });
+      const create = vi.fn((_request: unknown) =>
+        Promise.resolve({
+          created_at: Date.now(),
+          error: null,
+          id: "resp_with_remote_sources",
+          incomplete_details: null,
+          instructions: null,
+          model: "gpt-5.4-mini",
+          output: [
+            {
+              content: [
+                {
+                  annotations: [
+                    {
+                      end_index: 24,
+                      start_index: 1,
+                      title: "OpenAI Responses API",
+                      type: "url_citation",
+                      url: "https://platform.openai.com/docs/api-reference/responses",
+                    },
+                  ],
+                  text: "Use the Responses API docs [1].",
+                  type: "output_text",
+                },
+              ],
+              id: "msg_1",
+              role: "assistant",
+              status: "completed",
+              type: "message",
+            },
+          ],
+          output_text: "Use the Responses API docs [1].",
+          status: "completed",
+        } as unknown as Response)
+      );
+      const assistant = createOpenDetail({
+        client: {
+          responses: {
+            create,
+          },
+        } as unknown as OpenAI,
+        indexData: artifact,
+        remoteResources: {
+          web_search: {
+            allowed_domains: ["platform.openai.com"],
+            search_context_size: "low",
+          },
+        },
+      });
+      const result = await assistant.answer({
+        question: "How can I use remote docs?",
+      });
+
+      expect(create).toHaveBeenCalledTimes(1);
+      expect(
+        create.mock.calls[0]?.[0] as unknown as Record<string, unknown>
+      ).toMatchObject({
+        include: expect.arrayContaining(["web_search_call.action.sources"]),
+        tools: [
+          {
+            filters: {
+              allowed_domains: ["platform.openai.com"],
+            },
+            search_context_size: "low",
+            type: "web_search",
+          },
+        ],
+      });
+      expect(result.sources.some((source) => source.kind === "remote")).toBe(
+        true
+      );
+      expect(result.sources.at(-1)).toMatchObject({
+        kind: "remote",
+        title: "OpenAI Responses API",
+        url: "https://platform.openai.com/docs/api-reference/responses",
+      });
+    } finally {
+      await removeWorkspace(cwd);
+    }
+  });
+
   test("emits an error event for incomplete streaming responses", async () => {
     const cwd = await createFixtureWorkspace("basic");
 
