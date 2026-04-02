@@ -1,12 +1,16 @@
 "use client";
 
+import { motion } from "motion/react";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 
 import {
   AssistantInput,
   type AssistantInputRequest,
 } from "../../ui/assistant-input/assistant-input";
-import { AssistantResponse } from "../../ui/assistant-response/assistant-response";
+import {
+  AssistantResponse,
+  type AssistantResponseProps,
+} from "../../ui/assistant-response/assistant-response";
 import type { AssistantSourceItem } from "../../ui/assistant-sources/assistant-sources";
 import { AssistantThread } from "../../ui/assistant-thread/assistant-thread";
 import { AssistantUserMessage } from "../../ui/assistant-user-message/assistant-user-message";
@@ -27,6 +31,22 @@ const isToggleShortcut = (event: KeyboardEvent): boolean =>
   !event.altKey &&
   !event.shiftKey &&
   event.key.toLowerCase() === "j";
+
+const SIDEBAR_CONTENT_TRANSITION = {
+  duration: 0.32,
+  ease: [0.22, 1, 0.36, 1],
+} as const;
+
+const sidebarContentVariants = {
+  closed: {
+    opacity: 0.88,
+    scale: 0.98,
+  },
+  open: {
+    opacity: 1,
+    scale: 1,
+  },
+} as const;
 
 export interface AssistantSidebarImage {
   alt?: string | null;
@@ -79,7 +99,9 @@ export interface AssistantSidebarProps {
   open?: boolean;
   placeholder?: string;
   question?: string;
+  renderSourceLink?: AssistantResponseProps["renderSourceLink"];
   requestState?: AssistantSidebarRequestState;
+  resolveSourceTarget?: AssistantResponseProps["resolveSourceTarget"];
   thread?: ReactNode;
   userInitial?: string;
 }
@@ -105,7 +127,9 @@ export const AssistantSidebar = ({
   open,
   placeholder = "Ask about these docs",
   question = "",
+  renderSourceLink,
   requestState = "idle",
+  resolveSourceTarget,
   thread,
   userInitial = "U",
 }: AssistantSidebarProps) => {
@@ -216,6 +240,8 @@ export const AssistantSidebar = ({
               durationLabel: message.durationLabel ?? undefined,
               sourceCount: message.sources?.length ?? 0,
             }}
+            renderSourceLink={renderSourceLink}
+            resolveSourceTarget={resolveSourceTarget}
             sources={message.sources ?? []}
             status={message.status}
           >
@@ -249,21 +275,29 @@ export const AssistantSidebar = ({
         className="opendetail-sidebar__panel"
         data-opendetail-component="assistant-sidebar"
       >
-        <div
-          className={[
-            "opendetail-sidebar__body",
-            messages.length === 0 ? "opendetail-sidebar__body--empty" : "",
-          ]
-            .filter(Boolean)
-            .join(" ")}
+        <motion.div
+          animate={isSidebarOpen ? "open" : "closed"}
+          className="opendetail-sidebar__shell"
+          initial={false}
+          transition={SIDEBAR_CONTENT_TRANSITION}
+          variants={sidebarContentVariants}
         >
-          {messages.length === 0 ? (
-            <p className="opendetail-sidebar__empty">{emptyState}</p>
-          ) : (
-            resolvedThread
-          )}
-        </div>
-        <div className="opendetail-sidebar__input">{resolvedInput}</div>
+          <div
+            className={[
+              "opendetail-sidebar__body",
+              messages.length === 0 ? "opendetail-sidebar__body--empty" : "",
+            ]
+              .filter(Boolean)
+              .join(" ")}
+          >
+            {messages.length === 0 ? (
+              <p className="opendetail-sidebar__empty">{emptyState}</p>
+            ) : (
+              resolvedThread
+            )}
+          </div>
+          <div className="opendetail-sidebar__input">{resolvedInput}</div>
+        </motion.div>
       </aside>
     </div>
   );

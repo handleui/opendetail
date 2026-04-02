@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import type { ReactNode } from "react";
 import "./globals.css";
-import { AssistantSidebarShell } from "../../../../registry/blocks/assistant-sidebar-shell/assistant-sidebar-shell";
+import { SiteAssistantSidebar } from "@/components/site-assistant-sidebar";
+import { getSourcePageUrls } from "@/lib/source";
 
 const geist = Geist({
   subsets: ["latin"],
@@ -34,21 +35,24 @@ export default function RootLayout({
 }: Readonly<{
   children: ReactNode;
 }>) {
+  const knownSourcePageUrls = getSourcePageUrls();
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body
         className={`${geist.variable} bg-white font-sans text-black antialiased [--font-sans:var(--font-geist)]`}
       >
-        <AssistantSidebarShell
+        <SiteAssistantSidebar
           emptyState="Ask the docs"
           inputId="opendetail-site-question"
+          knownSourcePageUrls={knownSourcePageUrls}
           persistence={{
             key: "opendetail-site-sidebar",
           }}
           placeholder="Ask about these docs"
         >
           {children}
-        </AssistantSidebarShell>
+        </SiteAssistantSidebar>
       </body>
     </html>
   );

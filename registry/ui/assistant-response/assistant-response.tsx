@@ -2,7 +2,14 @@ import { Cloud, type LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
 import { type AllowedTags, Streamdown } from "streamdown";
 
-import type { AssistantSourceItem } from "../assistant-sources/assistant-sources";
+import { AssistantSources } from "../assistant-sources/assistant-sources";
+import type { AssistantSourceItem } from "../assistant-sources/source-links";
+import {
+  type RenderAssistantSourceLink,
+  type ResolveAssistantSourceTarget,
+  renderAssistantSourceLink,
+  resolveAssistantSourceTarget,
+} from "../assistant-sources/source-links";
 import { AssistantStatus } from "../assistant-status/assistant-status";
 
 const IMAGE_WIDTH = 549;
@@ -33,6 +40,8 @@ export interface AssistantResponseProps {
   image?: AssistantResponseImage | null;
   lead?: ReactNode;
   meta?: AssistantResponseMeta | null;
+  renderSourceLink?: RenderAssistantSourceLink;
+  resolveSourceTarget?: ResolveAssistantSourceTarget;
   sources?: AssistantSourceItem[];
   status?: "complete" | "error" | "pending" | "streaming";
 }
@@ -87,9 +96,13 @@ const CitationFallback = ({ icon: Icon }: { icon: LucideIcon }) => (
 
 const CitationMarker = ({
   citationNumber,
+  renderSourceLink,
+  resolveSourceTarget,
   source,
 }: {
   citationNumber: string;
+  renderSourceLink?: RenderAssistantSourceLink;
+  resolveSourceTarget?: ResolveAssistantSourceTarget;
   source: AssistantSourceItem | null;
 }) => {
   const isRemoteSource = source?.kind === "remote";
@@ -118,7 +131,7 @@ const CitationMarker = ({
     );
   }
 
-  return (
+  const marker = (
     <span
       aria-label={citationTitle}
       className={`opendetail-citation-marker ${
@@ -132,6 +145,29 @@ const CitationMarker = ({
       {citationContent}
     </span>
   );
+
+  if (!source) {
+    return marker;
+  }
+
+  const target = resolveAssistantSourceTarget({
+    resolveSourceTarget,
+    source,
+  });
+
+  if (!target) {
+    return marker;
+  }
+
+  const linkRenderer = renderSourceLink ?? renderAssistantSourceLink;
+
+  return linkRenderer({
+    children: marker,
+    className: "opendetail-citation-link",
+    source,
+    target,
+    title: citationTitle,
+  });
 };
 
 const replaceCitationMarkers = (markdown: string): string =>
@@ -142,10 +178,14 @@ const replaceCitationMarkers = (markdown: string): string =>
 const getTextBlock = ({
   className,
   content,
+  renderSourceLink,
+  resolveSourceTarget,
   sources,
 }: {
   className: string;
   content: ReactNode;
+  renderSourceLink?: RenderAssistantSourceLink;
+  resolveSourceTarget?: ResolveAssistantSourceTarget;
   sources: AssistantSourceItem[];
 }) => {
   if (content === null || content === undefined || content === false) {
@@ -176,6 +216,8 @@ const getTextBlock = ({
             return (
               <CitationMarker
                 citationNumber={citationNumber}
+                renderSourceLink={renderSourceLink}
+                resolveSourceTarget={resolveSourceTarget}
                 source={getSourceForCitation({
                   citationNumber,
                   sources,
@@ -196,14 +238,18 @@ const getTextBlock = ({
 export const AssistantResponse = ({
   children,
   className,
-  defaultSourcesOpen: _defaultSourcesOpen = false,
+  defaultSourcesOpen = false,
   error = null,
   image = null,
   lead,
-  meta: _meta = null,
+  meta = null,
+  renderSourceLink,
+  resolveSourceTarget,
   status = "complete",
   sources = [],
 }: AssistantResponseProps) => {
+  const sourceCount = meta?.sourceCount ?? sources.length;
+  const sourceLabel = meta?.sourceLabel;
   const fallbackError =
     error ??
     (typeof lead === "string" && lead.length > 0 ? lead : null) ??
@@ -232,6 +278,8 @@ export const AssistantResponse = ({
       {getTextBlock({
         className: "opendetail-response__lead",
         content: lead,
+        renderSourceLink,
+        resolveSourceTarget,
         sources,
       })}
 
@@ -252,19 +300,23 @@ export const AssistantResponse = ({
       {getTextBlock({
         className: "opendetail-response-markdown",
         content: children,
+        renderSourceLink,
+        resolveSourceTarget,
         sources,
       })}
 
-      {/*
-      <footer className="opendetail-response__footer">
-        <AssistantSources
-          count={sourceCount}
-          countLabel={sourceLabel}
-          defaultOpen={defaultSourcesOpen}
-          items={sources}
-        />
-      </footer>
-      */}
+      {sourceCount > 0 ? (
+        <footer className="opendetail-response__footer">
+          <AssistantSources
+            count={sourceCount}
+            countLabel={sourceLabel}
+            defaultOpen={defaultSourcesOpen}
+            items={sources}
+            renderSourceLink={renderSourceLink}
+            resolveSourceTarget={resolveSourceTarget}
+          />
+        </footer>
+      ) : null}
     </article>
   );
 };

@@ -12,7 +12,10 @@ import {
   AssistantInput,
   type AssistantInputRequest,
 } from "../../ui/assistant-input/assistant-input";
-import { AssistantResponse } from "../../ui/assistant-response/assistant-response";
+import {
+  AssistantResponse,
+  type AssistantResponseProps,
+} from "../../ui/assistant-response/assistant-response";
 import type { AssistantSourceItem } from "../../ui/assistant-sources/assistant-sources";
 import { AssistantThread } from "../../ui/assistant-thread/assistant-thread";
 import { AssistantUserMessage } from "../../ui/assistant-user-message/assistant-user-message";
@@ -70,7 +73,9 @@ export interface AssistantModalProps {
   open?: boolean;
   placeholder?: string;
   question?: string;
+  renderSourceLink?: AssistantResponseProps["renderSourceLink"];
   requestState?: AssistantModalRequestState;
+  resolveSourceTarget?: AssistantResponseProps["resolveSourceTarget"];
   thread?: ReactNode;
   userInitial?: string;
 }
@@ -95,7 +100,9 @@ export const AssistantModal = ({
   open,
   placeholder = "Ask about the product docs",
   question = "",
+  renderSourceLink,
   requestState = "idle",
+  resolveSourceTarget,
   thread,
   userInitial = "U",
 }: AssistantModalProps) => {
@@ -200,6 +207,8 @@ export const AssistantModal = ({
                 durationLabel: message.durationLabel ?? undefined,
                 sourceCount: message.sources?.length ?? 0,
               }}
+              renderSourceLink={renderSourceLink}
+              resolveSourceTarget={resolveSourceTarget}
               sources={message.sources ?? []}
               status={message.status}
             >

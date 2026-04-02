@@ -110,6 +110,10 @@
         {
           "path": "registry/ui/assistant-response/assistant-response.tsx",
           "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/assistant-sources/source-links.tsx",
+          "type": "registry:ui"
         }
       ]
     },
@@ -128,6 +132,10 @@
       "files": [
         {
           "path": "registry/ui/assistant-sources/assistant-sources.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/assistant-sources/source-links.tsx",
           "type": "registry:ui"
         }
       ]
@@ -224,10 +232,7 @@
       "description": "App-shell wrapper that mounts the assistant sidebar next to the main content and wires it to useOpenDetail.",
       "docs": "Use this when the sidebar should be the application shell itself instead of a separately mounted widget.",
       "categories": ["opendetail", "block"],
-      "registryDependencies": [
-        "assistant-sidebar",
-        "use-opendetail"
-      ],
+      "registryDependencies": ["assistant-sidebar", "use-opendetail"],
       "files": [
         {
           "path": "registry/blocks/assistant-sidebar-shell/assistant-sidebar-shell.tsx",

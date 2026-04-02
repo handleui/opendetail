@@ -28,6 +28,10 @@ export function getPageMarkdownUrl(page: InferPageType<typeof source>) {
   };
 }
 
+export function getSourcePageUrls(): string[] {
+  return source.getPages().map((page) => page.url);
+}
+
 export async function getLLMText(page: InferPageType<typeof source>) {
   const processed = await page.data.getText("processed");
 

@@ -2,8 +2,8 @@
 
 import type { ReactNode } from "react";
 import {
-  useOpenDetail,
   type UseOpenDetailOptions,
+  useOpenDetail,
 } from "../../hooks/use-opendetail/use-opendetail";
 import {
   AssistantSidebar,
@@ -20,6 +20,8 @@ type AssistantSidebarShellBaseProps = Pick<
   | "inputId"
   | "onOpenChange"
   | "placeholder"
+  | "renderSourceLink"
+  | "resolveSourceTarget"
   | "thread"
   | "userInitial"
 >;
