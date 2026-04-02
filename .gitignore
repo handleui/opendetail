@@ -34,3 +34,7 @@ yarn-error.log*
 
 # ui
 dist/
+
+# generated registry payloads
+apps/www/public/r/*
+!apps/www/public/r/.gitkeep

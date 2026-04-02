@@ -1,0 +1,199 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "opendetail",
+  "homepage": "https://github.com/handleui/opendetail",
+  "items": [
+    {
+      "name": "opendetail-client",
+      "type": "registry:lib",
+      "title": "OpenDetail Client",
+      "description": "Placeholder client-side helpers for future NDJSON transport and stream parsing.",
+      "categories": ["opendetail", "lib"],
+      "files": [
+        {
+          "path": "registry/lib/opendetail-client/opendetail-client.ts",
+          "type": "registry:lib"
+        }
+      ]
+    },
+    {
+      "name": "use-opendetail",
+      "type": "registry:hook",
+      "title": "useOpenDetail",
+      "description": "Placeholder hook scaffold for future assistant request, stream, and UI state.",
+      "categories": ["opendetail", "hook"],
+      "registryDependencies": ["opendetail-client"],
+      "files": [
+        {
+          "path": "registry/hooks/use-opendetail/use-opendetail.ts",
+          "type": "registry:hook"
+        }
+      ]
+    },
+    {
+      "name": "assistant-shell",
+      "type": "registry:ui",
+      "title": "Assistant Shell",
+      "description": "Primitive shell wrapper for future opendetail assistant compositions.",
+      "categories": ["opendetail", "ui"],
+      "registryDependencies": ["opendetail-client", "use-opendetail"],
+      "files": [
+        {
+          "path": "registry/ui/assistant-shell/assistant-shell.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "assistant-input",
+      "type": "registry:ui",
+      "title": "Assistant Input",
+      "description": "Primitive input placeholder for future question entry and submit handling.",
+      "categories": ["opendetail", "ui"],
+      "registryDependencies": ["opendetail-client", "use-opendetail"],
+      "files": [
+        {
+          "path": "registry/ui/assistant-input/assistant-input.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "assistant-response",
+      "type": "registry:ui",
+      "title": "Assistant Response",
+      "description": "Primitive response placeholder for future streamed answer rendering.",
+      "categories": ["opendetail", "ui"],
+      "registryDependencies": ["opendetail-client", "use-opendetail"],
+      "files": [
+        {
+          "path": "registry/ui/assistant-response/assistant-response.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "assistant-sources",
+      "type": "registry:ui",
+      "title": "Assistant Sources",
+      "description": "Primitive placeholder for future citations and source lists.",
+      "categories": ["opendetail", "ui"],
+      "registryDependencies": ["opendetail-client", "use-opendetail"],
+      "files": [
+        {
+          "path": "registry/ui/assistant-sources/assistant-sources.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "assistant-status",
+      "type": "registry:ui",
+      "title": "Assistant Status",
+      "description": "Primitive placeholder for future loading, idle, and streaming states.",
+      "categories": ["opendetail", "ui"],
+      "registryDependencies": ["opendetail-client", "use-opendetail"],
+      "files": [
+        {
+          "path": "registry/ui/assistant-status/assistant-status.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "assistant-error",
+      "type": "registry:ui",
+      "title": "Assistant Error",
+      "description": "Primitive placeholder for future request and stream error display.",
+      "categories": ["opendetail", "ui"],
+      "registryDependencies": ["opendetail-client", "use-opendetail"],
+      "files": [
+        {
+          "path": "registry/ui/assistant-error/assistant-error.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "assistant-overlay",
+      "type": "registry:block",
+      "title": "Assistant Overlay",
+      "description": "Composable overlay block scaffold that will assemble the assistant primitives.",
+      "docs": "Scaffold-only placeholder. Replace the static composition with real UI and behavior before shipping.",
+      "categories": ["opendetail", "block"],
+      "registryDependencies": [
+        "assistant-shell",
+        "assistant-input",
+        "assistant-response",
+        "assistant-sources",
+        "assistant-status",
+        "assistant-error"
+      ],
+      "files": [
+        {
+          "path": "registry/blocks/assistant-overlay/assistant-overlay.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "assistant-modal",
+      "type": "registry:block",
+      "title": "Assistant Modal",
+      "description": "Composable modal block scaffold that will assemble the assistant primitives.",
+      "docs": "Scaffold-only placeholder. Replace the static composition with real UI and behavior before shipping.",
+      "categories": ["opendetail", "block"],
+      "registryDependencies": [
+        "assistant-shell",
+        "assistant-input",
+        "assistant-response",
+        "assistant-sources",
+        "assistant-status",
+        "assistant-error"
+      ],
+      "files": [
+        {
+          "path": "registry/blocks/assistant-modal/assistant-modal.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "assistant-sidebar",
+      "type": "registry:block",
+      "title": "Assistant Sidebar",
+      "description": "Composable sidebar block scaffold that will assemble the assistant primitives.",
+      "docs": "Scaffold-only placeholder. Replace the static composition with real UI and behavior before shipping.",
+      "categories": ["opendetail", "block"],
+      "registryDependencies": [
+        "assistant-shell",
+        "assistant-input",
+        "assistant-response",
+        "assistant-sources",
+        "assistant-status",
+        "assistant-error"
+      ],
+      "files": [
+        {
+          "path": "registry/blocks/assistant-sidebar/assistant-sidebar.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "opendetail-base",
+      "type": "registry:theme",
+      "title": "OpenDetail Base Theme",
+      "description": "Placeholder base theme scaffold for future visual variants and tokens.",
+      "docs": "Import the installed stylesheet from your app's global CSS entry after install, for example `@import \"@/styles/opendetail-base.css\";`.",
+      "categories": ["opendetail", "theme"],
+      "files": [
+        {
+          "path": "registry/themes/opendetail-base/opendetail-base.css",
+          "type": "registry:file",
+          "target": "styles/opendetail-base.css"
+        }
+      ]
+    }
+  ]
+}
