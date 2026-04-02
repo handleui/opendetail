@@ -45,7 +45,7 @@ export default function Home() {
       {messages.length > 0 ? (
         <div className="fixed top-6 right-6 z-20">
           <button
-            className="rounded-full border border-black/10 bg-white/90 px-3 py-1.5 font-medium text-black/65 text-sm transition hover:border-black/20 hover:text-black"
+            className="cursor-pointer rounded-full border border-black/10 bg-white px-3 py-1.5 font-medium text-black/65 text-sm tracking-tight transition-[background-color,color,transform] hover:bg-zinc-50 hover:text-black active:scale-[0.97]"
             onClick={clearThread}
             type="button"
           >
@@ -105,6 +105,7 @@ export default function Home() {
 
       <div className="fixed right-6 bottom-8 left-6 z-20 flex justify-center">
         <AssistantInput
+          id="opendetail-demo-question"
           onStop={stop}
           onSubmit={(request) => submit(request)}
           onValueChange={(value) => {

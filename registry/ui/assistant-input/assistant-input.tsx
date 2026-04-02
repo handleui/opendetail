@@ -3,7 +3,7 @@
 import { ArrowRight } from "lucide-react";
 import { motion } from "motion/react";
 import type { FormEvent, KeyboardEvent, MouseEvent, RefObject } from "react";
-import { useId, useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 
 import type { OpenDetailClientStatus } from "../../lib/opendetail-client/opendetail-client";
 
@@ -80,6 +80,9 @@ const getButtonClasses = (isActive: boolean, isDisabled: boolean): string =>
     isActive ? "bg-black text-white" : "bg-zinc-200 text-zinc-400",
   ].join(" ");
 
+const getInputId = ({ id, name }: { id?: string; name: string }): string =>
+  id ?? `opendetail-input-${name}`;
+
 const useTextareaLayout = ({
   question,
   textareaRef,
@@ -147,8 +150,7 @@ export const AssistantInput = ({
   size = "compact",
   value,
 }: AssistantInputProps) => {
-  const fallbackId = useId();
-  const inputId = id ?? fallbackId;
+  const inputId = getInputId({ id, name });
   const isControlled = value !== undefined;
   const [internalValue, setInternalValue] = useState(defaultValue ?? "");
   const textareaRef = useRef<HTMLTextAreaElement>(null);

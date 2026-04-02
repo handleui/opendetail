@@ -28,6 +28,20 @@
       "url": "/product/faq#does-opendetail-ship-a-chat-ui"
     },
     {
+      "anchor": "is-this-built-on-openai",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/faq.mdx",
+      "headings": [
+        "FAQ",
+        "Is this built on OpenAI?"
+      ],
+      "id": "faq.mdx#is-this-built-on-openai",
+      "images": [],
+      "relativePath": "faq.mdx",
+      "text": "Is this built on OpenAI?\n\nYes. opendetail uses the OpenAI Responses API underneath. The product value is the setup flow, grounding model, local retrieval layer, and cleaner integration surface around that API.",
+      "title": "FAQ",
+      "url": "/product/faq#is-this-built-on-openai"
+    },
+    {
       "anchor": "do-i-need-a-vector-database-or-external-search-service",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/faq.mdx",
       "headings": [
@@ -107,9 +121,37 @@
       "id": "faq.mdx#where-does-the-data-live",
       "images": [],
       "relativePath": "faq.mdx",
-      "text": "Where does the data live?\n\nThe built index lives in your app at .opendetail/index.json. At runtime, opendetail loads that local index and sends only the retrieved sections to the model. You still need OPENAI_API_KEY at runtime.",
+      "text": "Where does the data live?\n\nThe built index lives in your app at .opendetail/index.json. At runtime, opendetail loads that local index and sends only the retrieved sections to the model. In self-hosted, that means your runtime needs OPENAI_API_KEY. In hosted, the client transport points at a hosted endpoint instead.",
       "title": "FAQ",
       "url": "/product/faq#where-does-the-data-live"
+    },
+    {
+      "anchor": "what-are-the-integration-modes",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/faq.mdx",
+      "headings": [
+        "FAQ",
+        "What are the integration modes?"
+      ],
+      "id": "faq.mdx#what-are-the-integration-modes",
+      "images": [],
+      "relativePath": "faq.mdx",
+      "text": "What are the integration modes?\n\nThere are two documented modes:\n\nself-hosted: scaffold a route and keep OPENAI_API_KEY in your own runtimehosted: skip route scaffolding and point your client transport at a hosted endpoint later\n\nThe request and stream contract stay the same across both modes.",
+      "title": "FAQ",
+      "url": "/product/faq#what-are-the-integration-modes"
+    },
+    {
+      "anchor": "is-the-hosted-backend-available-yet",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/faq.mdx",
+      "headings": [
+        "FAQ",
+        "Is the hosted backend available yet?"
+      ],
+      "id": "faq.mdx#is-the-hosted-backend-available-yet",
+      "images": [],
+      "relativePath": "faq.mdx",
+      "text": "Is the hosted backend available yet?\n\nNo. In this phase, the hosted path is documented and scaffolded only. The OpenDetail-managed proxy backend is not shipped yet.",
+      "title": "FAQ",
+      "url": "/product/faq#is-the-hosted-backend-available-yet"
     },
     {
       "anchor": "what-frameworks-are-supported-today",
@@ -124,6 +166,20 @@
       "text": "What frameworks are supported today?\n\nToday the package ships a core Node runtime and a thin Next.js adapter via opendetail/next. That means Next.js is the first framework-specific path right now, while the runtime itself stays framework-light.",
       "title": "FAQ",
       "url": "/product/faq#what-frameworks-are-supported-today"
+    },
+    {
+      "anchor": "is-setup-still-manual",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/faq.mdx",
+      "headings": [
+        "FAQ",
+        "Is setup still manual?"
+      ],
+      "id": "faq.mdx#is-setup-still-manual",
+      "images": [],
+      "relativePath": "faq.mdx",
+      "text": "Is setup still manual?\n\nThe CLI includes a setup flow (opendetail setup) that can scaffold config, route wiring for self-hosted, and an initial index. It also includes a diagnostics command (opendetail doctor) for fast verification in both integration modes.",
+      "title": "FAQ",
+      "url": "/product/faq#is-setup-still-manual"
     },
     {
       "anchor": "is-it-only-for-developer-docs",
@@ -176,7 +232,7 @@
       "id": "how-it-works.mdx#build-time",
       "images": [],
       "relativePath": "how-it-works.mdx",
-      "text": "Build time\n\nYou start with opendetail.toml in your app root. That file tells opendetail which Markdown and MDX files to include, which ones to exclude, and which base path should be used when it generates source URLs.\n\nWhen you run the build command, opendetail reads the matched files and turns them into a local index at .opendetail/index.json. Content is split by heading sections so the runtime can retrieve smaller, more relevant pieces instead of entire files. The output is local and file-based, which keeps the setup light and makes the index easy to inspect.",
+      "text": "Build time\n\nYou can start with opendetail setup, which scaffolds the defaults most teams need. In self-hosted mode, that means config, route file, and initial index. In hosted mode, it means config and initial index, while skipping the route file on purpose. Under the hood, both flows still center on opendetail.toml, where you define which Markdown and MDX files to include, which ones to exclude, and which base path should be used when source URLs are generated.\n\nWhen you run the build command, opendetail reads the matched files and turns them into a local index at .opendetail/index.json. Content is split by heading sections so the runtime can retrieve smaller, more relevant pieces instead of entire files. The output is local and file-based, which keeps the setup light and makes the index easy to inspect.",
       "title": "How It Works",
       "url": "/product/how-it-works#build-time"
     },
@@ -190,7 +246,7 @@
       "id": "how-it-works.mdx#request-time",
       "images": [],
       "relativePath": "how-it-works.mdx",
-      "text": "Request time\n\nAt request time, the runtime loads the local index into memory and searches it for the most relevant sections. Today that retrieval step is lexical and local. There is no separate vector database, sync layer, or external search service in the default flow.\n\nOnce the relevant sections are selected, opendetail sends only those sections to the model along with strict instructions: answer only from the provided sources, cite factual claims, and do not invent missing information. That is what makes it a grounded assistant rather than a general chat layer.",
+      "text": "Request time\n\nAt request time, the runtime loads the local index into memory and searches it for the most relevant sections. Today that retrieval step is lexical and local. There is no separate vector database, sync layer, or external search service in the default flow.\n\nOnce the relevant sections are selected, opendetail sends only those sections to the OpenAI Responses API along with strict instructions: answer only from the provided sources, cite factual claims, and do not invent missing information. That is what makes it a grounded assistant rather than a general chat layer.",
       "title": "How It Works",
       "url": "/product/how-it-works#request-time"
     },
@@ -204,9 +260,23 @@
       "id": "how-it-works.mdx#runtime-shape",
       "images": [],
       "relativePath": "how-it-works.mdx",
-      "text": "Runtime shape\n\nThe current package is server-only. You can use the core runtime directly in Node, or use the thin Next.js adapter that exposes a route handler. In Next.js, that route must run on the Node.js runtime.\n\nResponses can be streamed, and the response shape includes source information alongside the generated answer. If the configured docs do not contain enough information, opendetail falls back instead of pretending it knows more than the content says.",
+      "text": "Runtime shape\n\nThe current package is server-first. You can use the core runtime directly in Node, or use the thin Next.js adapter that exposes a route handler with a one-line createNextRoute() helper. In Next.js, that route must run on the Node.js runtime.\n\nResponses can be streamed, and the response shape includes source information alongside the generated answer. The request shape stays { question: string }, and the stream contract stays meta, sources, images, delta, done, error across both integration modes. If the configured docs do not contain enough information, opendetail falls back instead of pretending it knows more than the content says.",
       "title": "How It Works",
       "url": "/product/how-it-works#runtime-shape"
+    },
+    {
+      "anchor": "integration-split",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/how-it-works.mdx",
+      "headings": [
+        "How It Works",
+        "Integration split"
+      ],
+      "id": "how-it-works.mdx#integration-split",
+      "images": [],
+      "relativePath": "how-it-works.mdx",
+      "text": "Integration split\n\nself-hosted is the current end-to-end backend path. You scaffold a route, keep OPENAI_API_KEY in your own runtime, and let your server call the model.\n\nhosted is the setup-focused path. In this phase, it is documented and scaffolded, but the OpenDetail-managed proxy backend is not shipped yet. The point of the split is to make that future setup path explicit now without changing the grounding model or the request contract later.",
+      "title": "How It Works",
+      "url": "/product/how-it-works#integration-split"
     },
     {
       "anchor": "what-this-design-buys-you",
@@ -231,7 +301,7 @@
       "id": "overview.mdx",
       "images": [],
       "relativePath": "overview.mdx",
-      "text": "Overview\n\nopendetail is a grounded assistant for apps that already have useful Markdown and MDX content. It turns that content into answers that stay tied to your own source material instead of drifting into general chat.",
+      "text": "Overview\n\nopendetail is a grounded assistant layer for apps that already have useful Markdown and MDX content. It turns that content into answers that stay tied to your own source material instead of drifting into general chat.",
       "title": "Overview",
       "url": "/product/overview"
     },
@@ -245,7 +315,7 @@
       "id": "overview.mdx#what-opendetail-is",
       "images": [],
       "relativePath": "overview.mdx",
-      "text": "What opendetail is\n\nAt its core, opendetail is the engine behind a product knowledge experience. You point it at content you already maintain, build a local index, and let your app answer questions from that material. The goal is simple: make your product easier to understand without moving your content into a separate platform or asking a team to rebuild what they already wrote.\n\nThe current package stays intentionally small. It ships the runtime, a build step, and a thin Next.js adapter. That makes it a good fit when you want grounded answers inside your product, but you do not want to stand up extra search infrastructure or adopt a full assistant platform just to answer common questions well.",
+      "text": "What opendetail is\n\nAt its core, opendetail is a thin product layer on top of the OpenAI Responses API. You point it at content you already maintain, build a local index, and let your app answer questions from that material. The goal is simple: make your product easier to understand without moving your content into a separate platform or asking a team to rebuild what they already wrote.\n\nThe current package stays intentionally small. It ships the runtime, setup-focused CLI commands, and thin framework wiring helpers. That makes it a good fit when you want grounded answers inside your product, but you do not want to stand up extra retrieval plumbing or build a custom Responses integration from scratch.",
       "title": "Overview",
       "url": "/product/overview#what-opendetail-is"
     },
@@ -259,7 +329,7 @@
       "id": "overview.mdx#where-it-fits",
       "images": [],
       "relativePath": "overview.mdx",
-      "text": "Where it fits\n\nopendetail fits best when the hard part is not \"how do we make a chatbot,\" but \"how do we keep answers close to what we already wrote.\" It works well for product explainers, help content, onboarding material, internal guides, and developer docs that already live in Markdown and MDX.\n\nIt is especially useful when a team wants a narrow assistant that can answer common product questions, cite its sources, and fail plainly when the answer is not in the content. That shape is often more useful than a broader assistant that sounds confident but cannot show where an answer came from.",
+      "text": "Where it fits\n\nopendetail fits best when the hard part is not \"how do we make a chatbot,\" but \"how do we ship a grounded answer flow with less setup.\" It works well for product explainers, help content, onboarding material, internal guides, and developer docs that already live in Markdown and MDX.\n\nIt is especially useful when a team wants a narrow assistant that can answer common product questions, cite its sources, and fail plainly when the answer is not in the content. That shape is often more useful than a broader assistant that sounds confident but cannot show where an answer came from.",
       "title": "Overview",
       "url": "/product/overview#where-it-fits"
     },
@@ -273,7 +343,7 @@
       "id": "overview.mdx#who-it-is-for",
       "images": [],
       "relativePath": "overview.mdx",
-      "text": "Who it is for\n\nopendetail is for teams that:\n\nalready have product knowledge in Markdown and MDXwant grounded answers inside an app or routecare more about clarity and citations than open-ended chatprefer a local index and a small server-only surface\n\nIt can serve technical and non-technical content alike, as long as the source material is clear enough to answer real questions. The product is only as useful as the content behind it, which is why clear headings, concrete language, and maintained source files matter so much here.",
+      "text": "Who it is for\n\nopendetail is for teams that:\n\nalready have product knowledge in Markdown and MDXwant grounded answers inside an app, route, or hosted transportcare more about clarity and citations than open-ended chatprefer a local index and a small integration surface\n\nIt can serve technical and non-technical content alike, as long as the source material is clear enough to answer real questions. The product is only as useful as the content behind it, which is why clear headings, concrete language, and maintained source files matter so much here.",
       "title": "Overview",
       "url": "/product/overview#who-it-is-for"
     },
@@ -287,9 +357,23 @@
       "id": "overview.mdx#what-it-is-not",
       "images": [],
       "relativePath": "overview.mdx",
-      "text": "What it is not\n\nopendetail is not a hosted knowledge base, a UI kit, or a general-purpose assistant that answers from anywhere. It does not ship a chat interface, authoring workflow, or broad agent behavior. It does not try to replace your source content. It depends on it.\n\nThat boundary is part of the product. opendetail is useful because it stays close to the words you chose, the routes you own, and the questions your product actually needs to answer.",
+      "text": "What it is not\n\nopendetail is not a full assistant platform or a general-purpose agent framework. It does not try to replace the OpenAI Responses API. It packages the setup, grounding, and integration ergonomics around that API. It also does not replace your source content. It depends on it.\n\nThat boundary is part of the product. opendetail is useful because it stays close to the words you chose, the routes you own, and the questions your product actually needs to answer.",
       "title": "Overview",
       "url": "/product/overview#what-it-is-not"
+    },
+    {
+      "anchor": "integration-modes",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/overview.mdx",
+      "headings": [
+        "Overview",
+        "Integration modes"
+      ],
+      "id": "overview.mdx#integration-modes",
+      "images": [],
+      "relativePath": "overview.mdx",
+      "text": "Integration modes\n\n| Mode | What you manage | Best for | Status |\n| --- | --- | --- | --- |\n| self-hosted | Route, runtime env, OPENAI_API_KEY | Private docs and server-owned control | Available today |\n| hosted | Index build and client transport config | Faster setup and future OpenDetail-managed delivery | Documented and scaffolded in this phase |",
+      "title": "Overview",
+      "url": "/product/overview#integration-modes"
     },
     {
       "anchor": null,
@@ -354,7 +438,7 @@
     ],
     "version": 1
   },
-  "generatedAt": "2026-04-02T11:57:39.807Z",
-  "manifestHash": "fc503489dd4cf03db54f02c26565ea226009c72eb6d28e3547704ee26900f983",
+  "generatedAt": "2026-04-02T17:05:47.486Z",
+  "manifestHash": "511d074e3487254d523728d1c15ecbfe67c21f32cb71fe7c3f9c9945c48deb1a",
   "version": 1
 }

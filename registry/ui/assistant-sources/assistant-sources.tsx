@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import { useId, useState } from "react";
+import { useState } from "react";
 
 export interface AssistantSourceItem {
   id?: string;
@@ -14,6 +14,7 @@ export interface AssistantSourcesProps {
   count?: number;
   countLabel?: string;
   defaultOpen?: boolean;
+  id?: string;
   items?: AssistantSourceItem[];
   onOpenChange?: (open: boolean) => void;
   open?: boolean;
@@ -26,6 +27,35 @@ const panelTransition = {
 
 const getClassName = (className?: string): string =>
   ["opendetail-sources", className].filter(Boolean).join(" ");
+
+const hashString = (value: string): string => {
+  let hash = 0;
+  const HASH_LIMIT = 2 ** 32;
+
+  for (const character of value) {
+    hash = (hash * 31 + character.charCodeAt(0)) % HASH_LIMIT;
+  }
+
+  return hash.toString(36);
+};
+
+const getPanelId = ({
+  id,
+  items,
+}: {
+  id?: string;
+  items: AssistantSourceItem[];
+}): string => {
+  if (id) {
+    return id;
+  }
+
+  const identity = items
+    .map((item, index) => item.id ?? item.url ?? `${index}`)
+    .join("|");
+
+  return `opendetail-sources-${hashString(identity || "empty")}`;
+};
 
 const getCountLabel = ({
   count,
@@ -50,11 +80,12 @@ export const AssistantSources = ({
   count,
   countLabel,
   defaultOpen = false,
+  id,
   items = [],
   onOpenChange,
   open,
 }: AssistantSourcesProps) => {
-  const panelId = useId();
+  const panelId = getPanelId({ id, items });
   const isControlled = open !== undefined;
   const [internalOpen, setInternalOpen] = useState(defaultOpen);
   const resolvedOpen = isControlled ? open : internalOpen;
