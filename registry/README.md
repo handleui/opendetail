@@ -35,6 +35,8 @@ The `opendetail-base` theme item installs a stylesheet at `styles/opendetail-bas
 
 Import that stylesheet from your app's global CSS entry after install. For a Next app with the default alias setup, `@import "@/styles/opendetail-base.css";` is the intended shape.
 
+That stylesheet only provides the shared `tw-shimmer` import used by the thinking pill. The installed UI primitives otherwise rely on normal Tailwind classes so they stay easy to adapt in consumer apps.
+
 ## Future namespace example
 
 Consumers can later map a namespace such as `@opendetail` to the hosted registry URL:

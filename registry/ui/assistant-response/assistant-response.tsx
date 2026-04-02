@@ -5,5 +5,7 @@ interface AssistantResponseProps {
 }
 
 export const AssistantResponse = ({ children }: AssistantResponseProps) => (
-  <article data-opendetail-placeholder="assistant-response">{children}</article>
+  <article data-opendetail-placeholder="assistant-response">
+    {children ?? null}
+  </article>
 );

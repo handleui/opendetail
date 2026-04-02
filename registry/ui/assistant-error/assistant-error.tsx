@@ -1,17 +1,17 @@
-interface AssistantErrorProps {
+import { AssistantStatus } from "../assistant-status/assistant-status";
+
+export interface AssistantErrorProps {
+  label?: string;
   message?: string | null;
 }
 
 export const AssistantError = ({
-  message = "Assistant error scaffold",
+  label,
+  message = "Ouch, please try again",
 }: AssistantErrorProps) => {
   if (message === null) {
     return null;
   }
 
-  return (
-    <p data-opendetail-placeholder="assistant-error" role="alert">
-      {message}
-    </p>
-  );
+  return <AssistantStatus label={label ?? message} variant="error" />;
 };

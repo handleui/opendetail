@@ -48,9 +48,14 @@
       "name": "assistant-input",
       "type": "registry:ui",
       "title": "Assistant Input",
-      "description": "Primitive input placeholder for future question entry and submit handling.",
+      "description": "Exact Figma input primitive with animated multiline layout, send or stop action, and a submit contract shaped like { question: string }.",
       "categories": ["opendetail", "ui"],
-      "registryDependencies": ["opendetail-client", "use-opendetail"],
+      "dependencies": ["lucide-react@^1.7.0", "motion@^12.38.0"],
+      "registryDependencies": [
+        "opendetail-client",
+        "use-opendetail",
+        "assistant-status"
+      ],
       "files": [
         {
           "path": "registry/ui/assistant-input/assistant-input.tsx",
@@ -90,9 +95,10 @@
       "name": "assistant-status",
       "type": "registry:ui",
       "title": "Assistant Status",
-      "description": "Primitive placeholder for future loading, idle, and streaming states.",
+      "description": "Reusable pill primitive for thinking and error states used by assistant-input.",
       "categories": ["opendetail", "ui"],
-      "registryDependencies": ["opendetail-client", "use-opendetail"],
+      "dependencies": ["lucide-react@^1.7.0"],
+      "registryDependencies": ["opendetail-base"],
       "files": [
         {
           "path": "registry/ui/assistant-status/assistant-status.tsx",
@@ -104,9 +110,9 @@
       "name": "assistant-error",
       "type": "registry:ui",
       "title": "Assistant Error",
-      "description": "Primitive placeholder for future request and stream error display.",
+      "description": "Compatibility alias that renders assistant-status with the error pill treatment.",
       "categories": ["opendetail", "ui"],
-      "registryDependencies": ["opendetail-client", "use-opendetail"],
+      "registryDependencies": ["assistant-status"],
       "files": [
         {
           "path": "registry/ui/assistant-error/assistant-error.tsx",
@@ -118,17 +124,10 @@
       "name": "assistant-overlay",
       "type": "registry:block",
       "title": "Assistant Overlay",
-      "description": "Composable overlay block scaffold that will assemble the assistant primitives.",
-      "docs": "Scaffold-only placeholder. Replace the static composition with real UI and behavior before shipping.",
+      "description": "Placeholder overlay shell for future assistant compositions.",
+      "docs": "Scaffold-only wrapper. Real overlay composition lands after thread, sources, and message designs exist.",
       "categories": ["opendetail", "block"],
-      "registryDependencies": [
-        "assistant-shell",
-        "assistant-input",
-        "assistant-response",
-        "assistant-sources",
-        "assistant-status",
-        "assistant-error"
-      ],
+      "registryDependencies": ["assistant-shell"],
       "files": [
         {
           "path": "registry/blocks/assistant-overlay/assistant-overlay.tsx",
@@ -140,17 +139,10 @@
       "name": "assistant-modal",
       "type": "registry:block",
       "title": "Assistant Modal",
-      "description": "Composable modal block scaffold that will assemble the assistant primitives.",
-      "docs": "Scaffold-only placeholder. Replace the static composition with real UI and behavior before shipping.",
+      "description": "Placeholder modal shell for future assistant compositions.",
+      "docs": "Scaffold-only wrapper. Real modal composition lands after thread, sources, and message designs exist.",
       "categories": ["opendetail", "block"],
-      "registryDependencies": [
-        "assistant-shell",
-        "assistant-input",
-        "assistant-response",
-        "assistant-sources",
-        "assistant-status",
-        "assistant-error"
-      ],
+      "registryDependencies": ["assistant-shell"],
       "files": [
         {
           "path": "registry/blocks/assistant-modal/assistant-modal.tsx",
@@ -162,17 +154,10 @@
       "name": "assistant-sidebar",
       "type": "registry:block",
       "title": "Assistant Sidebar",
-      "description": "Composable sidebar block scaffold that will assemble the assistant primitives.",
-      "docs": "Scaffold-only placeholder. Replace the static composition with real UI and behavior before shipping.",
+      "description": "Placeholder sidebar shell for future assistant compositions.",
+      "docs": "Scaffold-only wrapper. Real sidebar composition lands after thread, sources, and message designs exist.",
       "categories": ["opendetail", "block"],
-      "registryDependencies": [
-        "assistant-shell",
-        "assistant-input",
-        "assistant-response",
-        "assistant-sources",
-        "assistant-status",
-        "assistant-error"
-      ],
+      "registryDependencies": ["assistant-shell"],
       "files": [
         {
           "path": "registry/blocks/assistant-sidebar/assistant-sidebar.tsx",
@@ -184,9 +169,10 @@
       "name": "opendetail-base",
       "type": "registry:theme",
       "title": "OpenDetail Base Theme",
-      "description": "Placeholder base theme scaffold for future visual variants and tokens.",
-      "docs": "Import the installed stylesheet from your app's global CSS entry after install, for example `@import \"@/styles/opendetail-base.css\";`.",
+      "description": "Minimal shared theme entry that imports tw-shimmer for the thinking pill.",
+      "docs": "Import the installed stylesheet from your app's global CSS entry after `@import \"tailwindcss\";`, for example `@import \"@/styles/opendetail-base.css\";`.",
       "categories": ["opendetail", "theme"],
+      "dependencies": ["tw-shimmer@0.4.9"],
       "files": [
         {
           "path": "registry/themes/opendetail-base/opendetail-base.css",

@@ -1,0 +1,47 @@
+---
+title: FAQ
+description: Common questions about what opendetail does today and how it fits.
+order: 3
+---
+
+# FAQ
+
+## Does opendetail ship a chat UI?
+
+No. `opendetail` is the engine. The current package focuses on the build step, local index, runtime, and Next.js adapter. If you want a chat surface, you bring that separately.
+
+## Do I need a vector database or external search service?
+
+No. Today the default flow builds a local JSON index and searches it locally. That keeps the setup small and easy to reason about.
+
+## What content gets indexed?
+
+Whatever matches the `include` globs in `opendetail.toml`, minus anything in `exclude`. The main target is Markdown and MDX content that already explains your product clearly.
+
+## Does MDX still work if the file uses components?
+
+Yes, but the important part is the text. `opendetail` keeps useful MDX text and headings; imports, exports, and MDX-only syntax are not the point of retrieval.
+
+## Can it answer from outside my docs?
+
+No. The runtime is designed to answer only from the retrieved sources. It should cite those sources instead of filling gaps with general knowledge.
+
+## What happens when the docs are not enough?
+
+It falls back with a plain answer: `I couldn't find that in the configured docs.` That behavior is intentional. The product is more useful when it fails clearly than when it improvises.
+
+## Where does the data live?
+
+The built index lives in your app at `.opendetail/index.json`. At runtime, `opendetail` loads that local index and sends only the retrieved sections to the model. You still need `OPENAI_API_KEY` at runtime.
+
+## What frameworks are supported today?
+
+Today the package ships a core Node runtime and a thin Next.js adapter via `opendetail/next`. That means Next.js is the first framework-specific path right now, while the runtime itself stays framework-light.
+
+## Is it only for developer docs?
+
+No. Developer docs are a natural fit, but the shape also works for product guides, onboarding, help content, and internal knowledge. If the content is in Markdown and MDX and answers real questions, it can fit.
+
+## Does it replace docs?
+
+No. `opendetail` works because the docs or knowledge content already exist. It makes that material easier to ask, retrieve, and cite inside an app.
