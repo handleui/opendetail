@@ -1,4 +1,4 @@
 version = 1
 include = ["content/product/**/*.md", "content/product/**/*.mdx"]
-exclude = []
+exclude = ["content/product/visual-references.mdx"]
 base_path = "/product"

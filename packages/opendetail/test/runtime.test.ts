@@ -7,7 +7,6 @@ import type {
 } from "openai/resources/responses/responses";
 import { describe, expect, test, vi } from "vitest";
 import { buildOpenDetailIndex } from "../src/build";
-import { DEFAULT_FALLBACK_TEXT } from "../src/constants";
 import { OpenDetailMissingApiKeyError } from "../src/errors";
 import { createOpenDetail } from "../src/runtime";
 import {
@@ -66,6 +65,44 @@ function* createMockResponseEventStream(): Generator<ResponseStreamEvent> {
   } satisfies ResponseStreamEvent;
 }
 
+function* createUndocumentedResponseEventStream(
+  text: string
+): Generator<ResponseStreamEvent> {
+  yield {
+    content_index: 0,
+    delta: text,
+    item_id: "msg_missing_docs",
+    logprobs: [],
+    output_index: 0,
+    sequence_number: 1,
+    type: "response.output_text.delta",
+  } satisfies ResponseStreamEvent;
+  yield {
+    content_index: 0,
+    item_id: "msg_missing_docs",
+    logprobs: [],
+    output_index: 0,
+    sequence_number: 2,
+    text,
+    type: "response.output_text.done",
+  } satisfies ResponseStreamEvent;
+  yield {
+    response: {
+      created_at: Date.now(),
+      error: null,
+      id: "resp_missing_docs",
+      incomplete_details: null,
+      instructions: null,
+      model: "gpt-5.4-mini",
+      output: [],
+      output_text: text,
+      status: "completed",
+    } as unknown as Response,
+    sequence_number: 3,
+    type: "response.completed",
+  } satisfies ResponseStreamEvent;
+}
+
 const createMockClient = () => {
   const create = vi.fn((request: unknown) => {
     const maybeStreamRequest = request as { stream?: boolean };
@@ -83,6 +120,37 @@ const createMockClient = () => {
       model: "gpt-5.4-mini",
       output: [],
       output_text: "Use `base_path` to prepend a route prefix [1].",
+      status: "completed",
+    } as unknown as Response);
+  });
+
+  return {
+    client: {
+      responses: {
+        create,
+      },
+    } as unknown as OpenAI,
+    create,
+  };
+};
+
+const createMissingDocsMockClient = (text: string) => {
+  const create = vi.fn((request: unknown) => {
+    const maybeStreamRequest = request as { stream?: boolean };
+
+    if (maybeStreamRequest.stream) {
+      return Promise.resolve(createUndocumentedResponseEventStream(text));
+    }
+
+    return Promise.resolve({
+      created_at: Date.now(),
+      error: null,
+      id: "resp_missing_docs",
+      incomplete_details: null,
+      instructions: null,
+      model: "gpt-5.4-mini",
+      output: [],
+      output_text: text,
       status: "completed",
     } as unknown as Response);
   });
@@ -132,12 +200,14 @@ describe("OpenDetail runtime", () => {
     }
   });
 
-  test("returns the fixed fallback without calling OpenAI when nothing matches", async () => {
+  test("asks the model for a direct docs-status answer when nothing matches", async () => {
     const cwd = await createFixtureWorkspace("basic");
+    const missingDocsText =
+      "I couldn't find a documented setup for that in the configured docs yet.";
 
     try {
       const { artifact } = await buildOpenDetailIndex({ cwd });
-      const { client, create } = createMockClient();
+      const { client, create } = createMissingDocsMockClient(missingDocsText);
       const assistant = createOpenDetail({
         client,
         cwd,
@@ -147,10 +217,18 @@ describe("OpenDetail runtime", () => {
         question: "abracadabra glorp zizzle",
       });
 
-      expect(result.text).toBe(DEFAULT_FALLBACK_TEXT);
+      expect(result.text).toBe(missingDocsText);
       expect(result.fallback).toBe(true);
       expect(result.images).toEqual([]);
-      expect(create).not.toHaveBeenCalled();
+      expect(create).toHaveBeenCalledTimes(1);
+      expect(create.mock.calls[0]?.[0]).toMatchObject({
+        input: expect.stringContaining("Matched local sources:\nno"),
+      });
+      expect(create.mock.calls[0]?.[0]).toMatchObject({
+        instructions: expect.stringContaining(
+          'Do not say "I couldn\'t find that in the configured docs."'
+        ),
+      });
     } finally {
       await removeWorkspace(cwd);
     }
@@ -284,6 +362,55 @@ describe("OpenDetail runtime", () => {
         text: {
           verbosity: "low",
         },
+      });
+    } finally {
+      await removeWorkspace(cwd);
+    }
+  });
+
+  test("streams a direct docs-status answer when nothing matches", async () => {
+    const cwd = await createFixtureWorkspace("basic");
+    const missingDocsText =
+      "I couldn't find a documented setup for that in the configured docs yet.";
+
+    try {
+      const { artifact } = await buildOpenDetailIndex({ cwd });
+      const { client, create } = createMissingDocsMockClient(missingDocsText);
+      const assistant = createOpenDetail({
+        client,
+        cwd,
+        indexData: artifact,
+      });
+      const result = await assistant.stream({
+        question: "abracadabra glorp zizzle",
+      });
+      const events = await readNdjsonEvents(result.stream);
+
+      expect(result.fallback).toBe(true);
+      expect(events[0]).toEqual({
+        model: "gpt-5.4-mini",
+        type: "meta",
+      });
+      expect(events[1]).toEqual({
+        sources: [],
+        type: "sources",
+      });
+      expect(events[2]).toEqual({
+        images: [],
+        type: "images",
+      });
+      expect(events[3]).toEqual({
+        text: missingDocsText,
+        type: "delta",
+      });
+      expect(events[4]).toEqual({
+        text: missingDocsText,
+        type: "done",
+      });
+      expect(create).toHaveBeenCalledTimes(1);
+      expect(create.mock.calls[0]?.[0]).toMatchObject({
+        input: expect.stringContaining("Matched local sources:\nno"),
+        stream: true,
       });
     } finally {
       await removeWorkspace(cwd);

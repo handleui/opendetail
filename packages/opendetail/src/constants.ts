@@ -11,7 +11,7 @@ export const DEFAULT_VERBOSITY = "low";
 export const DEFAULT_STORE = false;
 export const DEFAULT_PROMPT_CACHE_RETENTION = "in-memory";
 export const DEFAULT_FALLBACK_TEXT =
-  "I couldn't find that in the configured docs.";
+  "This isn't documented in the configured docs yet.";
 export const DEFAULT_CHUNK_CHARACTER_LIMIT = 1200;
 export const DEFAULT_MAX_RETRIEVED_CHUNKS = 6;
 export const DEFAULT_MAX_RETURNED_IMAGES = 3;

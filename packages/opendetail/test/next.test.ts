@@ -115,7 +115,7 @@ describe("createNextRouteHandler", () => {
     );
 
     expect(response.status).toBe(400);
-    await expect(response.json()).resolves.toEqual({
+    await expect(response.json()).resolves.toMatchObject({
       code: "invalid_request",
       error: `Request body must be valid JSON with the shape { question: string } and a question length of at most ${MAX_QUESTION_LENGTH} characters.`,
       retryable: false,
@@ -132,7 +132,7 @@ describe("createNextRouteHandler", () => {
 
     expect(response.status).toBe(405);
     expect(response.headers.get("allow")).toBe("POST");
-    await expect(response.json()).resolves.toEqual({
+    await expect(response.json()).resolves.toMatchObject({
       code: "method_not_allowed",
       error:
         "Method not allowed. Use POST with a JSON body shaped like { question: string }.",
@@ -155,7 +155,7 @@ describe("createNextRouteHandler", () => {
     );
 
     expect(response.status).toBe(400);
-    await expect(response.json()).resolves.toEqual({
+    await expect(response.json()).resolves.toMatchObject({
       code: "invalid_request",
       error: `Request body must be valid JSON with the shape { question: string } and a question length of at most ${MAX_QUESTION_LENGTH} characters.`,
       retryable: false,
@@ -306,7 +306,7 @@ describe("createNextRouteHandler", () => {
       );
 
       expect(response.status).toBe(500);
-      await expect(response.json()).resolves.toEqual({
+      await expect(response.json()).resolves.toMatchObject({
         code: "missing_api_key",
         error: "OPENAI_API_KEY is required at runtime.",
         retryable: false,

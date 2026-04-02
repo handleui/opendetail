@@ -227,20 +227,6 @@ const collectRelevantImages = (
   return images;
 };
 
-const createFallbackStream = (
-  controller: ReadableStreamDefaultController<Uint8Array>
-): void => {
-  emitEvent(controller, {
-    text: DEFAULT_FALLBACK_TEXT,
-    type: "delta",
-  });
-  emitEvent(controller, {
-    text: DEFAULT_FALLBACK_TEXT,
-    type: "done",
-  });
-  controller.close();
-};
-
 const formatContext = (chunks: OpenDetailIndexArtifact["chunks"]): string =>
   chunks
     .map(
@@ -278,11 +264,15 @@ const formatImageContext = (
 };
 
 const SYSTEM_INSTRUCTIONS = `You are a documentation assistant.
-Answer only from the provided sources.
-Never invent facts outside the provided sources.
-Every factual statement must cite one or more sources with [1], [2], etc.
+Answer from the provided sources and tool results when they are available.
+Never present unsupported guesses as documented facts.
+Every factual statement grounded in the provided sources or tool results must cite one or more sources with [1], [2], etc.
 Use normal sentence case and never answer in all caps unless the source text is all caps.
-If the provided sources are insufficient, answer exactly: ${DEFAULT_FALLBACK_TEXT}`;
+If the available sources do not answer the question, do not answer from general knowledge.
+Instead, give a short, direct response that explains the topic is not documented yet or cannot be confirmed from the docs.
+If the question asks about support, setup, or compatibility, say that you could not find documented support or a documented setup for it.
+Only include citations when you are citing an actual source.
+Do not say "I couldn't find that in the configured docs."`;
 const MAX_PROMPT_CACHE_KEY_LENGTH = 64;
 
 const createInstructionsHash = (instructions: string): string =>
@@ -435,6 +425,21 @@ const createPromptCacheKey = ({
   return createHash("sha256").update(cacheMaterial).digest("hex");
 };
 
+const createModelInput = ({
+  question,
+  retrievedChunks,
+}: {
+  question: string;
+  retrievedChunks: OpenDetailIndexArtifact["chunks"];
+}): string => `Sources:
+${retrievedChunks.length > 0 ? formatContext(retrievedChunks) : "none"}
+
+Matched local sources:
+${retrievedChunks.length > 0 ? "yes" : "no"}
+
+Question:
+${question}`;
+
 const createOpenAIRequest = ({
   instructionsHash,
   manifestHash,
@@ -473,11 +478,10 @@ const createOpenAIRequest = ({
         ],
       }
     : {}),
-  input: `Sources:
-${formatContext(retrievedChunks)}
-
-Question:
-${question}`,
+  input: createModelInput({
+    question,
+    retrievedChunks,
+  }),
   instructions: systemInstructions,
   model,
   prompt_cache_key: createPromptCacheKey({
@@ -865,16 +869,7 @@ export const createOpenDetail = ({
     const images = collectRelevantImages(retrievedChunks);
     const localSources = mapSources(retrievedChunks);
     const sources = [...localSources];
-
-    if (retrievedChunks.length === 0) {
-      return {
-        fallback: true,
-        images,
-        model,
-        sources,
-        text: DEFAULT_FALLBACK_TEXT,
-      };
-    }
+    const fallback = retrievedChunks.length === 0;
 
     const request = createOpenAIRequest({
       instructionsHash,
@@ -897,7 +892,7 @@ export const createOpenDetail = ({
     );
 
     return {
-      fallback: false,
+      fallback,
       images,
       model: response.model,
       sources: [...sources, ...remoteSources],
@@ -929,11 +924,6 @@ export const createOpenDetail = ({
           images,
           type: "images",
         });
-
-        if (fallback) {
-          createFallbackStream(controller);
-          return;
-        }
 
         streamOpenAIResponse({
           abortSignal: abortController.signal,

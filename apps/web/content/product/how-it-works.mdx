@@ -24,7 +24,7 @@ Once the relevant sections are selected, `opendetail` sends only those sections 
 
 The current package is server-first. You can use the core runtime directly in Node, or use the thin Next.js adapter that exposes a route handler with a one-line `createNextRoute()` helper. In Next.js, that route must run on the Node.js runtime.
 
-Responses can be streamed, and the response shape includes source information alongside the generated answer. The request shape stays `{ question: string }`, and the stream contract stays `meta`, `sources`, `images`, `delta`, `done`, `error` across both integration modes. If the configured docs do not contain enough information, `opendetail` falls back instead of pretending it knows more than the content says.
+Responses can be streamed, and the response shape includes source information alongside the generated answer. The request shape stays `{ question: string }`, and the stream contract stays `meta`, `sources`, `images`, `delta`, `done`, `error` across both integration modes. If the configured docs do not contain enough information, `opendetail` answers clearly that the topic is not documented yet or cannot be confirmed instead of pretending it knows more than the content says.
 
 ## Integration split
 
