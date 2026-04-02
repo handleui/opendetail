@@ -6,7 +6,7 @@
     "dev": "turbo run dev",
     "check-types": "turbo run check-types",
     "test": "turbo run test",
-    "registry:build": "bunx shadcn@4.1.2 build --output apps/www/public/r",
+    "registry:build": "bunx shadcn@4.1.2 build --output apps/web/public/r",
     "changeset": "changeset",
     "changeset:status": "changeset status --verbose",
     "changeset:version": "changeset version",
