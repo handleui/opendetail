@@ -6,14 +6,10 @@ This is a Next.js application generated with
 Run development server:
 
 ```bash
-npm run dev
-# or
-pnpm dev
-# or
-yarn dev
+bun run dev
 ```
 
-Open http://localhost:3000 with your browser to see the result.
+That serves the docs app through `portless` at `http://opendetail.docs.localhost` on your configured proxy port.
 
 ## Explore
 

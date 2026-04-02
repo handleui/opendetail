@@ -4,6 +4,7 @@ const withMDX = createMDX();
 
 /** @type {import('next').NextConfig} */
 const config = {
+  allowedDevOrigins: ["opendetail.docs.localhost"],
   serverExternalPackages: ["@takumi-rs/image-response"],
   reactStrictMode: true,
 };

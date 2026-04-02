@@ -10,16 +10,17 @@
   --opendetail-color-input-action-background: #e4e4e7;
   --opendetail-color-input-action-foreground: #a1a1aa;
   --opendetail-color-meta: #a4a4a4;
-  --opendetail-color-overlay: rgb(255 255 255 / 0.72);
+  --opendetail-color-overlay: rgb(255 255 255 / 0.9);
   --opendetail-color-placeholder: #e8e8e8;
   --opendetail-color-placeholder-foreground: #a1a1aa;
   --opendetail-color-surface: #f9f9f9;
   --opendetail-input-action-size: 1.75rem;
+  --opendetail-input-layer-reserved-height: 5.5rem;
   --opendetail-input-width-compact: 28.125rem;
   --opendetail-input-width-shell: 34.375rem;
   --opendetail-input-fade-size: 0.625rem;
   --opendetail-input-surface-min-height: 3rem;
-  --opendetail-input-surface-padding: 0.625rem;
+  --opendetail-input-surface-padding: 0.5rem;
   --opendetail-radius-badge: 0.125rem;
   --opendetail-radius-button: 0.25rem;
   --opendetail-radius-control: 0.5rem;
@@ -33,6 +34,8 @@
   --opendetail-shell-min-height: 56.375rem;
   --opendetail-shell-padding-bottom: 2rem;
   --opendetail-shell-padding-top: 3rem;
+  --opendetail-sidebar-padding: 1rem;
+  --opendetail-sidebar-width: 30rem;
   --opendetail-space-lg: 2rem;
   --opendetail-space-md: 1rem;
   --opendetail-space-sm: 0.625rem;
@@ -267,7 +270,10 @@
 
 .opendetail-modal__thread-layer {
   position: absolute;
-  inset: 0;
+  top: 0;
+  right: 0;
+  bottom: var(--opendetail-input-layer-reserved-height);
+  left: 0;
   z-index: 30;
   padding: var(--opendetail-modal-thread-padding-top)
     var(--opendetail-modal-padding-inline)
@@ -339,6 +345,61 @@
 
 .opendetail-modal__close-button:active {
   transform: scale(0.98);
+}
+
+.opendetail-sidebar {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+}
+
+.opendetail-sidebar__content {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.opendetail-sidebar__panel {
+  display: flex;
+  flex-direction: column;
+  width: 0;
+  min-width: 0;
+  overflow: hidden;
+  background: var(--opendetail-color-background);
+  border-left: 0 solid transparent;
+  transition:
+    width 180ms ease,
+    border-left-width 180ms ease,
+    border-left-color 180ms ease;
+}
+
+.opendetail-sidebar--open .opendetail-sidebar__panel {
+  width: min(100vw, var(--opendetail-sidebar-width));
+  border-left-color: color-mix(
+    in srgb,
+    var(--opendetail-color-border) 88%,
+    white
+  );
+  border-left-width: 1px;
+}
+
+.opendetail-sidebar__body {
+  flex: 1;
+  padding: var(--opendetail-sidebar-padding);
+  overflow-y: auto;
+}
+
+.opendetail-sidebar__thread {
+  width: 100%;
+  max-width: none;
+  padding-bottom: 0;
+}
+
+.opendetail-sidebar__input {
+  display: flex;
+  justify-content: center;
+  padding: var(--opendetail-sidebar-padding);
+  border-top: 1px solid
+    color-mix(in srgb, var(--opendetail-color-border) 88%, white);
 }
 
 .opendetail-user-message {
@@ -624,10 +685,12 @@
 
 @media (max-width: 40rem) {
   :root {
+    --opendetail-input-layer-reserved-height: 5rem;
     --opendetail-modal-close-offset: 1rem;
     --opendetail-modal-padding-inline: 1rem;
     --opendetail-modal-thread-padding-top: 4.75rem;
     --opendetail-shell-padding-top: 2rem;
+    --opendetail-sidebar-width: min(100vw, 26rem);
   }
 
   .opendetail-shell {

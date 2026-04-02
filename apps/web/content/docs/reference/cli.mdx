@@ -1,0 +1,95 @@
+---
+title: CLI
+description: Commands, flags, and what setup, build, and doctor actually do.
+---
+
+# CLI
+
+OpenDetail ships with a setup-focused CLI.
+
+## Commands
+
+```bash
+opendetail build [--config <path>] [--output <path>] [--cwd <path>]
+opendetail setup [--integration <self-hosted|hosted>] [--config <path>] [--route <path>] [--base-path <url>] [--include <glob>] [--media-include <glob>] [--with-media] [--skip-build] [--force] [--interactive] [--no-interactive] [--cwd <path>]
+opendetail doctor [--integration <self-hosted|hosted>] [--config <path>] [--route <path>] [--cwd <path>]
+```
+
+## `setup`
+
+`setup` writes the standard project shape for the selected integration mode.
+
+### What it writes
+
+- `opendetail.toml`
+- in `self-hosted`, a route at `src/app/api/opendetail/route.ts` by default
+- `.opendetail/index.json` unless you pass `--skip-build`
+
+### Important flags
+
+| Flag | Meaning |
+| --- | --- |
+| `--integration` | `self-hosted` or `hosted` |
+| `--config` | Custom config path |
+| `--route` | Custom route path for self-hosted setup |
+| `--base-path` | Public source URL base, default `/docs` |
+| `--include` | Custom docs glob |
+| `--media-include` | Custom media glob |
+| `--with-media` | Include `[media]` config |
+| `--skip-build` | Skip the initial index build |
+| `--force` | Overwrite existing generated files |
+| `--interactive` | Force the setup wizard |
+| `--no-interactive` | Skip the setup wizard |
+| `--cwd` | Run against another working directory |
+
+## `build`
+
+`build` reads `opendetail.toml`, parses the matched content, and writes the local index artifact.
+
+```bash
+bunx opendetail build
+```
+
+Optional flags:
+
+- `--config`
+- `--output`
+- `--cwd`
+
+## `doctor`
+
+`doctor` checks that the expected files and env are present for the selected integration mode.
+
+For `self-hosted`, it checks:
+
+- config file
+- built index
+- route file
+- `OPENAI_API_KEY`
+
+For `hosted`, it checks:
+
+- config file
+- built index
+- `OPENDETAIL_ENDPOINT`
+
+If any check fails, the command exits with an error.
+
+## Common examples
+
+```bash
+# default self-hosted setup
+bunx opendetail setup --with-media
+
+# hosted scaffolding
+bunx opendetail setup --integration hosted
+
+# build after editing docs
+bunx opendetail build
+
+# diagnose setup issues
+bunx opendetail doctor
+
+# hosted diagnostics
+bunx opendetail doctor --integration hosted
+```

@@ -1,0 +1,85 @@
+---
+title: Self-hosted
+description: Use the built-in Next.js adapter and keep the OpenAI API key in your own runtime.
+---
+
+# Self-hosted
+
+`self-hosted` is the default, fully implemented path today.
+
+Use it when you want your own app route, your own runtime, and your own `OPENAI_API_KEY`.
+
+## What you manage
+
+- the Next.js route
+- the runtime environment
+- the OpenAI API key
+- rebuilding the local docs index when content changes
+
+## Scaffold it
+
+```bash
+bunx opendetail setup --with-media
+```
+
+That writes a route like this:
+
+```ts
+import { createNextRoute } from "opendetail/next";
+
+export const { POST, runtime } = createNextRoute();
+```
+
+You can also wire the handler manually:
+
+```ts
+import { createNextRouteHandler } from "opendetail/next";
+
+export const runtime = "nodejs";
+export const POST = createNextRouteHandler();
+```
+
+## Runtime requirements
+
+- Node.js 18 or newer
+- a Next.js Route Handler running on the Node.js runtime
+- `OPENAI_API_KEY` set in the runtime environment
+- a built local index at `.opendetail/index.json`
+
+## Request contract
+
+The request body stays intentionally small:
+
+```json
+{ "question": "How do I configure base_path?" }
+```
+
+Requests that do not match that shape return a JSON error response.
+
+## Stream contract
+
+The route returns `application/x-ndjson; charset=utf-8`.
+
+The stream events are:
+
+- `meta`: configured model metadata
+- `sources`: the matched local sources, plus remote citations when enabled
+- `images`: grounded image references from the matched docs
+- `delta`: streamed text chunks
+- `done`: the final accumulated text
+- `error`: a public error payload safe to show in UI
+
+## Initialization behavior
+
+The Next.js adapter lazily creates and caches the assistant instance. If setup fails before streaming starts, the adapter returns a JSON error response instead of opening a broken stream.
+
+In production, initialization errors are cached so repeated requests do not retry the same broken startup work on every request.
+
+## When to choose self-hosted
+
+Choose this mode when:
+
+- your docs are private
+- you want the route in your own app
+- you want full control over auth, runtime, and deployment
+- you want the current end-to-end path, not the future hosted path

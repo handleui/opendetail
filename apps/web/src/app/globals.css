@@ -1,4 +1,14 @@
 @import "tailwindcss";
+@import "fumadocs-ui/css/neutral.css";
+@import "fumadocs-ui/css/preset.css";
 @import "../../../../registry/themes/opendetail-base/opendetail-base.css";
 
 @source "../../../../registry";
+
+html {
+  scrollbar-gutter: stable;
+}
+
+html > body[data-scroll-locked] {
+  margin-right: 0 !important;
+}

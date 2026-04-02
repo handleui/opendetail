@@ -19,6 +19,7 @@
       }
     ],
     "paths": {
+      "collections/*": ["./.source/*"],
       "@/registry/*": ["../../registry/*"],
       "@/*": ["./src/*"]
     }

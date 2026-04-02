@@ -1,6 +1,12 @@
 "use client";
 
-import { type ReactNode, useEffect, useRef, useState } from "react";
+import {
+  type ReactNode,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 import {
   AssistantInput,
@@ -99,6 +105,15 @@ export const AssistantModal = ({
   const previousRequestStateRef = useRef(requestState);
   const isThreadOpen = open ?? internalOpen;
 
+  const handleCloseThread = useCallback(() => {
+    if (!isControlled) {
+      setInternalOpen(false);
+    }
+
+    onOpenChange?.(false);
+    onCloseThread?.();
+  }, [isControlled, onCloseThread, onOpenChange]);
+
   useEffect(() => {
     if (messages.length > previousMessageCountRef.current) {
       if (!isControlled) {
@@ -128,14 +143,25 @@ export const AssistantModal = ({
     previousRequestStateRef.current = requestState;
   }, [isControlled, onOpenChange, requestState]);
 
-  const handleCloseThread = () => {
-    if (!isControlled) {
-      setInternalOpen(false);
+  useEffect(() => {
+    if (!isThreadOpen) {
+      return;
     }
 
-    onOpenChange?.(false);
-    onCloseThread?.();
-  };
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.defaultPrevented || event.key !== "Escape") {
+        return;
+      }
+
+      handleCloseThread();
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [handleCloseThread, isThreadOpen]);
 
   const resolvedThread =
     thread ??
@@ -184,6 +210,8 @@ export const AssistantModal = ({
       </AssistantThread>
     ) : null);
 
+  const shouldShowThread = isThreadOpen && resolvedThread !== null;
+
   const resolvedInput = input ?? (
     <AssistantInput
       id={inputId}
@@ -192,12 +220,11 @@ export const AssistantModal = ({
       onValueChange={onQuestionChange}
       placeholder={placeholder}
       requestState={requestState}
+      showShellUnderlay={false}
       size="shell"
       value={question}
     />
   );
-
-  const shouldShowThread = isThreadOpen && resolvedThread !== null;
 
   return (
     <section

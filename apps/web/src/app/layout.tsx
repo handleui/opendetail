@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import { RootProvider } from "fumadocs-ui/provider/next";
 import { Geist } from "next/font/google";
 import type { ReactNode } from "react";
+import { DocsAssistantSidebar } from "@/components/docs-assistant-sidebar";
 import "./globals.css";
 
 const geist = Geist({
@@ -8,10 +10,24 @@ const geist = Geist({
   variable: "--font-geist",
 });
 
+const metadataBase = (() => {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+
+  try {
+    return new URL(siteUrl);
+  } catch {
+    return new URL("http://localhost:3000");
+  }
+})();
+
 export const metadata: Metadata = {
-  title: "opendetail",
+  metadataBase,
+  title: {
+    default: "OpenDetail",
+    template: "%s | OpenDetail",
+  },
   description:
-    "Public site scaffold for docs, demos, and registry distribution.",
+    "OpenDetail marketing site, documentation, demo surface, and registry distribution in one app.",
 };
 
 export default function RootLayout({
@@ -24,7 +40,8 @@ export default function RootLayout({
       <body
         className={`${geist.variable} bg-white font-sans text-black antialiased [--font-sans:var(--font-geist)]`}
       >
-        {children}
+        <RootProvider>{children}</RootProvider>
+        <DocsAssistantSidebar />
       </body>
     </html>
   );

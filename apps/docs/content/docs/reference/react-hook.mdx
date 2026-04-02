@@ -1,0 +1,78 @@
+---
+title: React hook
+description: useOpenDetail state, transport options, persistence, and submit flow.
+---
+
+# React hook
+
+The registry ships a React hook named `useOpenDetail` for browser-side state and streaming UI.
+
+## Basic usage
+
+```ts
+import { useOpenDetail } from "@/registry/hooks/use-opendetail/use-opendetail";
+
+const assistant = useOpenDetail({
+  transport: {
+    endpoint: "/api/opendetail",
+  },
+});
+```
+
+## Hosted transport example
+
+```ts
+const assistant = useOpenDetail({
+  transport: {
+    endpoint: process.env.NEXT_PUBLIC_OPENDETAIL_ENDPOINT,
+    headers: () => {
+      const token = process.env.NEXT_PUBLIC_OPENDETAIL_AUTH_TOKEN;
+
+      return token ? { authorization: `Bearer ${token}` } : {};
+    },
+  },
+});
+```
+
+## Options
+
+| Option | Meaning |
+| --- | --- |
+| `endpoint` | Shortcut for `transport.endpoint` |
+| `transport.endpoint` | Request URL, defaults to `/api/opendetail` |
+| `transport.headers` | Static headers or a function returning headers |
+| `transport.credentials` | Fetch credentials mode |
+| `transport.fetch` | Custom `fetch` implementation |
+| `persistence.key` | Persist thread state under a storage key |
+| `persistence.storage` | `local` or `session`, defaults to `local` |
+
+## Returned state
+
+The hook returns:
+
+- `messages`
+- `question`
+- `setQuestion`
+- `submit`
+- `stop`
+- `clearThread`
+- `status`
+- top-level error fields such as `error`, `errorCode`, `errorRetryable`, and `errorStatus`
+
+## Message model
+
+The hook stores a thread as user and assistant messages.
+
+Assistant messages track:
+
+- streamed text
+- sources
+- images
+- model
+- duration label
+- error metadata
+- status: `pending`, `streaming`, `complete`, or `error`
+
+## Persistence behavior
+
+When persistence is enabled, the hook stores the current thread and input value. If a refresh interrupts a streamed reply, the restored message is marked clearly instead of pretending the reply completed cleanly.

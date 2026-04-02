@@ -1,0 +1,1213 @@
+{
+  "chunks": [
+    {
+      "anchor": null,
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/concepts/how-it-works.mdx",
+      "headings": [
+        "How it works"
+      ],
+      "id": "concepts/how-it-works.mdx",
+      "images": [],
+      "relativePath": "concepts/how-it-works.mdx",
+      "text": "How it works\n\nOpenDetail follows a small two-part flow: build once from your Markdown and MDX, then answer questions from the resulting local index.\n\nThe design stays simple on purpose so it is easy to inspect and easy to reason about.",
+      "title": "How it works",
+      "url": "/docs/concepts/how-it-works"
+    },
+    {
+      "anchor": "build-time",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/concepts/how-it-works.mdx",
+      "headings": [
+        "How it works",
+        "Build time"
+      ],
+      "id": "concepts/how-it-works.mdx#build-time",
+      "images": [],
+      "relativePath": "concepts/how-it-works.mdx",
+      "text": "Build time\n\nAt build time, OpenDetail:\n\nreads the files matched by opendetail.tomloptionally maps local media files to public URLsparses Markdown and MDXsplits content into heading-based chunkswrites a local artifact to .opendetail/index.json\n\nThe output is file-based and local. There is no required vector database, sync service, or external search system in the default path.",
+      "title": "How it works",
+      "url": "/docs/concepts/how-it-works#build-time"
+    },
+    {
+      "anchor": "request-time",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/concepts/how-it-works.mdx",
+      "headings": [
+        "How it works",
+        "Request time"
+      ],
+      "id": "concepts/how-it-works.mdx#request-time",
+      "images": [],
+      "relativePath": "concepts/how-it-works.mdx",
+      "text": "Request time\n\nAt request time, OpenDetail:\n\nloads the local index into memorysearches it with lexical matchingselects the most relevant chunkssends only those chunks to the OpenAI Responses APIoptionally adds configured remote retrieval toolsreturns an answer with citations",
+      "title": "How it works",
+      "url": "/docs/concepts/how-it-works#request-time"
+    },
+    {
+      "anchor": "grounding-behavior",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/concepts/how-it-works.mdx",
+      "headings": [
+        "How it works",
+        "Grounding behavior"
+      ],
+      "id": "concepts/how-it-works.mdx#grounding-behavior",
+      "images": [],
+      "relativePath": "concepts/how-it-works.mdx",
+      "text": "Grounding behavior\n\nThe runtime gives the model strict instructions:\n\nanswer from the provided sources and tool resultscite grounded factual statementsdo not fill missing gaps from general knowledgesay clearly when the topic is not documented\n\nThat is what makes OpenDetail a grounded docs assistant instead of a general chat layer.",
+      "title": "How it works",
+      "url": "/docs/concepts/how-it-works#grounding-behavior"
+    },
+    {
+      "anchor": "images-and-sources",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/concepts/how-it-works.mdx",
+      "headings": [
+        "How it works",
+        "Images and sources"
+      ],
+      "id": "concepts/how-it-works.mdx#images-and-sources",
+      "images": [],
+      "relativePath": "concepts/how-it-works.mdx",
+      "text": "Images and sources\n\nIf matched chunks contain supported image references, OpenDetail returns grounded image metadata alongside the text answer. Each image lists the source IDs it came from so UI can connect visuals back to citations.\n\nThe runtime returns at most 3 images per answer or stream.",
+      "title": "How it works",
+      "url": "/docs/concepts/how-it-works#images-and-sources"
+    },
+    {
+      "anchor": "why-the-design-stays-narrow",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/concepts/how-it-works.mdx",
+      "headings": [
+        "How it works",
+        "Why the design stays narrow"
+      ],
+      "id": "concepts/how-it-works.mdx#why-the-design-stays-narrow",
+      "images": [],
+      "relativePath": "concepts/how-it-works.mdx",
+      "text": "Why the design stays narrow\n\nThis design keeps the product small, inspectable, and honest:\n\nyour content stays the source of truththe local index stays close to the appthe request contract stays easy to implementthe failure mode stays clear when docs are missing",
+      "title": "How it works",
+      "url": "/docs/concepts/how-it-works#why-the-design-stays-narrow"
+    },
+    {
+      "anchor": null,
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/faq.mdx",
+      "headings": [
+        "FAQ"
+      ],
+      "id": "faq.mdx",
+      "images": [],
+      "relativePath": "faq.mdx",
+      "text": "FAQ",
+      "title": "FAQ",
+      "url": "/docs/faq"
+    },
+    {
+      "anchor": "does-opendetail-ship-a-chat-ui",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/faq.mdx",
+      "headings": [
+        "FAQ",
+        "Does OpenDetail ship a chat UI?"
+      ],
+      "id": "faq.mdx#does-opendetail-ship-a-chat-ui",
+      "images": [],
+      "relativePath": "faq.mdx",
+      "text": "Does OpenDetail ship a chat UI?\n\nNo. OpenDetail is the engine and integration layer. The current package focuses on the build step, local index, runtime, and thin integration helpers.",
+      "title": "FAQ",
+      "url": "/docs/faq#does-opendetail-ship-a-chat-ui"
+    },
+    {
+      "anchor": "is-it-built-on-openai",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/faq.mdx",
+      "headings": [
+        "FAQ",
+        "Is it built on OpenAI?"
+      ],
+      "id": "faq.mdx#is-it-built-on-openai",
+      "images": [],
+      "relativePath": "faq.mdx",
+      "text": "Is it built on OpenAI?\n\nYes. OpenDetail uses the OpenAI Responses API underneath.",
+      "title": "FAQ",
+      "url": "/docs/faq#is-it-built-on-openai"
+    },
+    {
+      "anchor": "do-i-need-a-vector-database",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/faq.mdx",
+      "headings": [
+        "FAQ",
+        "Do I need a vector database?"
+      ],
+      "id": "faq.mdx#do-i-need-a-vector-database",
+      "images": [],
+      "relativePath": "faq.mdx",
+      "text": "Do I need a vector database?\n\nNo. The default path builds a local JSON index and searches it locally.",
+      "title": "FAQ",
+      "url": "/docs/faq#do-i-need-a-vector-database"
+    },
+    {
+      "anchor": "what-content-gets-indexed",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/faq.mdx",
+      "headings": [
+        "FAQ",
+        "What content gets indexed?"
+      ],
+      "id": "faq.mdx#what-content-gets-indexed",
+      "images": [],
+      "relativePath": "faq.mdx",
+      "text": "What content gets indexed?\n\nWhatever matches the include globs in opendetail.toml, minus anything in exclude.",
+      "title": "FAQ",
+      "url": "/docs/faq#what-content-gets-indexed"
+    },
+    {
+      "anchor": "does-mdx-still-work-if-the-file-uses-components",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/faq.mdx",
+      "headings": [
+        "FAQ",
+        "Does MDX still work if the file uses components?"
+      ],
+      "id": "faq.mdx#does-mdx-still-work-if-the-file-uses-components",
+      "images": [],
+      "relativePath": "faq.mdx",
+      "text": "Does MDX still work if the file uses components?\n\nYes, but the important part is the text and headings. Retrieval is about the content, not the rendered component tree.",
+      "title": "FAQ",
+      "url": "/docs/faq#does-mdx-still-work-if-the-file-uses-components"
+    },
+    {
+      "anchor": "can-it-answer-from-outside-my-docs",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/faq.mdx",
+      "headings": [
+        "FAQ",
+        "Can it answer from outside my docs?"
+      ],
+      "id": "faq.mdx#can-it-answer-from-outside-my-docs",
+      "images": [],
+      "relativePath": "faq.mdx",
+      "text": "Can it answer from outside my docs?\n\nNot by default. The local path is grounded in matched docs only. If you configure remote_resources, it can also cite those remote tool results.",
+      "title": "FAQ",
+      "url": "/docs/faq#can-it-answer-from-outside-my-docs"
+    },
+    {
+      "anchor": "what-happens-when-the-docs-are-not-enough",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/faq.mdx",
+      "headings": [
+        "FAQ",
+        "What happens when the docs are not enough?"
+      ],
+      "id": "faq.mdx#what-happens-when-the-docs-are-not-enough",
+      "images": [],
+      "relativePath": "faq.mdx",
+      "text": "What happens when the docs are not enough?\n\nIt answers plainly that the topic is not documented yet or cannot be confirmed from the configured docs.",
+      "title": "FAQ",
+      "url": "/docs/faq#what-happens-when-the-docs-are-not-enough"
+    },
+    {
+      "anchor": "where-does-the-data-live",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/faq.mdx",
+      "headings": [
+        "FAQ",
+        "Where does the data live?"
+      ],
+      "id": "faq.mdx#where-does-the-data-live",
+      "images": [],
+      "relativePath": "faq.mdx",
+      "text": "Where does the data live?\n\nThe built index lives in your app at .opendetail/index.json.",
+      "title": "FAQ",
+      "url": "/docs/faq#where-does-the-data-live"
+    },
+    {
+      "anchor": "is-the-hosted-backend-available-yet",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/faq.mdx",
+      "headings": [
+        "FAQ",
+        "Is the hosted backend available yet?"
+      ],
+      "id": "faq.mdx#is-the-hosted-backend-available-yet",
+      "images": [],
+      "relativePath": "faq.mdx",
+      "text": "Is the hosted backend available yet?\n\nNo. The hosted integration is documented and scaffolded in this phase, but the OpenDetail-managed backend is not shipped yet.",
+      "title": "FAQ",
+      "url": "/docs/faq#is-the-hosted-backend-available-yet"
+    },
+    {
+      "anchor": "what-frameworks-are-supported-today",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/faq.mdx",
+      "headings": [
+        "FAQ",
+        "What frameworks are supported today?"
+      ],
+      "id": "faq.mdx#what-frameworks-are-supported-today",
+      "images": [],
+      "relativePath": "faq.mdx",
+      "text": "What frameworks are supported today?\n\nToday the package ships a core Node runtime and a thin Next.js adapter through opendetail/next.",
+      "title": "FAQ",
+      "url": "/docs/faq#what-frameworks-are-supported-today"
+    },
+    {
+      "anchor": "does-it-replace-docs",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/faq.mdx",
+      "headings": [
+        "FAQ",
+        "Does it replace docs?"
+      ],
+      "id": "faq.mdx#does-it-replace-docs",
+      "images": [],
+      "relativePath": "faq.mdx",
+      "text": "Does it replace docs?\n\nNo. OpenDetail works because the docs already exist. It makes that material easier to ask, retrieve, and cite inside an app.",
+      "title": "FAQ",
+      "url": "/docs/faq#does-it-replace-docs"
+    },
+    {
+      "anchor": null,
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/getting-started/hosted.mdx",
+      "headings": [
+        "Hosted"
+      ],
+      "id": "getting-started/hosted.mdx",
+      "images": [],
+      "relativePath": "getting-started/hosted.mdx",
+      "text": "Hosted\n\nhosted is intentionally small in this phase.\n\nIt documents and scaffolds the client-side transport shape, but the OpenDetail-managed proxy backend is not shipped yet.",
+      "title": "Hosted",
+      "url": "/docs/getting-started/hosted"
+    },
+    {
+      "anchor": "what-changes-in-hosted-mode",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/getting-started/hosted.mdx",
+      "headings": [
+        "Hosted",
+        "What changes in hosted mode"
+      ],
+      "id": "getting-started/hosted.mdx#what-changes-in-hosted-mode",
+      "images": [],
+      "relativePath": "getting-started/hosted.mdx",
+      "text": "What changes in hosted mode\n\nopendetail setup --integration hosted does not generate a routethe request shape stays { question: string }the stream events stay meta, sources, images, delta, done, erroryour app reads a hosted endpoint from environment and passes it into the client or hook",
+      "title": "Hosted",
+      "url": "/docs/getting-started/hosted#what-changes-in-hosted-mode"
+    },
+    {
+      "anchor": "scaffold-it",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/getting-started/hosted.mdx",
+      "headings": [
+        "Hosted",
+        "Scaffold it"
+      ],
+      "id": "getting-started/hosted.mdx#scaffold-it",
+      "images": [],
+      "relativePath": "getting-started/hosted.mdx",
+      "text": "Scaffold it\n\nbunx opendetail setup --integration hosted\n\nThat writes opendetail.toml and builds .opendetail/index.json, then skips route scaffolding on purpose.",
+      "title": "Hosted",
+      "url": "/docs/getting-started/hosted#scaffold-it"
+    },
+    {
+      "anchor": "environment-shape",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/getting-started/hosted.mdx",
+      "headings": [
+        "Hosted",
+        "Environment shape"
+      ],
+      "id": "getting-started/hosted.mdx#environment-shape",
+      "images": [],
+      "relativePath": "getting-started/hosted.mdx",
+      "text": "Environment shape\n\nThe hosted path expects your app to read:\n\nOPENDETAIL_ENDPOINToptionally OPENDETAIL_AUTH_TOKEN\n\nIn browser-facing apps, the registry examples use NEXT_PUBLIC_OPENDETAIL_ENDPOINT and NEXT_PUBLIC_OPENDETAIL_AUTH_TOKEN because the app is reading those values directly.",
+      "title": "Hosted",
+      "url": "/docs/getting-started/hosted#environment-shape"
+    },
+    {
+      "anchor": "hook-example",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/getting-started/hosted.mdx",
+      "headings": [
+        "Hosted",
+        "Hook example"
+      ],
+      "id": "getting-started/hosted.mdx#hook-example",
+      "images": [],
+      "relativePath": "getting-started/hosted.mdx",
+      "text": "Hook example\n\nimport { useOpenDetail } from \"@/registry/hooks/use-opendetail/use-opendetail\";\n\nconst endpoint = process.env.NEXT_PUBLIC_OPENDETAIL_ENDPOINT;\nconst authToken = process.env.NEXT_PUBLIC_OPENDETAIL_AUTH_TOKEN;\n\nconst assistant = useOpenDetail({\n  transport: {\n    endpoint,\n    headers: authToken\n      ? {\n          authorization: `Bearer ${authToken}`,\n        }\n      : undefined,\n  },\n});",
+      "title": "Hosted",
+      "url": "/docs/getting-started/hosted#hook-example"
+    },
+    {
+      "anchor": "what-hosted-does-not-do-yet",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/getting-started/hosted.mdx",
+      "headings": [
+        "Hosted",
+        "What hosted does not do yet"
+      ],
+      "id": "getting-started/hosted.mdx#what-hosted-does-not-do-yet",
+      "images": [],
+      "relativePath": "getting-started/hosted.mdx",
+      "text": "What hosted does not do yet\n\nit does not ship the OpenDetail-managed backend itselfit does not remove the need to build your local indexit does not change the request or stream contract\n\nThe point of the hosted mode today is to make the future transport shape explicit without forcing a later contract change.",
+      "title": "Hosted",
+      "url": "/docs/getting-started/hosted#what-hosted-does-not-do-yet"
+    },
+    {
+      "anchor": null,
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/getting-started/self-hosted.mdx",
+      "headings": [
+        "Self-hosted"
+      ],
+      "id": "getting-started/self-hosted.mdx",
+      "images": [],
+      "relativePath": "getting-started/self-hosted.mdx",
+      "text": "Self-hosted\n\nself-hosted is the default, fully implemented path today.\n\nUse it when you want your own app route, your own runtime, and your own OPENAI_API_KEY.",
+      "title": "Self-hosted",
+      "url": "/docs/getting-started/self-hosted"
+    },
+    {
+      "anchor": "what-you-manage",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/getting-started/self-hosted.mdx",
+      "headings": [
+        "Self-hosted",
+        "What you manage"
+      ],
+      "id": "getting-started/self-hosted.mdx#what-you-manage",
+      "images": [],
+      "relativePath": "getting-started/self-hosted.mdx",
+      "text": "What you manage\n\nthe Next.js routethe runtime environmentthe OpenAI API keyrebuilding the local docs index when content changes",
+      "title": "Self-hosted",
+      "url": "/docs/getting-started/self-hosted#what-you-manage"
+    },
+    {
+      "anchor": "scaffold-it",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/getting-started/self-hosted.mdx",
+      "headings": [
+        "Self-hosted",
+        "Scaffold it"
+      ],
+      "id": "getting-started/self-hosted.mdx#scaffold-it",
+      "images": [],
+      "relativePath": "getting-started/self-hosted.mdx",
+      "text": "Scaffold it\n\nbunx opendetail setup --with-media\n\nThat writes a route like this:\n\nimport { createNextRoute } from \"opendetail/next\";\n\nexport const { POST, runtime } = createNextRoute();\n\nYou can also wire the handler manually:\n\nimport { createNextRouteHandler } from \"opendetail/next\";\n\nexport const runtime = \"nodejs\";\nexport const POST = createNextRouteHandler();",
+      "title": "Self-hosted",
+      "url": "/docs/getting-started/self-hosted#scaffold-it"
+    },
+    {
+      "anchor": "runtime-requirements",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/getting-started/self-hosted.mdx",
+      "headings": [
+        "Self-hosted",
+        "Runtime requirements"
+      ],
+      "id": "getting-started/self-hosted.mdx#runtime-requirements",
+      "images": [],
+      "relativePath": "getting-started/self-hosted.mdx",
+      "text": "Runtime requirements\n\nNode.js 18 or newera Next.js Route Handler running on the Node.js runtimeOPENAI_API_KEY set in the runtime environmenta built local index at .opendetail/index.json",
+      "title": "Self-hosted",
+      "url": "/docs/getting-started/self-hosted#runtime-requirements"
+    },
+    {
+      "anchor": "request-contract",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/getting-started/self-hosted.mdx",
+      "headings": [
+        "Self-hosted",
+        "Request contract"
+      ],
+      "id": "getting-started/self-hosted.mdx#request-contract",
+      "images": [],
+      "relativePath": "getting-started/self-hosted.mdx",
+      "text": "Request contract\n\nThe request body stays intentionally small:\n\n{ \"question\": \"How do I configure base_path?\" }\n\nRequests that do not match that shape return a JSON error response.",
+      "title": "Self-hosted",
+      "url": "/docs/getting-started/self-hosted#request-contract"
+    },
+    {
+      "anchor": "stream-contract",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/getting-started/self-hosted.mdx",
+      "headings": [
+        "Self-hosted",
+        "Stream contract"
+      ],
+      "id": "getting-started/self-hosted.mdx#stream-contract",
+      "images": [],
+      "relativePath": "getting-started/self-hosted.mdx",
+      "text": "Stream contract\n\nThe route returns application/x-ndjson; charset=utf-8.\n\nThe stream events are:\n\nmeta: configured model metadatasources: the matched local sources, plus remote citations when enabledimages: grounded image references from the matched docsdelta: streamed text chunksdone: the final accumulated texterror: a public error payload safe to show in UI",
+      "title": "Self-hosted",
+      "url": "/docs/getting-started/self-hosted#stream-contract"
+    },
+    {
+      "anchor": "initialization-behavior",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/getting-started/self-hosted.mdx",
+      "headings": [
+        "Self-hosted",
+        "Initialization behavior"
+      ],
+      "id": "getting-started/self-hosted.mdx#initialization-behavior",
+      "images": [],
+      "relativePath": "getting-started/self-hosted.mdx",
+      "text": "Initialization behavior\n\nThe Next.js adapter lazily creates and caches the assistant instance. If setup fails before streaming starts, the adapter returns a JSON error response instead of opening a broken stream.\n\nIn production, initialization errors are cached so repeated requests do not retry the same broken startup work on every request.",
+      "title": "Self-hosted",
+      "url": "/docs/getting-started/self-hosted#initialization-behavior"
+    },
+    {
+      "anchor": "when-to-choose-self-hosted",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/getting-started/self-hosted.mdx",
+      "headings": [
+        "Self-hosted",
+        "When to choose self-hosted"
+      ],
+      "id": "getting-started/self-hosted.mdx#when-to-choose-self-hosted",
+      "images": [],
+      "relativePath": "getting-started/self-hosted.mdx",
+      "text": "When to choose self-hosted\n\nChoose this mode when:\n\nyour docs are privateyou want the route in your own appyou want full control over auth, runtime, and deploymentyou want the current end-to-end path, not the future hosted path",
+      "title": "Self-hosted",
+      "url": "/docs/getting-started/self-hosted#when-to-choose-self-hosted"
+    },
+    {
+      "anchor": null,
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/index.mdx",
+      "headings": [
+        "Overview"
+      ],
+      "id": "index.mdx",
+      "images": [],
+      "relativePath": "index.mdx",
+      "text": "Overview\n\nopendetail turns your Markdown and MDX docs into a small, grounded assistant for your app.\n\nIt sits on top of the OpenAI Responses API, but the value is not a new agent runtime. The value is a smaller setup path, grounded retrieval from your own docs, and a cleaner integration surface than wiring that stack by hand.",
+      "title": "Overview",
+      "url": "/docs"
+    },
+    {
+      "anchor": "what-opendetail-is-for",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/index.mdx",
+      "headings": [
+        "Overview",
+        "What OpenDetail is for"
+      ],
+      "id": "index.mdx#what-opendetail-is-for",
+      "images": [],
+      "relativePath": "index.mdx",
+      "text": "What OpenDetail is for\n\nOpenDetail fits best when the hard part is not \"how do we make a chatbot,\" but \"how do we ship answers that stay tied to our own content.\"\n\nIt works well for:\n\nproduct help and onboardingdeveloper docsinternal guidesfeature explainerssupport content that already lives in Markdown or MDX",
+      "title": "Overview",
+      "url": "/docs#what-opendetail-is-for"
+    },
+    {
+      "anchor": "what-ships-today",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/index.mdx",
+      "headings": [
+        "Overview",
+        "What ships today"
+      ],
+      "id": "index.mdx#what-ships-today",
+      "images": [],
+      "relativePath": "index.mdx",
+      "text": "What ships today\n\na setup-focused CLIa local build step that writes .opendetail/index.jsona core Node runtimea thin Next.js adapter for self-hosted routesinstallable client and React hook foundations in the registry",
+      "title": "Overview",
+      "url": "/docs#what-ships-today"
+    },
+    {
+      "anchor": "integration-modes",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/index.mdx",
+      "headings": [
+        "Overview",
+        "Integration modes"
+      ],
+      "id": "index.mdx#integration-modes",
+      "images": [],
+      "relativePath": "index.mdx",
+      "text": "Integration modes\n\n| Mode | What you manage | Best for | Status |\n| --- | --- | --- | --- |\n| self-hosted | Your route, runtime env, and OPENAI_API_KEY | Private docs, server-owned control, simple default path | Available today |\n| hosted | Your built index and client transport config | Faster setup and future hosted delivery | Documented and scaffolded in this phase |",
+      "title": "Overview",
+      "url": "/docs#integration-modes"
+    },
+    {
+      "anchor": "why-teams-use-it",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/index.mdx",
+      "headings": [
+        "Overview",
+        "Why teams use it"
+      ],
+      "id": "index.mdx#why-teams-use-it",
+      "images": [],
+      "relativePath": "index.mdx",
+      "text": "Why teams use it\n\nAnswers stay tied to your own docsThe runtime stays small and inspectableThe request contract stays narrow: { question: string }The stream contract stays stable across modesMissing documentation fails clearly instead of sounding confident",
+      "title": "Overview",
+      "url": "/docs#why-teams-use-it"
+    },
+    {
+      "anchor": "start-here",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/index.mdx",
+      "headings": [
+        "Overview",
+        "Start here"
+      ],
+      "id": "index.mdx#start-here",
+      "images": [],
+      "relativePath": "index.mdx",
+      "text": "Start here",
+      "title": "Overview",
+      "url": "/docs#start-here"
+    },
+    {
+      "anchor": "human-and-agent-friendly",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/index.mdx",
+      "headings": [
+        "Overview",
+        "Human and agent friendly"
+      ],
+      "id": "index.mdx#human-and-agent-friendly",
+      "images": [],
+      "relativePath": "index.mdx",
+      "text": "Human and agent friendly\n\nThe docs are organized for people first: task-based quickstarts up front, reference pages after that, and short, direct explanations throughout.\n\nThey are also exposed through the Fumadocs machine-readable routes already wired into this app, which means agents can consume the same source material without needing a separate docs format.",
+      "title": "Overview",
+      "url": "/docs#human-and-agent-friendly"
+    },
+    {
+      "anchor": null,
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/quickstart.mdx",
+      "headings": [
+        "Quickstart"
+      ],
+      "id": "quickstart.mdx",
+      "images": [],
+      "relativePath": "quickstart.mdx",
+      "text": "Quickstart\n\nThis is the fastest path to a working self-hosted setup.",
+      "title": "Quickstart",
+      "url": "/docs/quickstart"
+    },
+    {
+      "anchor": "1-install-the-package",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/quickstart.mdx",
+      "headings": [
+        "Quickstart",
+        "1. Install the package"
+      ],
+      "id": "quickstart.mdx#1-install-the-package",
+      "images": [],
+      "relativePath": "quickstart.mdx",
+      "text": "1. Install the package\n\nnpm i opendetail",
+      "title": "Quickstart",
+      "url": "/docs/quickstart#1-install-the-package"
+    },
+    {
+      "anchor": "2-scaffold-the-default-setup",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/quickstart.mdx",
+      "headings": [
+        "Quickstart",
+        "2. Scaffold the default setup"
+      ],
+      "id": "quickstart.mdx#2-scaffold-the-default-setup",
+      "images": [],
+      "relativePath": "quickstart.mdx",
+      "text": "2. Scaffold the default setup\n\nbunx opendetail setup --with-media\n\nThat command can:\n\nwrite opendetail.tomlscaffold src/app/api/opendetail/route.tsbuild .opendetail/index.json",
+      "title": "Quickstart",
+      "url": "/docs/quickstart#2-scaffold-the-default-setup"
+    },
+    {
+      "anchor": "3-add-your-runtime-key",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/quickstart.mdx",
+      "headings": [
+        "Quickstart",
+        "3. Add your runtime key"
+      ],
+      "id": "quickstart.mdx#3-add-your-runtime-key",
+      "images": [],
+      "relativePath": "quickstart.mdx",
+      "text": "3. Add your runtime key\n\nSet OPENAI_API_KEY in the app runtime environment before you send requests to the route.",
+      "title": "Quickstart",
+      "url": "/docs/quickstart#3-add-your-runtime-key"
+    },
+    {
+      "anchor": "4-check-the-generated-config",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/quickstart.mdx",
+      "headings": [
+        "Quickstart",
+        "4. Check the generated config"
+      ],
+      "id": "quickstart.mdx#4-check-the-generated-config",
+      "images": [],
+      "relativePath": "quickstart.mdx",
+      "text": "4. Check the generated config\n\nThe default shape looks like this:\n\nversion = 1\ninclude = [\"content/**/*.{md,mdx}\"]\nexclude = []\nbase_path = \"/docs\"\n\n[media]\ninclude = [\"content/**/*.{png,jpg,jpeg,webp,avif,gif,svg}\"]\nexclude = []\nbase_path = \"/content-media\"",
+      "title": "Quickstart",
+      "url": "/docs/quickstart#4-check-the-generated-config"
+    },
+    {
+      "anchor": "5-rebuild-when-docs-change",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/quickstart.mdx",
+      "headings": [
+        "Quickstart",
+        "5. Rebuild when docs change"
+      ],
+      "id": "quickstart.mdx#5-rebuild-when-docs-change",
+      "images": [],
+      "relativePath": "quickstart.mdx",
+      "text": "5. Rebuild when docs change\n\nbunx opendetail build",
+      "title": "Quickstart",
+      "url": "/docs/quickstart#5-rebuild-when-docs-change"
+    },
+    {
+      "anchor": "6-ask-a-question",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/quickstart.mdx",
+      "headings": [
+        "Quickstart",
+        "6. Ask a question"
+      ],
+      "id": "quickstart.mdx#6-ask-a-question",
+      "images": [],
+      "relativePath": "quickstart.mdx",
+      "text": "6. Ask a question\n\nWith the default Next.js route in place, post JSON like this:\n\n{ \"question\": \"How do I install this?\" }\n\nThe route streams NDJSON events in this order:\n\nmetasourcesimagesdeltadoneerror",
+      "title": "Quickstart",
+      "url": "/docs/quickstart#6-ask-a-question"
+    },
+    {
+      "anchor": "hosted-instead",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/quickstart.mdx",
+      "headings": [
+        "Quickstart",
+        "Hosted instead"
+      ],
+      "id": "quickstart.mdx#hosted-instead",
+      "images": [],
+      "relativePath": "quickstart.mdx",
+      "text": "Hosted instead\n\nIf you want the hosted integration shape without generating a route:\n\nbunx opendetail setup --integration hosted\n\nThat still writes config and builds the local index, but it skips route scaffolding on purpose.",
+      "title": "Quickstart",
+      "url": "/docs/quickstart#hosted-instead"
+    },
+    {
+      "anchor": "next-steps",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/quickstart.mdx",
+      "headings": [
+        "Quickstart",
+        "Next steps"
+      ],
+      "id": "quickstart.mdx#next-steps",
+      "images": [],
+      "relativePath": "quickstart.mdx",
+      "text": "Next steps",
+      "title": "Quickstart",
+      "url": "/docs/quickstart#next-steps"
+    },
+    {
+      "anchor": null,
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/reference/cli.mdx",
+      "headings": [
+        "CLI"
+      ],
+      "id": "reference/cli.mdx",
+      "images": [],
+      "relativePath": "reference/cli.mdx",
+      "text": "CLI\n\nOpenDetail ships with a setup-focused CLI.",
+      "title": "CLI",
+      "url": "/docs/reference/cli"
+    },
+    {
+      "anchor": "commands",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/reference/cli.mdx",
+      "headings": [
+        "CLI",
+        "Commands"
+      ],
+      "id": "reference/cli.mdx#commands",
+      "images": [],
+      "relativePath": "reference/cli.mdx",
+      "text": "Commands\n\nopendetail build [--config <path>] [--output <path>] [--cwd <path>]\nopendetail setup [--integration <self-hosted|hosted>] [--config <path>] [--route <path>] [--base-path <url>] [--include <glob>] [--media-include <glob>] [--with-media] [--skip-build] [--force] [--interactive] [--no-interactive] [--cwd <path>]\nopendetail doctor [--integration <self-hosted|hosted>] [--config <path>] [--route <path>] [--cwd <path>]",
+      "title": "CLI",
+      "url": "/docs/reference/cli#commands"
+    },
+    {
+      "anchor": "setup",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/reference/cli.mdx",
+      "headings": [
+        "CLI",
+        "setup"
+      ],
+      "id": "reference/cli.mdx#setup",
+      "images": [],
+      "relativePath": "reference/cli.mdx",
+      "text": "setup\n\nsetup writes the standard project shape for the selected integration mode.",
+      "title": "CLI",
+      "url": "/docs/reference/cli#setup"
+    },
+    {
+      "anchor": "what-it-writes",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/reference/cli.mdx",
+      "headings": [
+        "CLI",
+        "setup",
+        "What it writes"
+      ],
+      "id": "reference/cli.mdx#what-it-writes",
+      "images": [],
+      "relativePath": "reference/cli.mdx",
+      "text": "What it writes\n\nopendetail.tomlin self-hosted, a route at src/app/api/opendetail/route.ts by default.opendetail/index.json unless you pass --skip-build",
+      "title": "CLI",
+      "url": "/docs/reference/cli#what-it-writes"
+    },
+    {
+      "anchor": "important-flags",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/reference/cli.mdx",
+      "headings": [
+        "CLI",
+        "setup",
+        "Important flags"
+      ],
+      "id": "reference/cli.mdx#important-flags",
+      "images": [],
+      "relativePath": "reference/cli.mdx",
+      "text": "Important flags\n\n| Flag | Meaning |\n| --- | --- |\n| --integration | self-hosted or hosted |\n| --config | Custom config path |\n| --route | Custom route path for self-hosted setup |\n| --base-path | Public source URL base, default /docs |\n| --include | Custom docs glob |\n| --media-include | Custom media glob |\n| --with-media | Include [media] config |\n| --skip-build | Skip the initial index build |\n| --force | Overwrite existing generated files |\n| --interactive | Force the setup wizard |\n| --no-interactive | Skip the setup wizard |\n| --cwd | Run against another working directory |",
+      "title": "CLI",
+      "url": "/docs/reference/cli#important-flags"
+    },
+    {
+      "anchor": "build",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/reference/cli.mdx",
+      "headings": [
+        "CLI",
+        "build"
+      ],
+      "id": "reference/cli.mdx#build",
+      "images": [],
+      "relativePath": "reference/cli.mdx",
+      "text": "build\n\nbuild reads opendetail.toml, parses the matched content, and writes the local index artifact.\n\nbunx opendetail build\n\nOptional flags:\n\n--config--output--cwd",
+      "title": "CLI",
+      "url": "/docs/reference/cli#build"
+    },
+    {
+      "anchor": "doctor",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/reference/cli.mdx",
+      "headings": [
+        "CLI",
+        "doctor"
+      ],
+      "id": "reference/cli.mdx#doctor",
+      "images": [],
+      "relativePath": "reference/cli.mdx",
+      "text": "doctor\n\ndoctor checks that the expected files and env are present for the selected integration mode.\n\nFor self-hosted, it checks:\n\nconfig filebuilt indexroute fileOPENAI_API_KEY\n\nFor hosted, it checks:\n\nconfig filebuilt indexOPENDETAIL_ENDPOINT\n\nIf any check fails, the command exits with an error.",
+      "title": "CLI",
+      "url": "/docs/reference/cli#doctor"
+    },
+    {
+      "anchor": "common-examples",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/reference/cli.mdx",
+      "headings": [
+        "CLI",
+        "Common examples"
+      ],
+      "id": "reference/cli.mdx#common-examples",
+      "images": [],
+      "relativePath": "reference/cli.mdx",
+      "text": "Common examples\n\n# default self-hosted setup\nbunx opendetail setup --with-media\n\n# hosted scaffolding\nbunx opendetail setup --integration hosted\n\n# build after editing docs\nbunx opendetail build\n\n# diagnose setup issues\nbunx opendetail doctor\n\n# hosted diagnostics\nbunx opendetail doctor --integration hosted",
+      "title": "CLI",
+      "url": "/docs/reference/cli#common-examples"
+    },
+    {
+      "anchor": null,
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/reference/client.mdx",
+      "headings": [
+        "Client"
+      ],
+      "id": "reference/client.mdx",
+      "images": [],
+      "relativePath": "reference/client.mdx",
+      "text": "Client\n\nThe registry transport layer exposes createOpenDetailClient.\n\nUse it when you want the streaming contract without the React hook.",
+      "title": "Client",
+      "url": "/docs/reference/client"
+    },
+    {
+      "anchor": "basic-usage",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/reference/client.mdx",
+      "headings": [
+        "Client",
+        "Basic usage"
+      ],
+      "id": "reference/client.mdx#basic-usage",
+      "images": [],
+      "relativePath": "reference/client.mdx",
+      "text": "Basic usage\n\nconst client = createOpenDetailClient({\n  endpoint: \"/api/opendetail\",\n});\n\nawait client.submit(\n  {\n    question: \"How do I install this?\",\n  },\n  {\n    onEvent(event) {\n      console.log(event);\n    },\n    onStatusChange(status) {\n      console.log(status);\n    },\n  }\n);",
+      "title": "Client",
+      "url": "/docs/reference/client#basic-usage"
+    },
+    {
+      "anchor": "options",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/reference/client.mdx",
+      "headings": [
+        "Client",
+        "Options"
+      ],
+      "id": "reference/client.mdx#options",
+      "images": [],
+      "relativePath": "reference/client.mdx",
+      "text": "Options\n\n| Option | Meaning |\n| --- | --- |\n| endpoint | Request URL, default /api/opendetail |\n| headers | Static headers or a function returning headers |\n| credentials | Fetch credentials mode |\n| fetch | Custom fetch implementation |",
+      "title": "Client",
+      "url": "/docs/reference/client#options"
+    },
+    {
+      "anchor": "request-shape",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/reference/client.mdx",
+      "headings": [
+        "Client",
+        "Request shape"
+      ],
+      "id": "reference/client.mdx#request-shape",
+      "images": [],
+      "relativePath": "reference/client.mdx",
+      "text": "Request shape\n\nThe client sends:\n\n{ \"question\": \"...\" }\n\nwith:\n\naccept: application/x-ndjson, application/jsoncontent-type: application/json",
+      "title": "Client",
+      "url": "/docs/reference/client#request-shape"
+    },
+    {
+      "anchor": "status-values",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/reference/client.mdx",
+      "headings": [
+        "Client",
+        "Status values"
+      ],
+      "id": "reference/client.mdx#status-values",
+      "images": [],
+      "relativePath": "reference/client.mdx",
+      "text": "Status values\n\nThe client exposes these statuses:\n\nidlependingstreamingerror",
+      "title": "Client",
+      "url": "/docs/reference/client#status-values"
+    },
+    {
+      "anchor": "stream-event-types",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/reference/client.mdx",
+      "headings": [
+        "Client",
+        "Stream event types"
+      ],
+      "id": "reference/client.mdx#stream-event-types",
+      "images": [],
+      "relativePath": "reference/client.mdx",
+      "text": "Stream event types\n\nmetasourcesimagesdeltadoneerror",
+      "title": "Client",
+      "url": "/docs/reference/client#stream-event-types"
+    },
+    {
+      "anchor": "stop-behavior",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/reference/client.mdx",
+      "headings": [
+        "Client",
+        "Stop behavior"
+      ],
+      "id": "reference/client.mdx#stop-behavior",
+      "images": [],
+      "relativePath": "reference/client.mdx",
+      "text": "Stop behavior\n\nCalling stop() aborts the active request, clears the internal abort controller, and returns the client to idle.\n\nIf you call submit() while another request is active, the previous request is stopped first.",
+      "title": "Client",
+      "url": "/docs/reference/client#stop-behavior"
+    },
+    {
+      "anchor": null,
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/reference/configuration.mdx",
+      "headings": [
+        "Configuration"
+      ],
+      "id": "reference/configuration.mdx",
+      "images": [],
+      "relativePath": "reference/configuration.mdx",
+      "text": "Configuration\n\nOpenDetail reads configuration from opendetail.toml in the app root.",
+      "title": "Configuration",
+      "url": "/docs/reference/configuration"
+    },
+    {
+      "anchor": "minimal-config",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/reference/configuration.mdx",
+      "headings": [
+        "Configuration",
+        "Minimal config"
+      ],
+      "id": "reference/configuration.mdx#minimal-config",
+      "images": [],
+      "relativePath": "reference/configuration.mdx",
+      "text": "Minimal config\n\nversion = 1\ninclude = [\"content/**/*.{md,mdx}\"]\nexclude = []\nbase_path = \"/docs\"",
+      "title": "Configuration",
+      "url": "/docs/reference/configuration#minimal-config"
+    },
+    {
+      "anchor": "fields",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/reference/configuration.mdx",
+      "headings": [
+        "Configuration",
+        "Fields"
+      ],
+      "id": "reference/configuration.mdx#fields",
+      "images": [],
+      "relativePath": "reference/configuration.mdx",
+      "text": "Fields\n\n| Field | Required | Meaning |\n| --- | --- | --- |\n| version | yes | Must be 1 |\n| include | yes | Glob patterns for Markdown and MDX source files |\n| exclude | no | Ignore globs for files matched by include |\n| base_path | no | URL base used when source URLs are generated |\n| media | no | Rules for mapping local media references to public URLs |\n| remote_resources | no | OpenAI Responses API retrieval tools to use at answer time |",
+      "title": "Configuration",
+      "url": "/docs/reference/configuration#fields"
+    },
+    {
+      "anchor": "media",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/reference/configuration.mdx",
+      "headings": [
+        "Configuration",
+        "Media"
+      ],
+      "id": "reference/configuration.mdx#media",
+      "images": [],
+      "relativePath": "reference/configuration.mdx",
+      "text": "Media\n\nUse [media] when your docs reference local images such as ./hero.png.\n\n[media]\ninclude = [\"content/**/*.{png,jpg,jpeg,webp,avif,gif,svg}\"]\nexclude = []\nbase_path = \"/content-media\"\n\nWhen media is configured:\n\nhttp:// and https:// URLs are returned as-isroot-relative /... URLs are returned as-islocal relative paths are mapped only if they match [media].includeunsupported absolute schemes and protocol-relative URLs are ignored\n\nIf a doc references a local image that does not match the configured media globs, the build fails clearly.",
+      "title": "Configuration",
+      "url": "/docs/reference/configuration#media"
+    },
+    {
+      "anchor": "remote-resources",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/reference/configuration.mdx",
+      "headings": [
+        "Configuration",
+        "Remote resources"
+      ],
+      "id": "reference/configuration.mdx#remote-resources",
+      "images": [],
+      "relativePath": "reference/configuration.mdx",
+      "text": "Remote resources\n\nOpenDetail can add Responses API tools to retrieve external sources at answer time.\n\n[remote_resources.file_search]\nvector_store_ids = [\"vs_123\"]\nmax_num_results = 8\n\n[remote_resources.web_search]\nallowed_domains = [\"platform.openai.com\", \"docs.example.com\"]\nsearch_context_size = \"low\"",
+      "title": "Configuration",
+      "url": "/docs/reference/configuration#remote-resources"
+    },
+    {
+      "anchor": "file_search",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/reference/configuration.mdx",
+      "headings": [
+        "Configuration",
+        "Remote resources",
+        "file_search"
+      ],
+      "id": "reference/configuration.mdx#file_search",
+      "images": [],
+      "relativePath": "reference/configuration.mdx",
+      "text": "file_search\n\n| Field | Required | Meaning |\n| --- | --- | --- |\n| vector_store_ids | yes | OpenAI vector store IDs |\n| max_num_results | no | Limit from 1 to 50 |",
+      "title": "Configuration",
+      "url": "/docs/reference/configuration#file_search"
+    },
+    {
+      "anchor": "web_search",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/reference/configuration.mdx",
+      "headings": [
+        "Configuration",
+        "Remote resources",
+        "web_search"
+      ],
+      "id": "reference/configuration.mdx#web_search",
+      "images": [],
+      "relativePath": "reference/configuration.mdx",
+      "text": "web_search\n\n| Field | Required | Meaning |\n| --- | --- | --- |\n| allowed_domains | no | Restrict web search to listed domains |\n| search_context_size | no | low, medium, or high |\n\nRemote citations are added to the returned sources list with kind: \"remote\".",
+      "title": "Configuration",
+      "url": "/docs/reference/configuration#web_search"
+    },
+    {
+      "anchor": "base-path-behavior",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/reference/configuration.mdx",
+      "headings": [
+        "Configuration",
+        "Base path behavior"
+      ],
+      "id": "reference/configuration.mdx#base-path-behavior",
+      "images": [],
+      "relativePath": "reference/configuration.mdx",
+      "text": "Base path behavior\n\nbase_path is normalized before URLs are generated. Use it to match the public route where your docs live, for example /docs or /help.",
+      "title": "Configuration",
+      "url": "/docs/reference/configuration#base-path-behavior"
+    },
+    {
+      "anchor": null,
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/reference/react-hook.mdx",
+      "headings": [
+        "React hook"
+      ],
+      "id": "reference/react-hook.mdx",
+      "images": [],
+      "relativePath": "reference/react-hook.mdx",
+      "text": "React hook\n\nThe registry ships a React hook named useOpenDetail for browser-side state and streaming UI.",
+      "title": "React hook",
+      "url": "/docs/reference/react-hook"
+    },
+    {
+      "anchor": "basic-usage",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/reference/react-hook.mdx",
+      "headings": [
+        "React hook",
+        "Basic usage"
+      ],
+      "id": "reference/react-hook.mdx#basic-usage",
+      "images": [],
+      "relativePath": "reference/react-hook.mdx",
+      "text": "Basic usage\n\nimport { useOpenDetail } from \"@/registry/hooks/use-opendetail/use-opendetail\";\n\nconst assistant = useOpenDetail({\n  transport: {\n    endpoint: \"/api/opendetail\",\n  },\n});",
+      "title": "React hook",
+      "url": "/docs/reference/react-hook#basic-usage"
+    },
+    {
+      "anchor": "hosted-transport-example",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/reference/react-hook.mdx",
+      "headings": [
+        "React hook",
+        "Hosted transport example"
+      ],
+      "id": "reference/react-hook.mdx#hosted-transport-example",
+      "images": [],
+      "relativePath": "reference/react-hook.mdx",
+      "text": "Hosted transport example\n\nconst assistant = useOpenDetail({\n  transport: {\n    endpoint: process.env.NEXT_PUBLIC_OPENDETAIL_ENDPOINT,\n    headers: () => {\n      const token = process.env.NEXT_PUBLIC_OPENDETAIL_AUTH_TOKEN;\n\n      return token ? { authorization: `Bearer ${token}` } : {};\n    },\n  },\n});",
+      "title": "React hook",
+      "url": "/docs/reference/react-hook#hosted-transport-example"
+    },
+    {
+      "anchor": "options",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/reference/react-hook.mdx",
+      "headings": [
+        "React hook",
+        "Options"
+      ],
+      "id": "reference/react-hook.mdx#options",
+      "images": [],
+      "relativePath": "reference/react-hook.mdx",
+      "text": "Options\n\n| Option | Meaning |\n| --- | --- |\n| endpoint | Shortcut for transport.endpoint |\n| transport.endpoint | Request URL, defaults to /api/opendetail |\n| transport.headers | Static headers or a function returning headers |\n| transport.credentials | Fetch credentials mode |\n| transport.fetch | Custom fetch implementation |\n| persistence.key | Persist thread state under a storage key |\n| persistence.storage | local or session, defaults to local |",
+      "title": "React hook",
+      "url": "/docs/reference/react-hook#options"
+    },
+    {
+      "anchor": "returned-state",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/reference/react-hook.mdx",
+      "headings": [
+        "React hook",
+        "Returned state"
+      ],
+      "id": "reference/react-hook.mdx#returned-state",
+      "images": [],
+      "relativePath": "reference/react-hook.mdx",
+      "text": "Returned state\n\nThe hook returns:\n\nmessagesquestionsetQuestionsubmitstopclearThreadstatustop-level error fields such as error, errorCode, errorRetryable, and errorStatus",
+      "title": "React hook",
+      "url": "/docs/reference/react-hook#returned-state"
+    },
+    {
+      "anchor": "message-model",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/reference/react-hook.mdx",
+      "headings": [
+        "React hook",
+        "Message model"
+      ],
+      "id": "reference/react-hook.mdx#message-model",
+      "images": [],
+      "relativePath": "reference/react-hook.mdx",
+      "text": "Message model\n\nThe hook stores a thread as user and assistant messages.\n\nAssistant messages track:\n\nstreamed textsourcesimagesmodelduration labelerror metadatastatus: pending, streaming, complete, or error",
+      "title": "React hook",
+      "url": "/docs/reference/react-hook#message-model"
+    },
+    {
+      "anchor": "persistence-behavior",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/reference/react-hook.mdx",
+      "headings": [
+        "React hook",
+        "Persistence behavior"
+      ],
+      "id": "reference/react-hook.mdx#persistence-behavior",
+      "images": [],
+      "relativePath": "reference/react-hook.mdx",
+      "text": "Persistence behavior\n\nWhen persistence is enabled, the hook stores the current thread and input value. If a refresh interrupts a streamed reply, the restored message is marked clearly instead of pretending the reply completed cleanly.",
+      "title": "React hook",
+      "url": "/docs/reference/react-hook#persistence-behavior"
+    },
+    {
+      "anchor": null,
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/reference/runtime.mdx",
+      "headings": [
+        "Runtime"
+      ],
+      "id": "reference/runtime.mdx",
+      "images": [],
+      "relativePath": "reference/runtime.mdx",
+      "text": "Runtime\n\nUse the core runtime when you want to call OpenDetail directly from Node.",
+      "title": "Runtime",
+      "url": "/docs/reference/runtime"
+    },
+    {
+      "anchor": "create-an-assistant",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/reference/runtime.mdx",
+      "headings": [
+        "Runtime",
+        "Create an assistant"
+      ],
+      "id": "reference/runtime.mdx#create-an-assistant",
+      "images": [],
+      "relativePath": "reference/runtime.mdx",
+      "text": "Create an assistant\n\nimport { createOpenDetail } from \"opendetail\";\n\nconst assistant = createOpenDetail();\n\nThen call either answer() or stream():\n\nconst result = await assistant.answer({\n  question: \"How do I configure base_path?\",\n});",
+      "title": "Runtime",
+      "url": "/docs/reference/runtime#create-an-assistant"
+    },
+    {
+      "anchor": "result-shape",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/reference/runtime.mdx",
+      "headings": [
+        "Runtime",
+        "Result shape"
+      ],
+      "id": "reference/runtime.mdx#result-shape",
+      "images": [],
+      "relativePath": "reference/runtime.mdx",
+      "text": "Result shape\n\nanswer() returns:\n\ntextmodelsourcesimagesfallback\n\nstream() returns the same metadata plus a ReadableStream<Uint8Array>.",
+      "title": "Runtime",
+      "url": "/docs/reference/runtime#result-shape"
+    },
+    {
+      "anchor": "assistant-instructions",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/reference/runtime.mdx",
+      "headings": [
+        "Runtime",
+        "Assistant instructions"
+      ],
+      "id": "reference/runtime.mdx#assistant-instructions",
+      "images": [],
+      "relativePath": "reference/runtime.mdx",
+      "text": "Assistant instructions\n\nOpenDetail loads project-specific assistant instructions in this order:\n\nassistantInstructions optionassistantInstructionsPath option.opendetail/OPENDETAIL.mdOPENDETAIL.md at the project root\n\nIf none exist, only the built-in grounding instructions are used.",
+      "title": "Runtime",
+      "url": "/docs/reference/runtime#assistant-instructions"
+    },
+    {
+      "anchor": "remote-retrieval",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/reference/runtime.mdx",
+      "headings": [
+        "Runtime",
+        "Remote retrieval"
+      ],
+      "id": "reference/runtime.mdx#remote-retrieval",
+      "images": [],
+      "relativePath": "reference/runtime.mdx",
+      "text": "Remote retrieval\n\nThe runtime can use remoteResources passed directly into createOpenDetail, or fall back to remote_resources from opendetail.toml.\n\nThose settings create Responses API tools for:\n\nfile_searchweb_search",
+      "title": "Runtime",
+      "url": "/docs/reference/runtime#remote-retrieval"
+    },
+    {
+      "anchor": "defaults",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/reference/runtime.mdx",
+      "headings": [
+        "Runtime",
+        "Defaults"
+      ],
+      "id": "reference/runtime.mdx#defaults",
+      "images": [],
+      "relativePath": "reference/runtime.mdx",
+      "text": "Defaults\n\n| Setting | Default |\n| --- | --- |\n| model | gpt-5.4-mini |\n| reasoningEffort | none |\n| verbosity | low |\n| store | false |\n| promptCacheRetention | in-memory |",
+      "title": "Runtime",
+      "url": "/docs/reference/runtime#defaults"
+    },
+    {
+      "anchor": "important-options",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/reference/runtime.mdx",
+      "headings": [
+        "Runtime",
+        "Important options"
+      ],
+      "id": "reference/runtime.mdx#important-options",
+      "images": [],
+      "relativePath": "reference/runtime.mdx",
+      "text": "Important options\n\n| Option | Meaning |\n| --- | --- |\n| cwd | Working directory used to resolve config and instruction files |\n| indexPath | Custom path to the built index |\n| indexData | Provide a preloaded index artifact directly |\n| client | Reuse an existing OpenAI client |\n| assistantInstructions | Inline project guidance |\n| assistantInstructionsPath | Custom path for project guidance |\n| promptCacheKey | Explicit cache key override |\n| remoteResources | Override remote retrieval config |",
+      "title": "Runtime",
+      "url": "/docs/reference/runtime#important-options"
+    },
+    {
+      "anchor": "fallback-behavior",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/docs/content/docs/reference/runtime.mdx",
+      "headings": [
+        "Runtime",
+        "Fallback behavior"
+      ],
+      "id": "reference/runtime.mdx#fallback-behavior",
+      "images": [],
+      "relativePath": "reference/runtime.mdx",
+      "text": "Fallback behavior\n\nIf no local chunks match the question, OpenDetail still sends the request, but marks the result as fallback: true.\n\nIf the model returns no usable text, the fallback text is:\n\nThis isn't documented in the configured docs yet.",
+      "title": "Runtime",
+      "url": "/docs/reference/runtime#fallback-behavior"
+    }
+  ],
+  "config": {
+    "base_path": "/docs",
+    "exclude": [],
+    "include": [
+      "content/docs/**/*.md",
+      "content/docs/**/*.mdx"
+    ],
+    "version": 1
+  },
+  "generatedAt": "2026-04-02T18:35:58.398Z",
+  "manifestHash": "62e130e99740d465a9c90d9b5c89b5121826097c3e880276c46ed05df8f2e150",
+  "version": 1
+}

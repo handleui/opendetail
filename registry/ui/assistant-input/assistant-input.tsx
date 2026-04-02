@@ -50,6 +50,7 @@ export interface AssistantInputProps {
   placeholder?: string;
   readOnly?: boolean;
   requestState?: OpenDetailClientStatus;
+  showShellUnderlay?: boolean;
   size?: "compact" | "shell";
   status?: AssistantInputStatus | null;
   value?: string;
@@ -144,6 +145,7 @@ export const AssistantInput = ({
   placeholder = DEFAULT_PLACEHOLDER,
   readOnly = false,
   requestState = "idle",
+  showShellUnderlay = true,
   size = "compact",
   value,
 }: AssistantInputProps) => {
@@ -299,7 +301,7 @@ export const AssistantInput = ({
       layout
       transition={MOTION_LAYOUT_TRANSITION}
     >
-      {size === "shell" ? (
+      {size === "shell" && showShellUnderlay ? (
         <span aria-hidden="true" className="opendetail-input__underlay" />
       ) : null}
       <motion.form

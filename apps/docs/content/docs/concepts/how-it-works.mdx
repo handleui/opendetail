@@ -1,0 +1,59 @@
+---
+title: How it works
+description: How OpenDetail builds a local index and answers from matched sections.
+---
+
+# How it works
+
+OpenDetail follows a small two-part flow: build once from your Markdown and MDX, then answer questions from the resulting local index.
+
+The design stays simple on purpose so it is easy to inspect and easy to reason about.
+
+## Build time
+
+At build time, OpenDetail:
+
+- reads the files matched by `opendetail.toml`
+- optionally maps local media files to public URLs
+- parses Markdown and MDX
+- splits content into heading-based chunks
+- writes a local artifact to `.opendetail/index.json`
+
+The output is file-based and local. There is no required vector database, sync service, or external search system in the default path.
+
+## Request time
+
+At request time, OpenDetail:
+
+- loads the local index into memory
+- searches it with lexical matching
+- selects the most relevant chunks
+- sends only those chunks to the OpenAI Responses API
+- optionally adds configured remote retrieval tools
+- returns an answer with citations
+
+## Grounding behavior
+
+The runtime gives the model strict instructions:
+
+- answer from the provided sources and tool results
+- cite grounded factual statements
+- do not fill missing gaps from general knowledge
+- say clearly when the topic is not documented
+
+That is what makes OpenDetail a grounded docs assistant instead of a general chat layer.
+
+## Images and sources
+
+If matched chunks contain supported image references, OpenDetail returns grounded image metadata alongside the text answer. Each image lists the source IDs it came from so UI can connect visuals back to citations.
+
+The runtime returns at most 3 images per answer or stream.
+
+## Why the design stays narrow
+
+This design keeps the product small, inspectable, and honest:
+
+- your content stays the source of truth
+- the local index stays close to the app
+- the request contract stays easy to implement
+- the failure mode stays clear when docs are missing

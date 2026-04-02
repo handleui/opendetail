@@ -1,0 +1,62 @@
+---
+title: Hosted
+description: Scaffold the hosted transport shape without generating an app route.
+---
+
+# Hosted
+
+`hosted` is intentionally small in this phase.
+
+It documents and scaffolds the client-side transport shape, but the OpenDetail-managed proxy backend is not shipped yet.
+
+## What changes in hosted mode
+
+- `opendetail setup --integration hosted` does not generate a route
+- the request shape stays `{ question: string }`
+- the stream events stay `meta`, `sources`, `images`, `delta`, `done`, `error`
+- your app reads a hosted endpoint from environment and passes it into the client or hook
+
+## Scaffold it
+
+```bash
+bunx opendetail setup --integration hosted
+```
+
+That writes `opendetail.toml` and builds `.opendetail/index.json`, then skips route scaffolding on purpose.
+
+## Environment shape
+
+The hosted path expects your app to read:
+
+- `OPENDETAIL_ENDPOINT`
+- optionally `OPENDETAIL_AUTH_TOKEN`
+
+In browser-facing apps, the registry examples use `NEXT_PUBLIC_OPENDETAIL_ENDPOINT` and `NEXT_PUBLIC_OPENDETAIL_AUTH_TOKEN` because the app is reading those values directly.
+
+## Hook example
+
+```ts
+import { useOpenDetail } from "@/registry/hooks/use-opendetail/use-opendetail";
+
+const endpoint = process.env.NEXT_PUBLIC_OPENDETAIL_ENDPOINT;
+const authToken = process.env.NEXT_PUBLIC_OPENDETAIL_AUTH_TOKEN;
+
+const assistant = useOpenDetail({
+  transport: {
+    endpoint,
+    headers: authToken
+      ? {
+          authorization: `Bearer ${authToken}`,
+        }
+      : undefined,
+  },
+});
+```
+
+## What hosted does not do yet
+
+- it does not ship the OpenDetail-managed backend itself
+- it does not remove the need to build your local index
+- it does not change the request or stream contract
+
+The point of the hosted mode today is to make the future transport shape explicit without forcing a later contract change.

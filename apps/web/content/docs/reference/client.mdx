@@ -1,0 +1,78 @@
+---
+title: Client
+description: The transport client for NDJSON responses, statuses, and request handling.
+---
+
+# Client
+
+The registry transport layer exposes `createOpenDetailClient`.
+
+Use it when you want the streaming contract without the React hook.
+
+## Basic usage
+
+```ts
+const client = createOpenDetailClient({
+  endpoint: "/api/opendetail",
+});
+
+await client.submit(
+  {
+    question: "How do I install this?",
+  },
+  {
+    onEvent(event) {
+      console.log(event);
+    },
+    onStatusChange(status) {
+      console.log(status);
+    },
+  }
+);
+```
+
+## Options
+
+| Option | Meaning |
+| --- | --- |
+| `endpoint` | Request URL, default `/api/opendetail` |
+| `headers` | Static headers or a function returning headers |
+| `credentials` | Fetch credentials mode |
+| `fetch` | Custom fetch implementation |
+
+## Request shape
+
+The client sends:
+
+```json
+{ "question": "..." }
+```
+
+with:
+
+- `accept: application/x-ndjson, application/json`
+- `content-type: application/json`
+
+## Status values
+
+The client exposes these statuses:
+
+- `idle`
+- `pending`
+- `streaming`
+- `error`
+
+## Stream event types
+
+- `meta`
+- `sources`
+- `images`
+- `delta`
+- `done`
+- `error`
+
+## Stop behavior
+
+Calling `stop()` aborts the active request, clears the internal abort controller, and returns the client to `idle`.
+
+If you call `submit()` while another request is active, the previous request is stopped first.

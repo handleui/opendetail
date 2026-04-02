@@ -1,0 +1,89 @@
+---
+title: Runtime
+description: The core Node runtime, assistant instructions, defaults, and result shape.
+---
+
+# Runtime
+
+Use the core runtime when you want to call OpenDetail directly from Node.
+
+## Create an assistant
+
+```ts
+import { createOpenDetail } from "opendetail";
+
+const assistant = createOpenDetail();
+```
+
+Then call either `answer()` or `stream()`:
+
+```ts
+const result = await assistant.answer({
+  question: "How do I configure base_path?",
+});
+```
+
+## Result shape
+
+`answer()` returns:
+
+- `text`
+- `model`
+- `sources`
+- `images`
+- `fallback`
+
+`stream()` returns the same metadata plus a `ReadableStream<Uint8Array>`.
+
+## Assistant instructions
+
+OpenDetail loads project-specific assistant instructions in this order:
+
+1. `assistantInstructions` option
+2. `assistantInstructionsPath` option
+3. `.opendetail/OPENDETAIL.md`
+4. `OPENDETAIL.md` at the project root
+
+If none exist, only the built-in grounding instructions are used.
+
+## Remote retrieval
+
+The runtime can use `remoteResources` passed directly into `createOpenDetail`, or fall back to `remote_resources` from `opendetail.toml`.
+
+Those settings create Responses API tools for:
+
+- `file_search`
+- `web_search`
+
+## Defaults
+
+| Setting | Default |
+| --- | --- |
+| `model` | `gpt-5.4-mini` |
+| `reasoningEffort` | `none` |
+| `verbosity` | `low` |
+| `store` | `false` |
+| `promptCacheRetention` | `in-memory` |
+
+## Important options
+
+| Option | Meaning |
+| --- | --- |
+| `cwd` | Working directory used to resolve config and instruction files |
+| `indexPath` | Custom path to the built index |
+| `indexData` | Provide a preloaded index artifact directly |
+| `client` | Reuse an existing OpenAI client |
+| `assistantInstructions` | Inline project guidance |
+| `assistantInstructionsPath` | Custom path for project guidance |
+| `promptCacheKey` | Explicit cache key override |
+| `remoteResources` | Override remote retrieval config |
+
+## Fallback behavior
+
+If no local chunks match the question, OpenDetail still sends the request, but marks the result as `fallback: true`.
+
+If the model returns no usable text, the fallback text is:
+
+```txt
+This isn't documented in the configured docs yet.
+```

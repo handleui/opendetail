@@ -2,8 +2,10 @@
   "chunks": [
     {
       "anchor": null,
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/faq.mdx",
-      "headings": ["FAQ"],
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/web/content/product/faq.mdx",
+      "headings": [
+        "FAQ"
+      ],
       "id": "faq.mdx",
       "images": [],
       "relativePath": "faq.mdx",
@@ -13,8 +15,11 @@
     },
     {
       "anchor": "does-opendetail-ship-a-chat-ui",
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/faq.mdx",
-      "headings": ["FAQ", "Does opendetail ship a chat UI?"],
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/web/content/product/faq.mdx",
+      "headings": [
+        "FAQ",
+        "Does opendetail ship a chat UI?"
+      ],
       "id": "faq.mdx#does-opendetail-ship-a-chat-ui",
       "images": [],
       "relativePath": "faq.mdx",
@@ -24,8 +29,11 @@
     },
     {
       "anchor": "is-this-built-on-openai",
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/faq.mdx",
-      "headings": ["FAQ", "Is this built on OpenAI?"],
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/web/content/product/faq.mdx",
+      "headings": [
+        "FAQ",
+        "Is this built on OpenAI?"
+      ],
       "id": "faq.mdx#is-this-built-on-openai",
       "images": [],
       "relativePath": "faq.mdx",
@@ -35,7 +43,7 @@
     },
     {
       "anchor": "do-i-need-a-vector-database-or-external-search-service",
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/faq.mdx",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/web/content/product/faq.mdx",
       "headings": [
         "FAQ",
         "Do I need a vector database or external search service?"
@@ -49,8 +57,11 @@
     },
     {
       "anchor": "what-content-gets-indexed",
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/faq.mdx",
-      "headings": ["FAQ", "What content gets indexed?"],
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/web/content/product/faq.mdx",
+      "headings": [
+        "FAQ",
+        "What content gets indexed?"
+      ],
       "id": "faq.mdx#what-content-gets-indexed",
       "images": [],
       "relativePath": "faq.mdx",
@@ -60,8 +71,11 @@
     },
     {
       "anchor": "does-mdx-still-work-if-the-file-uses-components",
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/faq.mdx",
-      "headings": ["FAQ", "Does MDX still work if the file uses components?"],
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/web/content/product/faq.mdx",
+      "headings": [
+        "FAQ",
+        "Does MDX still work if the file uses components?"
+      ],
       "id": "faq.mdx#does-mdx-still-work-if-the-file-uses-components",
       "images": [],
       "relativePath": "faq.mdx",
@@ -71,8 +85,11 @@
     },
     {
       "anchor": "can-it-answer-from-outside-my-docs",
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/faq.mdx",
-      "headings": ["FAQ", "Can it answer from outside my docs?"],
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/web/content/product/faq.mdx",
+      "headings": [
+        "FAQ",
+        "Can it answer from outside my docs?"
+      ],
       "id": "faq.mdx#can-it-answer-from-outside-my-docs",
       "images": [],
       "relativePath": "faq.mdx",
@@ -82,8 +99,11 @@
     },
     {
       "anchor": "what-happens-when-the-docs-are-not-enough",
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/faq.mdx",
-      "headings": ["FAQ", "What happens when the docs are not enough?"],
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/web/content/product/faq.mdx",
+      "headings": [
+        "FAQ",
+        "What happens when the docs are not enough?"
+      ],
       "id": "faq.mdx#what-happens-when-the-docs-are-not-enough",
       "images": [],
       "relativePath": "faq.mdx",
@@ -93,8 +113,11 @@
     },
     {
       "anchor": "where-does-the-data-live",
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/faq.mdx",
-      "headings": ["FAQ", "Where does the data live?"],
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/web/content/product/faq.mdx",
+      "headings": [
+        "FAQ",
+        "Where does the data live?"
+      ],
       "id": "faq.mdx#where-does-the-data-live",
       "images": [],
       "relativePath": "faq.mdx",
@@ -104,8 +127,11 @@
     },
     {
       "anchor": "what-are-the-integration-modes",
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/faq.mdx",
-      "headings": ["FAQ", "What are the integration modes?"],
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/web/content/product/faq.mdx",
+      "headings": [
+        "FAQ",
+        "What are the integration modes?"
+      ],
       "id": "faq.mdx#what-are-the-integration-modes",
       "images": [],
       "relativePath": "faq.mdx",
@@ -115,8 +141,11 @@
     },
     {
       "anchor": "is-the-hosted-backend-available-yet",
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/faq.mdx",
-      "headings": ["FAQ", "Is the hosted backend available yet?"],
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/web/content/product/faq.mdx",
+      "headings": [
+        "FAQ",
+        "Is the hosted backend available yet?"
+      ],
       "id": "faq.mdx#is-the-hosted-backend-available-yet",
       "images": [],
       "relativePath": "faq.mdx",
@@ -126,8 +155,11 @@
     },
     {
       "anchor": "what-frameworks-are-supported-today",
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/faq.mdx",
-      "headings": ["FAQ", "What frameworks are supported today?"],
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/web/content/product/faq.mdx",
+      "headings": [
+        "FAQ",
+        "What frameworks are supported today?"
+      ],
       "id": "faq.mdx#what-frameworks-are-supported-today",
       "images": [],
       "relativePath": "faq.mdx",
@@ -137,8 +169,11 @@
     },
     {
       "anchor": "is-setup-still-manual",
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/faq.mdx",
-      "headings": ["FAQ", "Is setup still manual?"],
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/web/content/product/faq.mdx",
+      "headings": [
+        "FAQ",
+        "Is setup still manual?"
+      ],
       "id": "faq.mdx#is-setup-still-manual",
       "images": [],
       "relativePath": "faq.mdx",
@@ -148,8 +183,11 @@
     },
     {
       "anchor": "is-it-only-for-developer-docs",
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/faq.mdx",
-      "headings": ["FAQ", "Is it only for developer docs?"],
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/web/content/product/faq.mdx",
+      "headings": [
+        "FAQ",
+        "Is it only for developer docs?"
+      ],
       "id": "faq.mdx#is-it-only-for-developer-docs",
       "images": [],
       "relativePath": "faq.mdx",
@@ -159,8 +197,11 @@
     },
     {
       "anchor": "does-it-replace-docs",
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/faq.mdx",
-      "headings": ["FAQ", "Does it replace docs?"],
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/web/content/product/faq.mdx",
+      "headings": [
+        "FAQ",
+        "Does it replace docs?"
+      ],
       "id": "faq.mdx#does-it-replace-docs",
       "images": [],
       "relativePath": "faq.mdx",
@@ -170,8 +211,10 @@
     },
     {
       "anchor": null,
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/how-it-works.mdx",
-      "headings": ["How It Works"],
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/web/content/product/how-it-works.mdx",
+      "headings": [
+        "How It Works"
+      ],
       "id": "how-it-works.mdx",
       "images": [],
       "relativePath": "how-it-works.mdx",
@@ -181,8 +224,11 @@
     },
     {
       "anchor": "build-time",
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/how-it-works.mdx",
-      "headings": ["How It Works", "Build time"],
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/web/content/product/how-it-works.mdx",
+      "headings": [
+        "How It Works",
+        "Build time"
+      ],
       "id": "how-it-works.mdx#build-time",
       "images": [],
       "relativePath": "how-it-works.mdx",
@@ -192,8 +238,11 @@
     },
     {
       "anchor": "request-time",
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/how-it-works.mdx",
-      "headings": ["How It Works", "Request time"],
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/web/content/product/how-it-works.mdx",
+      "headings": [
+        "How It Works",
+        "Request time"
+      ],
       "id": "how-it-works.mdx#request-time",
       "images": [],
       "relativePath": "how-it-works.mdx",
@@ -203,8 +252,11 @@
     },
     {
       "anchor": "runtime-shape",
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/how-it-works.mdx",
-      "headings": ["How It Works", "Runtime shape"],
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/web/content/product/how-it-works.mdx",
+      "headings": [
+        "How It Works",
+        "Runtime shape"
+      ],
       "id": "how-it-works.mdx#runtime-shape",
       "images": [],
       "relativePath": "how-it-works.mdx",
@@ -214,8 +266,11 @@
     },
     {
       "anchor": "integration-split",
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/how-it-works.mdx",
-      "headings": ["How It Works", "Integration split"],
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/web/content/product/how-it-works.mdx",
+      "headings": [
+        "How It Works",
+        "Integration split"
+      ],
       "id": "how-it-works.mdx#integration-split",
       "images": [],
       "relativePath": "how-it-works.mdx",
@@ -225,8 +280,11 @@
     },
     {
       "anchor": "what-this-design-buys-you",
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/how-it-works.mdx",
-      "headings": ["How It Works", "What this design buys you"],
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/web/content/product/how-it-works.mdx",
+      "headings": [
+        "How It Works",
+        "What this design buys you"
+      ],
       "id": "how-it-works.mdx#what-this-design-buys-you",
       "images": [],
       "relativePath": "how-it-works.mdx",
@@ -236,8 +294,10 @@
     },
     {
       "anchor": null,
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/overview.mdx",
-      "headings": ["Overview"],
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/web/content/product/overview.mdx",
+      "headings": [
+        "Overview"
+      ],
       "id": "overview.mdx",
       "images": [],
       "relativePath": "overview.mdx",
@@ -247,8 +307,11 @@
     },
     {
       "anchor": "what-opendetail-is",
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/overview.mdx",
-      "headings": ["Overview", "What opendetail is"],
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/web/content/product/overview.mdx",
+      "headings": [
+        "Overview",
+        "What opendetail is"
+      ],
       "id": "overview.mdx#what-opendetail-is",
       "images": [],
       "relativePath": "overview.mdx",
@@ -258,8 +321,11 @@
     },
     {
       "anchor": "where-it-fits",
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/overview.mdx",
-      "headings": ["Overview", "Where it fits"],
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/web/content/product/overview.mdx",
+      "headings": [
+        "Overview",
+        "Where it fits"
+      ],
       "id": "overview.mdx#where-it-fits",
       "images": [],
       "relativePath": "overview.mdx",
@@ -269,8 +335,11 @@
     },
     {
       "anchor": "who-it-is-for",
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/overview.mdx",
-      "headings": ["Overview", "Who it is for"],
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/web/content/product/overview.mdx",
+      "headings": [
+        "Overview",
+        "Who it is for"
+      ],
       "id": "overview.mdx#who-it-is-for",
       "images": [],
       "relativePath": "overview.mdx",
@@ -280,8 +349,11 @@
     },
     {
       "anchor": "what-it-is-not",
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/overview.mdx",
-      "headings": ["Overview", "What it is not"],
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/web/content/product/overview.mdx",
+      "headings": [
+        "Overview",
+        "What it is not"
+      ],
       "id": "overview.mdx#what-it-is-not",
       "images": [],
       "relativePath": "overview.mdx",
@@ -291,8 +363,11 @@
     },
     {
       "anchor": "integration-modes",
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/www/content/product/overview.mdx",
-      "headings": ["Overview", "Integration modes"],
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/apps/web/content/product/overview.mdx",
+      "headings": [
+        "Overview",
+        "Integration modes"
+      ],
       "id": "overview.mdx#integration-modes",
       "images": [],
       "relativePath": "overview.mdx",
@@ -303,11 +378,16 @@
   ],
   "config": {
     "base_path": "/product",
-    "exclude": ["content/product/visual-references.mdx"],
-    "include": ["content/product/**/*.md", "content/product/**/*.mdx"],
+    "exclude": [
+      "content/product/visual-references.mdx"
+    ],
+    "include": [
+      "content/product/**/*.md",
+      "content/product/**/*.mdx"
+    ],
     "version": 1
   },
-  "generatedAt": "2026-04-02T17:54:59.593Z",
+  "generatedAt": "2026-04-02T18:16:25.498Z",
   "manifestHash": "68b3f0586dc7765b427138c113453310f9931cab56a7fd32b976ed2d75ecdb6c",
   "version": 1
 }

@@ -200,10 +200,16 @@
       "name": "assistant-sidebar",
       "type": "registry:block",
       "title": "Assistant Sidebar",
-      "description": "Thin sidebar wrapper around the assistant shell composition.",
-      "docs": "Uses the shell directly and stays intentionally unopinionated in this pass.",
+      "description": "Global right sidebar assistant with built-in Cmd/Ctrl+J toggle behavior.",
+      "docs": "Composes the input, user-message, response, and thread primitives into a fixed right-side assistant surface for app-wide use.",
       "categories": ["opendetail", "block"],
-      "registryDependencies": ["assistant-shell", "opendetail-base"],
+      "registryDependencies": [
+        "assistant-input",
+        "assistant-response",
+        "assistant-thread",
+        "assistant-user-message",
+        "opendetail-base"
+      ],
       "files": [
         {
           "path": "registry/blocks/assistant-sidebar/assistant-sidebar.tsx",
