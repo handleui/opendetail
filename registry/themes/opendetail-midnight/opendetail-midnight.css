@@ -1,0 +1,14 @@
+:root {
+  --opendetail-color-accent: #7dd3fc;
+  --opendetail-color-background: #04111f;
+  --opendetail-color-badge-background: #10233c;
+  --opendetail-color-badge-foreground: #7dd3fc;
+  --opendetail-color-border: #17304f;
+  --opendetail-color-foreground: #eff6ff;
+  --opendetail-color-hover: #0d1b2d;
+  --opendetail-color-meta: #88a3c7;
+  --opendetail-color-pill-border: #21456c;
+  --opendetail-color-placeholder: #0f2239;
+  --opendetail-color-surface: #07182b;
+  color-scheme: dark;
+}

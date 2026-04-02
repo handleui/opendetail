@@ -25,6 +25,19 @@ const DEFAULT_ERROR_MESSAGE = "OpenDetail request failed.";
 const DEFAULT_PERSISTENCE_STORAGE = "local";
 const INTERRUPTED_RESPONSE_MESSAGE =
   "Response interrupted after refresh. Ask again to continue.";
+const OPENDETAIL_CLIENT_ERROR_CODES = [
+  "invalid_request",
+  "invalid_runtime",
+  "method_not_allowed",
+  "missing_api_key",
+  "missing_index",
+  "model_incomplete",
+  "provider_auth",
+  "provider_invalid_request",
+  "provider_rate_limited",
+  "provider_unavailable",
+  "request_failed",
+] as const satisfies OpenDetailClientErrorCode[];
 const THREAD_STORAGE_VERSION = 1;
 
 export interface OpenDetailUserMessage {
@@ -147,6 +160,12 @@ const isNullableBoolean = (value: unknown): value is boolean | null =>
 
 const isNullableOpenAiProvider = (value: unknown): value is "openai" | null =>
   value === null || value === "openai";
+
+const isOpenDetailClientErrorCode = (
+  value: unknown
+): value is OpenDetailClientErrorCode =>
+  typeof value === "string" &&
+  OPENDETAIL_CLIENT_ERROR_CODES.includes(value as OpenDetailClientErrorCode);
 
 const isAssistantStatus = (
   value: unknown
@@ -290,6 +309,12 @@ const readPersistedState = ({
         .filter((message) => message !== null),
     };
   } catch {
+    try {
+      storageInstance.removeItem(key);
+    } catch {
+      // Ignore invalid storage cleanup failures and fall back to in-memory state.
+    }
+
     return null;
   }
 };
@@ -475,52 +500,130 @@ const createErrorStateFromEvent = (
 
 const createErrorStateFromCaughtError = (
   caughtError: unknown
-): OpenDetailErrorState => ({
-  error:
-    caughtError instanceof Error && caughtError.message.length > 0
-      ? caughtError.message
-      : DEFAULT_ERROR_MESSAGE,
-  errorCode:
-    caughtError instanceof Error && "code" in caughtError
-      ? (caughtError.code as OpenDetailClientErrorCode)
+): OpenDetailErrorState => {
+  const errorDetails =
+    caughtError instanceof Error && isRecord(caughtError) ? caughtError : null;
+
+  return {
+    error:
+      caughtError instanceof Error && caughtError.message.length > 0
+        ? caughtError.message
+        : DEFAULT_ERROR_MESSAGE,
+    errorCode: isOpenDetailClientErrorCode(errorDetails?.code)
+      ? errorDetails.code
       : null,
-  errorParam:
-    caughtError instanceof Error &&
-    "param" in caughtError &&
-    typeof caughtError.param === "string"
-      ? caughtError.param
-      : null,
-  errorProvider:
-    caughtError instanceof Error &&
-    "provider" in caughtError &&
-    caughtError.provider === "openai"
-      ? "openai"
-      : null,
-  errorProviderCode:
-    caughtError instanceof Error &&
-    "providerCode" in caughtError &&
-    typeof caughtError.providerCode === "string"
-      ? caughtError.providerCode
-      : null,
-  errorRequestId:
-    caughtError instanceof Error &&
-    "requestId" in caughtError &&
-    typeof caughtError.requestId === "string"
-      ? caughtError.requestId
-      : null,
-  errorRetryable:
-    caughtError instanceof Error &&
-    "retryable" in caughtError &&
-    typeof caughtError.retryable === "boolean"
-      ? caughtError.retryable
-      : null,
-  errorStatus:
-    caughtError instanceof Error &&
-    "status" in caughtError &&
-    typeof caughtError.status === "number"
-      ? caughtError.status
-      : null,
+    errorParam:
+      typeof errorDetails?.param === "string" ? errorDetails.param : null,
+    errorProvider: errorDetails?.provider === "openai" ? "openai" : null,
+    errorProviderCode:
+      typeof errorDetails?.providerCode === "string"
+        ? errorDetails.providerCode
+        : null,
+    errorRequestId:
+      typeof errorDetails?.requestId === "string"
+        ? errorDetails.requestId
+        : null,
+    errorRetryable:
+      typeof errorDetails?.retryable === "boolean"
+        ? errorDetails.retryable
+        : null,
+    errorStatus:
+      typeof errorDetails?.status === "number" ? errorDetails.status : null,
+  };
+};
+
+const applyAssistantErrorState = ({
+  assistantMessageId,
+  errorState,
+  setMessages,
+  startedAt,
+}: {
+  assistantMessageId: string;
+  errorState: OpenDetailErrorState;
+  setMessages: Dispatch<SetStateAction<OpenDetailThreadMessage[]>>;
+  startedAt: number;
+}) => {
+  setMessages((currentMessages) =>
+    updateAssistantMessage(currentMessages, assistantMessageId, (message) => ({
+      ...message,
+      durationLabel: toDurationLabel(startedAt),
+      error: errorState.error,
+      errorCode: errorState.errorCode,
+      errorParam: errorState.errorParam,
+      errorProvider: errorState.errorProvider,
+      errorProviderCode: errorState.errorProviderCode,
+      errorRequestId: errorState.errorRequestId,
+      errorRetryable: errorState.errorRetryable,
+      errorStatus: errorState.errorStatus,
+      images: [],
+      sources: [],
+      status: "error",
+      text: errorState.error ?? DEFAULT_ERROR_MESSAGE,
+    }))
+  );
+};
+
+const createCompletedAssistantMessage = (
+  message: OpenDetailAssistantMessage,
+  startedAt: number
+): OpenDetailAssistantMessage => ({
+  ...message,
+  durationLabel: toDurationLabel(startedAt),
+  status: "complete",
 });
+
+const createInterruptedAssistantMessage = (
+  message: OpenDetailAssistantMessage,
+  startedAt: number
+): OpenDetailAssistantMessage => ({
+  ...message,
+  durationLabel: toDurationLabel(startedAt),
+  error: INTERRUPTED_RESPONSE_MESSAGE,
+  errorCode: null,
+  errorParam: null,
+  errorProvider: null,
+  errorProviderCode: null,
+  errorRequestId: null,
+  errorRetryable: false,
+  errorStatus: null,
+  images: [],
+  sources: [],
+  status: "error",
+  text:
+    message.text.trim().length > 0
+      ? `${message.text}\n\n${INTERRUPTED_RESPONSE_MESSAGE}`
+      : message.text,
+});
+
+const finalizeStoppedAssistantMessage = ({
+  assistantMessageId,
+  interrupted,
+  setMessages,
+  startedAt,
+}: {
+  assistantMessageId: string;
+  interrupted: boolean;
+  setMessages: Dispatch<SetStateAction<OpenDetailThreadMessage[]>>;
+  startedAt: number;
+}) => {
+  setMessages((currentMessages) =>
+    currentMessages.some(
+      (message) =>
+        message.role === "assistant" &&
+        message.id === assistantMessageId &&
+        message.text.length === 0
+    )
+      ? removeAssistantMessage(currentMessages, assistantMessageId)
+      : updateAssistantMessage(
+          currentMessages,
+          assistantMessageId,
+          (message) =>
+            interrupted
+              ? createInterruptedAssistantMessage(message, startedAt)
+              : createCompletedAssistantMessage(message, startedAt)
+        )
+  );
+};
 
 export const useOpenDetail = (
   options: UseOpenDetailOptions = {}
@@ -555,18 +658,8 @@ export const useOpenDetail = (
   const activeAssistantMessageIdRef = useRef<string | null>(null);
   const hasHydratedPersistenceRef = useRef(false);
   const startedAtRef = useRef<number | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [errorCode, setErrorCode] = useState<OpenDetailClientErrorCode | null>(
-    null
-  );
-  const [errorParam, setErrorParam] = useState<string | null>(null);
-  const [errorProvider, setErrorProvider] = useState<"openai" | null>(null);
-  const [errorProviderCode, setErrorProviderCode] = useState<string | null>(
-    null
-  );
-  const [errorRequestId, setErrorRequestId] = useState<string | null>(null);
-  const [errorRetryable, setErrorRetryable] = useState<boolean | null>(null);
-  const [errorStatus, setErrorStatus] = useState<number | null>(null);
+  const [errorState, setErrorState] =
+    useState<OpenDetailErrorState>(EMPTY_ERROR_STATE);
   const [messages, setMessages] = useState<OpenDetailThreadMessage[]>([]);
   const [question, setQuestion] = useState("");
   const [status, setStatus] = useState<OpenDetailClientStatus>("idle");
@@ -593,61 +686,59 @@ export const useOpenDetail = (
       return;
     }
 
-    writePersistedState({
-      ...persistence,
-      messages,
-      question,
-    });
+    const timeoutId = window.setTimeout(() => {
+      writePersistedState({
+        ...persistence,
+        messages,
+        question,
+      });
+    }, 150);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
   }, [messages, persistence, question]);
 
+  useEffect(() => () => client.stop(), [client]);
+
   const applyErrorState = (nextErrorState: OpenDetailErrorState) => {
-    setError(nextErrorState.error);
-    setErrorCode(nextErrorState.errorCode);
-    setErrorParam(nextErrorState.errorParam);
-    setErrorProvider(nextErrorState.errorProvider);
-    setErrorProviderCode(nextErrorState.errorProviderCode);
-    setErrorRequestId(nextErrorState.errorRequestId);
-    setErrorRetryable(nextErrorState.errorRetryable);
-    setErrorStatus(nextErrorState.errorStatus);
+    setErrorState(nextErrorState);
   };
 
-  const stop = () => {
+  const clearActiveRequest = () => {
+    activeAssistantMessageIdRef.current = null;
+    startedAtRef.current = null;
+  };
+
+  const finalizeActiveRequest = ({ interrupted }: { interrupted: boolean }) => {
     const activeAssistantMessageId = activeAssistantMessageIdRef.current;
     const startedAt = startedAtRef.current;
 
     client.stop();
-    setStatus("idle");
-    activeAssistantMessageIdRef.current = null;
-    startedAtRef.current = null;
+    clearActiveRequest();
 
     if (!activeAssistantMessageId || startedAt === null) {
       return;
     }
 
-    setMessages((currentMessages) =>
-      currentMessages.some(
-        (message) =>
-          message.role === "assistant" &&
-          message.id === activeAssistantMessageId &&
-          message.text.length === 0
-      )
-        ? removeAssistantMessage(currentMessages, activeAssistantMessageId)
-        : updateAssistantMessage(
-            currentMessages,
-            activeAssistantMessageId,
-            (message) => ({
-              ...message,
-              durationLabel: toDurationLabel(startedAt),
-              status: "complete",
-            })
-          )
-    );
+    finalizeStoppedAssistantMessage({
+      assistantMessageId: activeAssistantMessageId,
+      interrupted,
+      setMessages,
+      startedAt,
+    });
+  };
+
+  const stop = () => {
+    setStatus("idle");
+    finalizeActiveRequest({
+      interrupted: false,
+    });
   };
 
   const clearThread = () => {
     client.stop();
-    activeAssistantMessageIdRef.current = null;
-    startedAtRef.current = null;
+    clearActiveRequest();
     applyErrorState(EMPTY_ERROR_STATE);
     setMessages([]);
     setQuestion("");
@@ -663,6 +754,12 @@ export const useOpenDetail = (
 
     if (nextQuestion.length === 0) {
       return;
+    }
+
+    if (activeAssistantMessageIdRef.current && startedAtRef.current !== null) {
+      finalizeActiveRequest({
+        interrupted: true,
+      });
     }
 
     const userMessageId = createMessageId();
@@ -699,14 +796,12 @@ export const useOpenDetail = (
             });
 
             if (event.type === "done") {
-              activeAssistantMessageIdRef.current = null;
-              startedAtRef.current = null;
+              clearActiveRequest();
             }
 
             if (event.type === "error") {
               applyErrorState(createErrorStateFromEvent(event));
-              activeAssistantMessageIdRef.current = null;
-              startedAtRef.current = null;
+              clearActiveRequest();
             }
           },
           onStatusChange: (nextStatus) => {
@@ -723,43 +818,26 @@ export const useOpenDetail = (
 
       applyErrorState(nextErrorState);
       setStatus("error");
-      activeAssistantMessageIdRef.current = null;
-      startedAtRef.current = null;
-      setMessages((currentMessages) =>
-        updateAssistantMessage(
-          currentMessages,
-          assistantMessageId,
-          (message) => ({
-            ...message,
-            durationLabel: toDurationLabel(startedAt),
-            error: nextErrorState.error,
-            errorCode: nextErrorState.errorCode,
-            errorParam: nextErrorState.errorParam,
-            errorProvider: nextErrorState.errorProvider,
-            errorProviderCode: nextErrorState.errorProviderCode,
-            errorRequestId: nextErrorState.errorRequestId,
-            errorRetryable: nextErrorState.errorRetryable,
-            errorStatus: nextErrorState.errorStatus,
-            images: [],
-            sources: [],
-            status: "error",
-            text: nextErrorState.error ?? DEFAULT_ERROR_MESSAGE,
-          })
-        )
-      );
+      clearActiveRequest();
+      applyAssistantErrorState({
+        assistantMessageId,
+        errorState: nextErrorState,
+        setMessages,
+        startedAt,
+      });
     }
   };
 
   return {
     clearThread,
-    error,
-    errorCode,
-    errorParam,
-    errorProvider,
-    errorProviderCode,
-    errorRequestId,
-    errorRetryable,
-    errorStatus,
+    error: errorState.error,
+    errorCode: errorState.errorCode,
+    errorParam: errorState.errorParam,
+    errorProvider: errorState.errorProvider,
+    errorProviderCode: errorState.errorProviderCode,
+    errorRequestId: errorState.errorRequestId,
+    errorRetryable: errorState.errorRetryable,
+    errorStatus: errorState.errorStatus,
     implemented: true,
     messages,
     question,

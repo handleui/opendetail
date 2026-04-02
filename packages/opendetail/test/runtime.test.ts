@@ -226,7 +226,7 @@ describe("OpenDetail runtime", () => {
       );
       expect(create.mock.calls[0]?.[0]).toMatchObject({
         prompt_cache_key: expect.any(String),
-        prompt_cache_retention: "in-memory",
+        prompt_cache_retention: "in_memory",
       });
       expect(firstRequest.input.startsWith("Sources:\n")).toBe(true);
     } finally {
@@ -275,7 +275,7 @@ describe("OpenDetail runtime", () => {
       expect(create.mock.calls[0]?.[0]).toMatchObject({
         model: "gpt-5.4-mini",
         prompt_cache_key: expect.any(String),
-        prompt_cache_retention: "in-memory",
+        prompt_cache_retention: "in_memory",
         reasoning: {
           effort: "none",
         },
@@ -507,7 +507,7 @@ describe("OpenDetail runtime", () => {
         images: [],
         type: "images",
       });
-      expect(events.at(-1)).toEqual({
+      expect(events.at(-1)).toMatchObject({
         code: "model_incomplete",
         message:
           "The model could not complete the answer because the response was filtered.",
@@ -658,14 +658,21 @@ describe("OpenDetail runtime", () => {
         question: "How do I install opendetail on a new app?",
       });
 
-      expect(create.mock.calls[0]?.[0]).toMatchObject({
+      const firstRequest = create.mock.calls[0]?.[0] as
+        | { prompt_cache_key?: string }
+        | undefined;
+      const secondRequest = create.mock.calls[1]?.[0] as
+        | { prompt_cache_key?: string }
+        | undefined;
+
+      expect(firstRequest).toMatchObject({
         prompt_cache_key: expect.any(String),
       });
-      expect(create.mock.calls[1]?.[0]).toMatchObject({
+      expect(secondRequest).toMatchObject({
         prompt_cache_key: expect.any(String),
       });
-      expect(create.mock.calls[0]?.[0]).not.toMatchObject({
-        prompt_cache_key: create.mock.calls[1]?.[0]?.prompt_cache_key,
+      expect(firstRequest).not.toMatchObject({
+        prompt_cache_key: secondRequest?.prompt_cache_key,
       });
     } finally {
       await removeWorkspace(cwd);

@@ -10,6 +10,10 @@ order: 3
 
 No. `opendetail` is the engine. The current package focuses on the build step, local index, runtime, and Next.js adapter. If you want a chat surface, you bring that separately.
 
+## Is this built on OpenAI?
+
+Yes. `opendetail` uses the OpenAI Responses API underneath. The product value is the setup flow, grounding model, local retrieval layer, and cleaner integration surface around that API.
+
 ## Do I need a vector database or external search service?
 
 No. Today the default flow builds a local JSON index and searches it locally. That keeps the setup small and easy to reason about.
@@ -32,7 +36,20 @@ It falls back with a plain answer: `I couldn't find that in the configured docs.
 
 ## Where does the data live?
 
-The built index lives in your app at `.opendetail/index.json`. At runtime, `opendetail` loads that local index and sends only the retrieved sections to the model. You still need `OPENAI_API_KEY` at runtime.
+The built index lives in your app at `.opendetail/index.json`. At runtime, `opendetail` loads that local index and sends only the retrieved sections to the model. In `self-hosted`, that means your runtime needs `OPENAI_API_KEY`. In `hosted`, the client transport points at a hosted endpoint instead.
+
+## What are the integration modes?
+
+There are two documented modes:
+
+- `self-hosted`: scaffold a route and keep `OPENAI_API_KEY` in your own runtime
+- `hosted`: skip route scaffolding and point your client transport at a hosted endpoint later
+
+The request and stream contract stay the same across both modes.
+
+## Is the hosted backend available yet?
+
+No. In this phase, the hosted path is documented and scaffolded only. The OpenDetail-managed proxy backend is not shipped yet.
 
 ## What frameworks are supported today?
 
@@ -40,7 +57,7 @@ Today the package ships a core Node runtime and a thin Next.js adapter via `open
 
 ## Is setup still manual?
 
-The CLI includes a setup flow (`opendetail setup`) that can scaffold config, route wiring, and an initial index, plus a diagnostics command (`opendetail doctor`) for fast verification.
+The CLI includes a setup flow (`opendetail setup`) that can scaffold config, route wiring for `self-hosted`, and an initial index. It also includes a diagnostics command (`opendetail doctor`) for fast verification in both integration modes.
 
 ## Is it only for developer docs?
 

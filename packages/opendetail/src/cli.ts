@@ -1,17 +1,22 @@
 #!/usr/bin/env node
 
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { access, mkdir, writeFile } from "node:fs/promises";
 import { createRequire } from "node:module";
 import path from "node:path";
 import readline from "node:readline/promises";
+import { pathToFileURL } from "node:url";
 import { buildOpenDetailIndex } from "./build";
 import { OPENDETAIL_CONFIG_FILE, OPENDETAIL_INDEX_FILE } from "./constants";
+import type { OpenDetailIntegrationMode } from "./types";
 import { getErrorMessage } from "./utils";
 
 const DEFAULT_ROUTE_PATH = "src/app/api/opendetail/route.ts";
 const DEFAULT_DOCS_INCLUDE_PATTERN = "content/**/*.{md,mdx}";
 const DEFAULT_MEDIA_INCLUDE_PATTERN =
   "content/**/*.{png,jpg,jpeg,webp,avif,gif,svg}";
+const DEFAULT_INTEGRATION_MODE =
+  "self-hosted" satisfies OpenDetailIntegrationMode;
+const HOSTED_ENDPOINT_ENV_VAR = "OPENDETAIL_ENDPOINT";
 
 type CliLogger = Pick<typeof console, "error" | "log">;
 
@@ -22,6 +27,7 @@ interface CliContext {
 interface SetupAnswers {
   basePath: string;
   includePattern: string;
+  integrationMode: OpenDetailIntegrationMode;
   mediaIncludePattern: string;
   routePath: string;
   shouldBuild: boolean;
@@ -41,6 +47,18 @@ const CLI_VERSION =
 const printCliHeader = (logger: CliLogger): void => {
   logger.log(`Opendetail v${CLI_VERSION}\n`);
 };
+
+const pathExists = async (value: string): Promise<boolean> => {
+  try {
+    await access(value);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+const hasNonEmptyEnvValue = (value: string | undefined): boolean =>
+  typeof value === "string" && value.trim().length > 0;
 
 const parseCliArgs = (argv: string[]): ParsedCliArgs => {
   const [command, ...rawFlags] = argv;
@@ -109,15 +127,33 @@ const resolveStringFlag = (
 const printUsage = (): void => {
   console.log(`Usage:
   opendetail build [--config <path>] [--output <path>] [--cwd <path>]
-  opendetail setup [--config <path>] [--route <path>] [--base-path <url>] [--include <glob>] [--media-include <glob>] [--with-media] [--skip-build] [--force] [--interactive] [--no-interactive] [--cwd <path>]
-  opendetail doctor [--config <path>] [--route <path>] [--cwd <path>]
+  opendetail setup [--integration <self-hosted|hosted>] [--config <path>] [--route <path>] [--base-path <url>] [--include <glob>] [--media-include <glob>] [--with-media] [--skip-build] [--force] [--interactive] [--no-interactive] [--cwd <path>]
+  opendetail doctor [--integration <self-hosted|hosted>] [--config <path>] [--route <path>] [--cwd <path>]
 
 Examples:
   bunx opendetail setup
+  bunx opendetail setup --integration hosted
   bunx opendetail setup --with-media
   bunx opendetail setup --route src/app/api/assistant/route.ts --base-path /help
+  bunx opendetail doctor --integration hosted
   bunx opendetail doctor
   opendetail build`);
+};
+
+const parseIntegrationMode = (
+  value: string | null
+): OpenDetailIntegrationMode => {
+  if (!value) {
+    return DEFAULT_INTEGRATION_MODE;
+  }
+
+  if (value === "hosted" || value === "self-hosted") {
+    return value;
+  }
+
+  throw new Error(
+    `Invalid integration mode: ${value}. Use "self-hosted" or "hosted".`
+  );
 };
 
 const askQuestion = async ({
@@ -155,6 +191,23 @@ const askYesNoQuestion = async ({
   return normalizedAnswer === "y" || normalizedAnswer === "yes";
 };
 
+const askIntegrationModeQuestion = async ({
+  defaultValue,
+  rl,
+}: {
+  defaultValue: OpenDetailIntegrationMode;
+  rl: readline.Interface;
+}): Promise<OpenDetailIntegrationMode> => {
+  const answer = await rl.question(
+    `Integration mode (${defaultValue}, options: self-hosted/hosted): `
+  );
+  const trimmedAnswer = answer.trim();
+
+  return parseIntegrationMode(
+    trimmedAnswer.length > 0 ? trimmedAnswer : defaultValue
+  );
+};
+
 const shouldRunInteractiveSetup = (
   flags: Map<string, string | true>
 ): boolean => {
@@ -173,6 +226,7 @@ const promptSetupAnswers = async ({
   basePath,
   defaultShouldBuild,
   includePattern,
+  integrationMode,
   logger,
   mediaIncludePattern,
   routePath,
@@ -181,6 +235,7 @@ const promptSetupAnswers = async ({
   basePath: string;
   defaultShouldBuild: boolean;
   includePattern: string;
+  integrationMode: OpenDetailIntegrationMode;
   logger: CliLogger;
   mediaIncludePattern: string;
   routePath: string;
@@ -193,7 +248,13 @@ const promptSetupAnswers = async ({
   });
 
   try {
-    logger.log("Step 1/5 · Content");
+    logger.log("Step 1/6 · Integration");
+    const resolvedIntegrationMode = await askIntegrationModeQuestion({
+      defaultValue: integrationMode,
+      rl,
+    });
+
+    logger.log("\nStep 2/6 · Content");
     const resolvedIncludePattern = await askQuestion({
       defaultValue: includePattern,
       prompt: "Docs include glob",
@@ -205,7 +266,7 @@ const promptSetupAnswers = async ({
       rl,
     });
 
-    logger.log("\nStep 2/5 · Media");
+    logger.log("\nStep 3/6 · Media");
     const resolvedWithMedia = await askYesNoQuestion({
       defaultValue: withMedia,
       prompt: "Enable local media mapping",
@@ -219,24 +280,28 @@ const promptSetupAnswers = async ({
         })
       : mediaIncludePattern;
 
-    logger.log("\nStep 3/5 · Route");
-    const resolvedRoutePath = await askQuestion({
-      defaultValue: routePath,
-      prompt: "Next.js route file path",
-      rl,
-    });
+    logger.log("\nStep 4/6 · Route");
+    const resolvedRoutePath =
+      resolvedIntegrationMode === "self-hosted"
+        ? await askQuestion({
+            defaultValue: routePath,
+            prompt: "Next.js route file path",
+            rl,
+          })
+        : routePath;
 
-    logger.log("\nStep 4/5 · Build");
+    logger.log("\nStep 5/6 · Build");
     const resolvedShouldBuild = await askYesNoQuestion({
       defaultValue: defaultShouldBuild,
       prompt: "Build index after scaffolding",
       rl,
     });
 
-    logger.log("\nStep 5/5 · Confirmed");
+    logger.log("\nStep 6/6 · Confirmed");
     return {
       basePath: resolvedBasePath,
       includePattern: resolvedIncludePattern,
+      integrationMode: resolvedIntegrationMode,
       mediaIncludePattern: resolvedMediaIncludePattern,
       routePath: resolvedRoutePath,
       shouldBuild: resolvedShouldBuild,
@@ -308,20 +373,18 @@ const writeIfMissing = async ({
   filePath: string;
   force: boolean;
 }): Promise<"created" | "skipped" | "updated"> => {
-  try {
-    await readFile(filePath, "utf8");
-
+  if (await pathExists(filePath)) {
     if (!force) {
       return "skipped";
     }
 
     await writeFile(filePath, content, "utf8");
     return "updated";
-  } catch {
-    await mkdir(path.dirname(filePath), { recursive: true });
-    await writeFile(filePath, content, "utf8");
-    return "created";
   }
+
+  await mkdir(path.dirname(filePath), { recursive: true });
+  await writeFile(filePath, content, "utf8");
+  return "created";
 };
 
 const handleSetupCommand = async ({
@@ -349,12 +412,16 @@ const handleSetupCommand = async ({
   const basePath = resolveStringFlag(flags, "base-path") ?? "/docs";
   const routePathValue =
     resolveStringFlag(flags, "route") ?? DEFAULT_ROUTE_PATH;
+  const integrationMode = parseIntegrationMode(
+    resolveStringFlag(flags, "integration")
+  );
 
   const setupAnswers = shouldRunInteractiveSetup(flags)
     ? await promptSetupAnswers({
         basePath,
         defaultShouldBuild: !skipBuild,
         includePattern,
+        integrationMode,
         logger,
         mediaIncludePattern,
         routePath: routePathValue,
@@ -363,6 +430,7 @@ const handleSetupCommand = async ({
     : {
         basePath,
         includePattern,
+        integrationMode,
         mediaIncludePattern,
         routePath: routePathValue,
         shouldBuild: !skipBuild,
@@ -379,18 +447,24 @@ const handleSetupCommand = async ({
     filePath: configPath,
     force,
   });
-  const routeResult = await writeIfMissing({
-    content: createNextRouteTemplate(),
-    filePath: path.resolve(cwd, setupAnswers.routePath),
-    force,
-  });
 
   logger.log(
     `${configResult === "skipped" ? "Skipped" : "Wrote"} ${path.relative(cwd, configPath)}`
   );
-  logger.log(
-    `${routeResult === "skipped" ? "Skipped" : "Wrote"} ${path.relative(cwd, path.resolve(cwd, setupAnswers.routePath))}`
-  );
+
+  if (setupAnswers.integrationMode === "self-hosted") {
+    const routeResult = await writeIfMissing({
+      content: createNextRouteTemplate(),
+      filePath: path.resolve(cwd, setupAnswers.routePath),
+      force,
+    });
+
+    logger.log(
+      `${routeResult === "skipped" ? "Skipped" : "Wrote"} ${path.relative(cwd, path.resolve(cwd, setupAnswers.routePath))}`
+    );
+  } else {
+    logger.log("Skipped route scaffolding for hosted integration.");
+  }
 
   if (setupAnswers.shouldBuild) {
     await handleBuildCommand({ cwd, flags, logger });
@@ -398,16 +472,11 @@ const handleSetupCommand = async ({
     logger.log("Skipped index build (--skip-build).");
   }
 
-  logger.log("Setup complete. Set OPENAI_API_KEY in your runtime environment.");
-};
-
-const checkPath = async (value: string): Promise<boolean> => {
-  try {
-    await readFile(value, "utf8");
-    return true;
-  } catch {
-    return false;
-  }
+  logger.log(
+    setupAnswers.integrationMode === "self-hosted"
+      ? "Setup complete. Set OPENAI_API_KEY in your runtime environment."
+      : `Hosted scaffolding complete. Next set ${HOSTED_ENDPOINT_ENV_VAR} in your app environment and configure transport headers if your hosted endpoint requires auth.`
+  );
 };
 
 const handleDoctorCommand = async ({
@@ -428,30 +497,42 @@ const handleDoctorCommand = async ({
     resolveStringFlag(flags, "route") ?? DEFAULT_ROUTE_PATH
   );
   const indexPath = path.resolve(cwd, OPENDETAIL_INDEX_FILE);
+  const integrationMode = parseIntegrationMode(
+    resolveStringFlag(flags, "integration")
+  );
   const checks = [
     {
-      exists: await checkPath(configPath),
+      exists: await pathExists(configPath),
       label: "Config",
       message: path.relative(cwd, configPath),
     },
     {
-      exists: await checkPath(indexPath),
+      exists: await pathExists(indexPath),
       label: "Index",
       message: path.relative(cwd, indexPath),
     },
-    {
-      exists: await checkPath(routePath),
-      label: "Route",
-      message: path.relative(cwd, routePath),
-    },
-    {
-      exists:
-        typeof process.env.OPENAI_API_KEY === "string" &&
-        process.env.OPENAI_API_KEY.trim().length > 0,
-      label: "Env",
-      message: "OPENAI_API_KEY",
-    },
   ];
+
+  if (integrationMode === "self-hosted") {
+    checks.push(
+      {
+        exists: await pathExists(routePath),
+        label: "Route",
+        message: path.relative(cwd, routePath),
+      },
+      {
+        exists: hasNonEmptyEnvValue(process.env.OPENAI_API_KEY),
+        label: "Env",
+        message: "OPENAI_API_KEY",
+      }
+    );
+  } else {
+    checks.push({
+      exists: hasNonEmptyEnvValue(process.env[HOSTED_ENDPOINT_ENV_VAR]),
+      label: "Env",
+      message: HOSTED_ENDPOINT_ENV_VAR,
+    });
+  }
   let hasFailure = false;
 
   for (const check of checks) {
@@ -514,7 +595,13 @@ export const runCli = async (
   throw new Error(`Unknown command: ${command}`);
 };
 
-runCli(process.argv.slice(2)).catch((error: unknown) => {
-  console.error(getErrorMessage(error));
-  process.exitCode = 1;
-});
+const isMainModule =
+  typeof process.argv[1] === "string" &&
+  import.meta.url === pathToFileURL(process.argv[1]).href;
+
+if (isMainModule) {
+  runCli(process.argv.slice(2)).catch((error: unknown) => {
+    console.error(getErrorMessage(error));
+    process.exitCode = 1;
+  });
+}

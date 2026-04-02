@@ -129,6 +129,15 @@ interface OpenDetailClientPublicError {
   status: number | null;
 }
 
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === "object" && value !== null;
+
+const isStringArray = (value: unknown): value is string[] =>
+  Array.isArray(value) && value.every((item) => typeof item === "string");
+
+const isNullableString = (value: unknown): value is string | null =>
+  value === null || typeof value === "string";
+
 const resolveRequestHeaders = (
   headers: OpenDetailTransportOptions["headers"]
 ): Headers => {
@@ -136,6 +145,7 @@ const resolveRequestHeaders = (
     typeof headers === "function" ? headers() : (headers ?? undefined);
   const requestHeaders = new Headers(resolvedHeaders);
 
+  requestHeaders.set("accept", "application/x-ndjson, application/json");
   requestHeaders.set("content-type", "application/json");
   return requestHeaders;
 };
@@ -221,6 +231,52 @@ const createError = (
   publicError: OpenDetailClientPublicError
 ): OpenDetailClientRequestError =>
   new OpenDetailClientRequestError(publicError);
+
+const isSource = (value: unknown): value is OpenDetailClientSource =>
+  isRecord(value) &&
+  isStringArray(value.headings) &&
+  typeof value.id === "string" &&
+  typeof value.title === "string" &&
+  typeof value.url === "string";
+
+const isImage = (value: unknown): value is OpenDetailClientImage =>
+  isRecord(value) &&
+  isNullableString(value.alt) &&
+  isStringArray(value.sourceIds) &&
+  isNullableString(value.title) &&
+  typeof value.url === "string";
+
+const isMetaEvent = (value: unknown): value is OpenDetailClientMetaEvent =>
+  isRecord(value) && value.type === "meta" && typeof value.model === "string";
+
+const isSourcesEvent = (
+  value: unknown
+): value is OpenDetailClientSourcesEvent =>
+  isRecord(value) &&
+  value.type === "sources" &&
+  Array.isArray(value.sources) &&
+  value.sources.every((source) => isSource(source));
+
+const isImagesEvent = (value: unknown): value is OpenDetailClientImagesEvent =>
+  isRecord(value) &&
+  value.type === "images" &&
+  Array.isArray(value.images) &&
+  value.images.every((image) => isImage(image));
+
+const isDeltaEvent = (value: unknown): value is OpenDetailClientDeltaEvent =>
+  isRecord(value) && value.type === "delta" && typeof value.text === "string";
+
+const isDoneEvent = (value: unknown): value is OpenDetailClientDoneEvent =>
+  isRecord(value) && value.type === "done" && typeof value.text === "string";
+
+const isStructuredStreamEvent = (
+  value: unknown
+): value is Exclude<OpenDetailClientStreamEvent, OpenDetailClientErrorEvent> =>
+  isMetaEvent(value) ||
+  isSourcesEvent(value) ||
+  isImagesEvent(value) ||
+  isDeltaEvent(value) ||
+  isDoneEvent(value);
 
 const resolvePublicError = (
   value: unknown
@@ -324,12 +380,7 @@ const parseStreamEvent = (line: string): OpenDetailClientStreamEvent | null => {
     throw createError(createFallbackPublicError());
   }
 
-  if (
-    !parsedValue ||
-    typeof parsedValue !== "object" ||
-    !("type" in parsedValue) ||
-    typeof parsedValue.type !== "string"
-  ) {
+  if (!isRecord(parsedValue) || typeof parsedValue.type !== "string") {
     return null;
   }
 
@@ -349,7 +400,11 @@ const parseStreamEvent = (line: string): OpenDetailClientStreamEvent | null => {
     };
   }
 
-  return parsedValue as OpenDetailClientStreamEvent;
+  if (!isStructuredStreamEvent(parsedValue)) {
+    throw createError(createFallbackPublicError());
+  }
+
+  return parsedValue;
 };
 
 const handleStreamEvent = ({
@@ -360,7 +415,7 @@ const handleStreamEvent = ({
   event: OpenDetailClientStreamEvent;
   handlers?: OpenDetailClientHandlers;
   setStatus: (status: OpenDetailClientStatus) => void;
-}) => {
+}): boolean => {
   handlers?.onEvent?.(event);
 
   if (event.type === "delta") {
@@ -369,7 +424,7 @@ const handleStreamEvent = ({
       onStatusChange: handlers?.onStatusChange,
       setStatus,
     });
-    return;
+    return false;
   }
 
   if (event.type === "error") {
@@ -389,6 +444,8 @@ const handleStreamEvent = ({
       status: event.status,
     });
   }
+
+  return event.type === "done";
 };
 
 const readResponseStream = async ({
@@ -407,11 +464,13 @@ const readResponseStream = async ({
   const reader = response.body.getReader();
   const decoder = new TextDecoder();
   let buffer = "";
+  let hasTerminalEvent = false;
 
   while (true) {
     const { done, value } = await reader.read();
 
     if (done) {
+      buffer += decoder.decode();
       break;
     }
 
@@ -426,22 +485,28 @@ const readResponseStream = async ({
         continue;
       }
 
-      handleStreamEvent({
-        event,
-        handlers,
-        setStatus,
-      });
+      hasTerminalEvent =
+        handleStreamEvent({
+          event,
+          handlers,
+          setStatus,
+        }) || hasTerminalEvent;
     }
   }
 
   const trailingEvent = parseStreamEvent(buffer);
 
   if (trailingEvent) {
-    handleStreamEvent({
-      event: trailingEvent,
-      handlers,
-      setStatus,
-    });
+    hasTerminalEvent =
+      handleStreamEvent({
+        event: trailingEvent,
+        handlers,
+        setStatus,
+      }) || hasTerminalEvent;
+  }
+
+  if (!hasTerminalEvent) {
+    throw createError(createFallbackPublicError());
   }
 };
 
@@ -456,6 +521,9 @@ export const createOpenDetailClient = (
   const setStatus = (nextStatus: OpenDetailClientStatus) => {
     status = nextStatus;
   };
+
+  const isActiveRequest = (requestAbortController: AbortController): boolean =>
+    abortController === requestAbortController;
 
   const stop = () => {
     abortController?.abort();
@@ -501,22 +569,27 @@ export const createOpenDetailClient = (
           setStatus,
         });
 
-        setClientStatus({
-          nextStatus: "idle",
-          onStatusChange: handlers?.onStatusChange,
-          setStatus,
-        });
-      } catch (error) {
-        if (nextAbortController.signal.aborted) {
+        if (isActiveRequest(nextAbortController)) {
           setClientStatus({
             nextStatus: "idle",
             onStatusChange: handlers?.onStatusChange,
             setStatus,
           });
+        }
+      } catch (error) {
+        if (nextAbortController.signal.aborted) {
+          if (isActiveRequest(nextAbortController)) {
+            setClientStatus({
+              nextStatus: "idle",
+              onStatusChange: handlers?.onStatusChange,
+              setStatus,
+            });
+          }
+
           return;
         }
 
-        if (status !== "error") {
+        if (isActiveRequest(nextAbortController)) {
           setClientStatus({
             nextStatus: "error",
             onStatusChange: handlers?.onStatusChange,

@@ -7,7 +7,7 @@
       "name": "opendetail-client",
       "type": "registry:lib",
       "title": "OpenDetail Client",
-      "description": "Placeholder client-side helpers for future NDJSON transport and stream parsing.",
+      "description": "Canonical NDJSON transport for OpenDetail with endpoint, headers, credentials, and typed error handling.",
       "categories": ["opendetail", "lib"],
       "files": [
         {
@@ -20,7 +20,7 @@
       "name": "use-opendetail",
       "type": "registry:hook",
       "title": "useOpenDetail",
-      "description": "Placeholder hook scaffold for future assistant request, stream, and UI state.",
+      "description": "Canonical React hook for OpenDetail request, stream, and thread state built on the transport layer.",
       "categories": ["opendetail", "hook"],
       "registryDependencies": ["opendetail-client"],
       "files": [
@@ -52,14 +52,10 @@
       "name": "assistant-input",
       "type": "registry:ui",
       "title": "Assistant Input",
-      "description": "Exact Figma input primitive with animated multiline layout, send or stop action, and a submit contract shaped like { question: string }.",
+      "description": "Exact Figma input primitive with animated multiline layout plus send or stop action for an OpenDetail request.",
       "categories": ["opendetail", "ui"],
       "dependencies": ["lucide-react@^1.7.0", "motion@^12.38.0"],
-      "registryDependencies": [
-        "opendetail-client",
-        "use-opendetail",
-        "assistant-status"
-      ],
+      "registryDependencies": ["opendetail-client", "use-opendetail"],
       "files": [
         {
           "path": "registry/ui/assistant-input/assistant-input.tsx",
@@ -100,9 +96,10 @@
       "name": "assistant-response",
       "type": "registry:ui",
       "title": "Assistant Response",
-      "description": "Assistant answer primitive with lead text, optional image, markdown slot content, and response metadata.",
+      "description": "Assistant answer primitive with inline loading and error states, optional image, markdown slot content, and response metadata.",
       "categories": ["opendetail", "ui"],
       "registryDependencies": [
+        "assistant-status",
         "assistant-sources",
         "opendetail-base",
         "opendetail-client",
@@ -138,9 +135,8 @@
       "name": "assistant-status",
       "type": "registry:ui",
       "title": "Assistant Status",
-      "description": "Reusable pill primitive for thinking and error states used by assistant-input.",
+      "description": "Inline status primitive for loading spinners and red error copy inside assistant responses.",
       "categories": ["opendetail", "ui"],
-      "dependencies": ["lucide-react@^1.7.0"],
       "registryDependencies": ["opendetail-base"],
       "files": [
         {
@@ -153,7 +149,7 @@
       "name": "assistant-error",
       "type": "registry:ui",
       "title": "Assistant Error",
-      "description": "Compatibility alias that renders assistant-status with the error pill treatment.",
+      "description": "Compatibility alias that renders assistant-status as inline red error copy.",
       "categories": ["opendetail", "ui"],
       "registryDependencies": ["assistant-status"],
       "files": [
@@ -210,17 +206,63 @@
     },
     {
       "name": "opendetail-base",
-      "type": "registry:theme",
-      "title": "OpenDetail Base Theme",
-      "description": "Shared theme tokens and semantic classes for OpenDetail assistant primitives.",
-      "docs": "Import the installed stylesheet from your app's global CSS entry after `@import \"tailwindcss\";`, for example `@import \"@/styles/opendetail-base.css\";`. It includes the tw-shimmer import plus the shared OpenDetail tokens and semantic component classes.",
-      "categories": ["opendetail", "theme"],
-      "dependencies": ["tw-shimmer@0.4.9"],
+      "type": "registry:style",
+      "title": "OpenDetail Base Style",
+      "description": "Base token contract and semantic classes for OpenDetail primitives. Install this before any OpenDetail style variant.",
+      "docs": "Import the installed stylesheet from your app's global CSS entry after `@import \"tailwindcss\";`, for example `@import \"@/styles/opendetail-base.css\";`. It includes the shared OpenDetail token contract, inline status styling, and semantic component classes.",
+      "categories": ["opendetail", "style"],
+      "cssVars": {
+        "theme": {
+          "font-sans": "Geist, ui-sans-serif, system-ui, sans-serif"
+        },
+        "light": {
+          "opendetail-color-accent": "#c7ef2b",
+          "opendetail-color-background": "#ffffff",
+          "opendetail-color-foreground": "#080808"
+        },
+        "dark": {
+          "opendetail-color-accent": "#c7ef2b",
+          "opendetail-color-background": "#080808",
+          "opendetail-color-foreground": "#f9f9f9"
+        }
+      },
       "files": [
         {
           "path": "registry/themes/opendetail-base/opendetail-base.css",
           "type": "registry:file",
           "target": "styles/opendetail-base.css"
+        }
+      ]
+    },
+    {
+      "name": "opendetail-midnight",
+      "type": "registry:style",
+      "title": "OpenDetail Midnight",
+      "description": "A cooler, darker token override that layers on top of the OpenDetail base style.",
+      "docs": "Install with `opendetail-base`, then import `@/styles/opendetail-base.css` before `@/styles/opendetail-midnight.css`.",
+      "categories": ["opendetail", "style"],
+      "registryDependencies": ["opendetail-base"],
+      "files": [
+        {
+          "path": "registry/themes/opendetail-midnight/opendetail-midnight.css",
+          "type": "registry:file",
+          "target": "styles/opendetail-midnight.css"
+        }
+      ]
+    },
+    {
+      "name": "opendetail-signal",
+      "type": "registry:style",
+      "title": "OpenDetail Signal",
+      "description": "A warmer token override that layers on top of the OpenDetail base style.",
+      "docs": "Install with `opendetail-base`, then import `@/styles/opendetail-base.css` before `@/styles/opendetail-signal.css`.",
+      "categories": ["opendetail", "style"],
+      "registryDependencies": ["opendetail-base"],
+      "files": [
+        {
+          "path": "registry/themes/opendetail-signal/opendetail-signal.css",
+          "type": "registry:file",
+          "target": "styles/opendetail-signal.css"
         }
       ]
     }
