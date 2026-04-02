@@ -171,7 +171,7 @@ describe("OpenDetail runtime", () => {
       ).toThrowError(OpenDetailMissingApiKeyError);
     } finally {
       if (previousApiKey === undefined) {
-        process.env.OPENAI_API_KEY = undefined;
+        Reflect.deleteProperty(process.env, "OPENAI_API_KEY");
       } else {
         process.env.OPENAI_API_KEY = previousApiKey;
       }
@@ -517,6 +517,41 @@ describe("OpenDetail runtime", () => {
       expect(create.mock.calls[0]?.[0]).toMatchObject({
         instructions: expect.stringContaining(
           "Use numbered lists for setup walkthroughs."
+        ),
+      });
+    } finally {
+      await removeWorkspace(cwd);
+    }
+  });
+
+  test("treats empty assistantInstructions as an explicit override", async () => {
+    const cwd = await createFixtureWorkspace("basic");
+
+    try {
+      const { artifact } = await buildOpenDetailIndex({ cwd });
+      const { client, create } = createMockClient();
+      const instructionsDirectory = path.join(cwd, ".opendetail");
+
+      await mkdir(instructionsDirectory, { recursive: true });
+      await writeFile(
+        path.join(instructionsDirectory, "OPENDETAIL.md"),
+        "This should not be loaded when explicit override is empty."
+      );
+
+      const assistant = createOpenDetail({
+        assistantInstructions: "",
+        client,
+        cwd,
+        indexData: artifact,
+      });
+
+      await assistant.answer({
+        question: "How do I install opendetail?",
+      });
+
+      expect(create.mock.calls[0]?.[0]).toMatchObject({
+        instructions: expect.not.stringContaining(
+          "This should not be loaded when explicit override is empty."
         ),
       });
     } finally {

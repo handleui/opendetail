@@ -194,7 +194,7 @@ const resolveAssistantInstructions = ({
   assistantInstructionsPath?: string;
   cwd: string;
 }): string => {
-  if (assistantInstructions) {
+  if (assistantInstructions !== undefined) {
     return assistantInstructions.trim();
   }
 
