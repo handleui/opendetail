@@ -1,3 +1,5 @@
+import { mkdir, writeFile } from "node:fs/promises";
+import path from "node:path";
 import type OpenAI from "openai";
 import type {
   Response,
@@ -138,6 +140,7 @@ describe("OpenDetail runtime", () => {
       const { client, create } = createMockClient();
       const assistant = createOpenDetail({
         client,
+        cwd,
         indexData: artifact,
       });
       const result = await assistant.answer({
@@ -155,7 +158,8 @@ describe("OpenDetail runtime", () => {
 
   test("fails fast when OPENAI_API_KEY is missing and no client is injected", async () => {
     const cwd = await createFixtureWorkspace("basic");
-    vi.stubEnv("OPENAI_API_KEY", "");
+    const previousApiKey = process.env.OPENAI_API_KEY;
+    process.env.OPENAI_API_KEY = "";
 
     try {
       const { artifact } = await buildOpenDetailIndex({ cwd });
@@ -166,7 +170,11 @@ describe("OpenDetail runtime", () => {
         })
       ).toThrowError(OpenDetailMissingApiKeyError);
     } finally {
-      vi.unstubAllEnvs();
+      if (previousApiKey === undefined) {
+        process.env.OPENAI_API_KEY = undefined;
+      } else {
+        process.env.OPENAI_API_KEY = previousApiKey;
+      }
       await removeWorkspace(cwd);
     }
   });
@@ -179,6 +187,7 @@ describe("OpenDetail runtime", () => {
       const { client, create } = createMockClient();
       const assistant = createOpenDetail({
         client,
+        cwd,
         indexData: artifact,
       });
       const result = await assistant.answer({
@@ -207,15 +216,19 @@ describe("OpenDetail runtime", () => {
         },
       ]);
       expect(create).toHaveBeenCalledTimes(1);
+      const firstRequest = create.mock.calls[0]?.[0] as { input: string };
+
+      expect(firstRequest.input.includes("alt: Workflow widget diagram")).toBe(
+        true
+      );
+      expect(firstRequest.input.includes("/content-media/widget.png")).toBe(
+        false
+      );
       expect(create.mock.calls[0]?.[0]).toMatchObject({
-        input: expect.stringContaining("alt: Workflow widget diagram"),
+        prompt_cache_key: expect.any(String),
+        prompt_cache_retention: "in-memory",
       });
-      expect(create.mock.calls[0]?.[0]).toMatchObject({
-        input: expect.stringContaining("title: Widget Diagram"),
-      });
-      expect(create.mock.calls[0]?.[0]).toMatchObject({
-        input: expect.not.stringContaining("/content-media/widget.png"),
-      });
+      expect(firstRequest.input.startsWith("Sources:\n")).toBe(true);
     } finally {
       await removeWorkspace(cwd);
     }
@@ -229,6 +242,7 @@ describe("OpenDetail runtime", () => {
       const { client, create } = createMockClient();
       const assistant = createOpenDetail({
         client,
+        cwd,
         indexData: artifact,
       });
       const result = await assistant.stream({
@@ -260,6 +274,8 @@ describe("OpenDetail runtime", () => {
       expect(create).toHaveBeenCalledTimes(1);
       expect(create.mock.calls[0]?.[0]).toMatchObject({
         model: "gpt-5.4-mini",
+        prompt_cache_key: expect.any(String),
+        prompt_cache_retention: "in-memory",
         reasoning: {
           effort: "none",
         },
@@ -443,5 +459,130 @@ describe("OpenDetail runtime", () => {
     });
 
     expect(artifact.chunks[0]?.images).toEqual([]);
+  });
+
+  test("loads custom instructions from .opendetail/OPENDETAIL.md by default", async () => {
+    const cwd = await createFixtureWorkspace("basic");
+
+    try {
+      const { artifact } = await buildOpenDetailIndex({ cwd });
+      const { client, create } = createMockClient();
+      const instructionsDirectory = path.join(cwd, ".opendetail");
+
+      await mkdir(instructionsDirectory, { recursive: true });
+      await writeFile(
+        path.join(instructionsDirectory, "OPENDETAIL.md"),
+        "Prefer direct, concise answers with references."
+      );
+
+      const assistant = createOpenDetail({
+        client,
+        cwd,
+        indexData: artifact,
+      });
+
+      await assistant.answer({
+        question: "How do I set base_path?",
+      });
+
+      expect(create.mock.calls[0]?.[0]).toMatchObject({
+        instructions: expect.stringContaining(
+          "Prefer direct, concise answers with references."
+        ),
+      });
+    } finally {
+      await removeWorkspace(cwd);
+    }
+  });
+
+  test("falls back to root OPENDETAIL.md when the .opendetail file is missing", async () => {
+    const cwd = await createFixtureWorkspace("basic");
+
+    try {
+      const { artifact } = await buildOpenDetailIndex({ cwd });
+      const { client, create } = createMockClient();
+
+      await writeFile(
+        path.join(cwd, "OPENDETAIL.md"),
+        "Use numbered lists for setup walkthroughs."
+      );
+
+      const assistant = createOpenDetail({
+        client,
+        cwd,
+        indexData: artifact,
+      });
+
+      await assistant.answer({
+        question: "How do I install opendetail?",
+      });
+
+      expect(create.mock.calls[0]?.[0]).toMatchObject({
+        instructions: expect.stringContaining(
+          "Use numbered lists for setup walkthroughs."
+        ),
+      });
+    } finally {
+      await removeWorkspace(cwd);
+    }
+  });
+
+  test("labels inline assistantInstructions correctly in the model instructions", async () => {
+    const cwd = await createFixtureWorkspace("basic");
+
+    try {
+      const { artifact } = await buildOpenDetailIndex({ cwd });
+      const { client, create } = createMockClient();
+      const assistant = createOpenDetail({
+        assistantInstructions: "Answer with terse steps.",
+        client,
+        indexData: artifact,
+      });
+
+      await assistant.answer({
+        question: "How do I install opendetail?",
+      });
+
+      expect(create.mock.calls[0]?.[0]).toMatchObject({
+        instructions: expect.stringContaining(
+          "Project-specific instructions loaded from assistantInstructions option:"
+        ),
+      });
+    } finally {
+      await removeWorkspace(cwd);
+    }
+  });
+
+  test("uses distinct auto-generated prompt cache keys for different questions", async () => {
+    const cwd = await createFixtureWorkspace("basic");
+
+    try {
+      const { artifact } = await buildOpenDetailIndex({ cwd });
+      const { client, create } = createMockClient();
+      const assistant = createOpenDetail({
+        client,
+        cwd,
+        indexData: artifact,
+      });
+
+      await assistant.answer({
+        question: "How do I install opendetail?",
+      });
+      await assistant.answer({
+        question: "How do I install opendetail on a new app?",
+      });
+
+      expect(create.mock.calls[0]?.[0]).toMatchObject({
+        prompt_cache_key: expect.any(String),
+      });
+      expect(create.mock.calls[1]?.[0]).toMatchObject({
+        prompt_cache_key: expect.any(String),
+      });
+      expect(create.mock.calls[0]?.[0]).not.toMatchObject({
+        prompt_cache_key: create.mock.calls[1]?.[0]?.prompt_cache_key,
+      });
+    } finally {
+      await removeWorkspace(cwd);
+    }
   });
 });

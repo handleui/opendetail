@@ -96,6 +96,15 @@ const result = await assistant.answer({
 });
 ```
 
+To provide persistent behavior guidance for the assistant, add `OPENDETAIL.md`
+in one of these locations:
+
+1. `.opendetail/OPENDETAIL.md` (preferred)
+2. `OPENDETAIL.md` at the project root (fallback)
+
+You can also pass `assistantInstructions` or `assistantInstructionsPath` to
+`createOpenDetail` for explicit control.
+
 The result includes grounded image metadata in `result.images` when the matched
 docs contain supported image references. `image.sourceIds` map back to the
 entries in `result.sources`.
@@ -146,6 +155,7 @@ This keeps the runtime simple and avoids external search infrastructure in the M
 - model: `gpt-5.4-mini`
 - reasoning: `none`
 - verbosity: `low`
+- prompt cache retention: `in-memory` (Responses API prompt caching enabled)
 
 ## Requirements
 
