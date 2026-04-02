@@ -7,6 +7,10 @@ export type OpenDetailClientErrorCode =
   | "missing_api_key"
   | "missing_index"
   | "model_incomplete"
+  | "provider_auth"
+  | "provider_invalid_request"
+  | "provider_rate_limited"
+  | "provider_unavailable"
   | "request_failed";
 
 const OPENDETAIL_CLIENT_ERROR_CODES = [
@@ -16,13 +20,21 @@ const OPENDETAIL_CLIENT_ERROR_CODES = [
   "missing_api_key",
   "missing_index",
   "model_incomplete",
+  "provider_auth",
+  "provider_invalid_request",
+  "provider_rate_limited",
+  "provider_unavailable",
   "request_failed",
 ] as const satisfies OpenDetailClientErrorCode[];
 
-export interface OpenDetailClientOptions {
+export interface OpenDetailTransportOptions {
+  credentials?: RequestCredentials;
   endpoint?: string;
   fetch?: typeof fetch;
+  headers?: HeadersInit | (() => HeadersInit);
 }
+
+export type OpenDetailClientOptions = OpenDetailTransportOptions;
 
 export interface OpenDetailClientRequest {
   question: string;
@@ -70,7 +82,12 @@ export interface OpenDetailClientDoneEvent {
 export interface OpenDetailClientErrorEvent {
   code: OpenDetailClientErrorCode;
   message: string;
+  param: string | null;
+  provider: "openai" | null;
+  providerCode: string | null;
+  requestId: string | null;
   retryable: boolean;
+  status: number | null;
   type: "error";
 }
 
@@ -104,25 +121,65 @@ const FALLBACK_ERROR_MESSAGE = "OpenDetail request failed.";
 interface OpenDetailClientPublicError {
   code: OpenDetailClientErrorCode;
   message: string;
+  param: string | null;
+  provider: "openai" | null;
+  providerCode: string | null;
+  requestId: string | null;
   retryable: boolean;
+  status: number | null;
 }
+
+const resolveRequestHeaders = (
+  headers: OpenDetailTransportOptions["headers"]
+): Headers => {
+  const resolvedHeaders =
+    typeof headers === "function" ? headers() : (headers ?? undefined);
+  const requestHeaders = new Headers(resolvedHeaders);
+
+  requestHeaders.set("content-type", "application/json");
+  return requestHeaders;
+};
 
 class OpenDetailClientRequestError extends Error {
   readonly code: OpenDetailClientErrorCode;
+  readonly param: string | null;
+  readonly provider: "openai" | null;
+  readonly providerCode: string | null;
+  readonly requestId: string | null;
   readonly retryable: boolean;
+  readonly status: number | null;
 
-  constructor({ code, message, retryable }: OpenDetailClientPublicError) {
+  constructor({
+    code,
+    message,
+    param,
+    provider,
+    providerCode,
+    requestId,
+    retryable,
+    status,
+  }: OpenDetailClientPublicError) {
     super(message);
     this.code = code;
     this.name = "OpenDetailClientRequestError";
+    this.param = param;
+    this.provider = provider;
+    this.providerCode = providerCode;
+    this.requestId = requestId;
     this.retryable = retryable;
+    this.status = status;
   }
 }
 
 const createFallbackPublicError = (): OpenDetailClientPublicError => ({
   code: "request_failed",
   message: FALLBACK_ERROR_MESSAGE,
+  param: null,
+  provider: null,
+  providerCode: null,
+  requestId: null,
   retryable: false,
+  status: null,
 });
 
 const isOpenDetailClientErrorCode = (
@@ -130,6 +187,35 @@ const isOpenDetailClientErrorCode = (
 ): value is OpenDetailClientErrorCode =>
   typeof value === "string" &&
   OPENDETAIL_CLIENT_ERROR_CODES.includes(value as OpenDetailClientErrorCode);
+
+const getNullableString = (value: unknown): string | null =>
+  typeof value === "string" ? value : null;
+
+const getNullableNumber = (value: unknown): number | null =>
+  typeof value === "number" ? value : null;
+
+const getNullableProvider = (value: unknown): "openai" | null =>
+  value === "openai" ? "openai" : null;
+
+const resolvePublicErrorFields = ({
+  param,
+  provider,
+  providerCode,
+  requestId,
+  status,
+}: {
+  param?: unknown;
+  provider?: unknown;
+  providerCode?: unknown;
+  requestId?: unknown;
+  status?: unknown;
+}) => ({
+  param: getNullableString(param),
+  provider: getNullableProvider(provider),
+  providerCode: getNullableString(providerCode),
+  requestId: getNullableString(requestId),
+  status: getNullableNumber(status),
+});
 
 const createError = (
   publicError: OpenDetailClientPublicError
@@ -147,7 +233,12 @@ const resolvePublicError = (
     code?: unknown;
     error?: unknown;
     message?: unknown;
+    param?: unknown;
+    provider?: unknown;
+    providerCode?: unknown;
+    requestId?: unknown;
     retryable?: unknown;
+    status?: unknown;
   };
   let resolvedMessage: string | null = null;
 
@@ -161,10 +252,21 @@ const resolvePublicError = (
     return null;
   }
 
+  const resolvedFields = resolvePublicErrorFields(
+    value as {
+      param?: unknown;
+      provider?: unknown;
+      providerCode?: unknown;
+      requestId?: unknown;
+      status?: unknown;
+    }
+  );
+
   if (!isOpenDetailClientErrorCode(code)) {
     return {
       code: "request_failed",
       message: resolvedMessage,
+      ...resolvedFields,
       retryable: false,
     };
   }
@@ -172,6 +274,7 @@ const resolvePublicError = (
   return {
     code,
     message: resolvedMessage,
+    ...resolvedFields,
     retryable,
   };
 };
@@ -278,7 +381,12 @@ const handleStreamEvent = ({
     throw createError({
       code: event.code,
       message: event.message,
+      param: event.param,
+      provider: event.provider,
+      providerCode: event.providerCode,
+      requestId: event.requestId,
       retryable: event.retryable,
+      status: event.status,
     });
   }
 };
@@ -377,9 +485,8 @@ export const createOpenDetailClient = (
       try {
         const response = await fetchImplementation(endpoint, {
           body: JSON.stringify(input),
-          headers: {
-            "content-type": "application/json",
-          },
+          credentials: options.credentials,
+          headers: resolveRequestHeaders(options.headers),
           method: "POST",
           signal: nextAbortController.signal,
         });

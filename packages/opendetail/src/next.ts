@@ -19,7 +19,13 @@ const jsonError = (
     {
       code: publicError.code,
       error: publicError.message,
+      message: publicError.message,
+      param: publicError.param,
+      provider: publicError.provider,
+      providerCode: publicError.providerCode,
+      requestId: publicError.requestId,
       retryable: publicError.retryable,
+      status: publicError.status,
     },
     { headers, status }
   );

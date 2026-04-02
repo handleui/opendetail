@@ -16,6 +16,8 @@ export interface OpenDetailConfig {
   version: 1;
 }
 
+export type OpenDetailIntegrationMode = "hosted" | "self-hosted";
+
 export interface OpenDetailMediaConfig {
   base_path: string;
   exclude: string[];
@@ -97,12 +99,21 @@ export type OpenDetailErrorCode =
   | "missing_api_key"
   | "missing_index"
   | "model_incomplete"
+  | "provider_auth"
+  | "provider_invalid_request"
+  | "provider_rate_limited"
+  | "provider_unavailable"
   | "request_failed";
 
 export interface OpenDetailPublicError {
   code: OpenDetailErrorCode;
   message: string;
+  param: string | null;
+  provider: "openai" | null;
+  providerCode: string | null;
+  requestId: string | null;
   retryable: boolean;
+  status: number | null;
 }
 
 export interface OpenDetailAnswerResult {
@@ -173,10 +184,7 @@ export interface OpenDetailDoneEvent {
   type: "done";
 }
 
-export interface OpenDetailErrorEvent {
-  code: OpenDetailErrorCode;
-  message: string;
-  retryable: boolean;
+export interface OpenDetailErrorEvent extends OpenDetailPublicError {
   type: "error";
 }
 

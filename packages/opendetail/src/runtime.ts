@@ -283,6 +283,7 @@ Never invent facts outside the provided sources.
 Every factual statement must cite one or more sources with [1], [2], etc.
 Use normal sentence case and never answer in all caps unless the source text is all caps.
 If the provided sources are insufficient, answer exactly: ${DEFAULT_FALLBACK_TEXT}`;
+const MAX_PROMPT_CACHE_KEY_LENGTH = 64;
 
 const createInstructionsHash = (instructions: string): string =>
   createHash("sha256").update(instructions).digest("hex");
@@ -416,7 +417,9 @@ const createPromptCacheKey = ({
   verbosity: NonNullable<CreateOpenDetailOptions["verbosity"]>;
 }): string => {
   if (promptCacheKey) {
-    return promptCacheKey;
+    return promptCacheKey.length <= MAX_PROMPT_CACHE_KEY_LENGTH
+      ? promptCacheKey
+      : createHash("sha256").update(promptCacheKey).digest("hex");
   }
 
   const cacheMaterial = JSON.stringify({
@@ -429,7 +432,7 @@ const createPromptCacheKey = ({
     verbosity,
   });
 
-  return `opendetail:${createHash("sha256").update(cacheMaterial).digest("hex")}`;
+  return createHash("sha256").update(cacheMaterial).digest("hex");
 };
 
 const createOpenAIRequest = ({
@@ -487,7 +490,7 @@ ${question}`,
     retrievedChunks,
     verbosity,
   }),
-  prompt_cache_retention: promptCacheRetention,
+  prompt_cache_retention: toOpenAIPromptCacheRetention(promptCacheRetention),
   reasoning: {
     effort: reasoningEffort,
   },
@@ -507,6 +510,15 @@ const createStreamingRequest = (
   ...request,
   stream: true,
 });
+
+const toOpenAIPromptCacheRetention = (
+  promptCacheRetention: NonNullable<
+    ResponseCreateParamsNonStreaming["prompt_cache_retention"]
+  >
+): ResponseCreateParamsNonStreaming["prompt_cache_retention"] =>
+  (promptCacheRetention === "in-memory"
+    ? "in_memory"
+    : promptCacheRetention) as ResponseCreateParamsNonStreaming["prompt_cache_retention"];
 
 const getResponseRefusal = (response: Response): string | null => {
   for (const outputItem of response.output) {
@@ -583,9 +595,7 @@ const getStreamFailurePublicError = (event: ResponseStreamEvent) => {
     );
   }
 
-  return toOpenDetailPublicError(
-    new OpenDetailError(OPENDETAIL_RUNTIME_FAILURE_MESSAGE)
-  );
+  return toOpenDetailPublicError(event);
 };
 
 const handleOpenAIStreamEvent = ({
@@ -647,7 +657,12 @@ const handleOpenAIStreamEvent = ({
     emitEvent(controller, {
       code: publicError.code,
       message: publicError.message,
+      param: publicError.param,
+      provider: publicError.provider,
+      providerCode: publicError.providerCode,
+      requestId: publicError.requestId,
       retryable: publicError.retryable,
+      status: publicError.status,
       type: "error",
     });
 
@@ -668,7 +683,12 @@ const handleOpenAIStreamEvent = ({
       emitEvent(controller, {
         code: publicError.code,
         message: publicError.message,
+        param: publicError.param,
+        provider: publicError.provider,
+        providerCode: publicError.providerCode,
+        requestId: publicError.requestId,
         retryable: publicError.retryable,
+        status: publicError.status,
         type: "error",
       });
 
@@ -941,7 +961,12 @@ export const createOpenDetail = ({
             emitEvent(controller, {
               code: publicError.code,
               message: publicError.message,
+              param: publicError.param,
+              provider: publicError.provider,
+              providerCode: publicError.providerCode,
+              requestId: publicError.requestId,
               retryable: publicError.retryable,
+              status: publicError.status,
               type: "error",
             });
           })
