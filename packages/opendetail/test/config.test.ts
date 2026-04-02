@@ -53,4 +53,46 @@ base_path = "docs"
       await removeWorkspace(cwd);
     }
   });
+
+  test("parses optional remote resource config", async () => {
+    const cwd = await mkdtemp(path.join(os.tmpdir(), "opendetail-config-"));
+
+    try {
+      await writeFile(
+        path.join(cwd, "opendetail.toml"),
+        `version = 1
+include = ["content/**/*.md"]
+exclude = []
+base_path = "/docs"
+
+[remote_resources.file_search]
+vector_store_ids = ["vs_docs_123"]
+max_num_results = 8
+
+[remote_resources.web_search]
+allowed_domains = ["docs.example.com"]
+search_context_size = "low"
+`
+      );
+
+      await expect(readOpenDetailConfig({ cwd })).resolves.toEqual({
+        base_path: "/docs",
+        exclude: [],
+        include: ["content/**/*.md"],
+        remote_resources: {
+          file_search: {
+            max_num_results: 8,
+            vector_store_ids: ["vs_docs_123"],
+          },
+          web_search: {
+            allowed_domains: ["docs.example.com"],
+            search_context_size: "low",
+          },
+        },
+        version: 1,
+      });
+    } finally {
+      await removeWorkspace(cwd);
+    }
+  });
 });

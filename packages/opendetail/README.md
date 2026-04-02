@@ -42,7 +42,27 @@ exclude = []
 base_path = "/content-media"
 ```
 
+<<<<<<< ours
+<<<<<<< ours
 Then run:
+=======
+=======
+>>>>>>> theirs
+To include remote documentation as a grounded resource at answer time, configure
+optional remote resources powered by the OpenAI Responses API tools:
+
+```toml
+[remote_resources.file_search]
+vector_store_ids = ["vs_123"]
+max_num_results = 8
+
+[remote_resources.web_search]
+allowed_domains = ["platform.openai.com", "docs.example.com"]
+search_context_size = "low"
+```
+
+Build the index:
+>>>>>>> theirs
 
 ```bash
 bunx opendetail build
@@ -126,6 +146,15 @@ Supported image references:
 - local relative paths such as `./hero.png` are returned only when `[media]` is configured
 - unsupported absolute schemes and protocol-relative URLs are ignored
 
+When `remote_resources` is configured, `opendetail` adds Responses API tools to
+retrieve external sources at runtime:
+
+- `file_search` for semantic retrieval from OpenAI vector stores
+- `web_search` for live remote pages, optionally domain-constrained
+
+Remote citations are added to `result.sources` with `kind: "remote"` so they
+can be rendered alongside local doc sources.
+
 The runtime returns at most 3 images per answer or stream.
 
 ## CLI
@@ -172,7 +201,7 @@ Each command prints `Opendetail v<version>` so logs show exactly which CLI versi
 - Load the local index into memory
 - Search it with lexical matching
 - Select the most relevant chunks
-- Send only those chunks to the model
+- Send those chunks to the model, optionally with configured remote retrieval tools
 - Return an answer with citations
 
 This keeps the runtime simple and avoids external search infrastructure in the MVP.
