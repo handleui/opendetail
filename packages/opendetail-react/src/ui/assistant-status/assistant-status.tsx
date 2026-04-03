@@ -1,3 +1,5 @@
+import { Loader } from "lucide-react";
+
 export type AssistantStatusVariant = "thinking" | "error";
 
 export interface AssistantStatusProps {
@@ -35,8 +37,13 @@ export const AssistantStatus = ({
         <span className="opendetail-status__label">{resolvedLabel}</span>
       ) : (
         <>
-          <span aria-hidden="true" className="opendetail-status__loader" />
-          <span className="sr-only">{resolvedLabel}</span>
+          <Loader
+            aria-hidden="true"
+            className="opendetail-status__loader"
+            size={15}
+            strokeWidth={1.75}
+          />
+          <span className="opendetail-visually-hidden">{resolvedLabel}</span>
         </>
       )}
     </div>

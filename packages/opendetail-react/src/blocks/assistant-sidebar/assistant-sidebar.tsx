@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRightToLine, Copy, Plus } from "lucide-react";
+import { ArrowRightToLine, Check, Copy, Plus } from "lucide-react";
 import { motion } from "motion/react";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 
@@ -188,6 +188,8 @@ export const AssistantSidebar = ({
 }: AssistantSidebarProps) => {
   const isControlled = open !== undefined;
   const [internalOpen, setInternalOpen] = useState(defaultOpen);
+  const [isCopyConfirmed, setIsCopyConfirmed] = useState(false);
+  const copyConfirmationTimeoutRef = useRef<number | null>(null);
   const previousMessageCountRef = useRef(messages.length);
   const previousRequestStateRef = useRef(requestState);
   const isSidebarOpen = open ?? internalOpen;
@@ -266,6 +268,15 @@ export const AssistantSidebar = ({
     previousRequestStateRef.current = requestState;
   }, [isControlled, onOpenChange, requestState]);
 
+  useEffect(
+    () => () => {
+      if (copyConfirmationTimeoutRef.current !== null) {
+        window.clearTimeout(copyConfirmationTimeoutRef.current);
+      }
+    },
+    []
+  );
+
   const setSidebarOpen = (nextOpen: boolean) => {
     if (!isControlled) {
       setInternalOpen(nextOpen);
@@ -288,7 +299,22 @@ export const AssistantSidebar = ({
     }
 
     try {
-      await copyToClipboard(transcript);
+      const copied = await copyToClipboard(transcript);
+
+      if (!copied) {
+        return;
+      }
+
+      setIsCopyConfirmed(true);
+
+      if (copyConfirmationTimeoutRef.current !== null) {
+        window.clearTimeout(copyConfirmationTimeoutRef.current);
+      }
+
+      copyConfirmationTimeoutRef.current = window.setTimeout(() => {
+        setIsCopyConfirmed(false);
+        copyConfirmationTimeoutRef.current = null;
+      }, 1400);
     } catch {
       // Ignore clipboard failures to keep the assistant flow uninterrupted.
     }
@@ -373,14 +399,13 @@ export const AssistantSidebar = ({
         <div className="opendetail-sidebar__suggestions">
           {promptSuggestions.map((suggestion) => (
             <motion.button
-              className="opendetail-sidebar__suggestion"
+              className="opendetail-sidebar__suggestion opendetail-pressable"
               disabled={isBusy}
               key={suggestion}
               onClick={() => {
                 handlePromptSuggestionClick(suggestion);
               }}
               type="button"
-              whileTap={isBusy ? undefined : { scale: 0.97 }}
             >
               {suggestion}
             </motion.button>
@@ -411,30 +436,35 @@ export const AssistantSidebar = ({
             <p className="opendetail-sidebar__title">Asking AI</p>
             <div className="opendetail-sidebar__actions">
               <motion.button
-                aria-label="Copy full assistant thread"
-                className="opendetail-sidebar__icon-button"
+                aria-label={
+                  isCopyConfirmed
+                    ? "Assistant thread copied"
+                    : "Copy full assistant thread"
+                }
+                className="opendetail-sidebar__icon-button opendetail-pressable"
                 disabled={!canCopy}
                 onClick={handleCopy}
                 type="button"
-                whileTap={canCopy ? { scale: 0.97 } : undefined}
               >
-                <Copy aria-hidden="true" size={14} strokeWidth={1.9} />
+                {isCopyConfirmed ? (
+                  <Check aria-hidden="true" size={14} strokeWidth={2.1} />
+                ) : (
+                  <Copy aria-hidden="true" size={14} strokeWidth={1.9} />
+                )}
               </motion.button>
               <motion.button
                 aria-label="Start a new assistant session"
-                className="opendetail-sidebar__icon-button"
+                className="opendetail-sidebar__icon-button opendetail-pressable"
                 onClick={handleClearThread}
                 type="button"
-                whileTap={{ scale: 0.97 }}
               >
                 <Plus aria-hidden="true" size={16} strokeWidth={1.9} />
               </motion.button>
               <motion.button
                 aria-label="Collapse assistant sidebar"
-                className="opendetail-sidebar__icon-button"
+                className="opendetail-sidebar__icon-button opendetail-pressable"
                 onClick={handleCollapse}
                 type="button"
-                whileTap={{ scale: 0.97 }}
               >
                 <ArrowRightToLine
                   aria-hidden="true"

@@ -120,6 +120,7 @@ const AssistantInputActionButton = ({
     aria-label={isStopMode ? "Stop request" : "Send question"}
     className={[
       getButtonClasses(isActive, isActionDisabled),
+      "opendetail-pressable",
       size === "shell" ? "opendetail-input__action--shell" : "",
     ]
       .filter(Boolean)

@@ -356,7 +356,7 @@ export const AssistantModal = ({
         <>
           <div className="opendetail-modal__close">
             <button
-              className="opendetail-modal__close-button"
+              className="opendetail-modal__close-button opendetail-pressable"
               onClick={handleCloseThread}
               ref={closeButtonRef}
               type="button"
