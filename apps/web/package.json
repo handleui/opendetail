@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "openlogs portless opendetail next dev",
-    "build": "node ./node_modules/opendetail/dist/cli.js build --cwd . && next build",
+    "dev": "portless opendetail next dev",
+    "build": "./node_modules/.bin/opendetail build --cwd . && next build",
     "check-types": "fumadocs-mdx && next typegen && tsc --noEmit",
     "start": "next start",
     "postinstall": "fumadocs-mdx"
