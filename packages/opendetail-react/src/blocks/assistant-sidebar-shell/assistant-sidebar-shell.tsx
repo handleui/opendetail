@@ -19,7 +19,9 @@ type AssistantSidebarShellBaseProps = Pick<
   | "input"
   | "inputId"
   | "onOpenChange"
+  | "open"
   | "placeholder"
+  | "promptSuggestions"
   | "renderSourceLink"
   | "resolveSourceTarget"
   | "thread"
@@ -41,7 +43,7 @@ export const AssistantSidebarShell = ({
   transport,
   ...sidebarProps
 }: AssistantSidebarShellProps) => {
-  const { messages, question, setQuestion, status, stop, submit } =
+  const { clearThread, messages, question, setQuestion, status, stop, submit } =
     useOpenDetail({
       endpoint,
       persistence,
@@ -51,6 +53,7 @@ export const AssistantSidebarShell = ({
   return (
     <AssistantSidebar
       messages={messages}
+      onClearThread={clearThread}
       onQuestionChange={setQuestion}
       onStop={stop}
       onSubmitQuestion={submit}

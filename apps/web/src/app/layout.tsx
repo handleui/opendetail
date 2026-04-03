@@ -41,13 +41,12 @@ export default function RootLayout({
         className={`${geist.variable} bg-white font-sans text-black antialiased [--font-sans:var(--font-geist)]`}
       >
         <FumadocsAssistantSidebar
-          emptyState="Ask the docs"
           inputId="opendetail-site-question"
           knownSourcePageUrls={knownSourcePageUrls}
           persistence={{
             key: "opendetail-site-sidebar",
           }}
-          placeholder="Ask about these docs"
+          placeholder="Ask AI anything..."
         >
           {children}
         </FumadocsAssistantSidebar>

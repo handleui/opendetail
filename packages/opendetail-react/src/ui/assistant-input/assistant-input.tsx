@@ -109,14 +109,21 @@ const AssistantInputActionButton = ({
   isActionDisabled,
   isActive,
   isStopMode,
+  size,
 }: {
   isActionDisabled: boolean;
   isActive: boolean;
   isStopMode: boolean;
+  size: AssistantInputSize;
 }) => (
   <motion.button
     aria-label={isStopMode ? "Stop request" : "Send question"}
-    className={getButtonClasses(isActive, isActionDisabled)}
+    className={[
+      getButtonClasses(isActive, isActionDisabled),
+      size === "shell" ? "opendetail-input__action--shell" : "",
+    ]
+      .filter(Boolean)
+      .join(" ")}
     disabled={isActionDisabled}
     layout="position"
     transition={MOTION_LAYOUT_TRANSITION}
@@ -380,6 +387,7 @@ export const AssistantInput = ({
           isActionDisabled={isActionDisabled}
           isActive={hasValue || isStopMode}
           isStopMode={isStopMode}
+          size={size}
         />
       </motion.form>
     </motion.div>

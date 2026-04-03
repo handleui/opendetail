@@ -1,5 +1,6 @@
 "use client";
 
+import { ArrowRightToLine, Copy, Plus } from "lucide-react";
 import { motion } from "motion/react";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 
@@ -54,6 +55,11 @@ const sidebarContentVariants = {
     scale: 1,
   },
 } as const;
+const DEFAULT_PROMPT_SUGGESTIONS = [
+  "What's OpenDetail and why do I need it?",
+  "What AI powers OpenDetail?",
+  "OpenDetail vs competitors",
+] as const;
 
 export interface AssistantSidebarImage {
   alt?: string | null;
@@ -99,12 +105,14 @@ export interface AssistantSidebarProps {
   input?: ReactNode;
   inputId?: string;
   messages?: AssistantSidebarMessage[];
+  onClearThread?: () => void;
   onOpenChange?: (open: boolean) => void;
   onQuestionChange?: (value: string) => void;
   onStop?: () => void;
   onSubmitQuestion?: SubmitHandler;
   open?: boolean;
   placeholder?: string;
+  promptSuggestions?: readonly string[];
   question?: string;
   renderSourceLink?: AssistantResponseProps["renderSourceLink"];
   requestState?: AssistantSidebarRequestState;
@@ -118,6 +126,42 @@ const getPrimaryImage = (
 ): AssistantSidebarImage | undefined =>
   message.status === "complete" ? message.images?.[0] : undefined;
 
+const getTranscriptText = (messages: AssistantSidebarMessage[]): string =>
+  messages
+    .map((message) => {
+      if (message.role === "user") {
+        return `User: ${message.question.trim()}`;
+      }
+
+      return `Assistant: ${message.text.trim()}`;
+    })
+    .filter((message) => message.length > 0)
+    .join("\n\n");
+
+const copyToClipboard = async (value: string): Promise<boolean> => {
+  if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(value);
+    return true;
+  }
+
+  if (typeof document === "undefined") {
+    return false;
+  }
+
+  const textarea = document.createElement("textarea");
+  textarea.value = value;
+  textarea.setAttribute("readonly", "true");
+  textarea.style.position = "fixed";
+  textarea.style.opacity = "0";
+  textarea.style.pointerEvents = "none";
+  document.body.append(textarea);
+  textarea.select();
+
+  const copied = document.execCommand("copy");
+  textarea.remove();
+  return copied;
+};
+
 export const AssistantSidebar = ({
   children,
   className,
@@ -127,12 +171,14 @@ export const AssistantSidebar = ({
   input,
   inputId,
   messages = [],
+  onClearThread,
   onOpenChange,
   onQuestionChange,
   onStop,
   onSubmitQuestion,
   open,
-  placeholder = "Ask about these docs",
+  placeholder = "Ask AI anything...",
+  promptSuggestions = DEFAULT_PROMPT_SUGGESTIONS,
   question = "",
   renderSourceLink,
   requestState = "idle",
@@ -145,6 +191,10 @@ export const AssistantSidebar = ({
   const previousMessageCountRef = useRef(messages.length);
   const previousRequestStateRef = useRef(requestState);
   const isSidebarOpen = open ?? internalOpen;
+  const hasMessages = messages.length > 0;
+  const isBusy = requestState === "pending" || requestState === "streaming";
+  const transcript = getTranscriptText(messages);
+  const canCopy = transcript.length > 0;
 
   useEffect(() => {
     if (!(hotkeyEnabled && typeof window !== "undefined")) {
@@ -216,9 +266,47 @@ export const AssistantSidebar = ({
     previousRequestStateRef.current = requestState;
   }, [isControlled, onOpenChange, requestState]);
 
+  const setSidebarOpen = (nextOpen: boolean) => {
+    if (!isControlled) {
+      setInternalOpen(nextOpen);
+    }
+
+    onOpenChange?.(nextOpen);
+  };
+
+  const handleCollapse = () => {
+    setSidebarOpen(false);
+  };
+
+  const handleClearThread = () => {
+    onClearThread?.();
+  };
+
+  const handleCopy = async () => {
+    if (!canCopy) {
+      return;
+    }
+
+    try {
+      await copyToClipboard(transcript);
+    } catch {
+      // Ignore clipboard failures to keep the assistant flow uninterrupted.
+    }
+  };
+
+  const handlePromptSuggestionClick = (suggestion: string) => {
+    if (isBusy) {
+      return;
+    }
+
+    onSubmitQuestion?.({
+      question: suggestion,
+    });
+  };
+
   const resolvedThread = thread ?? (
     <AssistantThread
-      animated={isSidebarOpen && messages.length > 0}
+      animated={isSidebarOpen && hasMessages}
       className="opendetail-sidebar__thread"
     >
       {messages.map((message) => {
@@ -277,6 +365,32 @@ export const AssistantSidebar = ({
     />
   );
 
+  let resolvedBody: ReactNode = resolvedThread;
+
+  if (!hasMessages) {
+    resolvedBody =
+      promptSuggestions.length > 0 ? (
+        <div className="opendetail-sidebar__suggestions">
+          {promptSuggestions.map((suggestion) => (
+            <motion.button
+              className="opendetail-sidebar__suggestion"
+              disabled={isBusy}
+              key={suggestion}
+              onClick={() => {
+                handlePromptSuggestionClick(suggestion);
+              }}
+              type="button"
+              whileTap={isBusy ? undefined : { scale: 0.97 }}
+            >
+              {suggestion}
+            </motion.button>
+          ))}
+        </div>
+      ) : (
+        <p className="opendetail-sidebar__empty">{emptyState}</p>
+      );
+  }
+
   return (
     <div className={getClassName({ className, open: isSidebarOpen })}>
       <div className="opendetail-sidebar__content">{children}</div>
@@ -293,19 +407,53 @@ export const AssistantSidebar = ({
           transition={SIDEBAR_CONTENT_TRANSITION}
           variants={sidebarContentVariants}
         >
+          <header className="opendetail-sidebar__header">
+            <p className="opendetail-sidebar__title">Asking AI</p>
+            <div className="opendetail-sidebar__actions">
+              <motion.button
+                aria-label="Copy full assistant thread"
+                className="opendetail-sidebar__icon-button"
+                disabled={!canCopy}
+                onClick={handleCopy}
+                type="button"
+                whileTap={canCopy ? { scale: 0.97 } : undefined}
+              >
+                <Copy aria-hidden="true" size={14} strokeWidth={1.9} />
+              </motion.button>
+              <motion.button
+                aria-label="Start a new assistant session"
+                className="opendetail-sidebar__icon-button"
+                onClick={handleClearThread}
+                type="button"
+                whileTap={{ scale: 0.97 }}
+              >
+                <Plus aria-hidden="true" size={16} strokeWidth={1.9} />
+              </motion.button>
+              <motion.button
+                aria-label="Collapse assistant sidebar"
+                className="opendetail-sidebar__icon-button"
+                onClick={handleCollapse}
+                type="button"
+                whileTap={{ scale: 0.97 }}
+              >
+                <ArrowRightToLine
+                  aria-hidden="true"
+                  size={16}
+                  strokeWidth={1.9}
+                />
+              </motion.button>
+            </div>
+          </header>
+
           <div
             className={[
               "opendetail-sidebar__body",
-              messages.length === 0 ? "opendetail-sidebar__body--empty" : "",
+              hasMessages ? "" : "opendetail-sidebar__body--empty",
             ]
               .filter(Boolean)
               .join(" ")}
           >
-            {messages.length === 0 ? (
-              <p className="opendetail-sidebar__empty">{emptyState}</p>
-            ) : (
-              resolvedThread
-            )}
+            {resolvedBody}
           </div>
           <div className="opendetail-sidebar__input">{resolvedInput}</div>
         </motion.div>
