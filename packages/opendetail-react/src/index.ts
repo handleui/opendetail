@@ -9,10 +9,6 @@ export {
   type AssistantModalUserMessage,
 } from "./blocks/assistant-modal/assistant-modal";
 export {
-  AssistantOverlay,
-  type AssistantOverlayProps,
-} from "./blocks/assistant-overlay/assistant-overlay";
-export {
   AssistantSidebar,
   type AssistantSidebarAssistantMessage,
   type AssistantSidebarImage,

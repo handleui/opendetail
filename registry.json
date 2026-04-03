@@ -169,21 +169,6 @@
       ]
     },
     {
-      "name": "assistant-overlay",
-      "type": "registry:block",
-      "title": "Assistant Overlay",
-      "description": "Thin overlay wrapper around the assistant shell composition.",
-      "docs": "Uses the shell directly and stays intentionally unopinionated in this pass.",
-      "categories": ["opendetail", "block"],
-      "registryDependencies": ["assistant-shell", "opendetail-base"],
-      "files": [
-        {
-          "path": "packages/opendetail-react/src/blocks/assistant-overlay/assistant-overlay.tsx",
-          "type": "registry:component"
-        }
-      ]
-    },
-    {
       "name": "assistant-modal",
       "type": "registry:block",
       "title": "Assistant Modal",
