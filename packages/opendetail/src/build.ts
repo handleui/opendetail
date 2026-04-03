@@ -2,13 +2,10 @@ import { mkdir, readFile, realpath, writeFile } from "node:fs/promises";
 import path from "node:path";
 import fg from "fast-glob";
 import { readOpenDetailConfig } from "./config";
-import {
-  BUILD_FILE_READ_CONCURRENCY,
-  OPENDETAIL_INDEX_FILE,
-  OPENDETAIL_VERSION,
-} from "./constants";
+import { BUILD_FILE_READ_CONCURRENCY, OPENDETAIL_VERSION } from "./constants";
 import { OpenDetailConfigError } from "./errors";
 import { createRelativeChunkPath, extractMarkdownChunks } from "./markdown";
+import { resolveIndexPath } from "./paths";
 import type {
   BuildOpenDetailIndexOptions,
   BuildOpenDetailIndexResult,
@@ -32,11 +29,6 @@ interface MatchedWorkspaceFile {
   filePath: string;
   realFilePath: string;
 }
-
-export const resolveIndexPath = (
-  cwd: string,
-  outputPath = OPENDETAIL_INDEX_FILE
-): string => path.resolve(cwd, outputPath);
 
 const isPathInsideDirectory = (
   directoryPath: string,
@@ -251,7 +243,7 @@ const createImageResolver = ({
 
 export const buildOpenDetailIndex = async ({
   configPath,
-  cwd = process.cwd(),
+  cwd = ".",
   outputPath,
 }: BuildOpenDetailIndexOptions = {}): Promise<BuildOpenDetailIndexResult> => {
   const config = await readOpenDetailConfig({ configPath, cwd });

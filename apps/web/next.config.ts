@@ -1,8 +1,9 @@
-import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { createMDX } from "fumadocs-mdx/next";
 import type { NextConfig } from "next";
 
 const withMDX = createMDX();
+const repoRoot = fileURLToPath(new URL("../..", import.meta.url));
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
@@ -15,7 +16,7 @@ const nextConfig: NextConfig = {
     "opendetail-fumadocs",
   ],
   turbopack: {
-    root: path.join(process.cwd(), "../.."),
+    root: repoRoot,
   },
 };
 

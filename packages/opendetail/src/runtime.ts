@@ -10,7 +10,6 @@ import type {
   ResponseStreamEvent,
   Tool,
 } from "openai/resources/responses/responses";
-import { resolveIndexPath } from "./build";
 import {
   DEFAULT_FALLBACK_TEXT,
   DEFAULT_MAX_RETURNED_IMAGES,
@@ -35,6 +34,7 @@ import {
   OpenDetailModelIncompleteError,
   toOpenDetailPublicError,
 } from "./errors";
+import { resolveIndexPath } from "./paths";
 import {
   createMiniSearchIndex,
   parseOpenDetailIndexArtifact,
@@ -310,7 +310,7 @@ const resolveAssistantInstructions = ({
 
   if (assistantInstructionsPath) {
     const resolvedInstructionsPath = path.resolve(
-      cwd,
+      /* turbopackIgnore: true */ cwd,
       assistantInstructionsPath
     );
 
@@ -333,12 +333,18 @@ const resolveAssistantInstructions = ({
     sourceLabel: string;
   }> = [
     {
-      resolvedPath: path.resolve(cwd, OPENDETAIL_PREFERRED_INSTRUCTIONS_FILE),
+      resolvedPath: path.resolve(
+        /* turbopackIgnore: true */ cwd,
+        OPENDETAIL_PREFERRED_INSTRUCTIONS_FILE
+      ),
       source: "preferred_file",
       sourceLabel: OPENDETAIL_PREFERRED_INSTRUCTIONS_FILE,
     },
     {
-      resolvedPath: path.resolve(cwd, OPENDETAIL_INSTRUCTIONS_FILE),
+      resolvedPath: path.resolve(
+        /* turbopackIgnore: true */ cwd,
+        OPENDETAIL_INSTRUCTIONS_FILE
+      ),
       source: "root_file",
       sourceLabel: OPENDETAIL_INSTRUCTIONS_FILE,
     },
@@ -828,7 +834,7 @@ export const createOpenDetail = ({
   assistantInstructions,
   assistantInstructionsPath,
   client,
-  cwd = process.cwd(),
+  cwd = ".",
   indexData,
   indexPath,
   model = DEFAULT_MODEL,

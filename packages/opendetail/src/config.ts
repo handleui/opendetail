@@ -54,7 +54,7 @@ export const resolveConfigPath = (
 
 export const readOpenDetailConfig = async ({
   configPath,
-  cwd = process.cwd(),
+  cwd = ".",
 }: {
   configPath?: string;
   cwd?: string;

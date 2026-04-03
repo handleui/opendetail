@@ -22,9 +22,14 @@
       "collections/*": ["./.source/*"],
       "@/*": ["./src/*"],
       "opendetail": ["../../packages/opendetail/src/index.ts"],
+      "opendetail/constants": ["../../packages/opendetail/src/constants.ts"],
+      "opendetail/errors": ["../../packages/opendetail/src/errors.ts"],
       "opendetail-react": ["../../packages/opendetail-react/src/index.ts"],
+      "opendetail/runtime": ["../../packages/opendetail/src/runtime.ts"],
       "opendetail-next": ["../../packages/opendetail-next/src/index.ts"],
       "opendetail-next/link": ["../../packages/opendetail-next/src/link.tsx"],
+      "opendetail/types": ["../../packages/opendetail/src/types.ts"],
+      "opendetail/validation": ["../../packages/opendetail/src/validation.ts"],
       "opendetail-fumadocs": [
         "../../packages/opendetail-fumadocs/src/index.ts"
       ],
