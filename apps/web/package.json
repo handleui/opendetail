@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "portless opendetail next dev",
+    "dev": "portless opendetail next dev --webpack",
     "build": "bunx opendetail build --cwd . && next build",
     "check-types": "fumadocs-mdx && next typegen && tsc --noEmit",
     "start": "next start",

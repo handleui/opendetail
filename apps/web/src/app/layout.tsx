@@ -1,14 +1,8 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
 import { FumadocsAssistantSidebar } from "opendetail-fumadocs/sidebar";
 import type { ReactNode } from "react";
 import "./globals.css";
-import { knownSourcePageUrls } from "@/lib/source";
-
-const geist = Geist({
-  subsets: ["latin"],
-  variable: "--font-geist",
-});
+import { knownSourcePageUrls } from "@/lib/known-source-page-urls";
 
 const metadataBase = (() => {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
@@ -37,9 +31,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${geist.variable} bg-white font-sans text-black antialiased [--font-sans:var(--font-geist)]`}
-      >
+      <body className="bg-white font-sans text-black antialiased">
         <FumadocsAssistantSidebar
           inputId="opendetail-site-question"
           knownSourcePageUrls={knownSourcePageUrls}

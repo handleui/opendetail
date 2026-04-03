@@ -333,9 +333,9 @@ export const AssistantInput = ({
           layout="position"
           transition={MOTION_LAYOUT_TRANSITION}
         >
-          <span className="sr-only">Ask a question</span>
           <span className="opendetail-input__field">
             <textarea
+              aria-label="Ask a question"
               autoFocus={autoFocus}
               className={[
                 "opendetail-input__textarea",

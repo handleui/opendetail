@@ -209,6 +209,11 @@
   border-radius: 0.25rem;
 }
 
+.opendetail-input__action--shell.opendetail-input__action--active {
+  color: var(--opendetail-color-background);
+  background: var(--opendetail-color-foreground);
+}
+
 .opendetail-input__action--disabled {
   cursor: not-allowed;
 }
@@ -433,7 +438,7 @@
 
 .opendetail-sidebar__actions {
   display: inline-flex;
-  gap: 1rem;
+  gap: 0.625rem;
   align-items: center;
 }
 
