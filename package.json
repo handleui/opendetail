@@ -10,6 +10,8 @@
     "changeset": "changeset",
     "changeset:status": "changeset status --verbose",
     "changeset:version": "changeset version",
+    "release:version": "changeset version",
+    "release:publish": "changeset publish",
     "opendetail:build": "cd packages/opendetail && bun run build",
     "opendetail:check-types": "cd packages/opendetail && bun run check-types",
     "opendetail:test": "cd packages/opendetail && bun run test",
