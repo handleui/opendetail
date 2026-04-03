@@ -41,3 +41,6 @@ apps/web/public/r/*
 
 # runtime logs
 **/.openlogs/
+
+# private product planning notes
+CLOUD.md
