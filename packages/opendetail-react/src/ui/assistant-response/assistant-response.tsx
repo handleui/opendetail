@@ -1,5 +1,5 @@
 import { Globe, type LucideIcon } from "lucide-react";
-import type { ReactNode } from "react";
+import { type ReactNode, useMemo } from "react";
 import { type AllowedTags, Streamdown } from "streamdown";
 
 import { AssistantSources } from "../assistant-sources/assistant-sources";
@@ -28,6 +28,10 @@ export interface AssistantResponseImage {
 
 export interface AssistantResponseMeta {
   durationLabel?: string;
+  /**
+   * @deprecated Ignored for the sources footer. Source pills are derived from
+   * `[n]` citations in the response markdown (`lead` / `children`), not from this field.
+   */
   sourceCount?: number;
   sourceLabel?: string;
 }
@@ -61,6 +65,54 @@ const getSourceForCitation = ({
     sources[Number(citationNumber) - 1];
 
   return matchedSource ?? null;
+};
+
+/**
+ * Returns sources that appear as `[n]` citations in string `lead` / `children`, in first-seen order.
+ * Non-string React nodes are not scanned.
+ */
+export const getSourcesCitedInContent = ({
+  children,
+  lead,
+  sources,
+}: {
+  children?: ReactNode;
+  lead?: ReactNode;
+  sources: AssistantSourceItem[];
+}): AssistantSourceItem[] => {
+  const segments: string[] = [];
+
+  if (typeof lead === "string") {
+    segments.push(lead);
+  }
+
+  if (typeof children === "string") {
+    segments.push(children);
+  }
+
+  const combined = segments.join("\n");
+  const seen = new Set<string>();
+  const ordered: AssistantSourceItem[] = [];
+
+  for (const match of combined.matchAll(CITATION_REGEX)) {
+    const citationNumber = match[1] ?? "";
+
+    if (citationNumber.length === 0 || seen.has(citationNumber)) {
+      continue;
+    }
+
+    seen.add(citationNumber);
+    const source = getSourceForCitation({
+      citationNumber,
+      sources,
+    });
+
+    if (source) {
+      ordered.push(source);
+    }
+  }
+
+  return ordered;
 };
 
 const getCitationTitle = ({
@@ -221,8 +273,11 @@ export const AssistantResponse = ({
   status = "complete",
   sources = [],
 }: AssistantResponseProps) => {
-  const sourceCount = meta?.sourceCount ?? sources.length;
   const sourceLabel = meta?.sourceLabel;
+  const citedSources = useMemo(
+    () => getSourcesCitedInContent({ children, lead, sources }),
+    [children, lead, sources]
+  );
   const fallbackError =
     error ??
     (typeof lead === "string" && lead.length > 0 ? lead : null) ??
@@ -280,13 +335,13 @@ export const AssistantResponse = ({
         sources,
       })}
 
-      {sourceCount > 0 ? (
+      {citedSources.length > 0 ? (
         <footer className="opendetail-response__footer">
           <AssistantSources
-            count={sourceCount}
+            count={citedSources.length}
             countLabel={sourceLabel}
             defaultOpen={defaultSourcesOpen}
-            items={sources}
+            items={citedSources}
             renderSourceLink={renderSourceLink}
             resolveSourceTarget={resolveSourceTarget}
           />

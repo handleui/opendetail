@@ -134,7 +134,7 @@ const AssistantInputActionButton = ({
     type="submit"
   >
     {isStopMode ? (
-      <span aria-hidden="true" className="size-3 rounded-[2px] bg-current" />
+      <span aria-hidden="true" className="opendetail-input__stop-glyph" />
     ) : (
       <ArrowRight aria-hidden="true" size={18} strokeWidth={1.2} />
     )}

@@ -4,8 +4,8 @@ import { access, mkdir, writeFile } from "node:fs/promises";
 import { createRequire } from "node:module";
 import path from "node:path";
 import readline from "node:readline/promises";
-import { pathToFileURL } from "node:url";
 import { buildOpenDetailIndex } from "./build";
+import { isPrimaryModuleInvocation } from "./cli-invocation";
 import { OPENDETAIL_CONFIG_FILE, OPENDETAIL_INDEX_FILE } from "./constants";
 import type { OpenDetailIntegrationMode } from "./types";
 import { getErrorMessage } from "./utils";
@@ -603,11 +603,7 @@ export const runCli = async (
   throw new Error(`Unknown command: ${command}`);
 };
 
-const isMainModule =
-  typeof process.argv[1] === "string" &&
-  import.meta.url === pathToFileURL(process.argv[1]).href;
-
-if (isMainModule) {
+if (isPrimaryModuleInvocation(import.meta.url)) {
   runCli(process.argv.slice(2)).catch((error: unknown) => {
     console.error(getErrorMessage(error));
     process.exitCode = 1;

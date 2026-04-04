@@ -7,6 +7,7 @@ export const INVALID_REQUEST_BODY_MESSAGE = `Request body must be valid JSON wit
 
 export const OpenDetailAnswerInputSchema = z
   .object({
+    conversationTitle: z.boolean().optional(),
     question: z.string().trim().min(1).max(MAX_QUESTION_LENGTH),
   })
   .strict();

@@ -1,12 +1,5 @@
 {
   "title": "OpenDetail",
   "root": true,
-  "pages": [
-    "index",
-    "quickstart",
-    "getting-started",
-    "reference",
-    "concepts",
-    "faq"
-  ]
+  "pages": ["index", "guide", "reference"]
 }

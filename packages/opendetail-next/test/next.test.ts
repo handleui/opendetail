@@ -378,16 +378,16 @@ describe("renderNextSourceLink", () => {
           children: "Docs",
           source: {
             title: "Docs",
-            url: "/docs/getting-started",
+            url: "/docs/guide",
           },
           target: {
-            href: "/docs/getting-started",
+            href: "/docs/guide",
           },
         })
       )
     );
 
-    expect(html).toContain('href="/docs/getting-started"');
+    expect(html).toContain('href="/docs/guide"');
     expect(html).not.toContain('target="_blank"');
   });
 

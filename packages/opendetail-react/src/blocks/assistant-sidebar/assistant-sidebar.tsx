@@ -105,6 +105,7 @@ export interface AssistantSidebarProps {
   className?: string;
   defaultOpen?: boolean;
   emptyState?: ReactNode;
+  headerTitle?: string | null;
   hotkeyEnabled?: boolean;
   input?: ReactNode;
   inputId?: string;
@@ -171,6 +172,7 @@ export const AssistantSidebar = ({
   className,
   defaultOpen = false,
   emptyState = "Ask the docs",
+  headerTitle,
   hotkeyEnabled = true,
   input,
   inputId,
@@ -198,6 +200,12 @@ export const AssistantSidebar = ({
   const previousRequestStateRef = useRef(requestState);
   const isSidebarOpen = open ?? internalOpen;
   const hasMessages = messages.length > 0;
+  const resolvedHeaderTitle =
+    headerTitle !== undefined &&
+    headerTitle !== null &&
+    headerTitle.trim().length > 0
+      ? headerTitle.trim()
+      : "Asking AI";
   const isBusy = requestState === "pending" || requestState === "streaming";
   const transcript = getTranscriptText(messages);
   const canCopy = transcript.length > 0;
@@ -367,7 +375,6 @@ export const AssistantSidebar = ({
             key={message.id}
             meta={{
               durationLabel: message.durationLabel ?? undefined,
-              sourceCount: message.sources?.length ?? 0,
             }}
             renderSourceLink={renderSourceLink}
             resolveSourceTarget={resolveSourceTarget}
@@ -435,7 +442,7 @@ export const AssistantSidebar = ({
           variants={sidebarContentVariants}
         >
           <header className="opendetail-sidebar__header">
-            <p className="opendetail-sidebar__title">Asking AI</p>
+            <p className="opendetail-sidebar__title">{resolvedHeaderTitle}</p>
             <div className="opendetail-sidebar__actions">
               <motion.button
                 aria-label={

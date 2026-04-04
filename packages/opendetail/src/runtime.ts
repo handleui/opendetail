@@ -11,6 +11,7 @@ import type {
   Tool,
 } from "openai/resources/responses/responses";
 import {
+  CONVERSATION_TITLE_FALLBACK_WORD_COUNT,
   DEFAULT_FALLBACK_TEXT,
   DEFAULT_MAX_RETURNED_IMAGES,
   DEFAULT_MODEL,
@@ -18,6 +19,8 @@ import {
   DEFAULT_REASONING_EFFORT,
   DEFAULT_STORE,
   DEFAULT_VERBOSITY,
+  MAX_CONVERSATION_TITLE_LENGTH,
+  OPENDETAIL_CONVERSATION_TITLE_INSTRUCTIONS_MARKER,
   OPENDETAIL_INDEX_FILE,
   OPENDETAIL_INSTRUCTIONS_FILE,
   OPENDETAIL_PREFERRED_INSTRUCTIONS_FILE,
@@ -56,6 +59,8 @@ import { ensureTrailingNewline } from "./utils";
 import { parseOpenDetailAnswerInput } from "./validation";
 
 const encoder = new TextEncoder();
+
+const WHITESPACE_SPLIT_PATTERN = /\s+/;
 
 const assertNodeRuntime = (): void => {
   if (
@@ -596,6 +601,116 @@ const emitEvent = (
   controller.enqueue(serializeNdjsonEvent(event));
 };
 
+const buildConversationTitleInstructions = (): string =>
+  `${OPENDETAIL_CONVERSATION_TITLE_INSTRUCTIONS_MARKER}
+
+You write very short chat conversation titles.
+Rules:
+- Output 3 to 7 words only.
+- No quotation marks, no markdown, no trailing punctuation.
+- Describe what the user is asking about.
+- Output a single line only.`;
+
+const fallbackTitleFromQuestion = (question: string): string => {
+  const words = question
+    .trim()
+    .split(WHITESPACE_SPLIT_PATTERN)
+    .filter((word) => word.length > 0)
+    .slice(0, CONVERSATION_TITLE_FALLBACK_WORD_COUNT);
+  const joined = words.join(" ");
+
+  return joined.length > MAX_CONVERSATION_TITLE_LENGTH
+    ? joined.slice(0, MAX_CONVERSATION_TITLE_LENGTH).trim()
+    : joined;
+};
+
+const normalizeConversationTitle = (raw: string): string => {
+  const collapsed = raw
+    .replaceAll(/[\r\n]+/g, " ")
+    .replaceAll(/\s+/g, " ")
+    .trim();
+
+  if (collapsed.length === 0) {
+    return "";
+  }
+
+  const unquoted = collapsed.replace(/^["']+|["']+$/g, "").trim();
+
+  return unquoted.length > MAX_CONVERSATION_TITLE_LENGTH
+    ? unquoted.slice(0, MAX_CONVERSATION_TITLE_LENGTH).trim()
+    : unquoted;
+};
+
+const createConversationTitleRequest = ({
+  model,
+  question,
+}: {
+  model: string;
+  question: string;
+}): ResponseCreateParamsNonStreaming => ({
+  input: question,
+  instructions: buildConversationTitleInstructions(),
+  max_output_tokens: 48,
+  model,
+  reasoning: {
+    effort: "none",
+  },
+  store: false,
+  text: {
+    format: {
+      type: "text",
+    },
+    verbosity: "low",
+  },
+});
+
+const emitConversationTitle = async ({
+  abortSignal,
+  controller,
+  getClient,
+  model,
+  question,
+}: {
+  abortSignal: AbortSignal;
+  controller: ReadableStreamDefaultController<Uint8Array>;
+  getClient: () => OpenAI;
+  model: string;
+  question: string;
+}): Promise<void> => {
+  let titleText = fallbackTitleFromQuestion(question);
+
+  try {
+    if (!abortSignal.aborted) {
+      const response = await getClient().responses.create(
+        createConversationTitleRequest({
+          model,
+          question,
+        }),
+        {
+          signal: abortSignal,
+        }
+      );
+      const raw = resolveResponseText(response);
+      const normalized = normalizeConversationTitle(raw);
+
+      if (normalized.length > 0) {
+        titleText = normalized;
+      }
+    }
+  } catch {
+    // Keep deterministic fallback from the question.
+  }
+
+  if (abortSignal.aborted) {
+    return;
+  }
+
+  emitEvent(controller, {
+    title: titleText,
+    type: "title",
+  });
+};
+
 const getStreamFailurePublicError = (event: ResponseStreamEvent) => {
   if (event.type === "response.incomplete") {
     return toOpenDetailPublicError(
@@ -909,7 +1024,8 @@ export const createOpenDetail = ({
   const stream = (
     rawInput: OpenDetailAnswerInput
   ): Promise<OpenDetailStreamResult> => {
-    const { question } = parseOpenDetailAnswerInput(rawInput);
+    const { conversationTitle: conversationTitleRequested, question } =
+      parseOpenDetailAnswerInput(rawInput);
     const retrievedChunks = retrieveRelevantChunks(miniSearch, question);
     const images = collectRelevantImages(retrievedChunks);
     const localSources = mapSources(retrievedChunks);
@@ -931,46 +1047,63 @@ export const createOpenDetail = ({
           type: "images",
         });
 
-        streamOpenAIResponse({
-          abortSignal: abortController.signal,
-          controller,
-          getClient,
-          instructionsHash,
-          manifestHash: artifact.manifestHash,
-          model,
-          promptCacheKey,
-          promptCacheRetention,
-          question,
-          remoteTools,
-          reasoningEffort,
-          retrievedChunks,
-          store,
-          systemInstructions,
-          verbosity,
-        })
-          .catch((error: unknown) => {
-            if (abortController.signal.aborted) {
-              return;
+        const titlePromise =
+          conversationTitleRequested === true
+            ? emitConversationTitle({
+                abortSignal: abortController.signal,
+                controller,
+                getClient,
+                model,
+                question,
+              })
+            : Promise.resolve();
+
+        (() => {
+          Promise.allSettled([
+            streamOpenAIResponse({
+              abortSignal: abortController.signal,
+              controller,
+              getClient,
+              instructionsHash,
+              manifestHash: artifact.manifestHash,
+              model,
+              promptCacheKey,
+              promptCacheRetention,
+              question,
+              remoteTools,
+              reasoningEffort,
+              retrievedChunks,
+              store,
+              systemInstructions,
+              verbosity,
+            }),
+            titlePromise,
+          ]).then((results) => {
+            const streamOutcome = results[0];
+
+            if (
+              streamOutcome.status === "rejected" &&
+              !abortController.signal.aborted
+            ) {
+              const publicError = toOpenDetailPublicError(streamOutcome.reason);
+              emitEvent(controller, {
+                code: publicError.code,
+                message: publicError.message,
+                param: publicError.param,
+                provider: publicError.provider,
+                providerCode: publicError.providerCode,
+                requestId: publicError.requestId,
+                retryable: publicError.retryable,
+                status: publicError.status,
+                type: "error",
+              });
             }
 
-            const publicError = toOpenDetailPublicError(error);
-            emitEvent(controller, {
-              code: publicError.code,
-              message: publicError.message,
-              param: publicError.param,
-              provider: publicError.provider,
-              providerCode: publicError.providerCode,
-              requestId: publicError.requestId,
-              retryable: publicError.retryable,
-              status: publicError.status,
-              type: "error",
-            });
-          })
-          .finally(() => {
             if (!abortController.signal.aborted) {
               controller.close();
             }
           });
+        })();
       },
       cancel() {
         abortController.abort();

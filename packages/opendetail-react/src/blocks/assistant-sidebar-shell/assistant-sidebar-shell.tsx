@@ -44,15 +44,24 @@ export const AssistantSidebarShell = ({
   transport,
   ...sidebarProps
 }: AssistantSidebarShellProps) => {
-  const { clearThread, messages, question, setQuestion, status, stop, submit } =
-    useOpenDetail({
-      endpoint,
-      persistence,
-      transport,
-    });
+  const {
+    clearThread,
+    conversationTitle,
+    messages,
+    question,
+    setQuestion,
+    status,
+    stop,
+    submit,
+  } = useOpenDetail({
+    endpoint,
+    persistence,
+    transport,
+  });
 
   return (
     <AssistantSidebar
+      headerTitle={conversationTitle}
       messages={messages}
       onClearThread={clearThread}
       onQuestionChange={setQuestion}

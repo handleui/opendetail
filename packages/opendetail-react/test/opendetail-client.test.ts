@@ -103,6 +103,44 @@ describe("createOpenDetailClient", () => {
     );
   });
 
+  test("parses title stream events before the terminal done event", async () => {
+    const streamBody = [
+      JSON.stringify({
+        model: "gpt-5.4-mini",
+        type: "meta",
+      }),
+      JSON.stringify({
+        title: "Short chat title",
+        type: "title",
+      }),
+      JSON.stringify({
+        text: "Ready.",
+        type: "done",
+      }),
+    ].join("\n");
+    const onEvent = vi.fn();
+    const fetchImplementation = vi.fn<typeof fetch>(
+      async () => new Response(streamBody, { status: 200 })
+    );
+    const client = createOpenDetailClient({
+      fetch: fetchImplementation,
+    });
+
+    await client.submit(
+      {
+        question: "How do I install opendetail?",
+      },
+      {
+        onEvent,
+      }
+    );
+
+    expect(onEvent).toHaveBeenCalledWith({
+      title: "Short chat title",
+      type: "title",
+    });
+  });
+
   test("falls back to a typed transport error for malformed stream payloads", async () => {
     const fetchImplementation = vi.fn<typeof fetch>(
       async () => new Response("<html>bad gateway</html>", { status: 200 })

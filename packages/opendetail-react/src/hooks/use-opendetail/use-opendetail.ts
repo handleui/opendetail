@@ -38,7 +38,7 @@ const OPENDETAIL_CLIENT_ERROR_CODES = [
   "provider_unavailable",
   "request_failed",
 ] as const satisfies OpenDetailClientErrorCode[];
-const THREAD_STORAGE_VERSION = 1;
+const THREAD_STORAGE_VERSION = 2;
 
 export interface OpenDetailUserMessage {
   id: string;
@@ -84,6 +84,7 @@ export interface UseOpenDetailOptions {
 
 export interface UseOpenDetailState {
   clearThread: () => void;
+  conversationTitle: string | null;
   error: string | null;
   errorCode: OpenDetailClientErrorCode | null;
   errorParam: string | null;
@@ -113,6 +114,7 @@ interface OpenDetailErrorState {
 }
 
 interface OpenDetailPersistedState {
+  conversationTitle: string | null;
   messages: OpenDetailThreadMessage[];
   question: string;
   version: number;
@@ -267,10 +269,13 @@ const normalizePersistedThreadMessage = (
 
 const isPersistedState = (value: unknown): value is OpenDetailPersistedState =>
   isRecord(value) &&
-  value.version === THREAD_STORAGE_VERSION &&
+  (value.version === 1 || value.version === THREAD_STORAGE_VERSION) &&
   Array.isArray(value.messages) &&
   value.messages.every((message) => isOpenDetailThreadMessage(message)) &&
-  typeof value.question === "string";
+  typeof value.question === "string" &&
+  (value.conversationTitle === undefined ||
+    value.conversationTitle === null ||
+    typeof value.conversationTitle === "string");
 
 const resolveStorage = (
   storage: OpenDetailPersistenceStorage
@@ -310,6 +315,10 @@ const readPersistedState = ({
 
     return {
       ...parsedValue,
+      conversationTitle:
+        typeof parsedValue.conversationTitle === "string"
+          ? parsedValue.conversationTitle
+          : null,
       messages: parsedValue.messages
         .map((message) => normalizePersistedThreadMessage(message))
         .filter((message) => message !== null),
@@ -326,11 +335,13 @@ const readPersistedState = ({
 };
 
 const writePersistedState = ({
+  conversationTitle,
   key,
   messages,
   question,
   storage,
 }: OpenDetailPersistenceOptions & {
+  conversationTitle: string | null;
   messages: OpenDetailThreadMessage[];
   question: string;
 }) => {
@@ -346,6 +357,7 @@ const writePersistedState = ({
     storageInstance.setItem(
       key,
       JSON.stringify({
+        conversationTitle,
         messages,
         question,
         version: THREAD_STORAGE_VERSION,
@@ -412,6 +424,10 @@ const applyStreamEvent = ({
 }) => {
   setMessages((messages) =>
     updateAssistantMessage(messages, assistantMessageId, (message) => {
+      if (event.type === "title") {
+        return message;
+      }
+
       if (event.type === "meta") {
         return {
           ...message,
@@ -668,6 +684,9 @@ export const useOpenDetail = (
     useState<OpenDetailErrorState>(EMPTY_ERROR_STATE);
   const [messages, setMessages] = useState<OpenDetailThreadMessage[]>([]);
   const [question, setQuestion] = useState("");
+  const [conversationTitle, setConversationTitle] = useState<string | null>(
+    null
+  );
   const [status, setStatus] = useState<OpenDetailClientStatus>("idle");
 
   useEffect(() => {
@@ -676,6 +695,7 @@ export const useOpenDetail = (
     if (!persistence) {
       setMessages([]);
       setQuestion("");
+      setConversationTitle(null);
       hasHydratedPersistenceRef.current = true;
       return;
     }
@@ -684,6 +704,7 @@ export const useOpenDetail = (
 
     setMessages(persistedState?.messages ?? []);
     setQuestion(persistedState?.question ?? "");
+    setConversationTitle(persistedState?.conversationTitle ?? null);
     hasHydratedPersistenceRef.current = true;
   }, [persistence]);
 
@@ -695,6 +716,7 @@ export const useOpenDetail = (
     const timeoutId = window.setTimeout(() => {
       writePersistedState({
         ...persistence,
+        conversationTitle,
         messages,
         question,
       });
@@ -703,7 +725,7 @@ export const useOpenDetail = (
     return () => {
       window.clearTimeout(timeoutId);
     };
-  }, [messages, persistence, question]);
+  }, [conversationTitle, messages, persistence, question]);
 
   useEffect(() => () => client.stop(), [client]);
 
@@ -748,6 +770,7 @@ export const useOpenDetail = (
     applyErrorState(EMPTY_ERROR_STATE);
     setMessages([]);
     setQuestion("");
+    setConversationTitle(null);
     setStatus("idle");
 
     if (persistence) {
@@ -761,6 +784,8 @@ export const useOpenDetail = (
     if (nextQuestion.length === 0) {
       return;
     }
+
+    const shouldRequestConversationTitle = messages.length === 0;
 
     if (activeAssistantMessageIdRef.current && startedAtRef.current !== null) {
       finalizeActiveRequest({
@@ -791,9 +816,17 @@ export const useOpenDetail = (
       await client.submit(
         {
           question: nextQuestion,
+          ...(shouldRequestConversationTitle
+            ? { conversationTitle: true }
+            : {}),
         },
         {
           onEvent: (event) => {
+            if (event.type === "title") {
+              setConversationTitle(event.title);
+              return;
+            }
+
             applyStreamEvent({
               assistantMessageId,
               event,
@@ -836,6 +869,7 @@ export const useOpenDetail = (
 
   return {
     clearThread,
+    conversationTitle,
     error: errorState.error,
     errorCode: errorState.errorCode,
     errorParam: errorState.errorParam,

@@ -47,4 +47,5 @@ export type {
   OpenDetailSourcesEvent,
   OpenDetailStreamEvent,
   OpenDetailStreamResult,
+  OpenDetailTitleEvent,
 } from "./types";

@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 
 /**
  * Docs chrome aligned with Figma node 36:26 — empty white left rail (250px),
- * hairline `#f2f2f2` (`--opendetail-color-sidebar-stroke`), main column centers ~651px content.
+ * hairline `#f2f2f2` (`--opendetail-color-sidebar-stroke`). Inner column is `max-w-[650px]`; horizontal padding sits outside that width.
  * Right “Asking AI” column is {@link FumadocsAssistantSidebar}, not part of this shell.
  */
 export const DocsPageShell = ({ children }: { children: ReactNode }) => (
@@ -12,7 +12,9 @@ export const DocsPageShell = ({ children }: { children: ReactNode }) => (
       className="hidden w-[250px] shrink-0 border-[var(--opendetail-color-sidebar-stroke)] border-e border-solid bg-white md:block"
     />
     <div className="opendetail-main-scroll flex min-h-0 min-w-0 flex-1 flex-col overflow-y-auto">
-      <div className="mx-auto w-full max-w-[652px] px-6 py-8">{children}</div>
+      <div className="w-full px-6 py-8">
+        <div className="mx-auto w-full max-w-[650px]">{children}</div>
+      </div>
     </div>
   </div>
 );

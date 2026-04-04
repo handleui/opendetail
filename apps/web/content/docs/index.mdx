@@ -1,76 +1,46 @@
 ---
-title: Overview
-description: What OpenDetail is, where it fits, and what it ships today.
+title: Documentation
+description: What OpenDetail is, how it works end-to-end, and where to read next — for humans and for tools.
 ---
 
-# Overview
+OpenDetail turns the Markdown and MDX you already ship into **grounded answers inside your product**: same content your team edits, retrieved with citations instead of vibes. It is intentionally small: a build step, a local index file, a narrow HTTP contract, and thin adapters — not a second CMS and not a generic chat platform.
 
-`opendetail` turns your Markdown and MDX docs into a small, grounded assistant for your app.
+From your app root, the CLI can scaffold config, an optional Next.js route, and your first index build:
 
-It sits on top of the OpenAI Responses API, but the value is not a new agent runtime. The value is a smaller setup path, grounded retrieval from your own docs, and a cleaner integration surface than wiring that stack by hand.
+<CopyCommand bun="bunx opendetail setup" npm="npx opendetail setup" />
 
-## What OpenDetail is for
+## How the pieces connect
 
-OpenDetail fits best when the hard part is not "how do we make a chatbot," but "how do we ship answers that stay tied to our own content."
+Your docs and media live in the repo. **Build** turns matched files into `.opendetail/index.json`. When someone asks a question, your **route or client** loads that index, picks the best chunks with lexical search, and calls the OpenAI Responses API using only that context — plus any remote tools you configured. The UI receives streamed NDJSON (text, sources, images) so you can render like a live dev tool instead of blocking on a full response.
 
-It works well for:
+The same pages stay readable as normal docs. Machine-readable routes (for example `/llms.mdx/docs`) stay available for tooling without maintaining a parallel format.
 
-- product help and onboarding
-- developer docs
-- internal guides
-- feature explainers
-- support content that already lives in Markdown or MDX
+## Who it is for
 
-## What ships today
+- **Product and devrel teams** who want in-app help without training a separate knowledge base.
+- **Developers** who want a boring, testable pipeline: build artifact in git, predictable API, clear errors.
+- **Agents** that need stable URLs and structured retrieval — the index and routes are built for that use case too.
 
-- a setup-focused CLI
-- a local build step that writes `.opendetail/index.json`
-- a core Node runtime
-- a thin Next.js adapter for self-hosted routes
-- installable client and React hook foundations in the registry
+## Packages (at a glance)
 
-## Integration modes
+| Package | Role |
+| --- | --- |
+| `opendetail` | Build, core runtime, CLI (`opendetail` binary). |
+| `opendetail-next` | Next.js route helpers for self-hosted mode. |
+| `opendetail-react` | `useOpenDetail` and streaming client for browser UI. |
+| `opendetail-fumadocs` | Optional helpers when you already use Fumadocs-style docs. |
 
-| Mode | What you manage | Best for | Status |
-| --- | --- | --- | --- |
-| `self-hosted` | Your route, runtime env, and `OPENAI_API_KEY` | Private docs, server-owned control, simple default path | Available today |
-| `hosted` | Your built index and client transport config | Faster setup and future hosted delivery | Documented and scaffolded in this phase |
-
-## Why teams use it
-
-- Answers stay tied to your own docs
-- The runtime stays small and inspectable
-- The request contract stays narrow: `{ question: string }`
-- The stream contract stays stable across modes
-- Missing documentation fails clearly instead of sounding confident
-
-## Start here
+## Where to go next
 
 <Cards>
   <Card
-    title="Quickstart"
-    href="/docs/quickstart"
-    description="Install, scaffold, build, and ask your first grounded question."
-  />
-  <Card
-    title="Self-hosted"
-    href="/docs/getting-started/self-hosted"
-    description="Use the shipped Next.js route path with your own API key."
-  />
-  <Card
-    title="Hosted"
-    href="/docs/getting-started/hosted"
-    description="Scaffold the transport shape without generating a route."
+    title="Guide"
+    href="/docs/guide"
+    description="Install, scaffold, self-hosted vs hosted-shaped setup, rebuild, and your first request."
   />
   <Card
     title="Reference"
-    href="/docs/reference/configuration"
-    description="Config, CLI, runtime, hook, and client reference."
+    href="/docs/reference"
+    description="Config (`opendetail.toml`), CLI, runtime defaults, stream contract, hook and client."
   />
 </Cards>
-
-## Human and agent friendly
-
-The docs are organized for people first: task-based quickstarts up front, reference pages after that, and short, direct explanations throughout.
-
-They are also exposed through the Fumadocs machine-readable routes already wired into this app, which means agents can consume the same source material without needing a separate docs format.

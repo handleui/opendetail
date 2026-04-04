@@ -8,26 +8,23 @@ describe("resolveFumadocsSourceTarget", () => {
   test("resolves a known docs page and preserves the hash fragment", () => {
     expect(
       resolveFumadocsSourceTarget({
-        knownPageUrls: [
-          "/docs/getting-started",
-          "/docs/reference/configuration",
-        ],
+        knownPageUrls: ["/docs/guide", "/docs/reference"],
         source: {
           kind: "local",
           title: "Configuration",
-          url: "/docs/reference/configuration#base_path",
+          url: "/docs/reference#base-path",
         },
       })
     ).toEqual({
       external: false,
-      href: "/docs/reference/configuration#base_path",
+      href: "/docs/reference#base-path",
     });
   });
 
   test("rejects unknown local-looking docs paths", () => {
     expect(
       resolveFumadocsSourceTarget({
-        knownPageUrls: ["/docs/getting-started"],
+        knownPageUrls: ["/docs/guide"],
         source: {
           kind: "local",
           title: "Unknown",
@@ -39,7 +36,7 @@ describe("resolveFumadocsSourceTarget", () => {
 
   test("keeps supported remote urls clickable", () => {
     const resolveSourceTarget = createFumadocsSourceTargetResolver([
-      "/docs/getting-started",
+      "/docs/guide",
     ]);
 
     expect(

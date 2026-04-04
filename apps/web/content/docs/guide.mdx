@@ -1,0 +1,181 @@
+---
+title: Guide
+description: Install OpenDetail, run setup, choose self-hosted or hosted-shaped integration, rebuild, and send your first grounded request.
+---
+
+Follow this page in order once; after that, rebuild whenever docs change:
+
+<CopyCommand bun="bunx opendetail build" npm="npx opendetail build" />
+
+## Install
+
+Add the packages you need for a Next.js app with the default route adapter:
+
+<CopyCommand
+  bun="bun add opendetail opendetail-next opendetail-react"
+  npm="npm i opendetail opendetail-next opendetail-react"
+/>
+
+Use `pnpm` or `yarn` with the same package list if you prefer. Check that the CLI is available without a global install:
+
+<CopyCommand bun="bunx opendetail --version" npm="npx opendetail --version" />
+
+## Scaffold
+
+Generate `opendetail.toml`, the default API route, and the first index (unless you skip the build):
+
+<CopyCommand bun="bunx opendetail setup --with-media" npm="npx opendetail setup --with-media" />
+
+What that can do:
+
+- write **`opendetail.toml`**
+- scaffold **`src/app/api/opendetail/route.ts`** (self-hosted default)
+- run an initial build to produce **`.opendetail/index.json`** (use the build command above)
+
+Add **`OPENAI_API_KEY`** to the environment your route runs in before you call the API.
+
+### Default config shape
+
+You should see something like:
+
+```toml
+version = 1
+include = ["content/**/*.{md,mdx}"]
+exclude = []
+base_path = "/docs"
+
+[media]
+include = ["content/**/*.{png,jpg,jpeg,webp,avif,gif,svg}"]
+exclude = []
+base_path = "/content-media"
+```
+
+Tweak `include` / `base_path` to match where your docs actually live. Full field list is in [Reference](/docs/reference#configuration).
+
+## Self-hosted (default, full path today)
+
+**Self-hosted** means: your Next.js route, your Node runtime, your API key, your rebuilt index on deploy.
+
+The scaffolded route is a thin wrapper:
+
+```ts
+import { createNextRoute } from "opendetail-next";
+
+export const { POST, runtime } = createNextRoute();
+```
+
+Or wire the handler yourself:
+
+```ts
+import { createNextRouteHandler } from "opendetail-next";
+
+export const runtime = "nodejs";
+export const POST = createNextRouteHandler();
+```
+
+**Requirements**
+
+- Node.js 18+
+- Route handler on the **Node.js** runtime (not Edge) for the default adapter
+- **`OPENAI_API_KEY`** set
+- **`.opendetail/index.json`** present after build
+
+**Request body** — intentionally tiny:
+
+```json
+{ "question": "How do I configure base_path?" }
+```
+
+Malformed bodies get a JSON error instead of a broken stream.
+
+**Response** — `application/x-ndjson; charset=utf-8`, events in this order:
+
+- `meta` — model metadata
+- `sources` — matched chunks (and remote citations when configured)
+- `images` — grounded image references from matched docs
+- `delta` — streamed answer text
+- `done` — final text
+- `error` — safe public error payload
+
+If initialization fails before streaming starts, you get JSON error instead of NDJSON. In production, repeated init failures are cached so you do not pay the same failure cost on every request.
+
+## Hosted-shaped (scaffold only for now)
+
+**Hosted** mode in the CLI **does not** generate a route. It still writes config and builds **`.opendetail/index.json`**, but your app is expected to call a remote endpoint you configure — the OpenDetail-managed cloud backend is **not** shipped yet.
+
+<CopyCommand bun="bunx opendetail setup --integration hosted" npm="npx opendetail setup --integration hosted" />
+
+Point the client at your future endpoint with environment variables:
+
+- **`OPENDETAIL_ENDPOINT`** (server)
+- **`OPENDETAIL_AUTH_TOKEN`** (optional)
+- In the browser, examples often use **`NEXT_PUBLIC_OPENDETAIL_*`**
+
+Hook shape:
+
+```ts
+import { useOpenDetail } from "opendetail-react";
+
+const endpoint = process.env.NEXT_PUBLIC_OPENDETAIL_ENDPOINT;
+const authToken = process.env.NEXT_PUBLIC_OPENDETAIL_AUTH_TOKEN;
+
+const assistant = useOpenDetail({
+  transport: {
+    endpoint,
+    headers: authToken
+      ? {
+          authorization: `Bearer ${authToken}`,
+        }
+      : undefined,
+  },
+});
+```
+
+Request and stream events stay the same as self-hosted so you do not need a breaking migration later.
+
+## Rebuild when content changes
+
+Any time Markdown, MDX, or matched media changes:
+
+<CopyCommand bun="bunx opendetail build" npm="npx opendetail build" />
+
+Run that in CI before deploy, or as a `postbuild` step, so production always matches the docs you shipped.
+
+**Diagnose** when something looks wrong:
+
+<CopyCommand bun="bunx opendetail doctor" npm="npx opendetail doctor" />
+
+<CopyCommand bun="bunx opendetail doctor --integration hosted" npm="npx opendetail doctor --integration hosted" />
+
+## Ask the first question
+
+With the default route, POST JSON:
+
+```json
+{ "question": "How do I install this?" }
+```
+
+Use `createOpenDetailClient` or `useOpenDetail` from **`opendetail-react`** if you are building UI — see [Reference](/docs/reference#react-hook) for options like persistence and headers.
+
+## How grounding works (short version)
+
+1. **Build time** — Matched files are parsed, split into heading-based chunks, and written to **`.opendetail/index.json`**. No required vector database in the default path.
+2. **Request time** — The runtime loads the index, runs **lexical search**, sends the best chunks to the **Responses API**, and optionally attaches **remote tools** from config.
+3. **Instructions** — The model is told to answer from those sources, cite factual statements, avoid inventing coverage, and admit when the topic is not in the docs.
+
+If nothing matches well, you still get a response, but it may be marked as fallback; if the model produces no usable text, users see a clear “not documented yet” style message (see [Reference](/docs/reference#runtime)).
+
+## UI references (this site)
+
+These SVGs show patterns you might mirror: a narrow reading column with a fixed composer, and streaming layout with sources and images.
+
+![Thread shell reference](/opendetail-test/thread-shell.svg "Thread shell — composer anchored, reading column")
+
+![Streaming response reference](/opendetail-test/stream-reference.svg "Streaming response — sources and media alongside partial text")
+
+## Quick FAQ (inline)
+
+- **Chat UI?** OpenDetail is the engine and contracts; you bring the UI (or use examples from the registry).
+- **Vector DB?** Not required for the default local index path.
+- **MDX with components?** Text and headings matter for retrieval; exotic runtime components are not the retrieval unit.
+- **Hosted backend?** Scaffolded client shape exists; managed backend is not shipped in this phase.

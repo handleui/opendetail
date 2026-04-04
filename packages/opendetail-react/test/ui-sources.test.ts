@@ -4,6 +4,7 @@ import { describe, expect, test } from "vitest";
 import {
   AssistantResponse,
   AssistantSources,
+  getSourcesCitedInContent,
   renderAssistantSourceLink,
 } from "../src/index";
 
@@ -18,7 +19,7 @@ describe("assistant source rendering", () => {
               id: "1",
               kind: "local",
               title: "Getting Started",
-              url: "/docs/getting-started#install",
+              url: "/docs/guide#install",
             },
             {
               id: "2",
@@ -33,7 +34,7 @@ describe("assistant source rendering", () => {
     );
 
     expect(html).toContain('class="opendetail-citation-link"');
-    expect(html).toContain('href="/docs/getting-started#install"');
+    expect(html).toContain('href="/docs/guide#install"');
     expect(html).toContain(
       'href="https://platform.openai.com/docs/api-reference/responses"'
     );
@@ -103,7 +104,7 @@ describe("assistant source rendering", () => {
             id: "1",
             kind: "local",
             title: "Configuration",
-            url: "/docs/reference/configuration",
+            url: "/docs/reference#configuration",
           },
           {
             id: "2",
@@ -122,12 +123,66 @@ describe("assistant source rendering", () => {
     );
 
     expect(html).toContain(">3 sources<");
-    expect(html).toContain('href="/docs/reference/configuration"');
+    expect(html).toContain("opendetail-sources__pills");
+    expect(html).toContain('href="/docs/reference#configuration"');
     expect(html).toContain('href="https://fumadocs.dev/docs/ui/mdx"');
     expect(html).not.toContain("vector-store-file://file_123");
-    expect(html).toContain("[1]");
-    expect(html).toContain("[2]");
-    expect(html).toContain("[3]");
+    expect(html).toContain("Configuration");
+    expect(html).toContain("Fumadocs");
+    expect(html).toContain("Vector Store File");
+    expect(html).toContain("opendetail-sources__pill-favicon");
+    expect(html).toContain("google.com/s2/favicons");
+    expect(html).toContain("fumadocs.dev");
+  });
+
+  test("lists only sources cited in the response body", () => {
+    const html = renderToStaticMarkup(
+      createElement(
+        AssistantResponse,
+        {
+          defaultSourcesOpen: true,
+          sources: [
+            { id: "1", kind: "local", title: "Alpha", url: "/a" },
+            { id: "2", kind: "local", title: "Beta", url: "/b" },
+            { id: "3", kind: "local", title: "Gamma", url: "/c" },
+          ],
+        },
+        "See [1] only."
+      )
+    );
+
+    expect(html).toContain(">1 source<");
+    expect(html).toContain('href="/a"');
+    expect(html).not.toContain('href="/b"');
+    expect(html).not.toContain('href="/c"');
+  });
+
+  test("omits sources footer when the response cites no sources", () => {
+    const html = renderToStaticMarkup(
+      createElement(
+        AssistantResponse,
+        {
+          sources: [{ id: "1", kind: "local", title: "Alpha", url: "/a" }],
+        },
+        "No numeric citations in this answer."
+      )
+    );
+
+    expect(html).not.toContain("opendetail-sources__toggle");
+  });
+
+  test("getSourcesCitedInContent dedupes and orders by first citation", () => {
+    const sources = [
+      { id: "1", kind: "local" as const, title: "A", url: "/a" },
+      { id: "2", kind: "local" as const, title: "B", url: "/b" },
+    ];
+
+    expect(
+      getSourcesCitedInContent({
+        children: "[2] then [1] again [2]",
+        sources,
+      }).map((s) => s.title)
+    ).toEqual(["B", "A"]);
   });
 
   test("drops unsafe custom source hrefs", () => {

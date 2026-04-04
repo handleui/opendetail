@@ -5,3 +5,7 @@
 .docs-article {
   color: #171717;
 }
+
+.docs-article strong {
+  font-weight: 500;
+}

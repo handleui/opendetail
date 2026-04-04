@@ -1,9 +1,10 @@
 "use client";
 
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, FileText, Globe } from "lucide-react";
 import { useId, useMemo, useState } from "react";
 import {
   type AssistantSourceItem,
+  type AssistantSourceTarget,
   type RenderAssistantSourceLink,
   type ResolveAssistantSourceTarget,
   renderAssistantSourceLink,
@@ -28,6 +29,77 @@ export interface AssistantSourcesProps {
 const getClassName = (className?: string): string =>
   ["opendetail-sources", className].filter(Boolean).join(" ");
 
+const getHttpFaviconUrl = (href: string): string | null => {
+  try {
+    const parsed = new URL(href);
+
+    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+      return null;
+    }
+
+    return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(parsed.hostname)}&sz=32`;
+  } catch {
+    return null;
+  }
+};
+
+const RemotePillFavicon = ({ href }: { href: string }) => {
+  const [failed, setFailed] = useState(false);
+  const faviconUrl = useMemo(() => getHttpFaviconUrl(href), [href]);
+
+  if (failed || !faviconUrl) {
+    return (
+      <span aria-hidden="true" className="opendetail-sources__pill-icon">
+        <Globe
+          className="opendetail-sources__pill-icon-svg"
+          size={14}
+          strokeWidth={1.6}
+        />
+      </span>
+    );
+  }
+
+  return (
+    <span aria-hidden="true" className="opendetail-sources__pill-icon">
+      {/* biome-ignore lint/a11y/noNoninteractiveElementInteractions: swap to Globe when favicon fails to load */}
+      <img
+        alt=""
+        className="opendetail-sources__pill-favicon"
+        decoding="async"
+        height={14}
+        loading="lazy"
+        onError={() => setFailed(true)}
+        src={faviconUrl}
+        width={14}
+      />
+    </span>
+  );
+};
+
+const SourcePillLeading = ({
+  item,
+  target,
+}: {
+  item: AssistantSourceItem;
+  target: AssistantSourceTarget | null;
+}) => {
+  if (item.kind === "remote") {
+    const href = target?.href ?? item.url;
+
+    return <RemotePillFavicon href={href} />;
+  }
+
+  return (
+    <span aria-hidden="true" className="opendetail-sources__pill-icon">
+      <FileText
+        className="opendetail-sources__pill-icon-svg"
+        size={14}
+        strokeWidth={1.6}
+      />
+    </span>
+  );
+};
+
 const getCountLabel = ({
   count,
   countLabel,
@@ -45,14 +117,6 @@ const getCountLabel = ({
 
   return `${count} source${count === 1 ? "" : "s"}`;
 };
-
-const getItemLabel = ({
-  index,
-  item,
-}: {
-  index: number;
-  item: AssistantSourceItem;
-}): string => item.id ?? String(index + 1);
 
 export const AssistantSources = ({
   className,
@@ -81,7 +145,7 @@ export const AssistantSources = ({
     () =>
       items.map((item, index) => ({
         item,
-        label: getItemLabel({ index, item }),
+        key: `${index}-${item.id ?? ""}-${item.url}`,
         target: resolveAssistantSourceTarget({
           resolveSourceTarget,
           source: item,
@@ -127,42 +191,37 @@ export const AssistantSources = ({
       </button>
 
       {isOpen && resolvedItems.length > 0 ? (
-        <ol className="opendetail-sources__list" id={resolvedId}>
-          {resolvedItems.map(({ item, label, target }) => {
+        <section className="opendetail-sources__pills" id={resolvedId}>
+          {resolvedItems.map(({ item, key, target }) => {
             const content = (
               <>
-                <span
-                  aria-hidden="true"
-                  className="opendetail-sources__item-number"
-                >
-                  [{label}]
-                </span>
-                <span className="opendetail-sources__item-title">
+                <SourcePillLeading item={item} target={target} />
+                <span className="opendetail-sources__pill-title">
                   {item.title}
                 </span>
               </>
             );
 
             return (
-              <li
-                className="opendetail-sources__item"
-                key={`${label}-${item.url}`}
-              >
+              <div className="opendetail-sources__pill-wrap" key={key}>
                 {target ? (
                   linkRenderer({
                     children: content,
-                    className: "opendetail-sources__link",
+                    className:
+                      "opendetail-sources__pill opendetail-sources__pill-link",
                     source: item,
                     target,
                     title: item.title,
                   })
                 ) : (
-                  <span className="opendetail-sources__text">{content}</span>
+                  <span className="opendetail-sources__pill opendetail-sources__pill--static">
+                    {content}
+                  </span>
                 )}
-              </li>
+              </div>
             );
           })}
-        </ol>
+        </section>
       ) : null}
     </div>
   );

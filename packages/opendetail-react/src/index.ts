@@ -47,6 +47,7 @@ export {
   type OpenDetailClientSourcesEvent,
   type OpenDetailClientStatus,
   type OpenDetailClientStreamEvent,
+  type OpenDetailClientTitleEvent,
   type OpenDetailTransportOptions,
 } from "./lib/opendetail-client/opendetail-client";
 export {
@@ -63,6 +64,7 @@ export {
   type AssistantResponseImage,
   type AssistantResponseMeta,
   type AssistantResponseProps,
+  getSourcesCitedInContent,
 } from "./ui/assistant-response/assistant-response";
 export {
   AssistantShell,

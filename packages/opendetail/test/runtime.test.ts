@@ -7,6 +7,7 @@ import type {
 } from "openai/resources/responses/responses";
 import { describe, expect, test, vi } from "vitest";
 import { buildOpenDetailIndex } from "../src/build";
+import { OPENDETAIL_CONVERSATION_TITLE_INSTRUCTIONS_MARKER } from "../src/constants";
 import { OpenDetailMissingApiKeyError } from "../src/errors";
 import { createOpenDetail } from "../src/runtime";
 import {
@@ -105,10 +106,32 @@ function* createUndocumentedResponseEventStream(
 
 const createMockClient = () => {
   const create = vi.fn((request: unknown) => {
-    const maybeStreamRequest = request as { stream?: boolean };
+    const maybeStreamRequest = request as {
+      instructions?: string;
+      stream?: boolean;
+    };
 
     if (maybeStreamRequest.stream) {
       return Promise.resolve(createMockResponseEventStream());
+    }
+
+    if (
+      typeof maybeStreamRequest.instructions === "string" &&
+      maybeStreamRequest.instructions.includes(
+        OPENDETAIL_CONVERSATION_TITLE_INSTRUCTIONS_MARKER
+      )
+    ) {
+      return Promise.resolve({
+        created_at: Date.now(),
+        error: null,
+        id: "resp_title",
+        incomplete_details: null,
+        instructions: null,
+        model: "gpt-5.4-mini",
+        output: [],
+        output_text: "Installing OpenDetail package",
+        status: "completed",
+      } as unknown as Response);
     }
 
     return Promise.resolve({
@@ -362,6 +385,42 @@ describe("OpenDetail runtime", () => {
         text: {
           verbosity: "low",
         },
+      });
+    } finally {
+      await removeWorkspace(cwd);
+    }
+  });
+
+  test("streams a conversation title when conversationTitle is true", async () => {
+    const cwd = await createFixtureWorkspace("basic");
+
+    try {
+      const { artifact } = await buildOpenDetailIndex({ cwd });
+      const { client, create } = createMockClient();
+      const assistant = createOpenDetail({
+        client,
+        cwd,
+        indexData: artifact,
+      });
+      const result = await assistant.stream({
+        conversationTitle: true,
+        question: "How do I install opendetail?",
+      });
+      const events = await readNdjsonEvents(result.stream);
+
+      const titleEvent = events.find(
+        (event): event is { title: string; type: "title" } =>
+          event.type === "title"
+      );
+
+      expect(titleEvent).toEqual({
+        title: "Installing OpenDetail package",
+        type: "title",
+      });
+      expect(create).toHaveBeenCalledTimes(2);
+      expect(events.at(-1)).toEqual({
+        text: "Install `opendetail` with `npm i opendetail` [1].",
+        type: "done",
       });
     } finally {
       await removeWorkspace(cwd);

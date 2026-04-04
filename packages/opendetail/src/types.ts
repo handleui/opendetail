@@ -89,6 +89,7 @@ export interface OpenDetailImage extends OpenDetailChunkImage {
 }
 
 export interface OpenDetailAnswerInput {
+  conversationTitle?: boolean;
   question: string;
 }
 
@@ -174,6 +175,11 @@ export interface OpenDetailImagesEvent {
   type: "images";
 }
 
+export interface OpenDetailTitleEvent {
+  title: string;
+  type: "title";
+}
+
 export interface OpenDetailDeltaEvent {
   text: string;
   type: "delta";
@@ -192,6 +198,7 @@ export type OpenDetailStreamEvent =
   | OpenDetailMetaEvent
   | OpenDetailSourcesEvent
   | OpenDetailImagesEvent
+  | OpenDetailTitleEvent
   | OpenDetailDeltaEvent
   | OpenDetailDoneEvent
   | OpenDetailErrorEvent;

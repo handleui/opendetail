@@ -240,7 +240,6 @@ export const AssistantModal = ({
               key={message.id}
               meta={{
                 durationLabel: message.durationLabel ?? undefined,
-                sourceCount: message.sources?.length ?? 0,
               }}
               renderSourceLink={renderSourceLink}
               resolveSourceTarget={resolveSourceTarget}

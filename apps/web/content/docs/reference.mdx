@@ -1,0 +1,310 @@
+---
+title: Reference
+description: opendetail.toml, CLI commands, runtime and defaults, streaming contract, React hook, and HTTP client — consolidated.
+---
+
+Use this page as the single source for config keys, flags, and API shapes. Anchor-friendly section headings match the table of contents your tools generate.
+
+## Configuration
+
+OpenDetail reads **`opendetail.toml`** at the project root.
+
+### Minimal config
+
+```toml
+version = 1
+include = ["content/**/*.{md,mdx}"]
+exclude = []
+base_path = "/docs"
+```
+
+### Fields
+
+| Field | Required | Meaning |
+| --- | --- | --- |
+| `version` | yes | Must be `1` |
+| `include` | yes | Glob patterns for Markdown and MDX source files |
+| `exclude` | no | Ignore globs for files matched by `include` |
+| `base_path` | no | URL base used when source URLs are generated |
+| `media` | no | Rules for mapping local media references to public URLs |
+| `remote_resources` | no | OpenAI Responses API retrieval tools at answer time |
+
+### Base path
+
+`base_path` is normalized before URLs are generated. Match it to the public route where your docs are served, for example `/docs` or `/help`.
+
+### Media
+
+Use `[media]` when docs reference local images such as `./hero.png`.
+
+```toml
+[media]
+include = ["content/**/*.{png,jpg,jpeg,webp,avif,gif,svg}"]
+exclude = []
+base_path = "/content-media"
+```
+
+When `media` is configured:
+
+- `http://` and `https://` URLs are returned as-is
+- root-relative `/...` URLs are returned as-is
+- local relative paths are mapped only if they match `[media].include`
+- unsupported absolute schemes and protocol-relative URLs are ignored
+
+If a doc references a local image that does not match the configured media globs, the build fails with a clear error.
+
+### Remote resources
+
+Optional Responses API tools:
+
+```toml
+[remote_resources.file_search]
+vector_store_ids = ["vs_123"]
+max_num_results = 8
+
+[remote_resources.web_search]
+allowed_domains = ["platform.openai.com", "docs.example.com"]
+search_context_size = "low"
+```
+
+**`file_search`**
+
+| Field | Required | Meaning |
+| --- | --- | --- |
+| `vector_store_ids` | yes | OpenAI vector store IDs |
+| `max_num_results` | no | Limit from 1 to 50 |
+
+**`web_search`**
+
+| Field | Required | Meaning |
+| --- | --- | --- |
+| `allowed_domains` | no | Restrict search to listed domains |
+| `search_context_size` | no | `low`, `medium`, or `high` |
+
+Remote citations appear in `sources` with `kind: "remote"`.
+
+## CLI
+
+Commands (see also **Common examples** below):
+
+```bash
+opendetail build [--config <path>] [--output <path>] [--cwd <path>]
+opendetail setup [--integration <self-hosted|hosted>] [--config <path>] [--route <path>] [--base-path <url>] [--include <glob>] [--media-include <glob>] [--with-media] [--skip-build] [--force] [--interactive] [--no-interactive] [--cwd <path>]
+opendetail doctor [--integration <self-hosted|hosted>] [--config <path>] [--route <path>] [--cwd <path>]
+```
+
+### setup
+
+Writes the standard project shape for the selected integration mode.
+
+**Writes**
+
+- `opendetail.toml`
+- in `self-hosted`, a route at `src/app/api/opendetail/route.ts` by default
+- `.opendetail/index.json` unless `--skip-build`
+
+**Important flags**
+
+| Flag | Meaning |
+| --- | --- |
+| `--integration` | `self-hosted` or `hosted` |
+| `--config` | Custom config path |
+| `--route` | Custom route path for self-hosted setup |
+| `--base-path` | Public source URL base, default `/docs` |
+| `--include` | Custom docs glob |
+| `--media-include` | Custom media glob |
+| `--with-media` | Include `[media]` config |
+| `--skip-build` | Skip the initial index build |
+| `--force` | Overwrite existing generated files |
+| `--interactive` | Force the setup wizard |
+| `--no-interactive` | Skip the setup wizard |
+| `--cwd` | Run against another working directory |
+
+### build
+
+Reads `opendetail.toml`, parses matched content, writes the local index artifact.
+
+<CopyCommand bun="bunx opendetail build" npm="npx opendetail build" />
+
+Optional flags: `--config`, `--output`, `--cwd`.
+
+### doctor
+
+Checks expected files and env for the selected integration.
+
+**Self-hosted:** config, built index, route file, `OPENAI_API_KEY`.
+
+**Hosted:** config, built index, `OPENDETAIL_ENDPOINT`.
+
+Exits with an error if any check fails.
+
+### Common examples
+
+<CopyCommand bun="bunx opendetail setup --with-media" npm="npx opendetail setup --with-media" />
+
+<CopyCommand bun="bunx opendetail setup --integration hosted" npm="npx opendetail setup --integration hosted" />
+
+<CopyCommand bun="bunx opendetail build" npm="npx opendetail build" />
+
+<CopyCommand bun="bunx opendetail doctor" npm="npx opendetail doctor" />
+
+<CopyCommand bun="bunx opendetail doctor --integration hosted" npm="npx opendetail doctor --integration hosted" />
+
+## Runtime
+
+Use **`opendetail`** core when calling from Node without Next.js helpers.
+
+### Create an assistant
+
+```ts
+import { createOpenDetail } from "opendetail";
+
+const assistant = createOpenDetail();
+```
+
+Then:
+
+```ts
+const result = await assistant.answer({
+  question: "How do I configure base_path?",
+});
+```
+
+`answer()` returns `text`, `model`, `sources`, `images`, `fallback`. `stream()` adds a `ReadableStream<Uint8Array>`.
+
+### Assistant instructions
+
+Loaded in order:
+
+1. `assistantInstructions` option
+2. `assistantInstructionsPath` option
+3. `.opendetail/OPENDETAIL.md`
+4. `OPENDETAIL.md` at project root
+
+If none exist, only built-in grounding instructions apply.
+
+### Remote retrieval
+
+Configure via `remoteResources` in code or `remote_resources` in `opendetail.toml` (`file_search`, `web_search`).
+
+### Defaults
+
+| Setting | Default |
+| --- | --- |
+| `model` | `gpt-5.4-mini` |
+| `reasoningEffort` | `none` |
+| `verbosity` | `low` |
+| `store` | `false` |
+| `promptCacheRetention` | `in-memory` |
+
+### Important options
+
+| Option | Meaning |
+| --- | --- |
+| `cwd` | Working directory for config and instruction files |
+| `indexPath` | Custom path to the built index |
+| `indexData` | Preloaded index artifact |
+| `client` | Reuse an existing OpenAI client |
+| `assistantInstructions` | Inline project guidance |
+| `assistantInstructionsPath` | Custom instructions path |
+| `promptCacheKey` | Explicit cache key override |
+| `remoteResources` | Override remote retrieval config |
+
+### Fallback behavior
+
+If no local chunks match well, OpenDetail may still respond but sets **`fallback: true`**. If the model returns no usable text:
+
+```txt
+This isn't documented in the configured docs yet.
+```
+
+## React hook
+
+`opendetail-react` exports **`useOpenDetail`** for browser state and streaming UI.
+
+### Basic usage
+
+```ts
+import { useOpenDetail } from "opendetail-react";
+
+const assistant = useOpenDetail({
+  transport: {
+    endpoint: "/api/opendetail",
+  },
+});
+```
+
+### Options
+
+| Option | Meaning |
+| --- | --- |
+| `endpoint` | Shortcut for `transport.endpoint` |
+| `transport.endpoint` | Request URL, defaults to `/api/opendetail` |
+| `transport.headers` | Static headers or a function returning headers |
+| `transport.credentials` | Fetch credentials mode |
+| `transport.fetch` | Custom `fetch` implementation |
+| `persistence.key` | Storage key for thread state |
+| `persistence.storage` | `local` or `session`, default `local` |
+
+### Returned state
+
+`messages`, `question`, `setQuestion`, `submit`, `stop`, `clearThread`, `status`, and error fields such as `error`, `errorCode`, `errorRetryable`, `errorStatus`.
+
+Assistant messages track streamed text, sources, images, model, duration label, error metadata, and status: `pending` | `streaming` | `complete` | `error`.
+
+### Persistence
+
+When enabled, thread and input are restored; interrupted streams are marked honestly after refresh.
+
+## HTTP client
+
+Use **`createOpenDetailClient`** when you want NDJSON streaming without the hook.
+
+```ts
+import { createOpenDetailClient } from "opendetail-react";
+
+const client = createOpenDetailClient({
+  endpoint: "/api/opendetail",
+});
+
+await client.submit(
+  { question: "How do I install this?" },
+  {
+    onEvent(event) {
+      console.log(event);
+    },
+    onStatusChange(status) {
+      console.log(status);
+    },
+  }
+);
+```
+
+### Client options
+
+| Option | Meaning |
+| --- | --- |
+| `endpoint` | Request URL, default `/api/opendetail` |
+| `headers` | Static or function |
+| `credentials` | Fetch credentials mode |
+| `fetch` | Custom fetch implementation |
+
+### Request
+
+```json
+{ "question": "..." }
+```
+
+Headers: `accept: application/x-ndjson, application/json`, `content-type: application/json`.
+
+### Status values
+
+`idle` → `pending` → `streaming` → `idle` or `error`.
+
+### Stream event types
+
+`meta`, `sources`, `images`, `delta`, `done`, `error`.
+
+### Stop behavior
+
+`stop()` aborts the active request. Calling `submit()` while a request is active stops the previous one first.

@@ -37,6 +37,7 @@ export interface OpenDetailTransportOptions {
 export type OpenDetailClientOptions = OpenDetailTransportOptions;
 
 export interface OpenDetailClientRequest {
+  conversationTitle?: boolean;
   question: string;
 }
 
@@ -70,6 +71,11 @@ export interface OpenDetailClientImagesEvent {
   type: "images";
 }
 
+export interface OpenDetailClientTitleEvent {
+  title: string;
+  type: "title";
+}
+
 export interface OpenDetailClientDeltaEvent {
   text: string;
   type: "delta";
@@ -96,6 +102,7 @@ export type OpenDetailClientStreamEvent =
   | OpenDetailClientMetaEvent
   | OpenDetailClientSourcesEvent
   | OpenDetailClientImagesEvent
+  | OpenDetailClientTitleEvent
   | OpenDetailClientDeltaEvent
   | OpenDetailClientDoneEvent
   | OpenDetailClientErrorEvent;
@@ -270,6 +277,9 @@ const isImagesEvent = (value: unknown): value is OpenDetailClientImagesEvent =>
   Array.isArray(value.images) &&
   value.images.every((image) => isImage(image));
 
+const isTitleEvent = (value: unknown): value is OpenDetailClientTitleEvent =>
+  isRecord(value) && value.type === "title" && typeof value.title === "string";
+
 const isDeltaEvent = (value: unknown): value is OpenDetailClientDeltaEvent =>
   isRecord(value) && value.type === "delta" && typeof value.text === "string";
 
@@ -282,6 +292,7 @@ const isStructuredStreamEvent = (
   isMetaEvent(value) ||
   isSourcesEvent(value) ||
   isImagesEvent(value) ||
+  isTitleEvent(value) ||
   isDeltaEvent(value) ||
   isDoneEvent(value);
 

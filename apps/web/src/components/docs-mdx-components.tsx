@@ -4,6 +4,7 @@ import type { MDXComponents } from "mdx/types";
 import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
 
+import { CopyCommand } from "@/components/copy-command";
 import type { source } from "@/lib/source";
 
 type DocsPage = InferPageType<typeof source>;
@@ -77,6 +78,7 @@ export function getDocsMdxComponents(
     a: A,
     Card,
     Cards,
+    CopyCommand,
     h1: (props: ComponentProps<"h1">) => (
       <h1
         className="mt-10 mb-4 font-semibold text-[28px] text-black tracking-tight first:mt-0"
@@ -163,7 +165,7 @@ export function getDocsMdxComponents(
       }
       return (
         <code
-          className="rounded-md bg-neutral-950 px-1.5 py-0.5 font-mono font-normal text-[13px] text-white"
+          className="rounded-md bg-neutral-100 px-1.5 py-0.5 font-mono font-normal text-[13px] text-neutral-900"
           {...props}
         >
           {children}
