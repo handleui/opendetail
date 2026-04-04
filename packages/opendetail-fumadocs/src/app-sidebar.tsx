@@ -245,8 +245,8 @@ export function FumadocsAppSidebar({
 
       <div className="shrink-0 px-5 py-3">
         <div className="flex items-center justify-end gap-4">
-          {npmLink}
           {githubLink}
+          {npmLink}
         </div>
       </div>
     </div>
