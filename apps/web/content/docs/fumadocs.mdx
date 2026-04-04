@@ -17,14 +17,13 @@ Local URLs must match a **known pathname** (no hash required for the allowlist m
 
 Collect the doc page URLs your site actually serves (same slugs as your MDX routes), then pass them as **`knownPageUrls`**:
 
-```ts
-import { createFumadocsSourceTargetResolver } from "opendetail-fumadocs";
+<CodeBlock lang="ts">{`import { createFumadocsSourceTargetResolver } from "opendetail-fumadocs";
 
 const resolveSourceTarget = createFumadocsSourceTargetResolver([
   "/docs",
   "/docs/quickstart",
   // …
 ]);
-```
+`}</CodeBlock>
 
 Pair with **`renderNextSourceLink`** from [**opendetail-next**](/docs/next) in a Next app so resolved targets render as **`next/link`** where appropriate.

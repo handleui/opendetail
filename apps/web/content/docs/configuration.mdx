@@ -7,12 +7,11 @@ OpenDetail reads **`opendetail.toml`** at the project root.
 
 ## Minimal config
 
-```toml
-version = 1
+<CodeBlock lang="toml">{`version = 1
 include = ["content/**/*.{md,mdx}"]
 exclude = []
 base_path = "/docs"
-```
+`}</CodeBlock>
 
 ## Fields
 
@@ -33,12 +32,11 @@ base_path = "/docs"
 
 Use `[media]` when docs reference local images such as `./hero.png`.
 
-```toml
-[media]
+<CodeBlock lang="toml">{`[media]
 include = ["content/**/*.{png,jpg,jpeg,webp,avif,gif,svg}"]
 exclude = []
 base_path = "/content-media"
-```
+`}</CodeBlock>
 
 When `media` is configured:
 
@@ -53,15 +51,14 @@ If a doc references a local image that does not match the configured media globs
 
 Optional Responses API tools:
 
-```toml
-[remote_resources.file_search]
+<CodeBlock lang="toml">{`[remote_resources.file_search]
 vector_store_ids = ["vs_123"]
 max_num_results = 8
 
 [remote_resources.web_search]
 allowed_domains = ["platform.openai.com", "docs.example.com"]
 search_context_size = "low"
-```
+`}</CodeBlock>
 
 **`file_search`**
 

@@ -18,9 +18,7 @@ The App Router integration lives in **`opendetail-next`**: **`createNextRoute`**
 
 **Request body** — intentionally tiny:
 
-```json
-{ "question": "How do I configure base_path?" }
-```
+<CodeBlock lang="json">{`{ "question": "How do I configure base_path?" }`}</CodeBlock>
 
 Malformed bodies get a JSON error instead of a broken stream.
 
@@ -49,8 +47,9 @@ Point the client at your future endpoint with environment variables:
 
 Hook shape:
 
-```ts
-import { useOpenDetail } from "opendetail-react";
+<CodeBlock
+  lang="ts"
+  code={`import { useOpenDetail } from "opendetail-react";
 
 const endpoint = process.env.NEXT_PUBLIC_OPENDETAIL_ENDPOINT;
 const authToken = process.env.NEXT_PUBLIC_OPENDETAIL_AUTH_TOKEN;
@@ -60,12 +59,12 @@ const assistant = useOpenDetail({
     endpoint,
     headers: authToken
       ? {
-          authorization: `Bearer ${authToken}`,
+          authorization: \`Bearer \${authToken}\`,
         }
       : undefined,
   },
-});
-```
+});`}
+/>
 
 Request and stream events stay the same as self-hosted so you do not need a breaking migration later.
 

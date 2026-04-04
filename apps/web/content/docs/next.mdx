@@ -9,20 +9,18 @@ description: Next.js App Router helpers — route handler, NDJSON streaming, and
 
 The scaffolded route is a thin wrapper:
 
-```ts
-import { createNextRoute } from "opendetail-next";
+<CodeBlock lang="ts">{`import { createNextRoute } from "opendetail-next";
 
 export const { POST, runtime } = createNextRoute();
-```
+`}</CodeBlock>
 
 Or wire the handler yourself:
 
-```ts
-import { createNextRouteHandler } from "opendetail-next";
+<CodeBlock lang="ts">{`import { createNextRouteHandler } from "opendetail-next";
 
 export const runtime = "nodejs";
 export const POST = createNextRouteHandler();
-```
+`}</CodeBlock>
 
 **Requirements**
 
@@ -43,8 +41,7 @@ Successful responses use **`application/x-ndjson; charset=utf-8`**. Event order 
 
 For Fumadocs-style docs, pass **`renderNextSourceLink`** from **`opendetail-next`** into your assistant UI so local `/docs/...` citations use Next **`Link`** and external URLs stay safe:
 
-```ts
-import { renderNextSourceLink } from "opendetail-next";
-```
+<CodeBlock lang="ts">{`import { renderNextSourceLink } from "opendetail-next";
+`}</CodeBlock>
 
 Use with **`resolveSourceTarget`** from [**opendetail-fumadocs**](/docs/fumadocs) when you need known-page URL allowlists.

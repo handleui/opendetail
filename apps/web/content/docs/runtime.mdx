@@ -7,19 +7,17 @@ Use **`opendetail`** core when calling from Node without Next.js helpers.
 
 ## Create an assistant
 
-```ts
-import { createOpenDetail } from "opendetail";
+<CodeBlock lang="ts">{`import { createOpenDetail } from "opendetail";
 
 const assistant = createOpenDetail();
-```
+`}</CodeBlock>
 
 Then:
 
-```ts
-const result = await assistant.answer({
+<CodeBlock lang="ts">{`const result = await assistant.answer({
   question: "How do I configure base_path?",
 });
-```
+`}</CodeBlock>
 
 `answer()` returns `text`, `model`, `sources`, `images`, `fallback`. `stream()` adds a `ReadableStream<Uint8Array>`.
 
@@ -65,6 +63,4 @@ Configure via `remoteResources` in code or `remote_resources` in `opendetail.tom
 
 If no local chunks match well, OpenDetail may still respond but sets **`fallback: true`**. If the model returns no usable text:
 
-```txt
-This isn't documented in the configured docs yet.
-```
+<CodeBlock lang="txt">{`This isn't documented in the configured docs yet.`}</CodeBlock>

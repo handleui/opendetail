@@ -4,7 +4,9 @@ import type { MDXComponents } from "mdx/types";
 import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
 
+import { CodeBlock } from "@/components/code-block";
 import { CopyCommand } from "@/components/copy-command";
+import { DocsMdxPre } from "@/components/docs-mdx-pre";
 import type { source } from "@/lib/source";
 
 type DocsPage = InferPageType<typeof source>;
@@ -78,6 +80,7 @@ export function getDocsMdxComponents(
     a: A,
     Card,
     Cards,
+    CodeBlock,
     CopyCommand,
     h1: (props: ComponentProps<"h1">) => (
       <h1
@@ -146,13 +149,7 @@ export function getDocsMdxComponents(
         {...props}
       />
     ),
-    pre: (props: ComponentProps<"pre">) => (
-      <pre
-        className="my-6 overflow-x-auto rounded-xl border border-solid bg-neutral-50 p-4 text-[13px] text-neutral-900 leading-relaxed"
-        style={{ borderColor: "var(--opendetail-color-sidebar-stroke)" }}
-        {...props}
-      />
-    ),
+    pre: DocsMdxPre,
     code: ({ className, children, ...props }: ComponentProps<"code">) => {
       const isBlock =
         typeof className === "string" && className.includes("language-");

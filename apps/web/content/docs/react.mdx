@@ -11,15 +11,14 @@ Package: **`opendetail-react`**. For a Next.js route that serves the same NDJSON
 
 ### Basic usage
 
-```ts
-import { useOpenDetail } from "opendetail-react";
+<CodeBlock lang="ts">{`import { useOpenDetail } from "opendetail-react";
 
 const assistant = useOpenDetail({
   transport: {
     endpoint: "/api/opendetail",
   },
 });
-```
+`}</CodeBlock>
 
 ### Options
 
@@ -47,8 +46,7 @@ When enabled, thread and input are restored; interrupted streams are marked hone
 
 Use **`createOpenDetailClient`** when you want NDJSON streaming without the hook.
 
-```ts
-import { createOpenDetailClient } from "opendetail-react";
+<CodeBlock lang="ts">{`import { createOpenDetailClient } from "opendetail-react";
 
 const client = createOpenDetailClient({
   endpoint: "/api/opendetail",
@@ -65,7 +63,7 @@ await client.submit(
     },
   }
 );
-```
+`}</CodeBlock>
 
 ### Client options
 
@@ -78,9 +76,7 @@ await client.submit(
 
 ### Request
 
-```json
-{ "question": "..." }
-```
+<CodeBlock lang="json">{`{ "question": "..." }`}</CodeBlock>
 
 Headers: `accept: application/x-ndjson, application/json`, `content-type: application/json`.
 

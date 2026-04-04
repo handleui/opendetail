@@ -38,8 +38,7 @@ Add **`OPENAI_API_KEY`** to the environment your route runs in before you call t
 
 You should see something like:
 
-```toml
-version = 1
+<CodeBlock lang="toml">{`version = 1
 include = ["content/**/*.{md,mdx}"]
 exclude = []
 base_path = "/docs"
@@ -48,7 +47,7 @@ base_path = "/docs"
 include = ["content/**/*.{png,jpg,jpeg,webp,avif,gif,svg}"]
 exclude = []
 base_path = "/content-media"
-```
+`}</CodeBlock>
 
 Tweak `include` / `base_path` to match where your docs actually live. Full field list is in [Configuration](/docs/configuration).
 
@@ -70,9 +69,7 @@ Run that in CI before deploy, or as a `postbuild` step, so production always mat
 
 With the default route, POST JSON:
 
-```json
-{ "question": "How do I install this?" }
-```
+<CodeBlock lang="json">{`{ "question": "How do I install this?" }`}</CodeBlock>
 
 Use `createOpenDetailClient` or `useOpenDetail` from **`opendetail-react`** if you are building UI — see [React](/docs/react) for options like persistence and headers.
 

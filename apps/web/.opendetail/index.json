@@ -9,7 +9,7 @@
       "id": "cli.mdx",
       "images": [],
       "relativePath": "cli.mdx",
-      "text": "Commands (see also Common examples below):\n\nopendetail build [--config <path>] [--output <path>] [--cwd <path>]\nopendetail setup [--integration <self-hosted|hosted>] [--config <path>] [--route <path>] [--base-path <url>] [--include <glob>] [--media-include <glob>] [--with-media] [--skip-build] [--force] [--interactive] [--no-interactive] [--cwd <path>]\nopendetail doctor [--integration <self-hosted|hosted>] [--config <path>] [--route <path>] [--cwd <path>]",
+      "text": "Commands (see also Common examples below):\n\n`opendetail build [--config <path>] [--output <path>] [--cwd <path>]\nopendetail setup [--integration <self-hosted|hosted>] [--config <path>] [--route <path>] [--base-path <url>] [--include <glob>] [--media-include <glob>] [--with-media] [--skip-build] [--force] [--interactive] [--no-interactive] [--cwd <path>]\nopendetail doctor [--integration <self-hosted|hosted>] [--config <path>] [--route <path>] [--cwd <path>]\n`",
       "title": "CLI",
       "url": "/docs/cli"
     },
@@ -87,7 +87,7 @@
       "id": "configuration.mdx#minimal-config",
       "images": [],
       "relativePath": "configuration.mdx",
-      "text": "Minimal config\n\nversion = 1\ninclude = [\"content/**/*.{md,mdx}\"]\nexclude = []\nbase_path = \"/docs\"",
+      "text": "Minimal config\n\n`version = 1\ninclude = [\"content/**/*.{md,mdx}\"]\nexclude = []\nbase_path = \"/docs\"\n`",
       "title": "Configuration",
       "url": "/docs/configuration#minimal-config"
     },
@@ -126,7 +126,7 @@
       "id": "configuration.mdx#media",
       "images": [],
       "relativePath": "configuration.mdx",
-      "text": "Media\n\nUse [media] when docs reference local images such as ./hero.png.\n\n[media]\ninclude = [\"content/**/*.{png,jpg,jpeg,webp,avif,gif,svg}\"]\nexclude = []\nbase_path = \"/content-media\"\n\nWhen media is configured:\n\nhttp:// and https:// URLs are returned as-isroot-relative /... URLs are returned as-islocal relative paths are mapped only if they match [media].includeunsupported absolute schemes and protocol-relative URLs are ignored\n\nIf a doc references a local image that does not match the configured media globs, the build fails with a clear error.",
+      "text": "Media\n\nUse [media] when docs reference local images such as ./hero.png.\n\n`[media]\ninclude = [\"content/**/*.{png,jpg,jpeg,webp,avif,gif,svg}\"]\nexclude = []\nbase_path = \"/content-media\"\n`\n\nWhen media is configured:\n\nhttp:// and https:// URLs are returned as-isroot-relative /... URLs are returned as-islocal relative paths are mapped only if they match [media].includeunsupported absolute schemes and protocol-relative URLs are ignored\n\nIf a doc references a local image that does not match the configured media globs, the build fails with a clear error.",
       "title": "Configuration",
       "url": "/docs/configuration#media"
     },
@@ -139,7 +139,7 @@
       "id": "configuration.mdx#remote-resources",
       "images": [],
       "relativePath": "configuration.mdx",
-      "text": "Remote resources\n\nOptional Responses API tools:\n\n[remote_resources.file_search]\nvector_store_ids = [\"vs_123\"]\nmax_num_results = 8\n\n[remote_resources.web_search]\nallowed_domains = [\"platform.openai.com\", \"docs.example.com\"]\nsearch_context_size = \"low\"\n\nfile_search\n\n| Field | Required | Meaning |\n| --- | --- | --- |\n| vector_store_ids | yes | OpenAI vector store IDs |\n| max_num_results | no | Limit from 1 to 50 |\n\nweb_search\n\n| Field | Required | Meaning |\n| --- | --- | --- |\n| allowed_domains | no | Restrict search to listed domains |\n| search_context_size | no | low, medium, or high |\n\nRemote citations appear in sources with kind: \"remote\".",
+      "text": "Remote resources\n\nOptional Responses API tools:\n\n`[remote_resources.file_search]\nvector_store_ids = [\"vs_123\"]\nmax_num_results = 8\n\n[remote_resources.web_search]\nallowed_domains = [\"platform.openai.com\", \"docs.example.com\"]\nsearch_context_size = \"low\"\n`\n\nfile_search\n\n| Field | Required | Meaning |\n| --- | --- | --- |\n| vector_store_ids | yes | OpenAI vector store IDs |\n| max_num_results | no | Limit from 1 to 50 |\n\nweb_search\n\n| Field | Required | Meaning |\n| --- | --- | --- |\n| allowed_domains | no | Restrict search to listed domains |\n| search_context_size | no | low, medium, or high |\n\nRemote citations appear in sources with kind: \"remote\".",
       "title": "Configuration",
       "url": "/docs/configuration#remote-resources"
     },
@@ -178,7 +178,7 @@
       "id": "fumadocs.mdx#wiring",
       "images": [],
       "relativePath": "fumadocs.mdx",
-      "text": "Wiring\n\nCollect the doc page URLs your site actually serves (same slugs as your MDX routes), then pass them as knownPageUrls:\n\nimport { createFumadocsSourceTargetResolver } from \"opendetail-fumadocs\";\n\nconst resolveSourceTarget = createFumadocsSourceTargetResolver([\n  \"/docs\",\n  \"/docs/quickstart\",\n  // …\n]);\n\nPair with renderNextSourceLink from opendetail-next in a Next app so resolved targets render as next/link where appropriate.",
+      "text": "Wiring\n\nCollect the doc page URLs your site actually serves (same slugs as your MDX routes), then pass them as knownPageUrls:\n\n`import { createFumadocsSourceTargetResolver } from \"opendetail-fumadocs\";\n\nconst resolveSourceTarget = createFumadocsSourceTargetResolver([\n\"/docs\",\n\"/docs/quickstart\",\n// …\n]);\n`\n\nPair with renderNextSourceLink from opendetail-next in a Next app so resolved targets render as next/link where appropriate.",
       "title": "opendetail-fumadocs",
       "url": "/docs/fumadocs#wiring"
     },
@@ -256,7 +256,7 @@
       "id": "integration.mdx#self-hosted-default-full-path-today",
       "images": [],
       "relativePath": "integration.mdx",
-      "text": "Self-hosted (default, full path today)\n\nSelf-hosted means: your Next.js route, your Node runtime, your API key, your rebuilt index on deploy.\n\nThe App Router integration lives in opendetail-next: createNextRoute, createNextRouteHandler, and renderNextSourceLink for MDX. See opendetail-next for exports, options, and requirements.\n\nRequirements (summary)\n\nNode.js 18+Route handler on the Node.js runtime (not Edge) for the default adapterOPENAI_API_KEY set.opendetail/index.json present after build\n\nRequest body — intentionally tiny:\n\n{ \"question\": \"How do I configure base_path?\" }\n\nMalformed bodies get a JSON error instead of a broken stream.\n\nResponse — application/x-ndjson; charset=utf-8, events in this order:\n\nmeta — model metadatasources — matched chunks (and remote citations when configured)images — grounded image references from matched docsdelta — streamed answer textdone — final texterror — safe public error payload\n\nIf initialization fails before streaming starts, you get JSON error instead of NDJSON. In production, repeated init failures are cached so you do not pay the same failure cost on every request.",
+      "text": "Self-hosted (default, full path today)\n\nSelf-hosted means: your Next.js route, your Node runtime, your API key, your rebuilt index on deploy.\n\nThe App Router integration lives in opendetail-next: createNextRoute, createNextRouteHandler, and renderNextSourceLink for MDX. See opendetail-next for exports, options, and requirements.\n\nRequirements (summary)\n\nNode.js 18+Route handler on the Node.js runtime (not Edge) for the default adapterOPENAI_API_KEY set.opendetail/index.json present after build\n\nRequest body — intentionally tiny:\n\n`{ \"question\": \"How do I configure base_path?\" }`\n\nMalformed bodies get a JSON error instead of a broken stream.\n\nResponse — application/x-ndjson; charset=utf-8, events in this order:\n\nmeta — model metadatasources — matched chunks (and remote citations when configured)images — grounded image references from matched docsdelta — streamed answer textdone — final texterror — safe public error payload\n\nIf initialization fails before streaming starts, you get JSON error instead of NDJSON. In production, repeated init failures are cached so you do not pay the same failure cost on every request.",
       "title": "Integration",
       "url": "/docs/integration#self-hosted-default-full-path-today"
     },
@@ -269,7 +269,7 @@
       "id": "integration.mdx#hosted-shaped-scaffold-only-for-now",
       "images": [],
       "relativePath": "integration.mdx",
-      "text": "Hosted-shaped (scaffold only for now)\n\nHosted mode in the CLI does not generate a route. It still writes config and builds .opendetail/index.json, but your app is expected to call a remote endpoint you configure — the OpenDetail-managed cloud backend is not shipped yet.\n\nPoint the client at your future endpoint with environment variables:\n\nOPENDETAIL_ENDPOINT (server)OPENDETAIL_AUTH_TOKEN (optional)In the browser, examples often use NEXT_PUBLIC_OPENDETAIL_*\n\nHook shape:\n\nimport { useOpenDetail } from \"opendetail-react\";\n\nconst endpoint = process.env.NEXT_PUBLIC_OPENDETAIL_ENDPOINT;\nconst authToken = process.env.NEXT_PUBLIC_OPENDETAIL_AUTH_TOKEN;\n\nconst assistant = useOpenDetail({\n  transport: {\n    endpoint,\n    headers: authToken\n      ? {\n          authorization: `Bearer ${authToken}`,\n        }\n      : undefined,\n  },\n});\n\nRequest and stream events stay the same as self-hosted so you do not need a breaking migration later.\n\nRebuild and diagnose commands are in Quickstart and CLI.",
+      "text": "Hosted-shaped (scaffold only for now)\n\nHosted mode in the CLI does not generate a route. It still writes config and builds .opendetail/index.json, but your app is expected to call a remote endpoint you configure — the OpenDetail-managed cloud backend is not shipped yet.\n\nPoint the client at your future endpoint with environment variables:\n\nOPENDETAIL_ENDPOINT (server)OPENDETAIL_AUTH_TOKEN (optional)In the browser, examples often use NEXT_PUBLIC_OPENDETAIL_*\n\nHook shape:\n\nRequest and stream events stay the same as self-hosted so you do not need a breaking migration later.\n\nRebuild and diagnose commands are in Quickstart and CLI.",
       "title": "Integration",
       "url": "/docs/integration#hosted-shaped-scaffold-only-for-now"
     },
@@ -345,7 +345,7 @@
       "id": "next.mdx#route-handler",
       "images": [],
       "relativePath": "next.mdx",
-      "text": "Route handler\n\nThe scaffolded route is a thin wrapper:\n\nimport { createNextRoute } from \"opendetail-next\";\n\nexport const { POST, runtime } = createNextRoute();\n\nOr wire the handler yourself:\n\nimport { createNextRouteHandler } from \"opendetail-next\";\n\nexport const runtime = \"nodejs\";\nexport const POST = createNextRouteHandler();\n\nRequirements\n\nNode.js 18+Route on the Node.js runtime (not Edge) for the default adapterOPENAI_API_KEY set where the handler runs.opendetail/index.json present after build\n\ncreateNextRouteHandler accepts the same options as createOpenDetail (CreateOpenDetailOptions) when you need custom cwd, indexPath, or client injection.",
+      "text": "Route handler\n\nThe scaffolded route is a thin wrapper:\n\n`import { createNextRoute } from \"opendetail-next\";\n\nexport const { POST, runtime } = createNextRoute();\n`\n\nOr wire the handler yourself:\n\n`import { createNextRouteHandler } from \"opendetail-next\";\n\nexport const runtime = \"nodejs\";\nexport const POST = createNextRouteHandler();\n`\n\nRequirements\n\nNode.js 18+Route on the Node.js runtime (not Edge) for the default adapterOPENAI_API_KEY set where the handler runs.opendetail/index.json present after build\n\ncreateNextRouteHandler accepts the same options as createOpenDetail (CreateOpenDetailOptions) when you need custom cwd, indexPath, or client injection.",
       "title": "opendetail-next",
       "url": "/docs/next#route-handler"
     },
@@ -371,7 +371,7 @@
       "id": "next.mdx#source-links-in-mdx",
       "images": [],
       "relativePath": "next.mdx",
-      "text": "Source links in MDX\n\nFor Fumadocs-style docs, pass renderNextSourceLink from opendetail-next into your assistant UI so local /docs/... citations use Next Link and external URLs stay safe:\n\nimport { renderNextSourceLink } from \"opendetail-next\";\n\nUse with resolveSourceTarget from opendetail-fumadocs when you need known-page URL allowlists.",
+      "text": "Source links in MDX\n\nFor Fumadocs-style docs, pass renderNextSourceLink from opendetail-next into your assistant UI so local /docs/... citations use Next Link and external URLs stay safe:\n\n`import { renderNextSourceLink } from \"opendetail-next\";\n`\n\nUse with resolveSourceTarget from opendetail-fumadocs when you need known-page URL allowlists.",
       "title": "opendetail-next",
       "url": "/docs/next#source-links-in-mdx"
     },
@@ -463,7 +463,7 @@
       "id": "quickstart.mdx#default-config-shape",
       "images": [],
       "relativePath": "quickstart.mdx",
-      "text": "Default config shape\n\nYou should see something like:\n\nversion = 1\ninclude = [\"content/**/*.{md,mdx}\"]\nexclude = []\nbase_path = \"/docs\"\n\n[media]\ninclude = [\"content/**/*.{png,jpg,jpeg,webp,avif,gif,svg}\"]\nexclude = []\nbase_path = \"/content-media\"\n\nTweak include / base_path to match where your docs actually live. Full field list is in Configuration.",
+      "text": "Default config shape\n\nYou should see something like:\n\n`version = 1\ninclude = [\"content/**/*.{md,mdx}\"]\nexclude = []\nbase_path = \"/docs\"\n\n[media]\ninclude = [\"content/**/*.{png,jpg,jpeg,webp,avif,gif,svg}\"]\nexclude = []\nbase_path = \"/content-media\"\n`\n\nTweak include / base_path to match where your docs actually live. Full field list is in Configuration.",
       "title": "Quickstart",
       "url": "/docs/quickstart#default-config-shape"
     },
@@ -489,7 +489,7 @@
       "id": "quickstart.mdx#ask-the-first-question",
       "images": [],
       "relativePath": "quickstart.mdx",
-      "text": "Ask the first question\n\nWith the default route, POST JSON:\n\n{ \"question\": \"How do I install this?\" }\n\nUse createOpenDetailClient or useOpenDetail from opendetail-react if you are building UI — see React for options like persistence and headers.\n\nHow the route behaves in production, hosted-shaped setups, and grounding are covered in Integration.",
+      "text": "Ask the first question\n\nWith the default route, POST JSON:\n\n`{ \"question\": \"How do I install this?\" }`\n\nUse createOpenDetailClient or useOpenDetail from opendetail-react if you are building UI — see React for options like persistence and headers.\n\nHow the route behaves in production, hosted-shaped setups, and grounding are covered in Integration.",
       "title": "Quickstart",
       "url": "/docs/quickstart#ask-the-first-question"
     },
@@ -529,7 +529,7 @@
       "id": "react.mdx#basic-usage",
       "images": [],
       "relativePath": "react.mdx",
-      "text": "Basic usage\n\nimport { useOpenDetail } from \"opendetail-react\";\n\nconst assistant = useOpenDetail({\n  transport: {\n    endpoint: \"/api/opendetail\",\n  },\n});",
+      "text": "Basic usage\n\n`import { useOpenDetail } from \"opendetail-react\";\n\nconst assistant = useOpenDetail({\ntransport: {\n  endpoint: \"/api/opendetail\",\n},\n});\n`",
       "title": "React",
       "url": "/docs/react#basic-usage"
     },
@@ -584,7 +584,7 @@
       "id": "react.mdx#http-client",
       "images": [],
       "relativePath": "react.mdx",
-      "text": "HTTP client\n\nUse createOpenDetailClient when you want NDJSON streaming without the hook.\n\nimport { createOpenDetailClient } from \"opendetail-react\";\n\nconst client = createOpenDetailClient({\n  endpoint: \"/api/opendetail\",\n});\n\nawait client.submit(\n  { question: \"How do I install this?\" },\n  {\n    onEvent(event) {\n      console.log(event);\n    },\n    onStatusChange(status) {\n      console.log(status);\n    },\n  }\n);",
+      "text": "HTTP client\n\nUse createOpenDetailClient when you want NDJSON streaming without the hook.\n\n`import { createOpenDetailClient } from \"opendetail-react\";\n\nconst client = createOpenDetailClient({\nendpoint: \"/api/opendetail\",\n});\n\nawait client.submit(\n{ question: \"How do I install this?\" },\n{\n  onEvent(event) {\n    console.log(event);\n  },\n  onStatusChange(status) {\n    console.log(status);\n  },\n}\n);\n`",
       "title": "React",
       "url": "/docs/react#http-client"
     },
@@ -612,7 +612,7 @@
       "id": "react.mdx#request",
       "images": [],
       "relativePath": "react.mdx",
-      "text": "Request\n\n{ \"question\": \"...\" }\n\nHeaders: accept: application/x-ndjson, application/json, content-type: application/json.",
+      "text": "Request\n\n`{ \"question\": \"...\" }`\n\nHeaders: accept: application/x-ndjson, application/json, content-type: application/json.",
       "title": "React",
       "url": "/docs/react#request"
     },
@@ -680,7 +680,7 @@
       "id": "runtime.mdx#create-an-assistant",
       "images": [],
       "relativePath": "runtime.mdx",
-      "text": "Create an assistant\n\nimport { createOpenDetail } from \"opendetail\";\n\nconst assistant = createOpenDetail();\n\nThen:\n\nconst result = await assistant.answer({\n  question: \"How do I configure base_path?\",\n});\n\nanswer() returns text, model, sources, images, fallback. stream() adds a ReadableStream<Uint8Array>.",
+      "text": "Create an assistant\n\n`import { createOpenDetail } from \"opendetail\";\n\nconst assistant = createOpenDetail();\n`\n\nThen:\n\n`const result = await assistant.answer({\nquestion: \"How do I configure base_path?\",\n});\n`\n\nanswer() returns text, model, sources, images, fallback. stream() adds a ReadableStream<Uint8Array>.",
       "title": "Runtime",
       "url": "/docs/runtime#create-an-assistant"
     },
@@ -745,7 +745,7 @@
       "id": "runtime.mdx#fallback-behavior",
       "images": [],
       "relativePath": "runtime.mdx",
-      "text": "Fallback behavior\n\nIf no local chunks match well, OpenDetail may still respond but sets fallback: true. If the model returns no usable text:\n\nThis isn't documented in the configured docs yet.",
+      "text": "Fallback behavior\n\nIf no local chunks match well, OpenDetail may still respond but sets fallback: true. If the model returns no usable text:\n\n`This isn't documented in the configured docs yet.`",
       "title": "Runtime",
       "url": "/docs/runtime#fallback-behavior"
     }
@@ -759,7 +759,7 @@
     ],
     "version": 1
   },
-  "generatedAt": "2026-04-04T19:27:56.955Z",
-  "manifestHash": "b494a0513ae86f23fa4f4abcba1eeafed8f2b4e98b4885ad9df1eba2e1e6c6d6",
+  "generatedAt": "2026-04-04T19:41:14.953Z",
+  "manifestHash": "8adb5518cdc358a497a6061517526ecee73d93ad4f8cef7d084033fa5ef703c2",
   "version": 1
 }
