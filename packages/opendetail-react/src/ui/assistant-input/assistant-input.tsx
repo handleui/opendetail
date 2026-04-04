@@ -136,7 +136,7 @@ const AssistantInputActionButton = ({
     {isStopMode ? (
       <span aria-hidden="true" className="size-3 rounded-[2px] bg-current" />
     ) : (
-      <ArrowRight aria-hidden="true" className="size-4" strokeWidth={2} />
+      <ArrowRight aria-hidden="true" size={18} strokeWidth={1.2} />
     )}
   </button>
 );
