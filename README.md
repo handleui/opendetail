@@ -2,6 +2,8 @@
 
 Monorepo for `opendetail`, a thin integration layer on top of the OpenAI Responses API for grounded product and documentation answers.
 
+The private hosted dashboard and API live in the sibling [`cloud`](../cloud) monorepo (separate git repository).
+
 ## Workspace
 
 - `packages/opendetail`: core runtime, indexing, errors, and setup CLI

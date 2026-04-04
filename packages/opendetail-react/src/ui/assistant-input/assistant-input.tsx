@@ -2,7 +2,7 @@
 
 import { ArrowRight } from "lucide-react";
 import type { FormEvent, KeyboardEvent, MouseEvent } from "react";
-import { useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useLayoutEffect, useRef, useState } from "react";
 
 import type { OpenDetailClientStatus } from "../../lib/opendetail-client/opendetail-client";
 
@@ -10,6 +10,7 @@ const DEFAULT_PLACEHOLDER = "What has Rodrigo worked on?";
 const DEFAULT_NAME = "question";
 const MAX_QUESTION_LENGTH = 4000;
 const DEFAULT_MAX_ROWS = 6;
+const DEFAULT_MAX_EXPAND_MULTIPLIER = 2.5;
 const TEXTAREA_LINE_HEIGHT = 21;
 const TEXTAREA_VERTICAL_PADDING = 8;
 const SINGLE_LINE_HEIGHT = TEXTAREA_LINE_HEIGHT + TEXTAREA_VERTICAL_PADDING;
@@ -35,6 +36,7 @@ export interface AssistantInputProps {
   defaultValue?: string;
   disabled?: boolean;
   id?: string;
+  maxExpandMultiplier?: number;
   maxLength?: number;
   maxRows?: number;
   name?: string;
@@ -83,8 +85,17 @@ const getButtonClasses = (isActive: boolean, isDisabled: boolean): string =>
 const getInputId = ({ id, name }: { id?: string; name: string }): string =>
   id ?? `opendetail-input-${name}`;
 
-const getTextareaMaxHeight = (maxRows: number): number =>
+const getTextareaMaxHeightFromRows = (maxRows: number): number =>
   Math.max(1, maxRows) * TEXTAREA_LINE_HEIGHT + TEXTAREA_VERTICAL_PADDING;
+
+const getTextareaMaxHeightPx = (
+  maxRows: number,
+  maxExpandMultiplier: number
+): number => {
+  const fromRows = getTextareaMaxHeightFromRows(maxRows);
+  const fromExpand = Math.round(SINGLE_LINE_HEIGHT * maxExpandMultiplier);
+  return Math.min(fromRows, fromExpand);
+};
 
 const getTextareaScrollState = (textarea: HTMLTextAreaElement) => {
   const canScrollUp = textarea.scrollTop > SCROLL_TOLERANCE;
@@ -136,6 +147,7 @@ export const AssistantInput = ({
   defaultValue,
   disabled = false,
   id,
+  maxExpandMultiplier = DEFAULT_MAX_EXPAND_MULTIPLIER,
   maxLength = MAX_QUESTION_LENGTH,
   maxRows = DEFAULT_MAX_ROWS,
   name = DEFAULT_NAME,
@@ -167,6 +179,29 @@ export const AssistantInput = ({
   const isActionDisabled = disabled || !(isStopMode || hasValue);
   const { canScrollDown, canScrollUp } = scrollState;
 
+  const syncTextareaLayout = useCallback(() => {
+    const textarea = textareaRef.current;
+
+    if (!textarea) {
+      return;
+    }
+
+    textarea.style.height = "auto";
+
+    const maxHeight = getTextareaMaxHeightPx(maxRows, maxExpandMultiplier);
+    const nextHeight = Math.min(
+      Math.max(SINGLE_LINE_HEIGHT, textarea.scrollHeight),
+      maxHeight
+    );
+
+    textarea.style.height = `${nextHeight}px`;
+
+    const nextScrollState = getTextareaScrollState(textarea);
+    textarea.style.overflowY = nextScrollState.isScrollable ? "auto" : "hidden";
+
+    setScrollState(nextScrollState);
+  }, [maxExpandMultiplier, maxRows]);
+
   useLayoutEffect(() => {
     const textarea = textareaRef.current;
 
@@ -174,33 +209,14 @@ export const AssistantInput = ({
       return;
     }
 
-    const syncLayoutState = () => {
-      textarea.style.height = "auto";
-
-      const maxHeight = getTextareaMaxHeight(maxRows);
-      const nextHeight = Math.min(
-        Math.max(SINGLE_LINE_HEIGHT, textarea.scrollHeight),
-        maxHeight
-      );
-
-      textarea.style.height = `${nextHeight}px`;
-
-      const nextScrollState = getTextareaScrollState(textarea);
-      textarea.style.overflowY = nextScrollState.isScrollable
-        ? "auto"
-        : "hidden";
-
-      setScrollState(nextScrollState);
-    };
-
-    syncLayoutState();
+    syncTextareaLayout();
 
     if (typeof ResizeObserver === "undefined") {
       return;
     }
 
     const resizeObserver = new ResizeObserver(() => {
-      syncLayoutState();
+      syncTextareaLayout();
     });
 
     resizeObserver.observe(textarea);
@@ -208,7 +224,12 @@ export const AssistantInput = ({
     return () => {
       resizeObserver.disconnect();
     };
-  }, [maxRows]);
+  }, [syncTextareaLayout]);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: re-measure after the textarea value updates (controlled `value` or internal state); ResizeObserver does not run for text-only changes
+  useLayoutEffect(() => {
+    syncTextareaLayout();
+  }, [currentValue, syncTextareaLayout]);
 
   const handleScroll = () => {
     const textarea = textareaRef.current;
@@ -333,7 +354,7 @@ export const AssistantInput = ({
                 spellCheck={false}
                 style={{
                   height: `${SINGLE_LINE_HEIGHT}px`,
-                  maxHeight: `${getTextareaMaxHeight(maxRows)}px`,
+                  maxHeight: `${getTextareaMaxHeightPx(maxRows, maxExpandMultiplier)}px`,
                 }}
                 value={currentValue}
               />

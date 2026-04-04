@@ -13,6 +13,10 @@ import {
   type AssistantResponseProps,
 } from "../../ui/assistant-response/assistant-response";
 import type { AssistantSourceItem } from "../../ui/assistant-sources/assistant-sources";
+import {
+  AssistantSuggestion,
+  AssistantSuggestions,
+} from "../../ui/assistant-suggestions/assistant-suggestions";
 import { AssistantThread } from "../../ui/assistant-thread/assistant-thread";
 import { AssistantUserMessage } from "../../ui/assistant-user-message/assistant-user-message";
 
@@ -396,21 +400,19 @@ export const AssistantSidebar = ({
   if (!hasMessages) {
     resolvedBody =
       promptSuggestions.length > 0 ? (
-        <div className="opendetail-sidebar__suggestions">
+        <AssistantSuggestions>
           {promptSuggestions.map((suggestion) => (
-            <motion.button
-              className="opendetail-sidebar__suggestion opendetail-pressable"
+            <AssistantSuggestion
               disabled={isBusy}
               key={suggestion}
               onClick={() => {
                 handlePromptSuggestionClick(suggestion);
               }}
-              type="button"
             >
               {suggestion}
-            </motion.button>
+            </AssistantSuggestion>
           ))}
-        </div>
+        </AssistantSuggestions>
       ) : (
         <p className="opendetail-sidebar__empty">{emptyState}</p>
       );

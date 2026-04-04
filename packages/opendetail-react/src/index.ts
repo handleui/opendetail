@@ -88,6 +88,12 @@ export {
   type AssistantStatusProps,
 } from "./ui/assistant-status/assistant-status";
 export {
+  AssistantSuggestion,
+  type AssistantSuggestionProps,
+  AssistantSuggestions,
+  type AssistantSuggestionsProps,
+} from "./ui/assistant-suggestions/assistant-suggestions";
+export {
   AssistantThread,
   type AssistantThreadProps,
 } from "./ui/assistant-thread/assistant-thread";
