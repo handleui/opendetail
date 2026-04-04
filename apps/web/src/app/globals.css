@@ -2,6 +2,10 @@
 @import "opendetail-react/styles/opendetail-base.css";
 
 @source "../../../../registry";
+/* App + workspace packages: utilities must appear in scanned files (Tailwind cannot infer imported className strings). */
+@source "../../**/*.{tsx,ts,mdx}";
+@source "../../../../packages/opendetail-fumadocs/src/**/*.tsx";
+@source "../../../../packages/opendetail-react/src/**/*.tsx";
 
 html {
   height: 100%;

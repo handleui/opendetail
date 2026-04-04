@@ -1,10 +1,5 @@
 /**
- * Fumadocs search dialog tokens (Orama search via `/api/search`).
- */
-@import "fumadocs-ui/css/lib/default-colors.css";
-
-/**
- * Docs article — no Fumadocs `fd-*` tokens; explicit light theme (Figma 36:26).
+ * Docs article — explicit light theme (Figma 36:26).
  */
 
 .docs-article {
