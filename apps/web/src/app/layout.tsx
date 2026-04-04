@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { FumadocsAssistantSidebar } from "opendetail-fumadocs/sidebar";
 import type { ReactNode } from "react";
 import "./globals.css";
+import { SiteShell } from "@/components/site-shell";
 import { knownSourcePageUrls } from "@/lib/known-source-page-urls";
 
 const metadataBase = (() => {
@@ -31,7 +32,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="bg-white font-sans text-black antialiased">
+      <body className="min-h-screen bg-white font-sans text-neutral-900 antialiased">
         <FumadocsAssistantSidebar
           inputId="opendetail-site-question"
           knownSourcePageUrls={knownSourcePageUrls}
@@ -40,7 +41,7 @@ export default function RootLayout({
           }}
           placeholder="Ask AI anything..."
         >
-          {children}
+          <SiteShell>{children}</SiteShell>
         </FumadocsAssistantSidebar>
       </body>
     </html>

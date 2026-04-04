@@ -36,6 +36,7 @@ export interface AssistantSidebarShellProps
   transport?: UseOpenDetailOptions["transport"];
 }
 
+/** Open panel width uses `--opendetail-sidebar-width` in `opendetail-base.css` (target ~375–400px). */
 export const AssistantSidebarShell = ({
   children,
   endpoint,

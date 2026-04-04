@@ -38,13 +38,14 @@
   --opendetail-shell-min-height: 56.375rem;
   --opendetail-shell-padding-bottom: 2rem;
   --opendetail-shell-padding-top: 3rem;
-  --opendetail-sidebar-content-min-width: min(100vw, 22rem);
+  --opendetail-sidebar-content-min-width: min(100vw, 23.4375rem);
   --opendetail-sidebar-header-height: 3rem;
   --opendetail-sidebar-horizontal-padding: 1.25rem;
   --opendetail-sidebar-input-padding-bottom: 1.25rem;
   --opendetail-sidebar-input-padding-top: 0.75rem;
   --opendetail-sidebar-padding: 1.25rem;
-  --opendetail-sidebar-width: 26.5625rem;
+  /* Open assistant panel: ~375–400px (25rem = 400px at 16px root) */
+  --opendetail-sidebar-width: min(100vw, 25rem);
   --opendetail-space-lg: 2rem;
   --opendetail-space-md: 1rem;
   --opendetail-space-sm: 0.625rem;
@@ -929,7 +930,7 @@
     --opendetail-modal-padding-inline: 1rem;
     --opendetail-modal-thread-padding-top: 4.75rem;
     --opendetail-shell-padding-top: 2rem;
-    --opendetail-sidebar-width: min(100vw, 26rem);
+    --opendetail-sidebar-width: min(100vw, 25rem);
   }
 
   .opendetail-shell {

@@ -1,10 +1,7 @@
-import {
-  createRelativeLink,
-} from "fumadocs-ui/mdx";
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
-import { DocsPageScaffold } from "@/components/docs-page-scaffold";
-import { getMDXComponents } from "@/components/mdx";
+import { getDocsMdxComponents } from "@/components/docs-mdx-components";
 import { gitConfig } from "@/lib/shared";
 import { getPageImage, getPageMarkdownUrl, source } from "@/lib/source";
 
@@ -18,20 +15,28 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
   const MDX = page.data.body;
   const markdownUrl = getPageMarkdownUrl(page).url;
 
+  const githubUrl = `https://github.com/${gitConfig.user}/${gitConfig.repo}/blob/${gitConfig.branch}/content/docs/${page.path}`;
+
   return (
-    <DocsPageScaffold
-      description={page.data.description}
-      githubUrl={`https://github.com/${gitConfig.user}/${gitConfig.repo}/blob/${gitConfig.branch}/content/docs/${page.path}`}
-      hasToc={Boolean(page.data.toc)}
-      markdownUrl={markdownUrl}
-      title={page.data.title}
-    >
-      <MDX
-        components={getMDXComponents({
-          a: createRelativeLink(source, page),
-        })}
-      />
-    </DocsPageScaffold>
+    <article className="docs-article pb-16">
+      <MDX components={getDocsMdxComponents(source, page)} />
+      <div className="mt-14 flex flex-wrap gap-x-4 gap-y-2 border-[var(--opendetail-color-sidebar-stroke)] border-t border-solid pt-8 text-[14px] text-neutral-500">
+        <Link
+          className="text-neutral-600 underline-offset-4 transition-colors hover:text-neutral-950 hover:underline"
+          href={markdownUrl}
+        >
+          Markdown
+        </Link>
+        <a
+          className="text-neutral-600 underline-offset-4 transition-colors hover:text-neutral-950 hover:underline"
+          href={githubUrl}
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          View on GitHub
+        </a>
+      </div>
+    </article>
   );
 }
 
