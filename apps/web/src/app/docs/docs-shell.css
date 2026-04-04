@@ -1,4 +1,9 @@
 /**
+ * Fumadocs search dialog tokens (Orama search via `/api/search`).
+ */
+@import "fumadocs-ui/css/lib/default-colors.css";
+
+/**
  * Docs article — no Fumadocs `fd-*` tokens; explicit light theme (Figma 36:26).
  */
 
@@ -6,6 +11,7 @@
   color: #171717;
 }
 
-.docs-article strong {
+.docs-article strong,
+.docs-article b {
   font-weight: 500;
 }

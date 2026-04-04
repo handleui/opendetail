@@ -81,37 +81,37 @@ export function getDocsMdxComponents(
     CopyCommand,
     h1: (props: ComponentProps<"h1">) => (
       <h1
-        className="mt-10 mb-4 font-semibold text-[28px] text-black tracking-tight first:mt-0"
+        className="mt-10 mb-4 font-medium text-[28px] text-black tracking-tight first:mt-0"
         {...props}
       />
     ),
     h2: (props: ComponentProps<"h2">) => (
       <h2
-        className="mt-10 mb-3 font-semibold text-neutral-950 text-xl tracking-tight"
+        className="mt-10 mb-3 font-medium text-neutral-950 text-xl tracking-tight"
         {...props}
       />
     ),
     h3: (props: ComponentProps<"h3">) => (
       <h3
-        className="mt-8 mb-2 font-semibold text-lg text-neutral-950"
+        className="mt-8 mb-2 font-medium text-lg text-neutral-950"
         {...props}
       />
     ),
     h4: (props: ComponentProps<"h4">) => (
       <h4
-        className="mt-6 mb-2 font-semibold text-base text-neutral-950"
+        className="mt-6 mb-2 font-medium text-base text-neutral-950"
         {...props}
       />
     ),
     h5: (props: ComponentProps<"h5">) => (
       <h5
-        className="mt-4 mb-2 font-semibold text-[14px] text-neutral-950"
+        className="mt-4 mb-2 font-medium text-[14px] text-neutral-950"
         {...props}
       />
     ),
     h6: (props: ComponentProps<"h6">) => (
       <h6
-        className="mt-4 mb-2 font-semibold text-[14px] text-neutral-950"
+        className="mt-4 mb-2 font-medium text-[14px] text-neutral-950"
         {...props}
       />
     ),

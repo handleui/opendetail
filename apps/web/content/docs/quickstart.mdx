@@ -1,0 +1,79 @@
+---
+title: Quickstart
+description: Install OpenDetail, scaffold config and the default route, rebuild, diagnose, and send your first request.
+---
+
+Follow this page in order once; after that, rebuild whenever docs change:
+
+<CopyCommand bun="bunx opendetail build" npm="npx opendetail build" />
+
+## Install
+
+Add the packages you need for a Next.js app with the default route adapter:
+
+<CopyCommand
+  bun="bun add opendetail opendetail-next opendetail-react"
+  npm="npm i opendetail opendetail-next opendetail-react"
+/>
+
+Use `pnpm` or `yarn` with the same package list if you prefer. Check that the CLI is available without a global install:
+
+<CopyCommand bun="bunx opendetail --version" npm="npx opendetail --version" />
+
+## Scaffold
+
+Generate `opendetail.toml`, the default API route, and the first index (unless you skip the build):
+
+<CopyCommand bun="bunx opendetail setup --with-media" npm="npx opendetail setup --with-media" />
+
+What that can do:
+
+- write **`opendetail.toml`**
+- scaffold **`src/app/api/opendetail/route.ts`** (self-hosted default)
+- run an initial build to produce **`.opendetail/index.json`** (use the build command above)
+
+Add **`OPENAI_API_KEY`** to the environment your route runs in before you call the API.
+
+### Default config shape
+
+You should see something like:
+
+```toml
+version = 1
+include = ["content/**/*.{md,mdx}"]
+exclude = []
+base_path = "/docs"
+
+[media]
+include = ["content/**/*.{png,jpg,jpeg,webp,avif,gif,svg}"]
+exclude = []
+base_path = "/content-media"
+```
+
+Tweak `include` / `base_path` to match where your docs actually live. Full field list is in [Configuration](/docs/configuration).
+
+## Rebuild when content changes
+
+Any time Markdown, MDX, or matched media changes:
+
+<CopyCommand bun="bunx opendetail build" npm="npx opendetail build" />
+
+Run that in CI before deploy, or as a `postbuild` step, so production always matches the docs you shipped.
+
+**Diagnose** when something looks wrong:
+
+<CopyCommand bun="bunx opendetail doctor" npm="npx opendetail doctor" />
+
+<CopyCommand bun="bunx opendetail doctor --integration hosted" npm="npx opendetail doctor --integration hosted" />
+
+## Ask the first question
+
+With the default route, POST JSON:
+
+```json
+{ "question": "How do I install this?" }
+```
+
+Use `createOpenDetailClient` or `useOpenDetail` from **`opendetail-react`** if you are building UI — see [React](/docs/react) for options like persistence and headers.
+
+How the route behaves in production, hosted-shaped setups, and grounding are covered in [Integration](/docs/integration).

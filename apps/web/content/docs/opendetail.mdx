@@ -1,0 +1,19 @@
+---
+title: opendetail (core)
+description: The core package — index build, Node runtime, CLI, and shared types.
+---
+
+The **`opendetail`** package is the engine: it reads **`opendetail.toml`**, builds **`.opendetail/index.json`**, and exposes **`createOpenDetail`** for answering questions from that index. The **`opendetail`** CLI is the same codebase (`build`, `setup`, `doctor`).
+
+## What ships in the package
+
+| Area | Role |
+| --- | --- |
+| **Build** | Parse matched Markdown/MDX, chunk by headings, write the index artifact (used by the CLI and programmatic `buildOpenDetailIndex`). |
+| **Runtime** | Load the index, lexical search, call the Responses API, stream NDJSON — [`createOpenDetail`](/docs/runtime). |
+| **CLI** | Project setup, index builds, doctor checks — [CLI](/docs/cli). |
+| **Config** | `opendetail.toml` schema and validation — [Configuration](/docs/configuration). |
+
+## When to use it directly
+
+Use **`opendetail`** without Next or React when you integrate from Node (custom server, scripts, tests). For a Next.js App Router route, use [**opendetail-next**](/docs/next); for browser UI, use [**opendetail-react**](/docs/react).

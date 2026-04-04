@@ -19,7 +19,7 @@ describe("assistant source rendering", () => {
               id: "1",
               kind: "local",
               title: "Getting Started",
-              url: "/docs/guide#install",
+              url: "/docs/quickstart#install",
             },
             {
               id: "2",
@@ -34,7 +34,7 @@ describe("assistant source rendering", () => {
     );
 
     expect(html).toContain('class="opendetail-citation-link"');
-    expect(html).toContain('href="/docs/guide#install"');
+    expect(html).toContain('href="/docs/quickstart#install"');
     expect(html).toContain(
       'href="https://platform.openai.com/docs/api-reference/responses"'
     );
@@ -104,7 +104,7 @@ describe("assistant source rendering", () => {
             id: "1",
             kind: "local",
             title: "Configuration",
-            url: "/docs/reference#configuration",
+            url: "/docs/configuration#minimal-config",
           },
           {
             id: "2",
@@ -124,7 +124,7 @@ describe("assistant source rendering", () => {
 
     expect(html).toContain(">3 sources<");
     expect(html).toContain("opendetail-sources__pills");
-    expect(html).toContain('href="/docs/reference#configuration"');
+    expect(html).toContain('href="/docs/configuration#minimal-config"');
     expect(html).toContain('href="https://fumadocs.dev/docs/ui/mdx"');
     expect(html).not.toContain("vector-store-file://file_123");
     expect(html).toContain("Configuration");

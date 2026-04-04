@@ -1,11 +1,11 @@
 import type { ReactNode } from "react";
 
-import { SiteHeader } from "@/components/site-header";
+import { Navbar } from "@/components/navbar";
 
 export const SiteShell = ({ children }: { children: ReactNode }) => (
-  <div className="flex h-full min-h-0 flex-col overflow-hidden bg-white">
-    <SiteHeader />
-    <div className="opendetail-main-scroll flex min-h-0 flex-1 flex-col overflow-y-auto">
+  <div className="flex min-h-0 w-full min-w-0 flex-1 flex-col overflow-hidden bg-white">
+    <Navbar />
+    <div className="site-shell__main opendetail-main-scroll flex min-h-0 min-w-0 flex-1 flex-col overflow-y-auto">
       {children}
     </div>
   </div>

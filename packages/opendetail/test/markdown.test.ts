@@ -22,15 +22,15 @@ Intro paragraph.
 const answer = true;
 \`\`\`
 `,
-      filePath: "/tmp/guide.md",
-      relativePath: "guide.md",
+      filePath: "/tmp/quickstart.md",
+      relativePath: "quickstart.md",
     });
 
     expect(chunks).toHaveLength(2);
     expect(chunks[0]?.text).toContain("Guide");
     expect(chunks[0]?.text).toContain("first item");
     expect(chunks[1]?.text).toContain("const answer = true;");
-    expect(chunks[1]?.url).toBe("/docs/guide#code");
+    expect(chunks[1]?.url).toBe("/docs/quickstart#code");
   });
 
   test("keeps MDX text while ignoring imports and exports", async () => {

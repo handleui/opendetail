@@ -2,25 +2,24 @@
 
 import { useCallback, useId, useState } from "react";
 
-export type CopyCommandProps = {
+export interface CopyCommandProps {
   /** `bunx …` (or `bun …`) command */
   bun: string;
   /** `npx …` (or `npm exec …`) command */
   npm: string;
-};
+}
+
+const FIRST_SPACE = /\s/;
 
 function CommandHighlight({ command }: { command: string }) {
   const trimmed = command.trim();
-  const spaceIdx = trimmed.search(/\s/);
-  const first =
-    spaceIdx === -1 ? trimmed : trimmed.slice(0, spaceIdx);
+  const spaceIdx = trimmed.search(FIRST_SPACE);
+  const first = spaceIdx === -1 ? trimmed : trimmed.slice(0, spaceIdx);
   const rest = spaceIdx === -1 ? "" : trimmed.slice(spaceIdx);
   return (
     <code className="font-mono text-[13px] leading-relaxed">
       <span className="text-violet-600">{first}</span>
-      {rest ? (
-        <span className="text-neutral-800">{rest}</span>
-      ) : null}
+      {rest ? <span className="text-neutral-800">{rest}</span> : null}
     </code>
   );
 }
@@ -38,8 +37,28 @@ function CopyIcon({ className }: { className?: string }) {
       viewBox="0 0 24 24"
       xmlns="http://www.w3.org/2000/svg"
     >
+      <title>Copy</title>
       <rect height="13" rx="2" width="13" x="9" y="9" />
       <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+    </svg>
+  );
+}
+
+function CheckIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      aria-hidden
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <title>Check</title>
+      <path d="M5 13l4 4L19 7" />
     </svg>
   );
 }
@@ -75,7 +94,7 @@ export function CopyCommand({ bun, npm }: CopyCommandProps) {
     >
       <div
         aria-label="Package manager"
-        className="flex border-[var(--opendetail-color-sidebar-stroke)] border-b border-solid"
+        className="flex min-h-11 min-w-0 flex-nowrap items-stretch overflow-x-auto overflow-y-hidden border-[var(--opendetail-color-sidebar-stroke)] border-b border-solid"
         role="tablist"
       >
         {tabs.map((tab, index) => {
@@ -86,8 +105,8 @@ export function CopyCommand({ bun, npm }: CopyCommandProps) {
               aria-selected={selected}
               className={
                 selected
-                  ? "border-neutral-950 border-b-2 border-solid px-4 py-2.5 font-normal text-[13px] text-neutral-950 -mb-px"
-                  : "border-b-2 border-transparent px-4 py-2.5 font-normal text-[13px] text-neutral-400 transition-colors hover:text-neutral-600"
+                  ? "box-border flex shrink-0 cursor-pointer items-center border-neutral-950 border-b-2 border-solid px-4 py-2.5 font-normal text-[13px] text-neutral-950"
+                  : "box-border flex shrink-0 cursor-pointer items-center border-transparent border-b-2 border-solid px-4 py-2.5 font-normal text-[13px] text-neutral-400 transition-colors hover:text-neutral-600"
               }
               id={`${baseId}-tab-${tab.id}`}
               key={tab.id}
@@ -110,16 +129,26 @@ export function CopyCommand({ bun, npm }: CopyCommandProps) {
         </div>
         <button
           aria-label={copied ? "Copied" : "Copy command"}
-          className="shrink-0 rounded-md p-1.5 text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-neutral-700"
+          className="flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-md text-neutral-400 transition-[color,transform] duration-150 ease-out hover:bg-neutral-100 hover:text-neutral-700 active:scale-[0.97]"
           onClick={copy}
           type="button"
         >
           <span className="sr-only">{copied ? "Copied" : "Copy"}</span>
-          {copied ? (
-            <span className="font-mono text-[11px] text-neutral-600">Copied</span>
-          ) : (
-            <CopyIcon className="size-4" />
-          )}
+          <span
+            aria-hidden
+            className="relative inline-flex size-4 items-center justify-center"
+          >
+            <CopyIcon
+              className={`absolute size-4 transition-opacity duration-150 ease-out ${
+                copied ? "pointer-events-none opacity-0" : "opacity-100"
+              }`}
+            />
+            <CheckIcon
+              className={`absolute size-4 text-emerald-600 transition-opacity duration-150 ease-out ${
+                copied ? "opacity-100" : "pointer-events-none opacity-0"
+              }`}
+            />
+          </span>
         </button>
       </div>
     </div>

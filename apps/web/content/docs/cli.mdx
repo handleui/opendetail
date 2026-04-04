@@ -1,0 +1,69 @@
+---
+title: CLI
+description: opendetail build, setup, and doctor — flags and common examples.
+---
+
+Commands (see also **Common examples** below):
+
+```bash
+opendetail build [--config <path>] [--output <path>] [--cwd <path>]
+opendetail setup [--integration <self-hosted|hosted>] [--config <path>] [--route <path>] [--base-path <url>] [--include <glob>] [--media-include <glob>] [--with-media] [--skip-build] [--force] [--interactive] [--no-interactive] [--cwd <path>]
+opendetail doctor [--integration <self-hosted|hosted>] [--config <path>] [--route <path>] [--cwd <path>]
+```
+
+## setup
+
+Writes the standard project shape for the selected integration mode.
+
+**Writes**
+
+- `opendetail.toml`
+- in `self-hosted`, a route at `src/app/api/opendetail/route.ts` by default
+- `.opendetail/index.json` unless `--skip-build`
+
+**Important flags**
+
+| Flag | Meaning |
+| --- | --- |
+| `--integration` | `self-hosted` or `hosted` |
+| `--config` | Custom config path |
+| `--route` | Custom route path for self-hosted setup |
+| `--base-path` | Public source URL base, default `/docs` |
+| `--include` | Custom docs glob |
+| `--media-include` | Custom media glob |
+| `--with-media` | Include `[media]` config |
+| `--skip-build` | Skip the initial index build |
+| `--force` | Overwrite existing generated files |
+| `--interactive` | Force the setup wizard |
+| `--no-interactive` | Skip the setup wizard |
+| `--cwd` | Run against another working directory |
+
+## build
+
+Reads `opendetail.toml`, parses matched content, writes the local index artifact.
+
+<CopyCommand bun="bunx opendetail build" npm="npx opendetail build" />
+
+Optional flags: `--config`, `--output`, `--cwd`.
+
+## doctor
+
+Checks expected files and env for the selected integration.
+
+**Self-hosted:** config, built index, route file, `OPENAI_API_KEY`.
+
+**Hosted:** config, built index, `OPENDETAIL_ENDPOINT`.
+
+Exits with an error if any check fails.
+
+## Common examples
+
+<CopyCommand bun="bunx opendetail setup --with-media" npm="npx opendetail setup --with-media" />
+
+<CopyCommand bun="bunx opendetail setup --integration hosted" npm="npx opendetail setup --integration hosted" />
+
+<CopyCommand bun="bunx opendetail build" npm="npx opendetail build" />
+
+<CopyCommand bun="bunx opendetail doctor" npm="npx opendetail doctor" />
+
+<CopyCommand bun="bunx opendetail doctor --integration hosted" npm="npx opendetail doctor --integration hosted" />

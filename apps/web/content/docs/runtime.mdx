@@ -1,0 +1,70 @@
+---
+title: Runtime
+description: createOpenDetail in Node, assistant instructions, defaults, options, and fallback behavior.
+---
+
+Use **`opendetail`** core when calling from Node without Next.js helpers.
+
+## Create an assistant
+
+```ts
+import { createOpenDetail } from "opendetail";
+
+const assistant = createOpenDetail();
+```
+
+Then:
+
+```ts
+const result = await assistant.answer({
+  question: "How do I configure base_path?",
+});
+```
+
+`answer()` returns `text`, `model`, `sources`, `images`, `fallback`. `stream()` adds a `ReadableStream<Uint8Array>`.
+
+## Assistant instructions
+
+Loaded in order:
+
+1. `assistantInstructions` option
+2. `assistantInstructionsPath` option
+3. `.opendetail/OPENDETAIL.md`
+4. `OPENDETAIL.md` at project root
+
+If none exist, only built-in grounding instructions apply.
+
+## Remote retrieval
+
+Configure via `remoteResources` in code or `remote_resources` in `opendetail.toml` (`file_search`, `web_search`).
+
+## Defaults
+
+| Setting | Default |
+| --- | --- |
+| `model` | `gpt-5.4-mini` |
+| `reasoningEffort` | `none` |
+| `verbosity` | `low` |
+| `store` | `false` |
+| `promptCacheRetention` | `in-memory` |
+
+## Important options
+
+| Option | Meaning |
+| --- | --- |
+| `cwd` | Working directory for config and instruction files |
+| `indexPath` | Custom path to the built index |
+| `indexData` | Preloaded index artifact |
+| `client` | Reuse an existing OpenAI client |
+| `assistantInstructions` | Inline project guidance |
+| `assistantInstructionsPath` | Custom instructions path |
+| `promptCacheKey` | Explicit cache key override |
+| `remoteResources` | Override remote retrieval config |
+
+## Fallback behavior
+
+If no local chunks match well, OpenDetail may still respond but sets **`fallback: true`**. If the model returns no usable text:
+
+```txt
+This isn't documented in the configured docs yet.
+```

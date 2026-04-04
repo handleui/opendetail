@@ -710,13 +710,13 @@ describe("OpenDetail runtime", () => {
       chunks: [
         {
           anchor: null,
-          filePath: "/tmp/guide.md",
-          headings: ["Guide"],
-          id: "guide.md",
-          relativePath: "guide.md",
-          text: "Guide body",
-          title: "Guide",
-          url: "/docs/guide",
+          filePath: "/tmp/quickstart.md",
+          headings: ["Quickstart"],
+          id: "quickstart.md",
+          relativePath: "quickstart.md",
+          text: "Quickstart body",
+          title: "Quickstart",
+          url: "/docs/quickstart",
         },
       ],
       config: {

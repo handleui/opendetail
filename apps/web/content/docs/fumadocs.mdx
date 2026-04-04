@@ -1,0 +1,30 @@
+---
+title: opendetail-fumadocs
+description: Resolve assistant citation URLs against your Fumadocs routes and known doc pages.
+---
+
+**`opendetail-fumadocs`** is optional glue when your docs site already uses **Fumadocs** (or the same URL patterns): it turns assistant **source** items into safe **`href`** values for the UI — local pages your app knows about, or external HTTPS links.
+
+## API
+
+- **`resolveFumadocsSourceTarget`** — Given `knownPageUrls` and a source (`kind: "local"` or `"remote"`), returns `{ external, href }` or `null` for unknown local paths.
+- **`createFumadocsSourceTargetResolver(knownPageUrls)`** — Returns a **`ResolveAssistantSourceTarget`** you pass to **`opendetail-react`** assistant components (e.g. `AssistantSidebarShell` `resolveSourceTarget`).
+- **`getFumadocsPageUrls(source)`** — Maps a Fumadocs-style source with **`getPages()`** to a flat list of URLs for the allowlist.
+
+Local URLs must match a **known pathname** (no hash required for the allowlist match; hashes are preserved on output). Unknown paths like `/docs/old-page` resolve to **`null`** so the UI does not invent links.
+
+## Wiring
+
+Collect the doc page URLs your site actually serves (same slugs as your MDX routes), then pass them as **`knownPageUrls`**:
+
+```ts
+import { createFumadocsSourceTargetResolver } from "opendetail-fumadocs";
+
+const resolveSourceTarget = createFumadocsSourceTargetResolver([
+  "/docs",
+  "/docs/quickstart",
+  // …
+]);
+```
+
+Pair with **`renderNextSourceLink`** from [**opendetail-next**](/docs/next) in a Next app so resolved targets render as **`next/link`** where appropriate.

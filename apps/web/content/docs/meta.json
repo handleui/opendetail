@@ -1,5 +1,16 @@
 {
   "title": "OpenDetail",
   "root": true,
-  "pages": ["index", "guide", "reference"]
+  "pages": [
+    "index",
+    "quickstart",
+    "integration",
+    "opendetail",
+    "configuration",
+    "cli",
+    "runtime",
+    "next",
+    "react",
+    "fumadocs"
+  ]
 }

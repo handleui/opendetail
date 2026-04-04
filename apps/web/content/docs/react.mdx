@@ -1,0 +1,97 @@
+---
+title: React
+description: opendetail-react — useOpenDetail, createOpenDetailClient, request shape, NDJSON stream events, and browser integration.
+---
+
+Package: **`opendetail-react`**. For a Next.js route that serves the same NDJSON stream, see [**opendetail-next**](/docs/next).
+
+## React hook
+
+`opendetail-react` exports **`useOpenDetail`** for browser state and streaming UI.
+
+### Basic usage
+
+```ts
+import { useOpenDetail } from "opendetail-react";
+
+const assistant = useOpenDetail({
+  transport: {
+    endpoint: "/api/opendetail",
+  },
+});
+```
+
+### Options
+
+| Option | Meaning |
+| --- | --- |
+| `endpoint` | Shortcut for `transport.endpoint` |
+| `transport.endpoint` | Request URL, defaults to `/api/opendetail` |
+| `transport.headers` | Static headers or a function returning headers |
+| `transport.credentials` | Fetch credentials mode |
+| `transport.fetch` | Custom `fetch` implementation |
+| `persistence.key` | Storage key for thread state |
+| `persistence.storage` | `local` or `session`, default `local` |
+
+### Returned state
+
+`messages`, `question`, `setQuestion`, `submit`, `stop`, `clearThread`, `status`, and error fields such as `error`, `errorCode`, `errorRetryable`, `errorStatus`.
+
+Assistant messages track streamed text, sources, images, model, duration label, error metadata, and status: `pending` | `streaming` | `complete` | `error`.
+
+### Persistence
+
+When enabled, thread and input are restored; interrupted streams are marked honestly after refresh.
+
+## HTTP client
+
+Use **`createOpenDetailClient`** when you want NDJSON streaming without the hook.
+
+```ts
+import { createOpenDetailClient } from "opendetail-react";
+
+const client = createOpenDetailClient({
+  endpoint: "/api/opendetail",
+});
+
+await client.submit(
+  { question: "How do I install this?" },
+  {
+    onEvent(event) {
+      console.log(event);
+    },
+    onStatusChange(status) {
+      console.log(status);
+    },
+  }
+);
+```
+
+### Client options
+
+| Option | Meaning |
+| --- | --- |
+| `endpoint` | Request URL, default `/api/opendetail` |
+| `headers` | Static or function |
+| `credentials` | Fetch credentials mode |
+| `fetch` | Custom fetch implementation |
+
+### Request
+
+```json
+{ "question": "..." }
+```
+
+Headers: `accept: application/x-ndjson, application/json`, `content-type: application/json`.
+
+### Status values
+
+`idle` → `pending` → `streaming` → `idle` or `error`.
+
+### Stream event types
+
+`meta`, `sources`, `images`, `delta`, `done`, `error`.
+
+### Stop behavior
+
+`stop()` aborts the active request. Calling `submit()` while a request is active stops the previous one first.

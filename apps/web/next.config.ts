@@ -18,6 +18,20 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: repoRoot,
   },
+  redirects() {
+    return [
+      {
+        source: "/docs/guide",
+        destination: "/docs/quickstart",
+        permanent: true,
+      },
+      {
+        source: "/docs/reference",
+        destination: "/docs/configuration",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default withMDX(nextConfig);

@@ -32,7 +32,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="min-h-screen bg-white font-sans text-neutral-900 antialiased">
+      <body className="min-h-screen bg-white font-sans text-neutral-900 tracking-tight antialiased">
         <FumadocsAssistantSidebar
           inputId="opendetail-site-question"
           knownSourcePageUrls={knownSourcePageUrls}

@@ -5,6 +5,7 @@
 
 html {
   height: 100%;
+  overflow: hidden;
   scrollbar-gutter: stable;
   overscroll-behavior: none;
 }
@@ -19,13 +20,42 @@ html > body[data-scroll-locked] {
   margin-right: 0 !important;
 }
 
-/* Main site/docs scroll: hide scrollbar (still scrollable) */
+/* Main site scroll: hide scrollbar (still scrollable) */
 .opendetail-main-scroll {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
 
 .opendetail-main-scroll::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+/* Docs article column only — do not share class with site shell main (nested scroll + hash bugs) */
+.docs-main-scroll {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.docs-main-scroll::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+/* Docs: lock site shell main — only sidebar + article panes scroll (not the header strip) */
+.opendetail-sidebar__content:has([data-docs-page-shell]) .site-shell__main {
+  overflow: hidden;
+}
+
+/* Docs left nav: scroll inside rail only, no visible scrollbar */
+.docs-sidebar-scroll {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.docs-sidebar-scroll::-webkit-scrollbar {
   display: none;
   width: 0;
   height: 0;

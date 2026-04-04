@@ -52,9 +52,9 @@ export default function HomePage() {
           </Link>
           <Link
             className="font-medium text-neutral-950 underline-offset-4 hover:underline"
-            href="/docs/guide"
+            href="/docs/quickstart"
           >
-            Start with the guide
+            Start with the quickstart
           </Link>
           <Link
             className="font-medium text-neutral-950 underline-offset-4 hover:underline"

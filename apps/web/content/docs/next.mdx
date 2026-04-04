@@ -1,0 +1,50 @@
+---
+title: opendetail-next
+description: Next.js App Router helpers — route handler, NDJSON streaming, and MDX source links.
+---
+
+**`opendetail-next`** wraps the core runtime for **self-hosted** deployments on the Next.js App Router: a **POST** handler that validates the request body, streams **NDJSON**, and optional **`renderNextSourceLink`** for assistant citations in MDX.
+
+## Route handler
+
+The scaffolded route is a thin wrapper:
+
+```ts
+import { createNextRoute } from "opendetail-next";
+
+export const { POST, runtime } = createNextRoute();
+```
+
+Or wire the handler yourself:
+
+```ts
+import { createNextRouteHandler } from "opendetail-next";
+
+export const runtime = "nodejs";
+export const POST = createNextRouteHandler();
+```
+
+**Requirements**
+
+- Node.js 18+
+- Route on the **Node.js** runtime (not Edge) for the default adapter
+- **`OPENAI_API_KEY`** set where the handler runs
+- **`.opendetail/index.json`** present after [build](/docs/cli)
+
+`createNextRouteHandler` accepts the same options as [`createOpenDetail`](/docs/runtime) (`CreateOpenDetailOptions`) when you need custom `cwd`, `indexPath`, or client injection.
+
+## Request and response
+
+The handler accepts **POST** with JSON `{ "question": string }`. Malformed bodies return a JSON error.
+
+Successful responses use **`application/x-ndjson; charset=utf-8`**. Event order and semantics match [Integration](/docs/integration) (meta, sources, images, delta, done, error). Initialization failures before streaming return JSON instead of NDJSON.
+
+## Source links in MDX
+
+For Fumadocs-style docs, pass **`renderNextSourceLink`** from **`opendetail-next`** into your assistant UI so local `/docs/...` citations use Next **`Link`** and external URLs stay safe:
+
+```ts
+import { renderNextSourceLink } from "opendetail-next";
+```
+
+Use with **`resolveSourceTarget`** from [**opendetail-fumadocs**](/docs/fumadocs) when you need known-page URL allowlists.

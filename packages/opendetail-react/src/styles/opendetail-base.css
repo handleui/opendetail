@@ -401,10 +401,13 @@
 }
 
 .opendetail-sidebar__content {
+  display: flex;
   flex: 1 1 auto;
+  flex-direction: column;
   min-width: 0;
   height: 100dvh;
-  overflow-y: auto;
+  min-height: 0;
+  overflow: hidden;
   overscroll-behavior: none;
 }
 
@@ -458,6 +461,7 @@
   min-width: 0;
   margin: 0;
   overflow: hidden;
+  font-weight: 400;
   text-overflow: ellipsis;
   font-size: 0.875rem;
   line-height: 1.3125rem;
