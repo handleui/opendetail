@@ -21,7 +21,7 @@ export const DocsPageShell = ({ children }: { children: ReactNode }) => (
       </div>
     </aside>
     <div className="docs-main-scroll flex min-h-0 min-w-0 flex-1 flex-col overflow-y-auto overscroll-contain">
-      <div className="w-full px-6 py-8">
+      <div className="w-full px-6 py-10">
         <div className="mx-auto w-full max-w-[650px]">{children}</div>
       </div>
     </div>
