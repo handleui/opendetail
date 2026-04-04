@@ -1,20 +1,32 @@
 "use client";
 
+import { motion, useReducedMotion } from "motion/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { type ReactNode, useEffect, useId, useRef, useState } from "react";
 import { FUMADOCS_DOCS_NAV_SECTIONS } from "./docs-nav-sections";
-import {
-  FUMADOCS_DOCS_NAV_SECTION_TITLE_CLASS,
-  FUMADOCS_DOCS_SIDEBAR_SCROLL_CLASS,
-} from "./sidebar";
+import { FUMADOCS_DOCS_NAV_SECTION_TITLE_CLASS } from "./sidebar";
+
+const PANEL_SLIDE_TRANSITION = {
+  type: "spring" as const,
+  stiffness: 520,
+  damping: 36,
+  mass: 0.85,
+};
+
+/** First row in root and docs panels shares this offset from the slide top (matches title→links gap via parent `mb-5`). */
+const SLIDE_PANEL_TOP_CLASS = "px-2";
 
 const NAV_ROW_CLASS =
-  "flex w-full items-center gap-2 rounded-md px-3 py-1.5 text-left text-[14px] text-neutral-900 leading-snug transition-colors hover:bg-neutral-100/80";
+  "flex w-full cursor-pointer items-center gap-2 rounded-md px-3 py-1.5 text-left text-[14px] text-neutral-900 leading-snug transition-colors hover:bg-neutral-100/80";
+
+/** Icon-only social hit target — no hover surface; opacity hint only. */
+const SOCIAL_ICON_LINK_CLASS =
+  "inline-flex cursor-pointer items-center justify-center text-neutral-900 transition-opacity hover:opacity-65";
 
 const navLinkClass = (active: boolean) =>
   [
-    "block rounded-md px-3 py-1.5 text-[14px] text-neutral-900 leading-snug transition-colors",
+    "block cursor-pointer rounded-md px-3 py-1.5 text-[14px] text-neutral-900 leading-snug transition-colors",
     active ? "bg-neutral-100" : "hover:bg-neutral-100/80",
   ].join(" ");
 
@@ -66,17 +78,26 @@ export interface FumadocsAppSidebarProps {
   githubHref: string;
   /** Mark for the GitHub link (e.g. Next.js `<Image />` from the app). */
   githubIcon: ReactNode;
+  npmHref: string;
+  /** Mark for the npm package link (e.g. Next.js `<Image />` from the app). */
+  npmIcon: ReactNode;
   productTitle: string;
+  /** e.g. `v0.5.0` — shown muted next to the product title. */
+  productVersionLabel: string;
 }
 
 export function FumadocsAppSidebar({
   productTitle,
+  productVersionLabel,
   githubHref,
   githubIcon,
+  npmHref,
+  npmIcon,
   docsPathPrefix = "/docs",
 }: FumadocsAppSidebarProps) {
   const pathname = usePathname();
   const navId = useId();
+  const prefersReducedMotion = useReducedMotion();
   const isUnderDocs =
     pathname === docsPathPrefix || pathname.startsWith(`${docsPathPrefix}/`);
 
@@ -99,24 +120,59 @@ export function FumadocsAppSidebar({
   }, [pathname, isUnderDocs, docsPathPrefix]);
 
   const showDocsPanel = panel === "docs";
-  const trackTransform = showDocsPanel ? "translateX(-50%)" : "translateX(0)";
+
+  const githubLink = (
+    <a
+      aria-label="GitHub repository"
+      className={SOCIAL_ICON_LINK_CLASS}
+      href={githubHref}
+      rel="noopener noreferrer"
+      target="_blank"
+    >
+      {githubIcon}
+    </a>
+  );
+
+  const npmLink = (
+    <a
+      aria-label="OpenDetail on npm"
+      className={SOCIAL_ICON_LINK_CLASS}
+      href={npmHref}
+      rel="noopener noreferrer"
+      target="_blank"
+    >
+      {npmIcon}
+    </a>
+  );
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <p className="shrink-0 px-4 pt-4 font-normal text-[14px] text-black tracking-[-0.56px]">
-        {productTitle}
-      </p>
+      <div className="mb-5 shrink-0 px-5 pt-5">
+        <div className="flex flex-wrap items-baseline gap-1">
+          <span className="font-normal text-[14px] text-black tracking-[-0.56px]">
+            {productTitle}
+          </span>
+          <span className="font-normal text-[#a4a4a4] text-[13px] tabular-nums tracking-tight">
+            {productVersionLabel}
+          </span>
+        </div>
+      </div>
 
       <div className="relative min-h-0 flex-1 overflow-hidden">
-        <div
-          className="flex h-full min-h-0 w-[200%] flex-row transition-transform duration-300 ease-out motion-reduce:transition-none motion-reduce:duration-0"
-          style={{ transform: trackTransform }}
+        <motion.div
+          animate={{
+            x: showDocsPanel ? "-50%" : "0%",
+          }}
+          className="flex h-full min-h-0 w-[200%] flex-row will-change-transform"
+          initial={false}
+          transition={
+            prefersReducedMotion ? { duration: 0 } : PANEL_SLIDE_TRANSITION
+          }
         >
           <div className="flex min-h-0 w-1/2 flex-col">
-            <div className="min-h-0 flex-1" />
             <nav
               aria-label="Site"
-              className="flex shrink-0 flex-col gap-0.5 px-2 pb-4"
+              className={`flex shrink-0 flex-col gap-0.5 ${SLIDE_PANEL_TOP_CLASS} pb-4`}
             >
               <Link
                 className={navLinkClass(pathname === "/")}
@@ -137,20 +193,12 @@ export function FumadocsAppSidebar({
                 <span>Docs</span>
                 <ChevronRightIcon className="shrink-0 text-neutral-500" />
               </button>
-              <a
-                className={`${NAV_ROW_CLASS} gap-2`}
-                href={githubHref}
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                <span className="sr-only">GitHub repository</span>
-                {githubIcon}
-              </a>
             </nav>
+            <div className="min-h-0 flex-1" />
           </div>
 
           <div className="flex min-h-0 w-1/2 flex-col">
-            <div className="shrink-0 px-2 pt-2">
+            <div className={`shrink-0 ${SLIDE_PANEL_TOP_CLASS}`}>
               <button
                 className={`${NAV_ROW_CLASS} gap-2`}
                 onClick={() => {
@@ -162,9 +210,7 @@ export function FumadocsAppSidebar({
                 Back
               </button>
             </div>
-            <div
-              className={`${FUMADOCS_DOCS_SIDEBAR_SCROLL_CLASS} min-h-0 flex-1 pt-2 pb-4`}
-            >
+            <div className="docs-sidebar-scroll min-h-0 flex-1 overflow-y-auto overscroll-contain px-2 pt-8 pb-4">
               <nav aria-labelledby={navId} className="flex flex-col gap-8">
                 <p className="sr-only" id={navId}>
                   Documentation pages
@@ -194,6 +240,13 @@ export function FumadocsAppSidebar({
               </nav>
             </div>
           </div>
+        </motion.div>
+      </div>
+
+      <div className="shrink-0 px-5 py-3">
+        <div className="flex items-center justify-end gap-4">
+          {npmLink}
+          {githubLink}
         </div>
       </div>
     </div>

@@ -84,6 +84,7 @@
       "name": "opendetail-fumadocs",
       "version": "0.5.0",
       "dependencies": {
+        "motion": "^12.38.0",
         "opendetail-next": "workspace:*",
         "opendetail-react": "workspace:*",
       },

@@ -2,7 +2,12 @@ import Image from "next/image";
 import { FumadocsAppSidebar } from "opendetail-fumadocs/app-sidebar";
 import type { ReactNode } from "react";
 
-import { appName, gitConfig } from "@/lib/shared";
+import {
+  appName,
+  gitConfig,
+  npmPackageUrl,
+  productVersionLabel,
+} from "@/lib/shared";
 
 const githubHref = `https://github.com/${gitConfig.user}/${gitConfig.repo}`;
 
@@ -29,7 +34,19 @@ export const SiteShell = ({ children }: { children: ReactNode }) => (
                 width={20}
               />
             }
+            npmHref={npmPackageUrl}
+            npmIcon={
+              <Image
+                alt=""
+                className="block size-5 max-w-none"
+                height={20}
+                src="/npm.svg"
+                unoptimized
+                width={20}
+              />
+            }
             productTitle={appName}
+            productVersionLabel={productVersionLabel}
           />
         </aside>
         <div className="docs-main-scroll flex min-h-0 min-w-0 flex-1 flex-col overflow-y-auto overscroll-contain">

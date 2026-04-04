@@ -1,4 +1,6 @@
 export const appName = "OpenDetail";
+/** Displayed in the app chrome next to the product name (keep in sync with releases). */
+export const productVersionLabel = "v0.5.0";
 export const docsRoute = "/docs";
 export const docsImageRoute = "/og/docs";
 export const docsContentRoute = "/llms.mdx/docs";
@@ -8,3 +10,5 @@ export const gitConfig = {
   repo: "opendetail",
   branch: "main",
 };
+
+export const npmPackageUrl = "https://www.npmjs.com/package/opendetail";
