@@ -28,6 +28,10 @@
     "./sidebar": {
       "types": "./dist/sidebar.d.ts",
       "default": "./dist/sidebar.js"
+    },
+    "./app-sidebar": {
+      "types": "./dist/app-sidebar.d.ts",
+      "default": "./dist/app-sidebar.js"
     }
   },
   "scripts": {

@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { DocsLandingHeader } from "@/components/docs-landing-header";
-import { DocsPageHeader } from "@/components/docs-page-header";
 import { getDocsMdxComponents } from "@/components/docs-mdx-components";
+import { DocsPageHeader } from "@/components/docs-page-header";
 import { gitConfig } from "@/lib/shared";
 import { getPageImage, getPageMarkdownUrl, source } from "@/lib/source";
 

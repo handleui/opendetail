@@ -4,7 +4,6 @@ This is the single public app for `opendetail`.
 
 - Marketing site at `/`
 - Documentation site at `/docs`
-- Demo surface at `/demo`
 - Host for generated shadcn registry JSON at `public/r`
 - Not the place for shared assistant runtime logic
 

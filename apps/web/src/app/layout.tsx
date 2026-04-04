@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     template: "%s | OpenDetail",
   },
   description:
-    "OpenDetail marketing site, documentation, demo surface, and registry distribution in one app.",
+    "OpenDetail marketing site, documentation, and registry distribution in one app.",
 };
 
 export default function RootLayout({

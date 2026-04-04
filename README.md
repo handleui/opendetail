@@ -10,7 +10,7 @@ The private hosted dashboard and API live in the sibling [`cloud`](../cloud) mon
 - `packages/opendetail-react`: transport, hook, components, blocks, and styles
 - `packages/opendetail-next`: Next.js route and link integration
 - `packages/opendetail-fumadocs`: Fumadocs source validation helpers and wrappers
-- `apps/web`: the public Next.js app for marketing, docs, demos, and hosted registry JSON
+- `apps/web`: the public Next.js app for marketing, docs, and hosted registry JSON
 - `registry/`: thin packaging layer for shadcn-compatible generated assets
 - `registry.json`: root registry entrypoint for shadcn CLI builds
 - Turborepo remains at the root for `build`, `dev`, `check-types`, and `test`
