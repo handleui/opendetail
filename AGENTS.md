@@ -127,3 +127,5 @@ Biome's linter will catch most issues automatically. Focus your attention on:
 Most formatting and common issues are automatically fixed by Biome. Run `bun x ultracite fix` before committing to ensure compliance.
 
 You're most commonly working with multiple agents in the same worktree, please respect unrelated work and keep your task focused to your files, dont delete any unrecognised code unless clearly malformed
+
+Don't checkout branches, respect the working directory you were asked to work in

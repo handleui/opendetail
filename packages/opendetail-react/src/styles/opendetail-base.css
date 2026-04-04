@@ -65,7 +65,7 @@
 .opendetail-input-root--shell {
   --opendetail-input-current-width: var(--opendetail-input-width-shell);
   --opendetail-input-surface-min-height-current: 2.5rem;
-  --opendetail-input-surface-padding-current: 0.75rem;
+  --opendetail-input-surface-padding-current: 0.625rem;
 }
 
 .opendetail-pressable {
@@ -99,23 +99,24 @@
   background: var(--opendetail-color-background);
 }
 
+.opendetail-input__surface-form {
+  width: 100%;
+  margin: 0;
+}
+
 .opendetail-input__surface {
   position: relative;
   z-index: 10;
   display: flex;
+  flex-direction: column;
   gap: var(--opendetail-space-sm);
-  align-items: center;
+  align-items: flex-end;
   width: 100%;
   min-height: var(--opendetail-input-surface-min-height-current);
   padding: var(--opendetail-input-surface-padding-current);
   overflow: hidden;
   background: var(--opendetail-color-surface);
   border-radius: var(--opendetail-radius-panel);
-}
-
-.opendetail-input__surface--multiline {
-  flex-direction: column;
-  align-items: flex-end;
 }
 
 .opendetail-input__surface--interactive {
@@ -139,8 +140,8 @@
   padding-inline: 0;
   -ms-overflow-style: none;
   overscroll-behavior: contain;
-  font-size: 1rem;
-  line-height: 1.5rem;
+  font-size: 0.875rem;
+  line-height: 1.3125rem;
   color: var(--opendetail-color-foreground);
   letter-spacing: var(--opendetail-text-md-letter-spacing);
   resize: none;
@@ -152,11 +153,6 @@
 
 .opendetail-input__textarea::placeholder {
   color: var(--opendetail-color-placeholder-foreground);
-}
-
-.opendetail-input__textarea--single-line {
-  padding-left: 0.125rem;
-  transform: translateY(-1px);
 }
 
 .opendetail-input__textarea:disabled {
@@ -443,8 +439,8 @@
 
 .opendetail-sidebar__title {
   margin: 0;
-  font-size: 1rem;
-  line-height: 1.25rem;
+  font-size: 0.875rem;
+  line-height: 1.3125rem;
   color: var(--opendetail-color-foreground);
   letter-spacing: var(--opendetail-text-md-letter-spacing);
 }
@@ -588,8 +584,8 @@
   width: fit-content;
   min-width: 0;
   max-width: min(100%, 80%);
-  padding: 0.75rem;
-  font-size: 1rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
   line-height: 1.3125rem;
   letter-spacing: var(--opendetail-text-md-letter-spacing);
   background: var(--opendetail-color-surface);
@@ -615,7 +611,7 @@
 }
 
 .opendetail-status__label {
-  font-size: 1rem;
+  font-size: 0.875rem;
   line-height: 1.3125rem;
   letter-spacing: var(--opendetail-text-md-letter-spacing);
 }
@@ -629,7 +625,7 @@
 .opendetail-response__lead,
 .opendetail-response-markdown {
   width: 100%;
-  font-size: 1rem;
+  font-size: 0.875rem;
   line-height: 1.3125rem;
   letter-spacing: -0.03em;
 }
