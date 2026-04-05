@@ -15,6 +15,7 @@
     "fumadocs-mdx": "14.2.11",
     "fumadocs-ui": "16.7.9",
     "lucide-react": "^1.7.0",
+    "motion": "^12.38.0",
     "next": "16.2.2",
     "opendetail": "workspace:*",
     "opendetail-fumadocs": "workspace:*",

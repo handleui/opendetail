@@ -11,7 +11,13 @@ export {
   SLIDE_TO_ATTRIBUTE,
   type SlideRowHandle,
   type SlideRowProps,
+  type SlideRowSplitLayout,
 } from "./slide-row-types.js";
+export {
+  StackedPanels,
+  type StackedPanelsDensity,
+  type StackedPanelsProps,
+} from "./stacked-panels.js";
 export { Trifold } from "./trifold.js";
 export type {
   TrifoldPanelIndex,

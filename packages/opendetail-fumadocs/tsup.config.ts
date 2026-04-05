@@ -6,7 +6,6 @@ export default defineConfig({
   entry: {
     index: "src/index.ts",
     sidebar: "src/sidebar.tsx",
-    "app-sidebar": "src/app-sidebar.tsx",
   },
   format: ["esm"],
   shims: false,

@@ -1,11 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { FumadocsAppSidebar } from "opendetail-fumadocs/app-sidebar";
 import { FumadocsAssistantSidebar } from "opendetail-fumadocs/sidebar";
 import type { ReactNode } from "react";
-
 import { Trifold } from "trifold";
+import { SiteNavSidebar } from "@/components/site-nav-sidebar";
 import { SiteShell } from "@/components/site-shell";
 import {
   appName,
@@ -24,7 +23,7 @@ export const WebRootShell = ({
   knownSourcePageUrls: readonly string[];
 }) => {
   const navigation = (
-    <FumadocsAppSidebar
+    <SiteNavSidebar
       githubHref={githubHref}
       githubIcon={
         <Image

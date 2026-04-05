@@ -1,0 +1,19 @@
+---
+title: Shell
+description: AssistantShell composes the thread region and the assistant input into a single layout primitive.
+---
+
+The **AssistantShell** component wraps the conversation area and the input in a vertical layout with semantic regions (`opendetail-shell`, `opendetail-shell__thread`, `opendetail-shell__input`).
+
+## Usage
+
+Import `AssistantShell` from `opendetail-react` and pass `input` (required). Use `thread` for the scrollable message list, or pass `children` as a shortcut when you only need a single thread body.
+
+## Props
+
+| Prop | Type | Description |
+| --- | --- | --- |
+| `input` | `ReactNode` | Required. Typically an `AssistantInput`. |
+| `thread` | `ReactNode` | Optional. Main conversation content. |
+| `children` | `ReactNode` | Used when `thread` is omitted (renders inside the thread region). |
+| `className` | `string` | Optional class on the root `section`. |

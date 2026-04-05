@@ -1,5 +1,5 @@
 import { IndexView } from "@/components/lateral/views";
 
-export default function IndexPage() {
+export default function FullIndexPage() {
   return <IndexView />;
 }

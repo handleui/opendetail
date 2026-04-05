@@ -16,6 +16,10 @@
     "runtime",
     "next",
     "react",
-    "fumadocs"
+    "fumadocs",
+    "components",
+    "components/shell",
+    "components/input",
+    "components/recommendations"
   ]
 }

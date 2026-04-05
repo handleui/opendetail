@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 
+import { SiteMainWidth } from "@/components/site-main-width";
+
 export const SiteShell = ({ children }: { children: ReactNode }) => (
   <div className="flex min-h-0 w-full min-w-0 flex-1 flex-col overflow-hidden bg-white">
     <div className="site-shell__main flex min-h-0 min-w-0 flex-1 overflow-hidden">
@@ -9,7 +11,7 @@ export const SiteShell = ({ children }: { children: ReactNode }) => (
       >
         <div className="docs-main-scroll flex min-h-0 min-w-0 flex-1 flex-col overflow-y-auto overscroll-contain">
           <div className="w-full px-6 py-10">
-            <div className="mx-auto w-full max-w-[650px]">{children}</div>
+            <SiteMainWidth>{children}</SiteMainWidth>
           </div>
         </div>
       </div>

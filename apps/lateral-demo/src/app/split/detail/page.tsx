@@ -1,5 +1,5 @@
 import { DetailView } from "@/components/lateral/views";
 
-export default function DetailPage() {
+export default function SplitDetailPage() {
   return <DetailView />;
 }

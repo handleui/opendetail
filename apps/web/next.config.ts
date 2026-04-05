@@ -30,6 +30,16 @@ const nextConfig: NextConfig = {
         destination: "/docs/configuration",
         permanent: true,
       },
+      {
+        source: "/docs/components",
+        destination: "/components",
+        permanent: true,
+      },
+      {
+        source: "/docs/components/:path*",
+        destination: "/components/:path*",
+        permanent: true,
+      },
     ];
   },
 };

@@ -4,13 +4,21 @@ import { motion, useReducedMotion } from "motion/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { type ReactNode, useId } from "react";
+
 import {
-  type DocsNavNode,
-  FUMADOCS_CLI_NAV_SECTIONS,
-  FUMADOCS_DOCS_NAV_TREE,
-} from "./docs-nav-tree";
-import { FUMADOCS_DOCS_NAV_SECTION_TITLE_CLASS } from "./sidebar";
-import { useSidebarRailDepth } from "./sidebar-rail-depth";
+  COMPONENTS_PATH_PREFIX,
+  isUnderComponentsPathname,
+  SITE_COMPONENTS_GROUP_SECTION,
+  SITE_COMPONENTS_OVERVIEW,
+  SITE_DOCS_NAV_TREE,
+  type SiteNavNode,
+} from "@/lib/site-nav-tree";
+import { useSiteSidebarRailDepth } from "@/lib/site-sidebar-rail-depth";
+import { useSiteNavEffectivePathname } from "@/lib/use-site-nav-effective-pathname";
+
+/** Group labels in the secondary panel (docs or components). */
+const SITE_NAV_SECTION_TITLE_CLASS =
+  "px-3 font-normal text-[#a4a4a4] text-[13px] tracking-tight";
 
 const PANEL_SLIDE_TRANSITION = {
   type: "spring" as const,
@@ -19,13 +27,11 @@ const PANEL_SLIDE_TRANSITION = {
   mass: 0.85,
 };
 
-/** First row in root and docs panels shares this offset from the slide top (matches title→links gap via parent `mb-5`). */
 const SLIDE_PANEL_TOP_CLASS = "px-2";
 
 const NAV_ROW_CLASS =
   "flex w-full cursor-pointer items-center gap-2 rounded-md px-3 py-1.5 text-left text-[14px] text-neutral-900 leading-snug transition-colors hover:bg-neutral-100/80";
 
-/** Icon-only social hit target — no hover surface; opacity hint only. */
 const SOCIAL_ICON_LINK_CLASS =
   "inline-flex cursor-pointer items-center justify-center text-neutral-900 transition-opacity hover:opacity-65";
 
@@ -35,7 +41,7 @@ const navLinkClass = (active: boolean) =>
     active ? "bg-neutral-100" : "hover:bg-neutral-100/80",
   ].join(" ");
 
-const DOCS_INNER_NAV_CLASS =
+const INNER_NAV_CLASS =
   "docs-sidebar-scroll min-h-0 flex-1 touch-pan-y overflow-y-auto overscroll-contain px-2 pt-3 pb-4";
 
 function isPageActive(href: string, pathname: string): boolean {
@@ -81,7 +87,7 @@ function ChevronLeftIcon({ className }: { className?: string }) {
 }
 
 function folderDrillHref(
-  node: Extract<DocsNavNode, { kind: "folder" }>
+  node: Extract<SiteNavNode, { kind: "folder" }>
 ): string {
   const first = node.children[0];
   if (first?.kind === "page") {
@@ -93,11 +99,11 @@ function folderDrillHref(
   return "/docs";
 }
 
-function DocsNavItems({
+function NavItems({
   nodes,
   pathname,
 }: {
-  nodes: readonly DocsNavNode[];
+  nodes: readonly SiteNavNode[];
   pathname: string;
 }) {
   return (
@@ -128,22 +134,20 @@ function DocsNavItems({
   );
 }
 
-function DocsNavSections({
+function NavSections({
   pathname,
   sections,
 }: {
   pathname: string;
-  sections: readonly { items: readonly DocsNavNode[]; title: string }[];
+  sections: readonly { items: readonly SiteNavNode[]; title: string }[];
 }) {
   return (
     <div className="flex flex-col gap-8">
       {sections.map((section) => (
         <div key={section.title}>
-          <p className={FUMADOCS_DOCS_NAV_SECTION_TITLE_CLASS}>
-            {section.title}
-          </p>
+          <p className={SITE_NAV_SECTION_TITLE_CLASS}>{section.title}</p>
           <div className="mt-2">
-            <DocsNavItems nodes={section.items} pathname={pathname} />
+            <NavItems nodes={section.items} pathname={pathname} />
           </div>
         </div>
       ))}
@@ -151,21 +155,21 @@ function DocsNavSections({
   );
 }
 
-export interface FumadocsAppSidebarProps {
-  /** Route prefix for the docs tree; pathname under this opens the docs panel. */
+export interface SiteNavSidebarProps {
   docsPathPrefix?: string;
   githubHref: string;
-  /** Mark for the GitHub link (e.g. Next.js `<Image />` from the app). */
   githubIcon: ReactNode;
   npmHref: string;
-  /** Mark for the npm package link (e.g. Next.js `<Image />` from the app). */
   npmIcon: ReactNode;
   productTitle: string;
-  /** e.g. `v0.5.0` — shown muted next to the product title. */
   productVersionLabel: string;
 }
 
-export function FumadocsAppSidebar({
+/**
+ * Marketing site chrome: Home, Docs, Components — and a **separate** secondary panel
+ * for either documentation or the component gallery (never mixed in one scroll).
+ */
+export function SiteNavSidebar({
   productTitle,
   productVersionLabel,
   githubHref,
@@ -173,12 +177,14 @@ export function FumadocsAppSidebar({
   npmHref,
   npmIcon,
   docsPathPrefix = "/docs",
-}: FumadocsAppSidebarProps) {
+}: SiteNavSidebarProps) {
   const pathname = usePathname();
+  const { effectivePathname, setNavIntent } =
+    useSiteNavEffectivePathname(pathname);
   const navId = useId();
   const prefersReducedMotion = useReducedMotion();
-  const { showDocsPanel, showCliInnerSlide, goBack, openDocs, openHome } =
-    useSidebarRailDepth(pathname, docsPathPrefix);
+  const { showSecondaryPanel, goBack, openSecondary, openHome } =
+    useSiteSidebarRailDepth(pathname, docsPathPrefix);
 
   const githubLink = (
     <a
@@ -208,6 +214,14 @@ export function FumadocsAppSidebar({
     ? { duration: 0 }
     : PANEL_SLIDE_TRANSITION;
 
+  /** Docs vs components: use optimistic URL so the nest switches immediately on top-level nav. */
+  const secondaryIsComponents = isUnderComponentsPathname(effectivePathname);
+  const docsRootActive =
+    pathname === docsPathPrefix || pathname.startsWith(`${docsPathPrefix}/`);
+  const componentsRootActive =
+    pathname === COMPONENTS_PATH_PREFIX ||
+    pathname.startsWith(`${COMPONENTS_PATH_PREFIX}/`);
+
   return (
     <div className="flex h-full min-h-0 flex-col">
       <div className="mb-5 shrink-0 px-5 pt-5">
@@ -224,9 +238,9 @@ export function FumadocsAppSidebar({
       <div className="relative min-h-0 flex-1 overflow-hidden">
         <motion.div
           animate={{
-            x: showDocsPanel ? "-50%" : "0%",
+            x: showSecondaryPanel ? "-50%" : "0%",
           }}
-          className="flex h-full min-h-0 w-[200%] flex-row touch-pan-x will-change-transform"
+          className="flex h-full min-h-0 w-[200%] touch-pan-x flex-row will-change-transform"
           initial={false}
           transition={innerTransition}
         >
@@ -239,21 +253,42 @@ export function FumadocsAppSidebar({
                 className={navLinkClass(pathname === "/")}
                 href="/"
                 onClick={() => {
+                  setNavIntent("/");
                   openHome();
                 }}
               >
                 Home
               </Link>
-              <button
-                className={`${NAV_ROW_CLASS} justify-between`}
+              <Link
+                className={[
+                  NAV_ROW_CLASS,
+                  "justify-between",
+                  docsRootActive ? "bg-neutral-100" : "",
+                ].join(" ")}
+                href={docsPathPrefix}
                 onClick={() => {
-                  openDocs();
+                  setNavIntent(docsPathPrefix);
+                  openSecondary();
                 }}
-                type="button"
               >
                 <span>Docs</span>
                 <ChevronRightIcon className="shrink-0 text-neutral-500" />
-              </button>
+              </Link>
+              <Link
+                className={[
+                  NAV_ROW_CLASS,
+                  "justify-between",
+                  componentsRootActive ? "bg-neutral-100" : "",
+                ].join(" ")}
+                href={COMPONENTS_PATH_PREFIX}
+                onClick={() => {
+                  setNavIntent(COMPONENTS_PATH_PREFIX);
+                  openSecondary();
+                }}
+              >
+                <span>Components</span>
+                <ChevronRightIcon className="shrink-0 text-neutral-500" />
+              </Link>
             </nav>
             <div className="min-h-0 flex-1" />
           </div>
@@ -269,42 +304,47 @@ export function FumadocsAppSidebar({
                 Back
               </button>
             </div>
-            <div className="relative min-h-0 flex-1 overflow-hidden">
-              <motion.div
-                animate={{
-                  x: showCliInnerSlide ? "-50%" : "0%",
-                }}
-                className="flex h-full min-h-0 w-[200%] flex-row touch-pan-x will-change-transform"
-                initial={false}
-                transition={innerTransition}
+            {secondaryIsComponents ? (
+              <nav
+                aria-labelledby={`${navId}-components`}
+                className={INNER_NAV_CLASS}
+                key="nest-components"
               >
-                <div className="flex h-full min-h-0 w-1/2 flex-col">
-                  <nav aria-labelledby={navId} className={DOCS_INNER_NAV_CLASS}>
-                    <p className="sr-only" id={navId}>
-                      Documentation pages
-                    </p>
-                    <DocsNavSections
-                      pathname={pathname}
-                      sections={FUMADOCS_DOCS_NAV_TREE}
-                    />
-                  </nav>
+                <p className="sr-only" id={`${navId}-components`}>
+                  Component gallery
+                </p>
+                <div className="flex flex-col gap-4">
+                  <div>
+                    <Link
+                      className={navLinkClass(
+                        isPageActive(SITE_COMPONENTS_OVERVIEW.href, pathname)
+                      )}
+                      href={SITE_COMPONENTS_OVERVIEW.href}
+                    >
+                      {SITE_COMPONENTS_OVERVIEW.label}
+                    </Link>
+                  </div>
+                  <NavSections
+                    pathname={pathname}
+                    sections={[SITE_COMPONENTS_GROUP_SECTION]}
+                  />
                 </div>
-                <div className="flex h-full min-h-0 w-1/2 flex-col">
-                  <nav
-                    aria-labelledby={`${navId}-cli`}
-                    className={DOCS_INNER_NAV_CLASS}
-                  >
-                    <p className="sr-only" id={`${navId}-cli`}>
-                      CLI documentation
-                    </p>
-                    <DocsNavSections
-                      pathname={pathname}
-                      sections={FUMADOCS_CLI_NAV_SECTIONS}
-                    />
-                  </nav>
-                </div>
-              </motion.div>
-            </div>
+              </nav>
+            ) : (
+              <nav
+                aria-labelledby={navId}
+                className={INNER_NAV_CLASS}
+                key="nest-docs"
+              >
+                <p className="sr-only" id={navId}>
+                  Documentation
+                </p>
+                <NavSections
+                  pathname={pathname}
+                  sections={SITE_DOCS_NAV_TREE}
+                />
+              </nav>
+            )}
           </div>
         </motion.div>
       </div>
