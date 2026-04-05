@@ -133,6 +133,16 @@ export function deriveDocsFolderStack(
   return [...findPageFolderIdsInTree(tree, normalized)];
 }
 
+/** True when pathname is the docs index or any page under the docs prefix. */
+export function isUnderDocsPathname(
+  pathname: string,
+  docsPathPrefix: string
+): boolean {
+  const base = normalizePath(docsPathPrefix);
+  const normalized = normalizePath(pathname);
+  return normalized === base || normalized.startsWith(`${base}/`);
+}
+
 /** True when the URL should show the CLI slide (second inner panel). */
 export function isCliDocsPathname(
   pathname: string,

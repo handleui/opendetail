@@ -3,14 +3,14 @@
 import { motion, useReducedMotion } from "motion/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { type ReactNode, useEffect, useId, useRef, useState } from "react";
+import { type ReactNode, useId } from "react";
 import {
   type DocsNavNode,
   FUMADOCS_CLI_NAV_SECTIONS,
   FUMADOCS_DOCS_NAV_TREE,
-  isCliDocsPathname,
 } from "./docs-nav-tree";
 import { FUMADOCS_DOCS_NAV_SECTION_TITLE_CLASS } from "./sidebar";
+import { useSidebarRailDepth } from "./sidebar-rail-depth";
 
 const PANEL_SLIDE_TRANSITION = {
   type: "spring" as const,
@@ -177,54 +177,8 @@ export function FumadocsAppSidebar({
   const pathname = usePathname();
   const navId = useId();
   const prefersReducedMotion = useReducedMotion();
-  const isUnderDocs =
-    pathname === docsPathPrefix || pathname.startsWith(`${docsPathPrefix}/`);
-
-  const [panel, setPanel] = useState<"root" | "docs">(() =>
-    isUnderDocs ? "docs" : "root"
-  );
-
-  /** When pathname is under `/docs/cli`, inner CLI rail is open until Back collapses it (URL unchanged). */
-  const [cliInnerSlideOpen, setCliInnerSlideOpen] = useState(() =>
-    isCliDocsPathname(pathname, docsPathPrefix)
-  );
-
-  const prevPathnameRef = useRef(pathname);
-  useEffect(() => {
-    const prev = prevPathnameRef.current;
-    prevPathnameRef.current = pathname;
-    const wasUnderDocs =
-      prev === docsPathPrefix || prev.startsWith(`${docsPathPrefix}/`);
-    if (!wasUnderDocs && isUnderDocs) {
-      setPanel("docs");
-    }
-    if (wasUnderDocs && !isUnderDocs) {
-      setPanel("root");
-    }
-  }, [pathname, isUnderDocs, docsPathPrefix]);
-
-  useEffect(() => {
-    if (isCliDocsPathname(pathname, docsPathPrefix)) {
-      setCliInnerSlideOpen(true);
-    } else {
-      setCliInnerSlideOpen(false);
-    }
-  }, [pathname, docsPathPrefix]);
-
-  const showDocsPanel = panel === "docs";
-  const showCliInnerSlide =
-    isCliDocsPathname(pathname, docsPathPrefix) && cliInnerSlideOpen;
-
-  /** Pops one nested slide in the rail only — does not change the document URL. */
-  const onDocsBack = () => {
-    if (isCliDocsPathname(pathname, docsPathPrefix) && cliInnerSlideOpen) {
-      setCliInnerSlideOpen(false);
-      return;
-    }
-    if (panel === "docs") {
-      setPanel("root");
-    }
-  };
+  const { showDocsPanel, showCliInnerSlide, goBack, openDocs, openHome } =
+    useSidebarRailDepth(pathname, docsPathPrefix);
 
   const githubLink = (
     <a
@@ -285,7 +239,7 @@ export function FumadocsAppSidebar({
                 className={navLinkClass(pathname === "/")}
                 href="/"
                 onClick={() => {
-                  setPanel("root");
+                  openHome();
                 }}
               >
                 Home
@@ -293,7 +247,7 @@ export function FumadocsAppSidebar({
               <button
                 className={`${NAV_ROW_CLASS} justify-between`}
                 onClick={() => {
-                  setPanel("docs");
+                  openDocs();
                 }}
                 type="button"
               >
@@ -308,7 +262,7 @@ export function FumadocsAppSidebar({
             <div className={`shrink-0 ${SLIDE_PANEL_TOP_CLASS}`}>
               <button
                 className={`${NAV_ROW_CLASS} gap-2`}
-                onClick={onDocsBack}
+                onClick={goBack}
                 type="button"
               >
                 <ChevronLeftIcon className="shrink-0 text-neutral-500" />
