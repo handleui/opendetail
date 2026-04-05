@@ -13,6 +13,7 @@ interface SearchableChunk extends OpenDetailChunk {
   searchImages: string;
   storedHeadings: string;
   storedImages: string;
+  storedSourceKind: string;
 }
 
 const OpenDetailChunkImageSchema = z.object({
@@ -28,6 +29,7 @@ const OpenDetailChunkSchema = z.object({
   id: z.string(),
   images: z.array(OpenDetailChunkImageSchema).default([]),
   relativePath: z.string(),
+  sourceKind: z.enum(["local", "page"]).optional(),
   text: z.string(),
   title: z.string(),
   url: z.string(),
@@ -42,6 +44,19 @@ const OpenDetailConfigSchema = z.object({
       base_path: z.string(),
       exclude: z.array(z.string()),
       include: z.array(z.string()),
+    })
+    .optional(),
+  site_pages: z
+    .object({
+      base_path: z.string(),
+      exclude: z.array(z.string()),
+      include: z.array(z.string()),
+    })
+    .optional(),
+  site_pages_fetch: z
+    .object({
+      allowed_path_prefixes: z.array(z.string()),
+      max_bytes: z.number().optional(),
     })
     .optional(),
   remote_resources: z
@@ -133,11 +148,13 @@ export const createMiniSearchIndex = (
     extractField: extractSearchField,
     fields: ["title", "searchHeadings", "searchImages", "text", "relativePath"],
     storeFields: [
+      "anchor",
       "filePath",
       "id",
       "relativePath",
       "storedHeadings",
       "storedImages",
+      "storedSourceKind",
       "text",
       "title",
       "url",
@@ -151,6 +168,7 @@ export const createMiniSearchIndex = (
       searchImages: createSearchableImageText(chunk.images),
       storedHeadings: JSON.stringify(chunk.headings),
       storedImages: JSON.stringify(chunk.images ?? []),
+      storedSourceKind: chunk.sourceKind ?? "local",
     }))
   );
   return miniSearch;
@@ -158,7 +176,8 @@ export const createMiniSearchIndex = (
 
 export const retrieveRelevantChunks = (
   miniSearch: MiniSearch<SearchableChunk>,
-  question: string
+  question: string,
+  options?: { allowedChunkIds?: Set<string> }
 ): OpenDetailChunk[] => {
   const results = miniSearch.search(question, {
     boost: {
@@ -171,14 +190,30 @@ export const retrieveRelevantChunks = (
     prefix: true,
   });
 
+  const filtered =
+    options?.allowedChunkIds === undefined
+      ? results
+      : results.filter((result) => options.allowedChunkIds?.has(result.id));
+
   return uniqueBy(
-    results.slice(0, DEFAULT_MAX_RETRIEVED_CHUNKS).map((result) => ({
+    filtered.slice(0, DEFAULT_MAX_RETRIEVED_CHUNKS).map((result) => ({
       anchor: result.anchor,
       filePath: result.filePath,
       headings: parseStoredHeadings(result.storedHeadings),
       id: result.id,
       images: parseStoredImages(result.storedImages),
       relativePath: result.relativePath,
+      sourceKind: (() => {
+        if (result.storedSourceKind === "page") {
+          return "page";
+        }
+
+        if (result.storedSourceKind === "local") {
+          return "local";
+        }
+
+        return undefined;
+      })(),
       text: result.text,
       title: result.title,
       url: result.url,

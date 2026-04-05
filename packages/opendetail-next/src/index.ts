@@ -8,6 +8,7 @@ import type {
   CreateOpenDetailOptions,
   OpenDetailAssistant,
   OpenDetailPublicError,
+  OpenDetailRuntimeInput,
 } from "opendetail/types";
 import {
   INVALID_REQUEST_BODY_MESSAGE,
@@ -101,10 +102,39 @@ const createAssistantLoader = (
   };
 };
 
+export type CreateNextRouteHandlerOptions = CreateOpenDetailOptions & {
+  /**
+   * Resolve the public origin for same-origin page fetch (e.g. `https://myapp.com`).
+   * Defaults to `siteFetchOrigin`, then `OPENDETAIL_SITE_FETCH_ORIGIN`, then request Host headers.
+   */
+  resolveSiteFetchOrigin?: (request: Request) => string | undefined;
+};
+
+const resolveSiteFetchOriginFromRequestHeaders = (
+  request: Request
+): string | undefined => {
+  const forwardedProto = request.headers.get("x-forwarded-proto");
+  const host =
+    request.headers.get("x-forwarded-host") ?? request.headers.get("host");
+
+  if (!host) {
+    return undefined;
+  }
+
+  const protocol = forwardedProto ?? "https";
+
+  try {
+    return new URL(`${protocol}://${host}`).origin;
+  } catch {
+    return undefined;
+  }
+};
+
 export const createNextRouteHandler = (
-  options: CreateOpenDetailOptions = {}
+  options: CreateNextRouteHandlerOptions = {}
 ): ((request: Request) => Promise<Response>) => {
-  const loadAssistant = createAssistantLoader(options);
+  const { resolveSiteFetchOrigin, ...createDetailOptions } = options;
+  const loadAssistant = createAssistantLoader(createDetailOptions);
 
   return async (request: Request): Promise<Response> => {
     if (request.method !== "POST") {
@@ -136,7 +166,20 @@ export const createNextRouteHandler = (
     }
 
     try {
-      const result = await assistant.stream(parsedBody.data);
+      const siteFetchOrigin =
+        resolveSiteFetchOrigin?.(request) ??
+        options.siteFetchOrigin ??
+        (typeof process === "undefined"
+          ? undefined
+          : process.env.OPENDETAIL_SITE_FETCH_ORIGIN) ??
+        resolveSiteFetchOriginFromRequestHeaders(request);
+
+      const streamInput: OpenDetailRuntimeInput = {
+        ...parsedBody.data,
+        ...(siteFetchOrigin ? { siteFetchOrigin } : {}),
+      };
+
+      const result = await assistant.stream(streamInput);
 
       return new Response(result.stream, {
         headers: createResponseHeaders({
@@ -151,7 +194,7 @@ export const createNextRouteHandler = (
 };
 
 export const createNextRoute = (
-  options: CreateOpenDetailOptions = {}
+  options: CreateNextRouteHandlerOptions = {}
 ): {
   POST: (request: Request) => Promise<Response>;
   runtime: "nodejs";
@@ -161,7 +204,6 @@ export const createNextRoute = (
 });
 
 export const renderNextSourceLink = renderNextSourceLinkImplementation;
-export type { CreateOpenDetailOptions as CreateNextRouteHandlerOptions } from "opendetail/types";
 export type {
   RenderAssistantSourceLink,
   RenderAssistantSourceLinkProps,

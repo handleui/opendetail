@@ -16,6 +16,8 @@ export const DEFAULT_CHUNK_CHARACTER_LIMIT = 1200;
 export const DEFAULT_MAX_RETRIEVED_CHUNKS = 6;
 export const DEFAULT_MAX_RETURNED_IMAGES = 3;
 export const MAX_QUESTION_LENGTH = 4000;
+export const MAX_SITE_PATHS = 24;
+export const MAX_SITE_PATH_LENGTH = 512;
 export const MAX_CONVERSATION_TITLE_LENGTH = 80;
 /** Substring used in title-generation instructions so tests can identify the request. */
 export const OPENDETAIL_CONVERSATION_TITLE_INSTRUCTIONS_MARKER =

@@ -95,4 +95,46 @@ search_context_size = "low"
       await removeWorkspace(cwd);
     }
   });
+
+  test("parses optional site_pages and site_pages_fetch", async () => {
+    const cwd = await mkdtemp(path.join(os.tmpdir(), "opendetail-config-"));
+
+    try {
+      await writeFile(
+        path.join(cwd, "opendetail.toml"),
+        `version = 1
+include = ["content/**/*.md"]
+exclude = []
+base_path = "/docs"
+
+[site_pages]
+base_path = "/"
+include = ["marketing/**/*.mdx"]
+exclude = ["**/draft/**"]
+
+[site_pages_fetch]
+allowed_path_prefixes = ["/", "/marketing"]
+max_bytes = 100000
+`
+      );
+
+      await expect(readOpenDetailConfig({ cwd })).resolves.toEqual({
+        base_path: "/docs",
+        exclude: [],
+        include: ["content/**/*.md"],
+        site_pages: {
+          base_path: "/",
+          exclude: ["**/draft/**"],
+          include: ["marketing/**/*.mdx"],
+        },
+        site_pages_fetch: {
+          allowed_path_prefixes: ["/", "/marketing"],
+          max_bytes: 100_000,
+        },
+        version: 1,
+      });
+    } finally {
+      await removeWorkspace(cwd);
+    }
+  });
 });

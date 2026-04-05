@@ -79,6 +79,8 @@ export interface OpenDetailPersistenceOptions {
 export interface UseOpenDetailOptions {
   endpoint?: string;
   persistence?: OpenDetailPersistenceOptions;
+  /** When set, sent as `sitePaths` to scope retrieval to these URL path prefixes. */
+  sitePaths?: string[];
   transport?: OpenDetailTransportOptions;
 }
 
@@ -165,8 +167,11 @@ const isNullableOpenAiProvider = (value: unknown): value is "openai" | null =>
 
 const isSourceKind = (
   value: unknown
-): value is "local" | "remote" | undefined =>
-  value === undefined || value === "local" || value === "remote";
+): value is "local" | "page" | "remote" | undefined =>
+  value === undefined ||
+  value === "local" ||
+  value === "page" ||
+  value === "remote";
 
 const isOpenDetailClientErrorCode = (
   value: unknown
@@ -667,6 +672,7 @@ export const useOpenDetail = (
   const transportEndpoint = options.transport?.endpoint ?? options.endpoint;
   const transportFetch = options.transport?.fetch;
   const transportHeaders = options.transport?.headers;
+  const defaultSitePaths = options.sitePaths;
   const client = useMemo(
     () =>
       createOpenDetailClient({
@@ -819,6 +825,13 @@ export const useOpenDetail = (
           ...(shouldRequestConversationTitle
             ? { conversationTitle: true }
             : {}),
+          ...(() => {
+            const sitePaths = request?.sitePaths ?? defaultSitePaths;
+
+            return sitePaths !== undefined && sitePaths.length > 0
+              ? { sitePaths }
+              : {};
+          })(),
         },
         {
           onEvent: (event) => {

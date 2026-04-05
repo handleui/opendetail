@@ -39,12 +39,13 @@ export type OpenDetailClientOptions = OpenDetailTransportOptions;
 export interface OpenDetailClientRequest {
   conversationTitle?: boolean;
   question: string;
+  sitePaths?: string[];
 }
 
 export interface OpenDetailClientSource {
   headings: string[];
   id: string;
-  kind?: "local" | "remote";
+  kind?: "local" | "page" | "remote";
   title: string;
   url: string;
 }
@@ -148,8 +149,11 @@ const isNullableString = (value: unknown): value is string | null =>
 
 const isSourceKind = (
   value: unknown
-): value is "local" | "remote" | undefined =>
-  value === undefined || value === "local" || value === "remote";
+): value is "local" | "page" | "remote" | undefined =>
+  value === undefined ||
+  value === "local" ||
+  value === "page" ||
+  value === "remote";
 
 const resolveRequestHeaders = (
   headers: OpenDetailTransportOptions["headers"]

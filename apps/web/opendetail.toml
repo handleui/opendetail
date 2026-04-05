@@ -2,3 +2,12 @@ version = 1
 include = ["content/docs/**/*.md", "content/docs/**/*.mdx"]
 exclude = []
 base_path = "/docs"
+
+[site_pages]
+base_path = "/"
+include = ["content/marketing/**/*.mdx"]
+exclude = []
+
+[site_pages_fetch]
+allowed_path_prefixes = ["/"]
+max_bytes = 500000

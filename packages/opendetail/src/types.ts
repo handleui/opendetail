@@ -7,12 +7,25 @@ import type {
   ResponseStreamEvent,
 } from "openai/resources/responses/responses";
 
+export interface OpenDetailSitePagesConfig {
+  base_path: string;
+  exclude: string[];
+  include: string[];
+}
+
+export interface OpenDetailSitePagesFetchConfig {
+  allowed_path_prefixes: string[];
+  max_bytes?: number;
+}
+
 export interface OpenDetailConfig {
   base_path: string;
   exclude: string[];
   include: string[];
   media?: OpenDetailMediaConfig;
   remote_resources?: OpenDetailRemoteResourcesConfig;
+  site_pages?: OpenDetailSitePagesConfig;
+  site_pages_fetch?: OpenDetailSitePagesFetchConfig;
   version: 1;
 }
 
@@ -52,6 +65,8 @@ export interface OpenDetailChunk {
   id: string;
   images?: OpenDetailChunkImage[];
   relativePath: string;
+  /** Indexed marketing or site-page chunks; omit for standard doc chunks (treated as local). */
+  sourceKind?: "local" | "page";
   text: string;
   title: string;
   url: string;
@@ -79,7 +94,7 @@ export interface BuildOpenDetailIndexResult {
 export interface OpenDetailSource {
   headings: string[];
   id: string;
-  kind?: "local" | "remote";
+  kind?: "local" | "page" | "remote";
   title: string;
   url: string;
 }
@@ -91,7 +106,18 @@ export interface OpenDetailImage extends OpenDetailChunkImage {
 export interface OpenDetailAnswerInput {
   conversationTitle?: boolean;
   question: string;
+  /**
+   * Restrict retrieval to chunks whose public URL path matches these prefixes,
+   * and optionally trigger same-origin page fetch for paths with no indexed chunk
+   * when `site_pages_fetch` is configured and `siteFetchOrigin` is set (server-side).
+   */
+  sitePaths?: string[];
 }
+
+/** Server integrations may add `siteFetchOrigin`; it is not part of the public JSON schema. */
+export type OpenDetailRuntimeInput = OpenDetailAnswerInput & {
+  siteFetchOrigin?: string;
+};
 
 export type OpenDetailErrorCode =
   | "invalid_request"
@@ -149,6 +175,11 @@ export interface CreateOpenDetailOptions {
     NonNullable<ResponseCreateParamsBase["reasoning"]>["effort"]
   >;
   remoteResources?: OpenDetailRemoteResourcesConfig;
+  /**
+   * Base URL for same-origin `site_pages_fetch` (e.g. `https://example.com`).
+   * Per-request overrides may be merged by integrations (e.g. Next.js route handler).
+   */
+  siteFetchOrigin?: string;
   store?: boolean;
   verbosity?: NonNullable<
     NonNullable<ResponseCreateParamsBase["text"]>["verbosity"]
@@ -156,8 +187,8 @@ export interface CreateOpenDetailOptions {
 }
 
 export interface OpenDetailAssistant {
-  answer(input: OpenDetailAnswerInput): Promise<OpenDetailAnswerResult>;
-  stream(input: OpenDetailAnswerInput): Promise<OpenDetailStreamResult>;
+  answer(input: OpenDetailRuntimeInput): Promise<OpenDetailAnswerResult>;
+  stream(input: OpenDetailRuntimeInput): Promise<OpenDetailStreamResult>;
 }
 
 export interface OpenDetailMetaEvent {

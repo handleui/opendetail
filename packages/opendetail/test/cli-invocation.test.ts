@@ -40,7 +40,7 @@ describe("isPrimaryModuleInvocation", () => {
       expect(isPrimaryModuleInvocation(moduleUrl)).toBe(true);
       expect(realpathSync(linkFile)).toBe(realpathSync(realFile));
     } finally {
-      process.argv[1] = previousArgv1;
+      (process.argv as (string | undefined)[])[1] = previousArgv1;
     }
   });
 
@@ -63,7 +63,7 @@ describe("isPrimaryModuleInvocation", () => {
     try {
       expect(isPrimaryModuleInvocation(moduleUrl)).toBe(false);
     } finally {
-      process.argv[1] = previousArgv1;
+      (process.argv as (string | undefined)[])[1] = previousArgv1;
     }
   });
 });

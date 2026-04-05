@@ -43,14 +43,20 @@ import {
   parseOpenDetailIndexArtifact,
   retrieveRelevantChunks,
 } from "./search";
+import {
+  createFetchedPageChunk,
+  fetchSitePageText,
+  filterChunkIdsBySitePaths,
+  listPathsNeedingFetch,
+} from "./site-pages";
 import type {
   CreateOpenDetailOptions,
-  OpenDetailAnswerInput,
   OpenDetailAnswerResult,
   OpenDetailAssistant,
   OpenDetailImage,
   OpenDetailIndexArtifact,
   OpenDetailRemoteResourcesConfig,
+  OpenDetailRuntimeInput,
   OpenDetailSource,
   OpenDetailStreamEvent,
   OpenDetailStreamResult,
@@ -91,10 +97,79 @@ const mapSources = (
   chunks.map((chunk, index) => ({
     headings: chunk.headings,
     id: String(index + 1),
-    kind: "local",
+    kind: chunk.sourceKind === "page" ? "page" : "local",
     title: chunk.title,
     url: chunk.url,
   }));
+
+const resolveRetrievedChunksForQuestion = async ({
+  abortSignal,
+  artifact,
+  miniSearch,
+  question,
+  siteFetchOrigin,
+  sitePaths,
+}: {
+  abortSignal?: AbortSignal;
+  artifact: OpenDetailIndexArtifact;
+  miniSearch: ReturnType<typeof createMiniSearchIndex>;
+  question: string;
+  siteFetchOrigin?: string;
+  sitePaths?: string[];
+}): Promise<OpenDetailIndexArtifact["chunks"]> => {
+  let allowedChunkIds: Set<string> | undefined;
+
+  if (sitePaths !== undefined && sitePaths.length > 0) {
+    allowedChunkIds = filterChunkIdsBySitePaths(artifact.chunks, sitePaths);
+  }
+
+  let retrieved = retrieveRelevantChunks(miniSearch, question, {
+    allowedChunkIds,
+  });
+
+  const fetchConfig = artifact.config.site_pages_fetch;
+  const origin = siteFetchOrigin;
+
+  if (
+    fetchConfig &&
+    origin &&
+    sitePaths !== undefined &&
+    sitePaths.length > 0
+  ) {
+    const missingPaths = listPathsNeedingFetch({
+      chunks: artifact.chunks,
+      fetchConfig,
+      origin,
+      sitePaths,
+    });
+    const fetchedChunks: OpenDetailIndexArtifact["chunks"] = [];
+
+    for (const path of missingPaths) {
+      try {
+        const extracted = await fetchSitePageText({
+          abortSignal,
+          fetchConfig,
+          origin,
+          pathname: path,
+        });
+        fetchedChunks.push(
+          createFetchedPageChunk({
+            origin,
+            pathname: path,
+            text: extracted.text,
+            title: extracted.title,
+          })
+        );
+      } catch {
+        // Omit failed fetches; retrieval still uses indexed chunks.
+      }
+    }
+
+    retrieved = [...retrieved, ...fetchedChunks];
+  }
+
+  return retrieved;
+};
 
 const createRemoteTools = (
   remoteResources: OpenDetailRemoteResourcesConfig | undefined
@@ -237,6 +312,7 @@ const formatContext = (chunks: OpenDetailIndexArtifact["chunks"]): string =>
     .map(
       (chunk, index) =>
         `[SOURCE ${index + 1}]
+kind: ${chunk.sourceKind ?? "local"}
 url: ${chunk.url}
 title: ${chunk.title}
 headings: ${chunk.headings.join(" > ")}
@@ -406,6 +482,7 @@ const createPromptCacheKey = ({
   promptCacheKey,
   reasoningEffort,
   retrievedChunks,
+  sitePaths,
   verbosity,
 }: {
   question: string;
@@ -415,6 +492,7 @@ const createPromptCacheKey = ({
   promptCacheKey?: string;
   reasoningEffort: NonNullable<CreateOpenDetailOptions["reasoningEffort"]>;
   retrievedChunks: OpenDetailIndexArtifact["chunks"];
+  sitePaths?: string[];
   verbosity: NonNullable<CreateOpenDetailOptions["verbosity"]>;
 }): string => {
   if (promptCacheKey) {
@@ -429,6 +507,7 @@ const createPromptCacheKey = ({
     manifestHash,
     model,
     reasoningEffort,
+    sitePaths: sitePaths ?? null,
     sourceChunkIds: retrievedChunks.map((chunk) => chunk.id),
     verbosity,
   });
@@ -461,6 +540,7 @@ const createOpenAIRequest = ({
   reasoningEffort,
   remoteTools,
   retrievedChunks,
+  sitePaths,
   store,
   systemInstructions,
   verbosity,
@@ -476,6 +556,7 @@ const createOpenAIRequest = ({
   reasoningEffort: NonNullable<CreateOpenDetailOptions["reasoningEffort"]>;
   remoteTools: Tool[];
   retrievedChunks: OpenDetailIndexArtifact["chunks"];
+  sitePaths?: string[];
   store: boolean;
   systemInstructions: string;
   verbosity: NonNullable<CreateOpenDetailOptions["verbosity"]>;
@@ -503,6 +584,7 @@ const createOpenAIRequest = ({
     promptCacheKey,
     reasoningEffort,
     retrievedChunks,
+    sitePaths,
     verbosity,
   }),
   prompt_cache_retention: toOpenAIPromptCacheRetention(promptCacheRetention),
@@ -842,6 +924,7 @@ const streamOpenAIResponse = async ({
   remoteTools,
   reasoningEffort,
   retrievedChunks,
+  sitePaths,
   store,
   systemInstructions,
   verbosity,
@@ -860,6 +943,7 @@ const streamOpenAIResponse = async ({
   remoteTools: Tool[];
   reasoningEffort: NonNullable<CreateOpenDetailOptions["reasoningEffort"]>;
   retrievedChunks: OpenDetailIndexArtifact["chunks"];
+  sitePaths?: string[];
   store: boolean;
   systemInstructions: string;
   verbosity: NonNullable<CreateOpenDetailOptions["verbosity"]>;
@@ -877,6 +961,7 @@ const streamOpenAIResponse = async ({
       remoteTools,
       reasoningEffort,
       retrievedChunks,
+      sitePaths,
       store,
       systemInstructions,
       verbosity,
@@ -957,6 +1042,7 @@ export const createOpenDetail = ({
   promptCacheRetention = DEFAULT_PROMPT_CACHE_RETENTION,
   remoteResources,
   reasoningEffort = DEFAULT_REASONING_EFFORT,
+  siteFetchOrigin: defaultSiteFetchOrigin,
   store = DEFAULT_STORE,
   verbosity = DEFAULT_VERBOSITY,
 }: CreateOpenDetailOptions = {}): OpenDetailAssistant => {
@@ -983,10 +1069,17 @@ export const createOpenDetail = ({
   }
 
   const answer = async (
-    rawInput: OpenDetailAnswerInput
+    rawInput: OpenDetailRuntimeInput
   ): Promise<OpenDetailAnswerResult> => {
-    const { question } = parseOpenDetailAnswerInput(rawInput);
-    const retrievedChunks = retrieveRelevantChunks(miniSearch, question);
+    const { question, sitePaths } = parseOpenDetailAnswerInput(rawInput);
+    const siteFetchOrigin = rawInput.siteFetchOrigin ?? defaultSiteFetchOrigin;
+    const retrievedChunks = await resolveRetrievedChunksForQuestion({
+      artifact,
+      miniSearch,
+      question,
+      siteFetchOrigin,
+      sitePaths,
+    });
     const images = collectRelevantImages(retrievedChunks);
     const localSources = mapSources(retrievedChunks);
     const sources = [...localSources];
@@ -1002,6 +1095,7 @@ export const createOpenDetail = ({
       remoteTools,
       reasoningEffort,
       retrievedChunks,
+      sitePaths,
       store,
       systemInstructions,
       verbosity,
@@ -1021,17 +1115,28 @@ export const createOpenDetail = ({
     };
   };
 
-  const stream = (
-    rawInput: OpenDetailAnswerInput
+  const stream = async (
+    rawInput: OpenDetailRuntimeInput
   ): Promise<OpenDetailStreamResult> => {
-    const { conversationTitle: conversationTitleRequested, question } =
-      parseOpenDetailAnswerInput(rawInput);
-    const retrievedChunks = retrieveRelevantChunks(miniSearch, question);
+    const {
+      conversationTitle: conversationTitleRequested,
+      question,
+      sitePaths,
+    } = parseOpenDetailAnswerInput(rawInput);
+    const siteFetchOrigin = rawInput.siteFetchOrigin ?? defaultSiteFetchOrigin;
+    const abortController = new AbortController();
+    const retrievedChunks = await resolveRetrievedChunksForQuestion({
+      abortSignal: abortController.signal,
+      artifact,
+      miniSearch,
+      question,
+      siteFetchOrigin,
+      sitePaths,
+    });
     const images = collectRelevantImages(retrievedChunks);
     const localSources = mapSources(retrievedChunks);
     const sources = [...localSources];
     const fallback = retrievedChunks.length === 0;
-    const abortController = new AbortController();
     const responseStream = new ReadableStream<Uint8Array>({
       start(controller) {
         emitEvent(controller, {
@@ -1073,6 +1178,7 @@ export const createOpenDetail = ({
               remoteTools,
               reasoningEffort,
               retrievedChunks,
+              sitePaths,
               store,
               systemInstructions,
               verbosity,
@@ -1110,13 +1216,13 @@ export const createOpenDetail = ({
       },
     });
 
-    return Promise.resolve({
+    return {
       fallback,
       images,
       model,
       sources,
       stream: responseStream,
-    });
+    };
   };
 
   return {

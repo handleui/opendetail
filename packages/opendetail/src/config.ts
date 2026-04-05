@@ -43,6 +43,21 @@ const OpenDetailConfigSchema = z
       })
       .strict()
       .optional(),
+    site_pages: z
+      .object({
+        base_path: z.string(),
+        exclude: z.array(z.string()).default([]),
+        include: z.array(z.string()).min(1),
+      })
+      .strict()
+      .optional(),
+    site_pages_fetch: z
+      .object({
+        allowed_path_prefixes: z.array(z.string().min(1)).min(1),
+        max_bytes: z.number().int().min(1024).max(5_000_000).optional(),
+      })
+      .strict()
+      .optional(),
     version: z.literal(OPENDETAIL_VERSION),
   })
   .strict();
@@ -100,6 +115,14 @@ export const readOpenDetailConfig = async ({
           media: {
             ...media,
             base_path: normalizeBasePath(media.base_path),
+          },
+        }
+      : {}),
+    ...(config.site_pages
+      ? {
+          site_pages: {
+            ...config.site_pages,
+            base_path: normalizeBasePath(config.site_pages.base_path),
           },
         }
       : {}),

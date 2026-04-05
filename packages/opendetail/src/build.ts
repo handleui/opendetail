@@ -297,7 +297,72 @@ export const buildOpenDetailIndex = async ({
       };
     }
   );
-  const chunks = chunkGroups.flatMap((group) => group.chunks);
+
+  const sitePageGroups = config.site_pages
+    ? await (async () => {
+        const sitePages = config.site_pages;
+
+        if (!sitePages) {
+          return [];
+        }
+
+        const siteFiles = await resolveMatchedWorkspaceFiles({
+          cwd,
+          emptyMatchMessage: undefined,
+          exclude: sitePages.exclude,
+          include: sitePages.include,
+          resolvedCwd,
+        });
+
+        if (siteFiles.length === 0) {
+          return [];
+        }
+
+        const siteCommonRoot = getCommonDirectory(
+          siteFiles.map((file) => file.filePath)
+        );
+        const siteConfig = {
+          base_path: sitePages.base_path,
+        };
+
+        return mapWithConcurrencyLimit(
+          siteFiles,
+          BUILD_FILE_READ_CONCURRENCY,
+          async ({ filePath, realFilePath }) => {
+            const fileContent = await readFile(realFilePath, "utf8");
+            const relativePath = createRelativeChunkPath(
+              siteCommonRoot,
+              filePath
+            );
+
+            return {
+              chunks: extractMarkdownChunks({
+                config: siteConfig,
+                fileContent,
+                filePath: realFilePath,
+                relativePath,
+                resolveImage: createImageResolver({
+                  config,
+                  mediaLookup,
+                  relativePath,
+                  sourceFilePath: realFilePath,
+                }),
+              }).map((chunk) => ({
+                ...chunk,
+                sourceKind: "page" as const,
+              })),
+              contentHash: createManifestHash(fileContent),
+              filePath,
+            };
+          }
+        );
+      })()
+    : [];
+
+  const chunks = [
+    ...chunkGroups.flatMap((group) => group.chunks),
+    ...sitePageGroups.flatMap((group) => group.chunks),
+  ];
   const resolvedOutputPath = resolveIndexPath(cwd, outputPath);
   const artifact = {
     chunks,
@@ -320,6 +385,15 @@ export const buildOpenDetailIndex = async ({
           mediaFiles,
           mediaLookup,
         }),
+        sitePages: sitePageGroups.map((group) => ({
+          chunks: group.chunks.map((chunk) => ({
+            id: chunk.id,
+            images: (chunk.images ?? []).map((image) => image.url),
+            url: chunk.url,
+          })),
+          contentHash: group.contentHash,
+          filePath: group.filePath,
+        })),
       })
     ),
     version: OPENDETAIL_VERSION,

@@ -1,4 +1,5 @@
 import { buildOpenDetailIndex, type CreateOpenDetailOptions } from "opendetail";
+import { INVALID_REQUEST_BODY_MESSAGE } from "opendetail/validation";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, test, vi } from "vitest";
@@ -124,7 +125,7 @@ describe("createNextRouteHandler", () => {
     expect(response.headers.get("x-content-type-options")).toBe("nosniff");
     await expect(response.json()).resolves.toMatchObject({
       code: "invalid_request",
-      error: `Request body must be valid JSON with the shape { question: string } and a question length of at most ${MAX_QUESTION_LENGTH} characters.`,
+      error: INVALID_REQUEST_BODY_MESSAGE,
       retryable: false,
     });
   });
@@ -164,7 +165,7 @@ describe("createNextRouteHandler", () => {
     expect(response.status).toBe(400);
     await expect(response.json()).resolves.toMatchObject({
       code: "invalid_request",
-      error: `Request body must be valid JSON with the shape { question: string } and a question length of at most ${MAX_QUESTION_LENGTH} characters.`,
+      error: INVALID_REQUEST_BODY_MESSAGE,
       retryable: false,
     });
   });
@@ -261,11 +262,8 @@ describe("createNextRouteHandler", () => {
 
     try {
       const { artifact } = await buildOpenDetailIndex({ cwd });
-      const openDetailModule = await import("opendetail");
-      const createOpenDetailSpy = vi.spyOn(
-        openDetailModule,
-        "createOpenDetail"
-      );
+      const runtimeModule = await import("opendetail/runtime");
+      const createOpenDetailSpy = vi.spyOn(runtimeModule, "createOpenDetail");
       const handler = createNextRouteHandler({
         client: createMockClient(),
         indexData: artifact,
@@ -334,9 +332,9 @@ describe("createNextRouteHandler", () => {
 
     try {
       const { artifact } = await buildOpenDetailIndex({ cwd });
-      const openDetailModule = await import("opendetail");
+      const runtimeModule = await import("opendetail/runtime");
       const createOpenDetailSpy = vi
-        .spyOn(openDetailModule, "createOpenDetail")
+        .spyOn(runtimeModule, "createOpenDetail")
         .mockImplementationOnce(() => {
           throw new OpenDetailMissingApiKeyError();
         })

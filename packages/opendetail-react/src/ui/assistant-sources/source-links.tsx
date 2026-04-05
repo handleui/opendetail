@@ -5,7 +5,7 @@ const SAFE_EXTERNAL_PROTOCOLS = new Set(["http:", "https:"]);
 
 export interface AssistantSourceItem {
   id?: string;
-  kind?: "local" | "remote";
+  kind?: "local" | "page" | "remote";
   title: string;
   url: string;
 }
