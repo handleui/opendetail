@@ -36,7 +36,7 @@ const navLinkClass = (active: boolean) =>
   ].join(" ");
 
 const DOCS_INNER_NAV_CLASS =
-  "docs-sidebar-scroll min-h-0 flex-1 overflow-y-auto overscroll-contain px-2 pt-3 pb-4";
+  "docs-sidebar-scroll min-h-0 flex-1 touch-pan-y overflow-y-auto overscroll-contain px-2 pt-3 pb-4";
 
 function isPageActive(href: string, pathname: string): boolean {
   return pathname === href;
@@ -226,7 +226,7 @@ export function FumadocsAppSidebar({
           animate={{
             x: showDocsPanel ? "-50%" : "0%",
           }}
-          className="flex h-full min-h-0 w-[200%] flex-row will-change-transform"
+          className="flex h-full min-h-0 w-[200%] flex-row touch-pan-x will-change-transform"
           initial={false}
           transition={innerTransition}
         >
@@ -274,7 +274,7 @@ export function FumadocsAppSidebar({
                 animate={{
                   x: showCliInnerSlide ? "-50%" : "0%",
                 }}
-                className="flex h-full min-h-0 w-[200%] flex-row will-change-transform"
+                className="flex h-full min-h-0 w-[200%] flex-row touch-pan-x will-change-transform"
                 initial={false}
                 transition={innerTransition}
               >

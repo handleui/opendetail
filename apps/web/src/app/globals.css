@@ -49,8 +49,13 @@ html > body[data-scroll-locked] {
 }
 
 /* Docs: lock site shell main — only sidebar + article panes scroll (not the header strip) */
-.opendetail-sidebar__content:has([data-docs-page-shell]) .site-shell__main {
+.opendetail-sidebar__content:has([data-docs-page-shell]) .site-shell__main,
+.mobile-triptych:has([data-docs-page-shell]) .site-shell__main {
   overflow: hidden;
+}
+
+.mobile-triptych__main .site-shell__main {
+  min-height: 0;
 }
 
 /* Docs left nav: scroll inside rail only, no visible scrollbar */

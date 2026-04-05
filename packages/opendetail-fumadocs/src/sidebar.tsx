@@ -18,7 +18,7 @@ export const FUMADOCS_DOCS_NAV_SECTION_TITLE_CLASS =
 
 /** Scroll container for the left docs nav rail (`/docs` layout). */
 export const FUMADOCS_DOCS_SIDEBAR_SCROLL_CLASS =
-  "docs-sidebar-scroll min-h-0 flex-1 overflow-y-auto overscroll-contain px-2 py-4";
+  "docs-sidebar-scroll min-h-0 flex-1 touch-pan-y overflow-y-auto overscroll-contain px-2 py-4";
 
 type FumadocsAssistantSidebarBaseProps = Omit<
   AssistantSidebarShellProps,

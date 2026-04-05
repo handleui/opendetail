@@ -4,12 +4,17 @@ import { ArrowRightToLine, Check, Copy, Plus } from "lucide-react";
 import { motion } from "motion/react";
 import {
   type CSSProperties,
+  type Dispatch,
+  type MutableRefObject,
   type ReactNode,
   type PointerEvent as ReactPointerEvent,
+  type RefObject,
+  type SetStateAction,
   useCallback,
   useEffect,
   useRef,
   useState,
+  useSyncExternalStore,
 } from "react";
 
 import {
@@ -89,6 +94,26 @@ const getSidebarResizeMaxPx = (): number => {
   return Math.min(window.innerWidth, SIDEBAR_RESIZE_MAX_PX);
 };
 
+const MD_UP_MEDIA_QUERY = "(min-width: 768px)";
+
+const subscribeMdUp = (onStoreChange: () => void) => {
+  if (typeof window === "undefined") {
+    return () => {
+      /* SSR: no media query subscription */
+    };
+  }
+
+  const media = window.matchMedia(MD_UP_MEDIA_QUERY);
+  media.addEventListener("change", onStoreChange);
+  return () => media.removeEventListener("change", onStoreChange);
+};
+
+const getMdUpSnapshot = (): boolean =>
+  typeof window !== "undefined" && window.matchMedia(MD_UP_MEDIA_QUERY).matches;
+
+/** Desktop layout for SSR (avoids empty first paint). */
+const getMdUpServerSnapshot = (): boolean => true;
+
 export interface AssistantSidebarImage {
   alt?: string | null;
   title?: string | null;
@@ -124,6 +149,16 @@ export type AssistantSidebarRequestState =
 
 type SubmitHandler = (request: AssistantInputRequest) => Promise<void> | void;
 
+export type AssistantSidebarTriptychPanelIndex = 0 | 1 | 2;
+
+export interface AssistantSidebarMobileShellSlots {
+  assistant: ReactNode;
+  main: ReactNode;
+  navigation: ReactNode;
+  panelIndex: AssistantSidebarTriptychPanelIndex;
+  setPanelIndex: (index: AssistantSidebarTriptychPanelIndex) => void;
+}
+
 export interface AssistantSidebarProps {
   children?: ReactNode;
   className?: string;
@@ -134,6 +169,8 @@ export interface AssistantSidebarProps {
   input?: ReactNode;
   inputId?: string;
   messages?: AssistantSidebarMessage[];
+  /** Left site/docs navigation (desktop rail + mobile triptych first column). */
+  navigation?: ReactNode;
   onClearThread?: () => void;
   onOpenChange?: (open: boolean) => void;
   onQuestionChange?: (value: string) => void;
@@ -145,6 +182,8 @@ export interface AssistantSidebarProps {
   placeholder?: string;
   promptSuggestions?: readonly string[];
   question?: string;
+  /** Mobile (max breakpoint): three-panel horizontal shell (nav | main | assistant). */
+  renderMobileShell?: (slots: AssistantSidebarMobileShellSlots) => ReactNode;
   renderSourceLink?: AssistantResponseProps["renderSourceLink"];
   requestState?: AssistantSidebarRequestState;
   resolveSourceTarget?: AssistantResponseProps["resolveSourceTarget"];
@@ -197,79 +236,70 @@ const copyToClipboard = async (value: string): Promise<boolean> => {
   return copied;
 };
 
-export const AssistantSidebar = ({
-  children,
-  className,
-  defaultOpen = false,
-  emptyState = "Ask the docs",
-  headerTitle,
-  hotkeyEnabled = true,
-  input,
-  inputId,
-  messages = [],
-  onClearThread,
+function useAssistantSidebarKeyboard({
+  hotkeyEnabled,
+  isControlled,
+  isMobileTriptychActive,
+  isSidebarOpen,
   onOpenChange,
-  onQuestionChange,
-  onSidebarWidthChange,
-  onStop,
-  onSubmitQuestion,
-  open,
-  placeholder = "Ask AI anything...",
-  promptSuggestions = DEFAULT_PROMPT_SUGGESTIONS,
-  question = "",
-  renderSourceLink,
-  requestState = "idle",
-  resolveSourceTarget,
-  sidebarResizeEnabled = false,
-  sidebarWidthPx,
-  thread,
-  userInitial = "U",
-}: AssistantSidebarProps) => {
-  const isControlled = open !== undefined;
-  const [internalOpen, setInternalOpen] = useState(defaultOpen);
-  const [isCopyConfirmed, setIsCopyConfirmed] = useState(false);
-  const copyConfirmationTimeoutRef = useRef<number | null>(null);
-  const previousMessageCountRef = useRef(messages.length);
-  const previousRequestStateRef = useRef(requestState);
-  const panelRef = useRef<HTMLElement | null>(null);
-  const [isSidebarResizing, setIsSidebarResizing] = useState(false);
-  const isSidebarOpen = open ?? internalOpen;
-  const hasMessages = messages.length > 0;
-  const resolvedHeaderTitle =
-    headerTitle !== undefined &&
-    headerTitle !== null &&
-    headerTitle.trim().length > 0
-      ? headerTitle.trim()
-      : "Asking AI";
-  const isBusy = requestState === "pending" || requestState === "streaming";
-  const transcript = getTranscriptText(messages);
-  const canCopy = transcript.length > 0;
-
+  setInternalOpen,
+  setTriptychPanel,
+  triptychPanel,
+}: {
+  hotkeyEnabled: boolean;
+  isControlled: boolean;
+  isMobileTriptychActive: boolean;
+  isSidebarOpen: boolean;
+  onOpenChange: AssistantSidebarProps["onOpenChange"];
+  setInternalOpen: Dispatch<SetStateAction<boolean>>;
+  setTriptychPanel: Dispatch<
+    SetStateAction<AssistantSidebarTriptychPanelIndex>
+  >;
+  triptychPanel: AssistantSidebarTriptychPanelIndex;
+}) {
   useEffect(() => {
     if (!(hotkeyEnabled && typeof window !== "undefined")) {
       return;
     }
 
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (isEditableTarget(event.target)) {
+    const closeAssistant = () => {
+      if (!isControlled) {
+        setInternalOpen(false);
+      }
+
+      onOpenChange?.(false);
+    };
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (isMobileTriptychActive && triptychPanel !== 1) {
+        event.preventDefault();
+        setTriptychPanel(1);
+        closeAssistant();
         return;
       }
 
-      if (!isToggleShortcut(event)) {
-        if (event.key === "Escape" && isSidebarOpen) {
-          event.preventDefault();
+      if (isSidebarOpen) {
+        event.preventDefault();
+        closeAssistant();
+      }
+    };
 
-          if (!isControlled) {
-            setInternalOpen(false);
-          }
+    const handleCmdJ = (event: KeyboardEvent) => {
+      event.preventDefault();
 
-          onOpenChange?.(false);
+      if (isMobileTriptychActive) {
+        const nextPanel: AssistantSidebarTriptychPanelIndex =
+          triptychPanel === 2 ? 1 : 2;
+        setTriptychPanel(nextPanel);
+
+        if (!isControlled) {
+          setInternalOpen(nextPanel === 2);
         }
 
+        onOpenChange?.(nextPanel === 2);
         return;
       }
 
-      event.preventDefault();
       const nextOpen = !isSidebarOpen;
 
       if (!isControlled) {
@@ -279,15 +309,68 @@ export const AssistantSidebar = ({
       onOpenChange?.(nextOpen);
     };
 
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (isEditableTarget(event.target)) {
+        return;
+      }
+
+      if (!isToggleShortcut(event)) {
+        if (event.key === "Escape") {
+          handleEscape(event);
+        }
+
+        return;
+      }
+
+      handleCmdJ(event);
+    };
+
     window.addEventListener("keydown", handleKeyDown);
 
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [hotkeyEnabled, isControlled, isSidebarOpen, onOpenChange]);
+  }, [
+    hotkeyEnabled,
+    isControlled,
+    isMobileTriptychActive,
+    isSidebarOpen,
+    onOpenChange,
+    setInternalOpen,
+    setTriptychPanel,
+    triptychPanel,
+  ]);
+}
 
+function useAssistantSidebarOpenOnActivity({
+  isControlled,
+  isMobileTriptychActive,
+  messages,
+  onOpenChange,
+  previousMessageCountRef,
+  previousRequestStateRef,
+  requestState,
+  setInternalOpen,
+  setTriptychPanel,
+}: {
+  isControlled: boolean;
+  isMobileTriptychActive: boolean;
+  messages: AssistantSidebarMessage[];
+  onOpenChange: AssistantSidebarProps["onOpenChange"];
+  previousMessageCountRef: MutableRefObject<number>;
+  previousRequestStateRef: MutableRefObject<AssistantSidebarRequestState>;
+  requestState: AssistantSidebarRequestState;
+  setInternalOpen: Dispatch<SetStateAction<boolean>>;
+  setTriptychPanel: Dispatch<
+    SetStateAction<AssistantSidebarTriptychPanelIndex>
+  >;
+}) {
   useEffect(() => {
     if (messages.length > previousMessageCountRef.current) {
+      if (isMobileTriptychActive) {
+        setTriptychPanel(2);
+      }
+
       if (!isControlled) {
         setInternalOpen(true);
       }
@@ -296,7 +379,15 @@ export const AssistantSidebar = ({
     }
 
     previousMessageCountRef.current = messages.length;
-  }, [isControlled, messages.length, onOpenChange]);
+  }, [
+    isControlled,
+    isMobileTriptychActive,
+    messages.length,
+    onOpenChange,
+    previousMessageCountRef,
+    setInternalOpen,
+    setTriptychPanel,
+  ]);
 
   useEffect(() => {
     const previousRequestState = previousRequestStateRef.current;
@@ -305,6 +396,10 @@ export const AssistantSidebar = ({
       requestState !== previousRequestState &&
       (requestState === "pending" || requestState === "streaming")
     ) {
+      if (isMobileTriptychActive) {
+        setTriptychPanel(2);
+      }
+
       if (!isControlled) {
         setInternalOpen(true);
       }
@@ -313,138 +408,86 @@ export const AssistantSidebar = ({
     }
 
     previousRequestStateRef.current = requestState;
-  }, [isControlled, onOpenChange, requestState]);
+  }, [
+    isControlled,
+    isMobileTriptychActive,
+    onOpenChange,
+    previousRequestStateRef,
+    requestState,
+    setInternalOpen,
+    setTriptychPanel,
+  ]);
+}
 
-  useEffect(
-    () => () => {
-      if (copyConfirmationTimeoutRef.current !== null) {
-        window.clearTimeout(copyConfirmationTimeoutRef.current);
-      }
-    },
-    []
-  );
-
-  const setSidebarOpen = (nextOpen: boolean) => {
-    if (!isControlled) {
-      setInternalOpen(nextOpen);
-    }
-
-    onOpenChange?.(nextOpen);
-  };
-
-  const handleCollapse = () => {
-    setSidebarOpen(false);
-  };
-
-  const handleClearThread = () => {
-    onClearThread?.();
-  };
-
-  const handleCopy = async () => {
-    if (!canCopy) {
-      return;
-    }
-
-    try {
-      const copied = await copyToClipboard(transcript);
-
-      if (!copied) {
-        return;
-      }
-
-      setIsCopyConfirmed(true);
-
-      if (copyConfirmationTimeoutRef.current !== null) {
-        window.clearTimeout(copyConfirmationTimeoutRef.current);
-      }
-
-      copyConfirmationTimeoutRef.current = window.setTimeout(() => {
-        setIsCopyConfirmed(false);
-        copyConfirmationTimeoutRef.current = null;
-      }, 1400);
-    } catch {
-      // Ignore clipboard failures to keep the assistant flow uninterrupted.
-    }
-  };
-
-  const handlePromptSuggestionClick = (suggestion: string) => {
-    if (isBusy) {
-      return;
-    }
-
-    onSubmitQuestion?.({
-      question: suggestion,
-    });
-  };
-
-  const handleSidebarResizePointerDown = useCallback(
-    (event: ReactPointerEvent<HTMLButtonElement>) => {
-      if (!(sidebarResizeEnabled && isSidebarOpen) || event.button !== 0) {
-        return;
-      }
-
-      event.preventDefault();
-      const panel = panelRef.current;
-
-      if (!panel) {
-        return;
-      }
-
-      const startWidth = panel.getBoundingClientRect().width;
-      const startX = event.clientX;
-      const maxPx = getSidebarResizeMaxPx();
-
-      setIsSidebarResizing(true);
-
-      const handleMove = (moveEvent: PointerEvent) => {
-        const delta = startX - moveEvent.clientX;
-        onSidebarWidthChange?.(clampSidebarWidthPx(startWidth + delta, maxPx));
-      };
-
-      const handleUp = () => {
-        setIsSidebarResizing(false);
-        window.removeEventListener("pointermove", handleMove);
-        window.removeEventListener("pointerup", handleUp);
-        window.removeEventListener("pointercancel", handleUp);
-      };
-
-      window.addEventListener("pointermove", handleMove);
-      window.addEventListener("pointerup", handleUp);
-      window.addEventListener("pointercancel", handleUp);
-    },
-    [isSidebarOpen, onSidebarWidthChange, sidebarResizeEnabled]
-  );
-
-  const handleSidebarResizeKeyDown = useCallback(
-    (event: React.KeyboardEvent<HTMLButtonElement>) => {
-      if (!(sidebarResizeEnabled && isSidebarOpen)) {
-        return;
-      }
-
-      const maxPx = getSidebarResizeMaxPx();
-      const current =
-        sidebarWidthPx ??
-        panelRef.current?.getBoundingClientRect().width ??
-        SIDEBAR_RESIZE_MIN_PX;
-
-      if (event.key === "ArrowLeft") {
-        event.preventDefault();
-        onSidebarWidthChange?.(
-          clampSidebarWidthPx(current + SIDEBAR_RESIZE_KEYBOARD_STEP_PX, maxPx)
-        );
-        return;
-      }
-
-      if (event.key === "ArrowRight") {
-        event.preventDefault();
-        onSidebarWidthChange?.(
-          clampSidebarWidthPx(current - SIDEBAR_RESIZE_KEYBOARD_STEP_PX, maxPx)
-        );
-      }
-    },
-    [isSidebarOpen, onSidebarWidthChange, sidebarResizeEnabled, sidebarWidthPx]
-  );
-
+function buildAssistantAsidePanel({
+  assistantPanelClassName,
+  canCopy,
+  emptyState,
+  handleClearThread,
+  handleCollapse,
+  handleCopy,
+  handlePromptSuggestionClick,
+  handleSidebarResizeKeyDown,
+  handleSidebarResizePointerDown,
+  hasMessages,
+  input,
+  inputId,
+  isBusy,
+  isCopyConfirmed,
+  isMobileTriptychActive,
+  isSidebarOpen,
+  messages,
+  onQuestionChange,
+  onStop,
+  onSubmitQuestion,
+  panelRef,
+  placeholder,
+  promptSuggestions,
+  question,
+  renderSourceLink,
+  requestState,
+  resolvedHeaderTitle,
+  resolveSourceTarget,
+  sidebarResizeEnabled,
+  thread,
+  userInitial,
+}: {
+  assistantPanelClassName: string;
+  canCopy: boolean;
+  emptyState: ReactNode;
+  handleClearThread: () => void;
+  handleCollapse: () => void;
+  handleCopy: () => void;
+  handlePromptSuggestionClick: (suggestion: string) => void;
+  handleSidebarResizeKeyDown: (
+    event: React.KeyboardEvent<HTMLButtonElement>
+  ) => void;
+  handleSidebarResizePointerDown: (
+    event: ReactPointerEvent<HTMLButtonElement>
+  ) => void;
+  hasMessages: boolean;
+  input?: ReactNode;
+  inputId?: string;
+  isBusy: boolean;
+  isCopyConfirmed: boolean;
+  isMobileTriptychActive: boolean;
+  isSidebarOpen: boolean;
+  messages: AssistantSidebarMessage[];
+  onQuestionChange?: (value: string) => void;
+  onStop?: () => void;
+  onSubmitQuestion?: SubmitHandler;
+  panelRef: RefObject<HTMLElement | null>;
+  placeholder: string;
+  promptSuggestions: readonly string[];
+  question: string;
+  renderSourceLink?: AssistantResponseProps["renderSourceLink"];
+  requestState: AssistantSidebarRequestState;
+  resolvedHeaderTitle: string;
+  resolveSourceTarget?: AssistantResponseProps["resolveSourceTarget"];
+  sidebarResizeEnabled: boolean;
+  thread?: ReactNode;
+  userInitial: string;
+}): ReactNode {
   const resolvedThread = thread ?? (
     <AssistantThread
       animated={isSidebarOpen && hasMessages}
@@ -528,6 +571,402 @@ export const AssistantSidebar = ({
       );
   }
 
+  return (
+    <aside
+      aria-label="OpenDetail assistant sidebar"
+      className={assistantPanelClassName}
+      data-opendetail-component="assistant-sidebar"
+      ref={panelRef}
+    >
+      {sidebarResizeEnabled && isSidebarOpen && !isMobileTriptychActive ? (
+        <button
+          aria-label="Resize assistant panel"
+          className="opendetail-sidebar__resize-handle"
+          onKeyDown={handleSidebarResizeKeyDown}
+          onPointerDown={handleSidebarResizePointerDown}
+          type="button"
+        />
+      ) : null}
+      <motion.div
+        animate={isSidebarOpen ? "open" : "closed"}
+        className="opendetail-sidebar__shell"
+        initial={false}
+        transition={SIDEBAR_CONTENT_TRANSITION}
+        variants={sidebarContentVariants}
+      >
+        <header className="opendetail-sidebar__header">
+          <p className="opendetail-sidebar__title">{resolvedHeaderTitle}</p>
+          <div className="opendetail-sidebar__actions">
+            <motion.button
+              aria-label={
+                isCopyConfirmed
+                  ? "Assistant thread copied"
+                  : "Copy full assistant thread"
+              }
+              className="opendetail-sidebar__icon-button opendetail-pressable"
+              disabled={!canCopy}
+              onClick={handleCopy}
+              type="button"
+            >
+              {isCopyConfirmed ? (
+                <Check aria-hidden="true" size={14} strokeWidth={2.1} />
+              ) : (
+                <Copy aria-hidden="true" size={14} strokeWidth={1.9} />
+              )}
+            </motion.button>
+            <motion.button
+              aria-label="Start a new assistant session"
+              className="opendetail-sidebar__icon-button opendetail-pressable"
+              onClick={handleClearThread}
+              type="button"
+            >
+              <Plus aria-hidden="true" size={16} strokeWidth={1.9} />
+            </motion.button>
+            <motion.button
+              aria-label="Collapse assistant sidebar"
+              className="opendetail-sidebar__icon-button opendetail-pressable"
+              onClick={handleCollapse}
+              type="button"
+            >
+              <ArrowRightToLine
+                aria-hidden="true"
+                size={16}
+                strokeWidth={1.9}
+              />
+            </motion.button>
+          </div>
+        </header>
+
+        <div
+          className={[
+            "opendetail-sidebar__body",
+            hasMessages ? "" : "opendetail-sidebar__body--empty",
+          ]
+            .filter(Boolean)
+            .join(" ")}
+        >
+          {resolvedBody}
+        </div>
+        <div className="opendetail-sidebar__input">{resolvedInput}</div>
+      </motion.div>
+    </aside>
+  );
+}
+
+function renderAssistantSidebarRoots({
+  assistantAside,
+  children,
+  isControlled,
+  isMdUp,
+  isMobileTriptychLayout,
+  navigation,
+  onOpenChange,
+  renderMobileShell,
+  rootClassName,
+  rootStyle,
+  setInternalOpen,
+  setTriptychPanel,
+  triptychPanel,
+}: {
+  assistantAside: ReactNode;
+  children: ReactNode;
+  isControlled: boolean;
+  isMdUp: boolean;
+  isMobileTriptychLayout: boolean;
+  navigation: AssistantSidebarProps["navigation"];
+  onOpenChange: AssistantSidebarProps["onOpenChange"];
+  renderMobileShell: AssistantSidebarProps["renderMobileShell"];
+  rootClassName: string;
+  rootStyle: CSSProperties | undefined;
+  setInternalOpen: Dispatch<SetStateAction<boolean>>;
+  setTriptychPanel: Dispatch<
+    SetStateAction<AssistantSidebarTriptychPanelIndex>
+  >;
+  triptychPanel: AssistantSidebarTriptychPanelIndex;
+}): ReactNode {
+  if (isMobileTriptychLayout && !isMdUp && renderMobileShell && navigation) {
+    return (
+      <div className={rootClassName} style={rootStyle}>
+        {renderMobileShell({
+          assistant: assistantAside,
+          main: children,
+          navigation,
+          panelIndex: triptychPanel,
+          setPanelIndex: (index) => {
+            setTriptychPanel(index);
+
+            if (!isControlled) {
+              setInternalOpen(index === 2);
+            }
+
+            onOpenChange?.(index === 2);
+          },
+        })}
+      </div>
+    );
+  }
+
+  if (isMobileTriptychLayout && isMdUp && navigation) {
+    return (
+      <div className={rootClassName} style={rootStyle}>
+        <div className="opendetail-sidebar__content opendetail-sidebar__content--nav-rail flex min-h-0 min-w-0 flex-1">
+          <aside
+            aria-label="Site navigation"
+            className="flex min-h-0 w-[250px] shrink-0 flex-col overflow-hidden border-[var(--opendetail-color-sidebar-stroke)] border-e border-solid bg-white"
+          >
+            {navigation}
+          </aside>
+          <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
+            {children}
+          </div>
+        </div>
+        {assistantAside}
+      </div>
+    );
+  }
+
+  return (
+    <div className={rootClassName} style={rootStyle}>
+      <div className="opendetail-sidebar__content">{children}</div>
+      {assistantAside}
+    </div>
+  );
+}
+
+export const AssistantSidebar = (props: AssistantSidebarProps): ReactNode => {
+  const {
+    children,
+    className,
+    defaultOpen = false,
+    emptyState = "Ask the docs",
+    headerTitle,
+    hotkeyEnabled = true,
+    input,
+    inputId,
+    messages = [],
+    navigation,
+    onClearThread,
+    onOpenChange,
+    onQuestionChange,
+    onSidebarWidthChange,
+    onStop,
+    onSubmitQuestion,
+    open,
+    placeholder = "Ask AI anything...",
+    promptSuggestions = DEFAULT_PROMPT_SUGGESTIONS,
+    question = "",
+    renderMobileShell,
+    renderSourceLink,
+    requestState = "idle",
+    resolveSourceTarget,
+    sidebarResizeEnabled = false,
+    sidebarWidthPx,
+    thread,
+    userInitial = "U",
+  } = props;
+  const isControlled = open !== undefined;
+  const [internalOpen, setInternalOpen] = useState(defaultOpen);
+  const [isCopyConfirmed, setIsCopyConfirmed] = useState(false);
+  const copyConfirmationTimeoutRef = useRef<number | null>(null);
+  const previousMessageCountRef = useRef(messages.length);
+  const previousRequestStateRef = useRef(requestState);
+  const panelRef = useRef<HTMLElement | null>(null);
+  const [isSidebarResizing, setIsSidebarResizing] = useState(false);
+  const [triptychPanel, setTriptychPanel] =
+    useState<AssistantSidebarTriptychPanelIndex>(1);
+  const isMdUp = useSyncExternalStore(
+    subscribeMdUp,
+    getMdUpSnapshot,
+    getMdUpServerSnapshot
+  );
+  const isMobileTriptychLayout = Boolean(navigation && renderMobileShell);
+  const isMobileTriptychActive = isMobileTriptychLayout && !isMdUp;
+  const isSidebarOpen = isMobileTriptychActive
+    ? triptychPanel === 2
+    : (open ?? internalOpen);
+  const hasMessages = messages.length > 0;
+  const resolvedHeaderTitle =
+    headerTitle !== undefined &&
+    headerTitle !== null &&
+    headerTitle.trim().length > 0
+      ? headerTitle.trim()
+      : "Asking AI";
+  const isBusy = requestState === "pending" || requestState === "streaming";
+  const transcript = getTranscriptText(messages);
+  const canCopy = transcript.length > 0;
+
+  useAssistantSidebarKeyboard({
+    hotkeyEnabled,
+    isControlled,
+    isMobileTriptychActive,
+    isSidebarOpen,
+    onOpenChange,
+    setInternalOpen,
+    setTriptychPanel,
+    triptychPanel,
+  });
+
+  useAssistantSidebarOpenOnActivity({
+    isControlled,
+    isMobileTriptychActive,
+    messages,
+    onOpenChange,
+    previousMessageCountRef,
+    previousRequestStateRef,
+    requestState,
+    setInternalOpen,
+    setTriptychPanel,
+  });
+
+  useEffect(
+    () => () => {
+      if (copyConfirmationTimeoutRef.current !== null) {
+        window.clearTimeout(copyConfirmationTimeoutRef.current);
+      }
+    },
+    []
+  );
+
+  const setSidebarOpen = (nextOpen: boolean) => {
+    if (isMobileTriptychActive) {
+      setTriptychPanel(nextOpen ? 2 : 1);
+    }
+
+    if (!isControlled) {
+      setInternalOpen(nextOpen);
+    }
+
+    onOpenChange?.(nextOpen);
+  };
+
+  const handleCollapse = () => {
+    setSidebarOpen(false);
+  };
+
+  const handleClearThread = () => {
+    onClearThread?.();
+  };
+
+  const handleCopy = async () => {
+    if (!canCopy) {
+      return;
+    }
+
+    try {
+      const copied = await copyToClipboard(transcript);
+
+      if (!copied) {
+        return;
+      }
+
+      setIsCopyConfirmed(true);
+
+      if (copyConfirmationTimeoutRef.current !== null) {
+        window.clearTimeout(copyConfirmationTimeoutRef.current);
+      }
+
+      copyConfirmationTimeoutRef.current = window.setTimeout(() => {
+        setIsCopyConfirmed(false);
+        copyConfirmationTimeoutRef.current = null;
+      }, 1400);
+    } catch {
+      // Ignore clipboard failures to keep the assistant flow uninterrupted.
+    }
+  };
+
+  const handlePromptSuggestionClick = (suggestion: string) => {
+    if (isBusy) {
+      return;
+    }
+
+    onSubmitQuestion?.({
+      question: suggestion,
+    });
+  };
+
+  const handleSidebarResizePointerDown = useCallback(
+    (event: ReactPointerEvent<HTMLButtonElement>) => {
+      if (
+        !(sidebarResizeEnabled && isSidebarOpen) ||
+        isMobileTriptychActive ||
+        event.button !== 0
+      ) {
+        return;
+      }
+
+      event.preventDefault();
+      const panel = panelRef.current;
+
+      if (!panel) {
+        return;
+      }
+
+      const startWidth = panel.getBoundingClientRect().width;
+      const startX = event.clientX;
+      const maxPx = getSidebarResizeMaxPx();
+
+      setIsSidebarResizing(true);
+
+      const handleMove = (moveEvent: PointerEvent) => {
+        const delta = startX - moveEvent.clientX;
+        onSidebarWidthChange?.(clampSidebarWidthPx(startWidth + delta, maxPx));
+      };
+
+      const handleUp = () => {
+        setIsSidebarResizing(false);
+        window.removeEventListener("pointermove", handleMove);
+        window.removeEventListener("pointerup", handleUp);
+        window.removeEventListener("pointercancel", handleUp);
+      };
+
+      window.addEventListener("pointermove", handleMove);
+      window.addEventListener("pointerup", handleUp);
+      window.addEventListener("pointercancel", handleUp);
+    },
+    [
+      isMobileTriptychActive,
+      isSidebarOpen,
+      onSidebarWidthChange,
+      sidebarResizeEnabled,
+    ]
+  );
+
+  const handleSidebarResizeKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLButtonElement>) => {
+      if (!(sidebarResizeEnabled && isSidebarOpen) || isMobileTriptychActive) {
+        return;
+      }
+
+      const maxPx = getSidebarResizeMaxPx();
+      const current =
+        sidebarWidthPx ??
+        panelRef.current?.getBoundingClientRect().width ??
+        SIDEBAR_RESIZE_MIN_PX;
+
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        onSidebarWidthChange?.(
+          clampSidebarWidthPx(current + SIDEBAR_RESIZE_KEYBOARD_STEP_PX, maxPx)
+        );
+        return;
+      }
+
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        onSidebarWidthChange?.(
+          clampSidebarWidthPx(current - SIDEBAR_RESIZE_KEYBOARD_STEP_PX, maxPx)
+        );
+      }
+    },
+    [
+      isMobileTriptychActive,
+      isSidebarOpen,
+      onSidebarWidthChange,
+      sidebarResizeEnabled,
+      sidebarWidthPx,
+    ]
+  );
+
   const rootStyle: CSSProperties | undefined =
     sidebarWidthPx === undefined
       ? undefined
@@ -547,88 +986,60 @@ export const AssistantSidebar = ({
     .filter(Boolean)
     .join(" ");
 
-  return (
-    <div className={rootClassName} style={rootStyle}>
-      <div className="opendetail-sidebar__content">{children}</div>
+  const assistantPanelClassName = [
+    panelClassName,
+    isMobileTriptychActive ? "opendetail-sidebar__panel--mobile-triptych" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
 
-      <aside
-        aria-label="OpenDetail assistant sidebar"
-        className={panelClassName}
-        data-opendetail-component="assistant-sidebar"
-        ref={panelRef}
-      >
-        {sidebarResizeEnabled && isSidebarOpen ? (
-          <button
-            aria-label="Resize assistant panel"
-            className="opendetail-sidebar__resize-handle"
-            onKeyDown={handleSidebarResizeKeyDown}
-            onPointerDown={handleSidebarResizePointerDown}
-            type="button"
-          />
-        ) : null}
-        <motion.div
-          animate={isSidebarOpen ? "open" : "closed"}
-          className="opendetail-sidebar__shell"
-          initial={false}
-          transition={SIDEBAR_CONTENT_TRANSITION}
-          variants={sidebarContentVariants}
-        >
-          <header className="opendetail-sidebar__header">
-            <p className="opendetail-sidebar__title">{resolvedHeaderTitle}</p>
-            <div className="opendetail-sidebar__actions">
-              <motion.button
-                aria-label={
-                  isCopyConfirmed
-                    ? "Assistant thread copied"
-                    : "Copy full assistant thread"
-                }
-                className="opendetail-sidebar__icon-button opendetail-pressable"
-                disabled={!canCopy}
-                onClick={handleCopy}
-                type="button"
-              >
-                {isCopyConfirmed ? (
-                  <Check aria-hidden="true" size={14} strokeWidth={2.1} />
-                ) : (
-                  <Copy aria-hidden="true" size={14} strokeWidth={1.9} />
-                )}
-              </motion.button>
-              <motion.button
-                aria-label="Start a new assistant session"
-                className="opendetail-sidebar__icon-button opendetail-pressable"
-                onClick={handleClearThread}
-                type="button"
-              >
-                <Plus aria-hidden="true" size={16} strokeWidth={1.9} />
-              </motion.button>
-              <motion.button
-                aria-label="Collapse assistant sidebar"
-                className="opendetail-sidebar__icon-button opendetail-pressable"
-                onClick={handleCollapse}
-                type="button"
-              >
-                <ArrowRightToLine
-                  aria-hidden="true"
-                  size={16}
-                  strokeWidth={1.9}
-                />
-              </motion.button>
-            </div>
-          </header>
+  const assistantAside = buildAssistantAsidePanel({
+    assistantPanelClassName,
+    canCopy,
+    emptyState,
+    handleClearThread,
+    handleCollapse,
+    handleCopy,
+    handlePromptSuggestionClick,
+    handleSidebarResizeKeyDown,
+    handleSidebarResizePointerDown,
+    hasMessages,
+    input,
+    inputId,
+    isBusy,
+    isCopyConfirmed,
+    isMobileTriptychActive,
+    isSidebarOpen,
+    messages,
+    onQuestionChange,
+    onStop,
+    onSubmitQuestion,
+    panelRef,
+    placeholder,
+    promptSuggestions,
+    question,
+    renderSourceLink,
+    requestState,
+    resolvedHeaderTitle,
+    resolveSourceTarget,
+    sidebarResizeEnabled,
+    thread,
+    userInitial,
+  });
 
-          <div
-            className={[
-              "opendetail-sidebar__body",
-              hasMessages ? "" : "opendetail-sidebar__body--empty",
-            ]
-              .filter(Boolean)
-              .join(" ")}
-          >
-            {resolvedBody}
-          </div>
-          <div className="opendetail-sidebar__input">{resolvedInput}</div>
-        </motion.div>
-      </aside>
-    </div>
-  );
+  return renderAssistantSidebarRoots({
+    assistantAside,
+    children,
+    isControlled,
+    isMdUp,
+    isMobileTriptychLayout,
+    navigation,
+    onOpenChange,
+    renderMobileShell,
+    rootClassName,
+    rootStyle,
+    setInternalOpen,
+    setTriptychPanel,
+    triptychPanel,
+  });
 };

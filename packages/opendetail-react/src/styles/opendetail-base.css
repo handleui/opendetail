@@ -411,6 +411,12 @@
   overscroll-behavior: none;
 }
 
+/* Desktop: nav rail + main row (base `.opendetail-sidebar__content` is column for default shell). */
+.opendetail-sidebar__content.opendetail-sidebar__content--nav-rail {
+  flex-direction: row;
+  align-items: stretch;
+}
+
 .opendetail-sidebar__panel {
   position: relative;
   display: flex;
@@ -474,6 +480,22 @@
   width: min(100vw, var(--opendetail-sidebar-width));
   border-left-color: var(--opendetail-color-sidebar-stroke);
   border-left-width: 1px;
+}
+
+/* Mobile triptych: assistant occupies a full viewport column (track handles visibility). */
+.opendetail-sidebar__panel--mobile-triptych {
+  flex: none;
+  width: 100%;
+  min-width: 100%;
+  max-width: 100%;
+  border-left-width: 0;
+  transition: none;
+}
+
+.opendetail-sidebar--open .opendetail-sidebar__panel--mobile-triptych {
+  width: 100%;
+  min-width: 100%;
+  border-left-width: 0;
 }
 
 .opendetail-sidebar__shell {
