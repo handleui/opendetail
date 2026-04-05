@@ -16,9 +16,17 @@ export type SlideRowSplitLayout =
     };
 
 export interface SlideRowProps {
-  /** Which panel is focused (0-based). In split mode, this panel is the left column; the next panel fills the right when it exists. */
+  /**
+   * Which panel is focused (0-based). In split mode, this panel is the left column; the next
+   * panel fills the right when it exists.
+   *
+   * **Routing:** this value does **not** read or write the URL — for “slide resolves to a new
+   * page”, derive `activeIndex` from the router and update the route in `onActiveIndexChange`.
+   * For an **in-app** shell (same URL), keep index in React state only (see `Trifold` for the
+   * common 3-panel case).
+   */
   activeIndex: number;
-  /** Panel contents, in order (any count ≥ 1). */
+  /** Panel contents, in order (any count ≥ 1). Use more children for wider horizontal flows. */
   children: ReactNode;
   /** Root class name. */
   className?: string;

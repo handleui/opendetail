@@ -1,15 +1,6 @@
 /**
- * Site URL ↔ sidebar nests (docs vs component gallery) — **not** Fumadocs UI; those live in
- * `apps/web`. For Fumadocs-native multi-tree patterns (verified via Context7, `/fuma-nama/fumadocs`):
- *
- * - **Multiple loaders**: separate `loader({ baseUrl: '/docs', ... })` and
- *   `loader({ baseUrl: '/components', ... })` with different `createMDXSource` collections.
- * - **Root folders**: `meta.json` with `"root": true` for tabbed sidebars; only the active
- *   root’s tree is shown.
- * - **DocsLayout `sidebar.tabs`**: tab `url` per section (e.g. Getting Started vs API).
- *
- * This file only drives **our** marketing shell sidebar; MDX content may stay one collection
- * with redirects (`/docs/components/*` → `/components/*`) until a second collection is added.
+ * Site shell sidebar: docs vs `/components` URL helpers + nav tree data for `apps/web` only.
+ * (`FumadocsAssistant` in `opendetail-fumadocs` is assistant/source wiring — not this.)
  */
 
 export type SiteNavNode =
@@ -26,7 +17,7 @@ export interface SiteNavSection {
   title: string;
 }
 
-/** Grouped docs nav — matches `content/docs`. */
+/** Grouped docs links — mirrors `content/docs`. */
 export const SITE_DOCS_NAV_TREE: readonly SiteNavSection[] = [
   {
     title: "Get started",
@@ -63,18 +54,15 @@ export const SITE_DOCS_NAV_TREE: readonly SiteNavSection[] = [
       { kind: "page", label: "Fumadocs", href: "/docs/fumadocs" },
     ],
   },
-] as const;
+];
 
-/** Root prefix for component gallery routes (`app/components/*`). */
 export const COMPONENTS_PATH_PREFIX = "/components";
 
-/** Index route for the gallery — shown above the "Components" group (uncategorized). */
 export const SITE_COMPONENTS_OVERVIEW: { href: string; label: string } = {
   href: "/components",
   label: "Overview",
 };
 
-/** Grouped items only (Shell, Input, …) — {@link SITE_COMPONENTS_OVERVIEW} is separate in the UI. */
 export const SITE_COMPONENTS_GROUP_SECTION: SiteNavSection = {
   title: "Components",
   items: [
@@ -95,7 +83,6 @@ function normalizePath(path: string): string {
   return path;
 }
 
-/** True when pathname is the docs index or any page under the docs prefix. */
 export function isUnderDocsPathname(
   pathname: string,
   docsPathPrefix: string
@@ -105,10 +92,6 @@ export function isUnderDocsPathname(
   return normalized === base || normalized.startsWith(`${base}/`);
 }
 
-/**
- * True when pathname is under the component gallery (`/components` or `/components/...`).
- * Never true for `/docs` or `/docs/...` (avoids prefix collisions and keeps bounds explicit).
- */
 export function isUnderComponentsPathname(pathname: string): boolean {
   const normalized = normalizePath(pathname);
   if (normalized === "/docs" || normalized.startsWith("/docs/")) {
@@ -118,14 +101,10 @@ export function isUnderComponentsPathname(pathname: string): boolean {
   return normalized === base || normalized.startsWith(`${base}/`);
 }
 
-/** Which secondary column nest matches this URL (mutually exclusive for normal paths). */
 export function getSiteSecondaryNest(pathname: string): "components" | "docs" {
   return isUnderComponentsPathname(pathname) ? "components" : "docs";
 }
 
-/**
- * True when the sidebar should show the secondary panel (docs or components area).
- */
 export function isUnderSiteSecondaryNavPathname(
   pathname: string,
   docsPathPrefix: string

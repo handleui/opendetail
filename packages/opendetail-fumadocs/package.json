@@ -25,9 +25,9 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
-    "./sidebar": {
-      "types": "./dist/sidebar.d.ts",
-      "default": "./dist/sidebar.js"
+    "./assistant": {
+      "types": "./dist/assistant.d.ts",
+      "default": "./dist/assistant.js"
     }
   },
   "scripts": {

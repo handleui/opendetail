@@ -9,28 +9,27 @@ import type { ReactNode } from "react";
 import { useMemo } from "react";
 import { createFumadocsSourceTargetResolver } from "./source-targets";
 
-type FumadocsAssistantSidebarBaseProps = Omit<
+type FumadocsAssistantBaseProps = Omit<
   AssistantSidebarShellProps,
   "renderSourceLink" | "resolveSourceTarget"
 >;
 
-export interface FumadocsAssistantSidebarProps
-  extends FumadocsAssistantSidebarBaseProps {
+export interface FumadocsAssistantProps extends FumadocsAssistantBaseProps {
   children?: ReactNode;
   knownSourcePageUrls: readonly string[];
 }
 
 /**
- * Wires Fumadocs-style source URLs into the assistant: local pages you allow resolve
- * to in-app routes; everything else stays safe. Pair with `knownSourcePageUrls` from your app.
- *
- * Site navigation chrome belongs in your app (e.g. `apps/web`), not in this package.
+ * Fumadocs integration for the **page assistant** (AI panel + optional nav/main slots): wires
+ * `renderNextSourceLink` and a URL allowlist so assistant “source” links resolve to safe in-app
+ * routes or HTTPS. This is **not** your site’s primary navigation — put that in the app (e.g.
+ * `apps/web` `Sidebar`).
  */
-export const FumadocsAssistantSidebar = ({
+export const FumadocsAssistant = ({
   children,
   knownSourcePageUrls,
   ...props
-}: FumadocsAssistantSidebarProps) => {
+}: FumadocsAssistantProps) => {
   const resolveSourceTarget = useMemo(
     () => createFumadocsSourceTargetResolver(knownSourcePageUrls),
     [knownSourcePageUrls]

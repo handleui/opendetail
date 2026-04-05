@@ -4,6 +4,27 @@ Sideways panel navigation for React: **`SlideRow`** (any number of panels) and *
 
 **Moat:** horizontal transitions and gesture math — not a prescribed app shape. Nest `SlideRow` inside a panel for master–detail stacks or more rows.
 
+## Two ways product apps use this
+
+### 1) Slide stack **synced to routing** (new URL per step)
+
+Use **`StackedPanels`** (or raw **`SlideRow`**) when each horizontal step should correspond to a **route** (e.g. index vs detail). Pattern:
+
+- Derive **`activeIndex`** from **`pathname` / `searchParams`** (or your router’s state).
+- In **`onActiveIndexChange`**, call **`router.push` / `router.replace`** (and/or render **`<Link>`** from list rows) so the **address bar is the source of truth**.
+- Imperative **`ref.goTo(n)`** and **`data-slide-to`** only move the carousel — they **do not** update the URL; you keep router + index in sync if gestures should match navigation.
+
+Example app: **`apps/lateral-demo`** (`LateralDemoShell`).
+
+### 2) **In-app shell** (same page; controlled **panel index** — OpenDetail web’s “OG” model)
+
+Use when the URL **does not** change but you still want **sidebar · main · assistant** (or more steps) on small viewports:
+
+- **`Trifold`** — fixed **three** slots: **`leading`** · **`main`** · **`trailing`**. Controlled with **`panelIndex: 0 | 1 | 2`** and **`onPanelIndexChange`**. This is what **`apps/web`** does: **`FumadocsAssistant`** passes **`renderMobileShell={(slots) => <Trifold … panelIndex={slots.panelIndex} onPanelIndexChange={slots.setPanelIndex} />}`** so nav / docs / assistant share one horizontal track without routing.
+- **`SlideRow`** / **`StackedPanels`** — same gestures, but **any number of panels** (2, 3, 4+). Prefer this when you need **more than three** horizontal surfaces or a custom order; **`Trifold`** is a thin, typed wrapper around **`SlideRow`** for the common 3-up shell.
+
+For a **second** horizontal story inside one column (e.g. nested wizard), nest **`SlideRow`** / **`StackedPanels`** inside a single panel — inner index is independent of the outer one.
+
 ### `StackedPanels` (recommended shell)
 
 Same gestures as `SlideRow`, plus **bounded** panels: each surface gets `min-h-0`, vertical scroll, optional **max-width** centering (`contentMaxWidthClassName`), and **`density`**: `compact` (thin sidebars) vs `comfortable` (full-page gutters). Aligns with how **`Trifold`** composes `SlideRow` in product shells (e.g. mobile triptych in OpenDetail). Add **N** panels for longer flows; at **split** breakpoints you always see the **active** column and the **next** column (`activeIndex` + `activeIndex + 1`). For a **second horizontal story** inside one column, nest **`SlideRow`** (or another `StackedPanels`) in that panel.
@@ -45,7 +66,7 @@ import { SlideRow } from "trifold";
 ### Controls (API surface)
 
 | Prop | Purpose |
-|------|---------|
+| --- | --- |
 | `settleTransitionEnabled` | When `false`, index changes jump with **no** spring (duration 0). Dragging still tracks the pointer. |
 | `dragEnabled` | When `false`, disables pointer drag **and** horizontal wheel navigation; `data-slide-to` / `goTo` / links still work. |
 | `finePointerDragEnabled` | Primary-button drag (mouse / pen / trackpad). Default **`false`** — **touch** horizontal pan on phones/tablets; **desktop** uses taps/clicks (`data-slide-to`, links, `goTo`). Set `true` for click-drag on desktop. |

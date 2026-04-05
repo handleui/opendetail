@@ -379,6 +379,136 @@
     },
     {
       "anchor": null,
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/index.mdx",
+      "headings": [
+        "Components"
+      ],
+      "id": "components/index.mdx",
+      "images": [],
+      "relativePath": "components/index.mdx",
+      "text": "Browse UI primitives from opendetail-react: layout shell, the prompt field, and suggestion chips. Each page includes a live preview and API notes.",
+      "title": "Components",
+      "url": "/docs/components"
+    },
+    {
+      "anchor": "imports",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/index.mdx",
+      "headings": [
+        "Imports"
+      ],
+      "id": "components/index.mdx#imports",
+      "images": [],
+      "relativePath": "components/index.mdx",
+      "text": "Imports\n\nInstall styles and components as in the main docs, then import named exports from opendetail-react.",
+      "title": "Components",
+      "url": "/docs/components#imports"
+    },
+    {
+      "anchor": null,
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/input.mdx",
+      "headings": [
+        "Input"
+      ],
+      "id": "components/input.mdx",
+      "images": [],
+      "relativePath": "components/input.mdx",
+      "text": "AssistantInput renders the branded textarea surface, send/stop control, and optional status line. It pairs with useOpenDetail request state for pending and streaming modes.",
+      "title": "Input",
+      "url": "/docs/components/input"
+    },
+    {
+      "anchor": "sizes",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/input.mdx",
+      "headings": [
+        "Sizes"
+      ],
+      "id": "components/input.mdx#sizes",
+      "images": [],
+      "relativePath": "components/input.mdx",
+      "text": "Sizes\n\ncompact — default width for narrow rails.shell — wider surface aligned with modal/shell layouts.",
+      "title": "Input",
+      "url": "/docs/components/input#sizes"
+    },
+    {
+      "anchor": "props",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/input.mdx",
+      "headings": [
+        "Props"
+      ],
+      "id": "components/input.mdx#props",
+      "images": [],
+      "relativePath": "components/input.mdx",
+      "text": "Props\n\nSee TypeScript types on AssistantInputProps in opendetail-react for the full list, including requestState, onSubmit, onStop, placeholder, and showShellUnderlay.",
+      "title": "Input",
+      "url": "/docs/components/input#props"
+    },
+    {
+      "anchor": null,
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/recommendations.mdx",
+      "headings": [
+        "Recommendations"
+      ],
+      "id": "components/recommendations.mdx",
+      "images": [],
+      "relativePath": "components/recommendations.mdx",
+      "text": "Use AssistantSuggestions as a container and AssistantSuggestion for each chip-style button. Suggestions are client components and support onClick and disabled.",
+      "title": "Recommendations",
+      "url": "/docs/components/recommendations"
+    },
+    {
+      "anchor": "composition",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/recommendations.mdx",
+      "headings": [
+        "Composition"
+      ],
+      "id": "components/recommendations.mdx#composition",
+      "images": [],
+      "relativePath": "components/recommendations.mdx",
+      "text": "Composition\n\nWrap multiple AssistantSuggestion elements inside AssistantSuggestions. Style hooks use opendetail-assistant-suggestions and opendetail-assistant-suggestion classes from the OpenDetail base stylesheet.",
+      "title": "Recommendations",
+      "url": "/docs/components/recommendations#composition"
+    },
+    {
+      "anchor": null,
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/shell.mdx",
+      "headings": [
+        "Shell"
+      ],
+      "id": "components/shell.mdx",
+      "images": [],
+      "relativePath": "components/shell.mdx",
+      "text": "The AssistantShell component wraps the conversation area and the input in a vertical layout with semantic regions (opendetail-shell, opendetail-shell__thread, opendetail-shell__input).",
+      "title": "Shell",
+      "url": "/docs/components/shell"
+    },
+    {
+      "anchor": "usage",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/shell.mdx",
+      "headings": [
+        "Usage"
+      ],
+      "id": "components/shell.mdx#usage",
+      "images": [],
+      "relativePath": "components/shell.mdx",
+      "text": "Usage\n\nImport AssistantShell from opendetail-react and pass input (required). Use thread for the scrollable message list, or pass children as a shortcut when you only need a single thread body.",
+      "title": "Shell",
+      "url": "/docs/components/shell#usage"
+    },
+    {
+      "anchor": "props",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/shell.mdx",
+      "headings": [
+        "Props"
+      ],
+      "id": "components/shell.mdx#props",
+      "images": [],
+      "relativePath": "components/shell.mdx",
+      "text": "Props\n\n| Prop | Type | Description |\n| --- | --- | --- |\n| input | ReactNode | Required. Typically an AssistantInput. |\n| thread | ReactNode | Optional. Main conversation content. |\n| children | ReactNode | Used when thread is omitted (renders inside the thread region). |\n| className | string | Optional class on the root section. |",
+      "title": "Shell",
+      "url": "/docs/components/shell#props"
+    },
+    {
+      "anchor": null,
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/configuration.mdx",
       "headings": [
         "Configuration"
@@ -1126,7 +1256,7 @@
     },
     "version": 1
   },
-  "generatedAt": "2026-04-05T20:28:57.477Z",
-  "manifestHash": "514808f56dbb258218b4bf8cfc1349b28bc7b6686b682d5f4dba26673b01d03c",
+  "generatedAt": "2026-04-05T23:31:24.156Z",
+  "manifestHash": "b5ee1822f417e3a8bf682f13251ab984860556555d805ec5c31748c74d0791e1",
   "version": 1
 }

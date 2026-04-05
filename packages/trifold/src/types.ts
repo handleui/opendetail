@@ -8,6 +8,15 @@ export interface TrifoldSpringConfig {
   stiffness: number;
 }
 
+/**
+ * Three-panel shell: **leading · main · trailing** (OpenDetail web: nav · content · assistant).
+ * Does **not** change the URL — keep `panelIndex` in React state (e.g. lift from `AssistantSidebar`
+ * for mobile triptych). For **route-synced** horizontal stacks, use `StackedPanels` or `SlideRow`
+ * and derive `activeIndex` from the router.
+ *
+ * For **more than three** horizontal steps, use `SlideRow` / `StackedPanels` (this component is
+ * fixed at three children).
+ */
 export interface TrifoldProps {
   className?: string;
   /** Pixels moved before horizontal vs vertical is decided. Lower = snappier axis lock. Default 6. */

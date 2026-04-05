@@ -26,9 +26,12 @@ The same pages stay readable as normal docs. Machine-readable routes (for exampl
 | Package | Role |
 | --- | --- |
 | [`opendetail`](/docs/opendetail) | Build, core runtime, CLI (`opendetail` binary). |
-| [`opendetail-next`](/docs/next) | Next.js route helpers for self-hosted mode. |
-| [`opendetail-react`](/docs/react) | `useOpenDetail` and streaming client for browser UI. |
-| [`opendetail-fumadocs`](/docs/fumadocs) | Optional helpers when you already use Fumadocs-style docs. |
+| [`opendetail-next`](/docs/next) | Next.js App Router route, NDJSON streaming, `renderNextSourceLink`. |
+| [`opendetail-react`](/docs/react) | `useOpenDetail`, `AssistantSidebarShell`, streaming client. |
+| [`opendetail-fumadocs`](/docs/fumadocs) | Optional: known-page resolver + `FumadocsAssistant` preset (works with any `/docs/...` allowlist). |
+| [`trifold`](https://github.com/handleui/opendetail/tree/main/packages/trifold) | Optional: horizontal nav · main · assistant panel layout (e.g. mobile shell). |
+
+For **which to install, how they stack, and naming**, see [**Packages & composition**](/docs/packages).
 
 ## Where to go next
 
@@ -43,8 +46,13 @@ The same pages stay readable as normal docs. Machine-readable routes (for exampl
     href="/docs/integration"
     description="Self-hosted Next route, streaming shape, hosted-shaped client, grounding, and FAQ."
   />
+  <Card
+    title="Packages & composition"
+    href="/docs/packages"
+    description="When to use each package, how they compound, and how names map to roles."
+  />
 </Cards>
 
 **Core:** [Overview](/docs/opendetail) · [Configuration](/docs/configuration) · [CLI](/docs/cli) · [Runtime](/docs/runtime)
 
-**Adapters:** [Next.js](/docs/next) · [React](/docs/react) · [Fumadocs](/docs/fumadocs)
+**Adapters:** [Next.js](/docs/next) · [React](/docs/react) · [opendetail-fumadocs](/docs/fumadocs)

@@ -196,7 +196,7 @@ export function CopyCommand({
         </div>
         <button
           aria-label={copied ? "Copied" : "Copy command"}
-          className="flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-md text-neutral-400 transition-[color,transform] duration-150 ease-out hover:bg-neutral-100 hover:text-neutral-700 active:scale-[0.97]"
+          className="flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-md text-black transition-[color,transform] duration-150 ease-out hover:bg-neutral-100 active:scale-[0.97]"
           onClick={copy}
           title={parsed ? `Runner cycles to ${nextRunnerHint}` : undefined}
           type="button"
@@ -204,15 +204,15 @@ export function CopyCommand({
           <span className="sr-only">{copied ? "Copied" : "Copy"}</span>
           <span
             aria-hidden
-            className="relative inline-flex size-4 items-center justify-center"
+            className="relative inline-flex size-[14px] items-center justify-center"
           >
             <CopyIcon
-              className={`absolute size-4 transition-opacity duration-150 ease-out ${
+              className={`absolute size-[14px] text-black transition-opacity duration-150 ease-out ${
                 copied ? "pointer-events-none opacity-0" : "opacity-100"
               }`}
             />
             <CheckIcon
-              className={`absolute size-4 text-emerald-600 transition-opacity duration-150 ease-out ${
+              className={`absolute size-[14px] text-black transition-opacity duration-150 ease-out ${
                 copied ? "opacity-100" : "pointer-events-none opacity-0"
               }`}
             />

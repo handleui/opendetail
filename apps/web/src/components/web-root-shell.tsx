@@ -1,10 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { FumadocsAssistantSidebar } from "opendetail-fumadocs/sidebar";
+import { FumadocsAssistant } from "opendetail-fumadocs/assistant";
 import type { ReactNode } from "react";
 import { Trifold } from "trifold";
-import { SiteNavSidebar } from "@/components/site-nav-sidebar";
+import { Sidebar } from "@/components/sidebar";
 import { SiteShell } from "@/components/site-shell";
 import {
   appName,
@@ -15,6 +15,8 @@ import {
 
 const githubHref = `https://github.com/${gitConfig.user}/${gitConfig.repo}`;
 
+const SITE_NAV_ROW_ICON_PX = 14;
+
 export const WebRootShell = ({
   children,
   knownSourcePageUrls,
@@ -23,36 +25,37 @@ export const WebRootShell = ({
   knownSourcePageUrls: readonly string[];
 }) => {
   const navigation = (
-    <SiteNavSidebar
+    <Sidebar
       githubHref={githubHref}
       githubIcon={
         <Image
           alt=""
-          className="block size-4 max-w-none"
-          height={16}
+          className="block max-h-full max-w-full object-contain brightness-0"
+          height={SITE_NAV_ROW_ICON_PX}
           src="/github.svg"
           unoptimized
-          width={16}
+          width={SITE_NAV_ROW_ICON_PX}
         />
       }
       npmHref={npmPackageUrl}
       npmIcon={
         <Image
           alt=""
-          className="block size-4 max-w-none"
-          height={16}
+          className="block max-h-full max-w-full object-contain"
+          height={SITE_NAV_ROW_ICON_PX}
           src="/npm.svg"
           unoptimized
-          width={16}
+          width={SITE_NAV_ROW_ICON_PX}
         />
       }
       productTitle={appName}
       productVersionLabel={productVersionLabel}
+      rowIconSize={SITE_NAV_ROW_ICON_PX}
     />
   );
 
   return (
-    <FumadocsAssistantSidebar
+    <FumadocsAssistant
       inputId="opendetail-site-question"
       knownSourcePageUrls={knownSourcePageUrls}
       navigation={navigation}
@@ -75,6 +78,6 @@ export const WebRootShell = ({
       )}
     >
       <SiteShell>{children}</SiteShell>
-    </FumadocsAssistantSidebar>
+    </FumadocsAssistant>
   );
 };

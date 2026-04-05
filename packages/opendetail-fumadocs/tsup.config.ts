@@ -4,8 +4,8 @@ export default defineConfig({
   clean: true,
   dts: true,
   entry: {
+    assistant: "src/assistant.tsx",
     index: "src/index.ts",
-    sidebar: "src/sidebar.tsx",
   },
   format: ["esm"],
   shims: false,

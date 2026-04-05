@@ -33,8 +33,8 @@
       "opendetail-fumadocs": [
         "../../packages/opendetail-fumadocs/src/index.ts"
       ],
-      "opendetail-fumadocs/sidebar": [
-        "../../packages/opendetail-fumadocs/src/sidebar.tsx"
+      "opendetail-fumadocs/assistant": [
+        "../../packages/opendetail-fumadocs/src/assistant.tsx"
       ]
     }
   },

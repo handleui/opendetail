@@ -7,7 +7,7 @@ export default function FullLayout({
 }) {
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <LateralDemoShell variant="full">{children}</LateralDemoShell>
+      <LateralDemoShell>{children}</LateralDemoShell>
     </div>
   );
 }

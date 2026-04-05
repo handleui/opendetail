@@ -68,6 +68,11 @@ export type StackedPanelsProps = Omit<
 /**
  * Opinionated `SlideRow` wrapper: consistent per-panel scroll boundaries and optional max-width,
  * matching the Trifold / assistant shell idea (clean columns, same motion model everywhere).
+ *
+ * Use for **route-synced** stacks (derive `activeIndex` from the URL + `router.push` in
+ * `onActiveIndexChange`) or **in-app** multi-step flows (controlled index only). For a fixed
+ * **three-column** shell without extra panels, `Trifold` is a thin typed wrapper; for **four or
+ * more** horizontal surfaces, stay on `SlideRow` / `StackedPanels` with a longer `panels` array.
  */
 export const StackedPanels = forwardRef<SlideRowHandle, StackedPanelsProps>(
   function StackedPanels(

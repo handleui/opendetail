@@ -1,5 +1,6 @@
-import { IndexView } from "@/components/lateral/views";
+import { redirect } from "next/navigation";
 
-export default function SplitIndexPage() {
-  return <IndexView />;
+/** Legacy route: split-screen demo removed; single sliding stack + URL is the model. */
+export default function SplitLegacyRedirect() {
+  redirect("/full");
 }
