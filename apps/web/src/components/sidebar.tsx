@@ -139,6 +139,8 @@ const INNER_NAV_CLASS =
 
 /** Lucide / row raster slot — keep in sync with `web-root-shell` social icon size. */
 const ROW_ICON_PX = 14;
+/** Lucide default stroke is 2; GitHub/npm slots use custom SVGs and keep their own strokes. */
+const SIDEBAR_LUCIDE_STROKE_PX = 1.2;
 const DEFAULT_ROW_ICON_SIZE = ROW_ICON_PX;
 const DEFAULT_MADE_BY_HUMAN_HREF = "https://x.com/handleui";
 
@@ -213,6 +215,7 @@ function NestedNavItems({
                 aria-hidden="true"
                 className={ROW_TRAILING_ICON_CLASS}
                 size={ROW_ICON_PX}
+                strokeWidth={SIDEBAR_LUCIDE_STROKE_PX}
               />
             </Link>
           </li>
@@ -329,6 +332,7 @@ export function Sidebar({
                     aria-hidden="true"
                     className="shrink-0 text-black"
                     size={rowIconSize}
+                    strokeWidth={SIDEBAR_LUCIDE_STROKE_PX}
                   />
                 </RootRowIconSlot>
                 Home
@@ -355,6 +359,7 @@ export function Sidebar({
                           aria-hidden="true"
                           className="shrink-0 text-black"
                           size={rowIconSize}
+                          strokeWidth={SIDEBAR_LUCIDE_STROKE_PX}
                         />
                       </RootRowIconSlot>
                       <span>Docs</span>
@@ -363,6 +368,7 @@ export function Sidebar({
                       aria-hidden="true"
                       className={ROW_TRAILING_ICON_CLASS}
                       size={ROW_ICON_PX}
+                      strokeWidth={SIDEBAR_LUCIDE_STROKE_PX}
                     />
                   </Link>
                   <Link
@@ -383,6 +389,7 @@ export function Sidebar({
                           aria-hidden="true"
                           className="shrink-0 text-black"
                           size={rowIconSize}
+                          strokeWidth={SIDEBAR_LUCIDE_STROKE_PX}
                         />
                       </RootRowIconSlot>
                       <span>Components</span>
@@ -391,6 +398,7 @@ export function Sidebar({
                       aria-hidden="true"
                       className={ROW_TRAILING_ICON_CLASS}
                       size={ROW_ICON_PX}
+                      strokeWidth={SIDEBAR_LUCIDE_STROKE_PX}
                     />
                   </Link>
                 </div>
@@ -415,6 +423,7 @@ export function Sidebar({
                       aria-hidden="true"
                       className={ROW_TRAILING_ICON_CLASS}
                       size={ROW_ICON_PX}
+                      strokeWidth={SIDEBAR_LUCIDE_STROKE_PX}
                     />
                   </a>
                   <a
@@ -433,6 +442,7 @@ export function Sidebar({
                       aria-hidden="true"
                       className={ROW_TRAILING_ICON_CLASS}
                       size={ROW_ICON_PX}
+                      strokeWidth={SIDEBAR_LUCIDE_STROKE_PX}
                     />
                   </a>
                 </div>
@@ -452,6 +462,7 @@ export function Sidebar({
                   aria-hidden="true"
                   className={ROW_TRAILING_ICON_CLASS}
                   size={ROW_ICON_PX}
+                  strokeWidth={SIDEBAR_LUCIDE_STROKE_PX}
                 />
                 Back
               </button>
@@ -515,6 +526,7 @@ export function Sidebar({
               aria-hidden="true"
               className="shrink-0 text-black"
               size={ROW_ICON_PX}
+              strokeWidth={SIDEBAR_LUCIDE_STROKE_PX}
             />
           </a>
         </p>
