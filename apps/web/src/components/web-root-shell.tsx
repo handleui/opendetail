@@ -5,7 +5,7 @@ import { FumadocsAppSidebar } from "opendetail-fumadocs/app-sidebar";
 import { FumadocsAssistantSidebar } from "opendetail-fumadocs/sidebar";
 import type { ReactNode } from "react";
 
-import { MobileTriptychShell } from "@/components/mobile-triptych/mobile-triptych-shell";
+import { Trifold } from "trifold";
 import { SiteShell } from "@/components/site-shell";
 import {
   appName,
@@ -61,7 +61,19 @@ export const WebRootShell = ({
         key: "opendetail-site-sidebar",
       }}
       placeholder="Ask AI anything..."
-      renderMobileShell={(slots) => <MobileTriptychShell {...slots} />}
+      renderMobileShell={(slots) => (
+        <Trifold
+          className="flex h-full min-h-0 w-full flex-1 flex-col overflow-hidden overscroll-none"
+          leading={slots.navigation}
+          leadingClassName="border-[var(--opendetail-color-sidebar-stroke)] border-e border-solid bg-white"
+          main={slots.main}
+          mainClassName="bg-white"
+          onPanelIndexChange={slots.setPanelIndex}
+          panelIndex={slots.panelIndex}
+          trailing={slots.assistant}
+          trailingClassName="bg-[var(--opendetail-color-background)]"
+        />
+      )}
     >
       <SiteShell>{children}</SiteShell>
     </FumadocsAssistantSidebar>

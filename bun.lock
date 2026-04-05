@@ -40,6 +40,7 @@
         "react-dom": "19.2.4",
         "shiki": "^4.0.2",
         "streamdown": "^2.5.0",
+        "trifold": "workspace:*",
       },
       "devDependencies": {
         "@tailwindcss/postcss": "^4",
@@ -143,6 +144,27 @@
         "vitest": "^4.1.2",
       },
       "peerDependencies": {
+        "react": "^19.0.0",
+        "react-dom": "^19.0.0",
+      },
+    },
+    "packages/trifold": {
+      "name": "trifold",
+      "version": "0.1.0",
+      "devDependencies": {
+        "@types/node": "^25.5.0",
+        "@types/react": "^19",
+        "@types/react-dom": "^19",
+        "motion": "^12.38.0",
+        "publint": "^0.3.18",
+        "react": "19.2.4",
+        "react-dom": "19.2.4",
+        "tsup": "^8.5.1",
+        "typescript": "^6.0.2",
+        "vitest": "^4.1.2",
+      },
+      "peerDependencies": {
+        "motion": "^12.0.0",
         "react": "^19.0.0",
         "react-dom": "^19.0.0",
       },
@@ -1545,6 +1567,8 @@
     "to-regex-range": ["to-regex-range@5.0.1", "", { "dependencies": { "is-number": "^7.0.0" } }, "sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ=="],
 
     "tree-kill": ["tree-kill@1.2.2", "", { "bin": { "tree-kill": "cli.js" } }, "sha512-L0Orpi8qGpRG//Nd+H90vFB+3iHnue1zSSGmNOOCh1GLJ7rUKVwV2HvijphGQS2UmhUZewS9VgvxYIdgr+fG1A=="],
+
+    "trifold": ["trifold@workspace:packages/trifold"],
 
     "trim-lines": ["trim-lines@3.0.1", "", {}, "sha512-kRj8B+YHZCc9kQYdWfJB2/oUl9rA99qbowYYBtr4ui4mZyAQ2JpvVBd/6U2YloATfqBhBTSMhTpgBHtU0Mf3Rg=="],
 
