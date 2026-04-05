@@ -1,0 +1,23 @@
+---
+title: CLI commands
+description: Index of opendetail build, setup, and doctor — jump to the full page for each command.
+---
+
+Each command is a separate page with flags, behavior, and copy-paste examples.
+
+| Command | Role |
+| --- | --- |
+| [`build`](/docs/cli/build) | Read `opendetail.toml`, match content, write `.opendetail/index.json`. |
+| [`setup`](/docs/cli/setup) | Scaffold config, optional Next.js route, and optionally run an initial build. |
+| [`doctor`](/docs/cli/doctor) | Verify config, built index, route (self-hosted), and required environment variables. |
+
+## Suggested order
+
+1. [`setup`](/docs/cli/setup) once per repo (or when you change integration mode).
+2. [`build`](/docs/cli/build) whenever docs or media globs change.
+3. [`doctor`](/docs/cli/doctor) when something fails or after upgrading packages.
+
+## See also
+
+- [CLI quickstart](/docs/cli/quickstart) — install check and first steps.
+- [CLI overview](/docs/cli) — how the binary fits the rest of OpenDetail.

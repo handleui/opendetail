@@ -2,7 +2,15 @@
 
 import { ArrowRightToLine, Check, Copy, Plus } from "lucide-react";
 import { motion } from "motion/react";
-import { type ReactNode, useEffect, useRef, useState } from "react";
+import {
+  type CSSProperties,
+  type ReactNode,
+  type PointerEvent as ReactPointerEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 import {
   AssistantInput,
@@ -65,6 +73,22 @@ const DEFAULT_PROMPT_SUGGESTIONS = [
   "OpenDetail vs competitors",
 ] as const;
 
+/** Matches `--opendetail-sidebar-content-min-width` at 16px root (23.4375rem). */
+const SIDEBAR_RESIZE_MIN_PX = 375;
+const SIDEBAR_RESIZE_MAX_PX = 720;
+const SIDEBAR_RESIZE_KEYBOARD_STEP_PX = 16;
+
+const clampSidebarWidthPx = (value: number, maxPx: number): number =>
+  Math.round(Math.min(maxPx, Math.max(SIDEBAR_RESIZE_MIN_PX, value)));
+
+const getSidebarResizeMaxPx = (): number => {
+  if (typeof window === "undefined") {
+    return SIDEBAR_RESIZE_MAX_PX;
+  }
+
+  return Math.min(window.innerWidth, SIDEBAR_RESIZE_MAX_PX);
+};
+
 export interface AssistantSidebarImage {
   alt?: string | null;
   title?: string | null;
@@ -113,6 +137,8 @@ export interface AssistantSidebarProps {
   onClearThread?: () => void;
   onOpenChange?: (open: boolean) => void;
   onQuestionChange?: (value: string) => void;
+  /** Notifies when the user resizes the panel via the drag handle (pixels). */
+  onSidebarWidthChange?: (widthPx: number) => void;
   onStop?: () => void;
   onSubmitQuestion?: SubmitHandler;
   open?: boolean;
@@ -122,6 +148,10 @@ export interface AssistantSidebarProps {
   renderSourceLink?: AssistantResponseProps["renderSourceLink"];
   requestState?: AssistantSidebarRequestState;
   resolveSourceTarget?: AssistantResponseProps["resolveSourceTarget"];
+  /** When true, shows a drag handle on the panel edge to resize width. */
+  sidebarResizeEnabled?: boolean;
+  /** Controlled panel width in pixels; drives `--opendetail-sidebar-width` when set. */
+  sidebarWidthPx?: number;
   thread?: ReactNode;
   userInitial?: string;
 }
@@ -180,6 +210,7 @@ export const AssistantSidebar = ({
   onClearThread,
   onOpenChange,
   onQuestionChange,
+  onSidebarWidthChange,
   onStop,
   onSubmitQuestion,
   open,
@@ -189,6 +220,8 @@ export const AssistantSidebar = ({
   renderSourceLink,
   requestState = "idle",
   resolveSourceTarget,
+  sidebarResizeEnabled = false,
+  sidebarWidthPx,
   thread,
   userInitial = "U",
 }: AssistantSidebarProps) => {
@@ -198,6 +231,8 @@ export const AssistantSidebar = ({
   const copyConfirmationTimeoutRef = useRef<number | null>(null);
   const previousMessageCountRef = useRef(messages.length);
   const previousRequestStateRef = useRef(requestState);
+  const panelRef = useRef<HTMLElement | null>(null);
+  const [isSidebarResizing, setIsSidebarResizing] = useState(false);
   const isSidebarOpen = open ?? internalOpen;
   const hasMessages = messages.length > 0;
   const resolvedHeaderTitle =
@@ -342,6 +377,74 @@ export const AssistantSidebar = ({
     });
   };
 
+  const handleSidebarResizePointerDown = useCallback(
+    (event: ReactPointerEvent<HTMLButtonElement>) => {
+      if (!(sidebarResizeEnabled && isSidebarOpen) || event.button !== 0) {
+        return;
+      }
+
+      event.preventDefault();
+      const panel = panelRef.current;
+
+      if (!panel) {
+        return;
+      }
+
+      const startWidth = panel.getBoundingClientRect().width;
+      const startX = event.clientX;
+      const maxPx = getSidebarResizeMaxPx();
+
+      setIsSidebarResizing(true);
+
+      const handleMove = (moveEvent: PointerEvent) => {
+        const delta = startX - moveEvent.clientX;
+        onSidebarWidthChange?.(clampSidebarWidthPx(startWidth + delta, maxPx));
+      };
+
+      const handleUp = () => {
+        setIsSidebarResizing(false);
+        window.removeEventListener("pointermove", handleMove);
+        window.removeEventListener("pointerup", handleUp);
+        window.removeEventListener("pointercancel", handleUp);
+      };
+
+      window.addEventListener("pointermove", handleMove);
+      window.addEventListener("pointerup", handleUp);
+      window.addEventListener("pointercancel", handleUp);
+    },
+    [isSidebarOpen, onSidebarWidthChange, sidebarResizeEnabled]
+  );
+
+  const handleSidebarResizeKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLButtonElement>) => {
+      if (!(sidebarResizeEnabled && isSidebarOpen)) {
+        return;
+      }
+
+      const maxPx = getSidebarResizeMaxPx();
+      const current =
+        sidebarWidthPx ??
+        panelRef.current?.getBoundingClientRect().width ??
+        SIDEBAR_RESIZE_MIN_PX;
+
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        onSidebarWidthChange?.(
+          clampSidebarWidthPx(current + SIDEBAR_RESIZE_KEYBOARD_STEP_PX, maxPx)
+        );
+        return;
+      }
+
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        onSidebarWidthChange?.(
+          clampSidebarWidthPx(current - SIDEBAR_RESIZE_KEYBOARD_STEP_PX, maxPx)
+        );
+      }
+    },
+    [isSidebarOpen, onSidebarWidthChange, sidebarResizeEnabled, sidebarWidthPx]
+  );
+
   const resolvedThread = thread ?? (
     <AssistantThread
       animated={isSidebarOpen && hasMessages}
@@ -425,15 +528,44 @@ export const AssistantSidebar = ({
       );
   }
 
+  const rootStyle: CSSProperties | undefined =
+    sidebarWidthPx === undefined
+      ? undefined
+      : { ["--opendetail-sidebar-width" as string]: `${sidebarWidthPx}px` };
+
+  const rootClassName = [
+    getClassName({ className, open: isSidebarOpen }),
+    isSidebarResizing ? "opendetail-sidebar--resizing" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  const panelClassName = [
+    "opendetail-sidebar__panel",
+    isSidebarResizing ? "opendetail-sidebar__panel--resizing" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
-    <div className={getClassName({ className, open: isSidebarOpen })}>
+    <div className={rootClassName} style={rootStyle}>
       <div className="opendetail-sidebar__content">{children}</div>
 
       <aside
         aria-label="OpenDetail assistant sidebar"
-        className="opendetail-sidebar__panel"
+        className={panelClassName}
         data-opendetail-component="assistant-sidebar"
+        ref={panelRef}
       >
+        {sidebarResizeEnabled && isSidebarOpen ? (
+          <button
+            aria-label="Resize assistant panel"
+            className="opendetail-sidebar__resize-handle"
+            onKeyDown={handleSidebarResizeKeyDown}
+            onPointerDown={handleSidebarResizePointerDown}
+            type="button"
+          />
+        ) : null}
         <motion.div
           animate={isSidebarOpen ? "open" : "closed"}
           className="opendetail-sidebar__shell"

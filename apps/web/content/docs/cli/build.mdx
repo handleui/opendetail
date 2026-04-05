@@ -1,0 +1,30 @@
+---
+title: opendetail build
+description: Read opendetail.toml, parse matched Markdown and MDX, and write the local OpenDetail index artifact.
+---
+
+`opendetail build` is the **index build** step: it resolves paths from your config, walks the include globs, and writes **`.opendetail/index.json`** (or `--output`).
+
+## Usage
+
+<CodeBlock lang="bash">{`opendetail build [--config <path>] [--output <path>] [--cwd <path>]
+`}</CodeBlock>
+
+## Flags
+
+| Flag | Meaning |
+| --- | --- |
+| `--config` | Path to `opendetail.toml` (default: `./opendetail.toml`). |
+| `--output` | Where to write the index JSON (default: `.opendetail/index.json` relative to cwd). |
+| `--cwd` | Working directory for resolving paths. |
+
+## Examples
+
+<CopyCommand bun="bunx opendetail build" npm="npx opendetail build" />
+
+<CopyCommand bun="bunx opendetail build --config ./config/opendetail.toml" npm="npx opendetail build --config ./config/opendetail.toml" />
+
+## Related
+
+- [`setup`](/docs/cli/setup) can run an initial build after scaffolding.
+- [`doctor`](/docs/cli/doctor) checks that the index file exists and looks sane for your integration mode.

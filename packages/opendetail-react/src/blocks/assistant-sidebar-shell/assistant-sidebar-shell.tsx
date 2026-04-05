@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { type ReactNode, useState } from "react";
 import {
   type UseOpenDetailOptions,
   useOpenDetail,
@@ -44,6 +44,10 @@ export const AssistantSidebarShell = ({
   transport,
   ...sidebarProps
 }: AssistantSidebarShellProps) => {
+  const [sidebarWidthPx, setSidebarWidthPx] = useState<number | undefined>(
+    undefined
+  );
+
   const {
     clearThread,
     conversationTitle,
@@ -61,15 +65,18 @@ export const AssistantSidebarShell = ({
 
   return (
     <AssistantSidebar
+      {...sidebarProps}
       headerTitle={conversationTitle}
       messages={messages}
       onClearThread={clearThread}
       onQuestionChange={setQuestion}
+      onSidebarWidthChange={setSidebarWidthPx}
       onStop={stop}
       onSubmitQuestion={submit}
       question={question}
       requestState={status}
-      {...sidebarProps}
+      sidebarResizeEnabled
+      sidebarWidthPx={sidebarWidthPx}
     >
       {children}
     </AssistantSidebar>

@@ -1,0 +1,37 @@
+---
+title: CLI quickstart
+description: Install the opendetail binary, print usage, and run your first build or setup — without a global install.
+---
+
+The CLI ships in the [`opendetail`](https://www.npmjs.com/package/opendetail) package. Prefer **`npx`**, **`bunx`**, or **`pnpm dlx`** so you always run the version pinned by your project.
+
+## Check the binary
+
+<CopyCommand bun="bunx opendetail --version" npm="npx opendetail --version" />
+
+If that prints a version, the executable resolves correctly from your package manager.
+
+## See usage
+
+Running the CLI without a subcommand prints supported commands and example invocations (same as [`opendetail build`](/docs/cli/build), [`opendetail setup`](/docs/cli/setup), and [`opendetail doctor`](/docs/cli/doctor)).
+
+## Typical flows
+
+- **Greenfield app:** [`opendetail setup`](/docs/cli/setup) to write `opendetail.toml`, scaffold the default route (self-hosted), and optionally run an initial index build.
+- **Docs changed:** [`opendetail build`](/docs/cli/build) to refresh `.opendetail/index.json`.
+- **Something looks wrong:** [`opendetail doctor`](/docs/cli/doctor) to verify config, index, route, and environment expectations.
+
+## Next
+
+<Cards>
+  <Card
+    title="Command reference"
+    href="/docs/cli/commands"
+    description="Short index of build, setup, and doctor with links to full pages."
+  />
+  <Card
+    title="opendetail build"
+    href="/docs/cli/build"
+    description="Flags for config path, output path, and working directory."
+  />
+</Cards>

@@ -27,22 +27,22 @@ export const SiteShell = ({ children }: { children: ReactNode }) => (
             githubIcon={
               <Image
                 alt=""
-                className="block size-5 max-w-none"
-                height={20}
+                className="block size-4 max-w-none"
+                height={16}
                 src="/github.svg"
                 unoptimized
-                width={20}
+                width={16}
               />
             }
             npmHref={npmPackageUrl}
             npmIcon={
               <Image
                 alt=""
-                className="block size-5 max-w-none"
-                height={20}
+                className="block size-4 max-w-none"
+                height={16}
                 src="/npm.svg"
                 unoptimized
-                width={20}
+                width={16}
               />
             }
             productTitle={appName}

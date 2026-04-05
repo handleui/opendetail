@@ -412,6 +412,7 @@
 }
 
 .opendetail-sidebar__panel {
+  position: relative;
   display: flex;
   flex: none;
   flex-direction: column;
@@ -425,6 +426,48 @@
     width 320ms cubic-bezier(0.22, 1, 0.36, 1),
     border-left-width 320ms cubic-bezier(0.22, 1, 0.36, 1),
     border-left-color 220ms ease;
+}
+
+.opendetail-sidebar__resize-handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 2;
+  display: block;
+  width: 6px;
+  padding: 0;
+  margin-left: -3px;
+  font: inherit;
+  color: inherit;
+  appearance: none;
+  touch-action: none;
+  cursor: col-resize;
+  background: transparent;
+  border: 0;
+}
+
+.opendetail-sidebar__resize-handle:focus-visible {
+  outline: 2px solid var(--opendetail-color-foreground);
+  outline-offset: -1px;
+}
+
+.opendetail-sidebar--resizing .opendetail-sidebar__panel {
+  transition: none;
+}
+
+.opendetail-sidebar--resizing,
+.opendetail-sidebar--resizing * {
+  cursor: col-resize;
+  user-select: none;
+}
+
+.opendetail-sidebar__panel--resizing {
+  border-left-color: color-mix(
+    in srgb,
+    var(--opendetail-color-sidebar-stroke) 70%,
+    black
+  );
 }
 
 .opendetail-sidebar--open .opendetail-sidebar__panel {
