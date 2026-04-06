@@ -1,6 +1,6 @@
 {
   "name": "trifold",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Swipe between full-width columns on phones (and larger screens): React layout primitives with touch drag, snap, and declarative jumps.",
   "type": "module",
   "license": "MIT",

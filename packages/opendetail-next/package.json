@@ -1,6 +1,6 @@
 {
   "name": "opendetail-next",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Next.js route and link integrations for OpenDetail.",
   "type": "module",
   "license": "MIT",

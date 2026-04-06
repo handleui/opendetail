@@ -1,6 +1,6 @@
 {
   "name": "opendetail-react",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "React transport, hooks, components, and styles for OpenDetail.",
   "type": "module",
   "license": "MIT",
