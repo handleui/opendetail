@@ -28,6 +28,7 @@ export {
   type OpenDetailPersistenceOptions,
   type OpenDetailPersistenceStorage,
   type OpenDetailThreadMessage,
+  type OpenDetailSubmitRequest,
   type OpenDetailUserMessage,
   type UseOpenDetailOptions,
   type UseOpenDetailState,

@@ -84,6 +84,14 @@ export interface UseOpenDetailOptions {
   transport?: OpenDetailTransportOptions;
 }
 
+/**
+ * Optional fields are consumed by `useOpenDetail` only and are not sent to the API.
+ */
+export type OpenDetailSubmitRequest = OpenDetailClientRequest & {
+  /** When true, clears the thread before sending so the request behaves like a first message (e.g. title demo). */
+  startFreshConversation?: boolean;
+};
+
 export interface UseOpenDetailState {
   clearThread: () => void;
   conversationTitle: string | null;
@@ -101,7 +109,7 @@ export interface UseOpenDetailState {
   setQuestion: (value: string) => void;
   status: OpenDetailClientStatus;
   stop: () => void;
-  submit: (request?: OpenDetailClientRequest) => Promise<void>;
+  submit: (request?: OpenDetailSubmitRequest) => Promise<void>;
 }
 
 interface OpenDetailErrorState {
@@ -784,19 +792,32 @@ export const useOpenDetail = (
     }
   };
 
-  const submit = async (request?: OpenDetailClientRequest): Promise<void> => {
+  const submit = async (request?: OpenDetailSubmitRequest): Promise<void> => {
     const nextQuestion = (request?.question ?? question).trim();
 
     if (nextQuestion.length === 0) {
       return;
     }
 
-    const shouldRequestConversationTitle = messages.length === 0;
+    const startFresh = request?.startFreshConversation === true;
+    const shouldRequestConversationTitle = startFresh || messages.length === 0;
 
     if (activeAssistantMessageIdRef.current && startedAtRef.current !== null) {
       finalizeActiveRequest({
         interrupted: true,
       });
+    }
+
+    if (startFresh) {
+      client.stop();
+      clearActiveRequest();
+      applyErrorState(EMPTY_ERROR_STATE);
+      setConversationTitle(null);
+      setStatus("idle");
+
+      if (persistence) {
+        clearPersistedState(persistence);
+      }
     }
 
     const userMessageId = createMessageId();
@@ -808,15 +829,19 @@ export const useOpenDetail = (
     applyErrorState(EMPTY_ERROR_STATE);
     setQuestion("");
     setStatus("pending");
-    setMessages((currentMessages) => [
-      ...currentMessages,
-      {
-        id: userMessageId,
-        question: nextQuestion,
-        role: "user",
-      },
-      createPendingAssistantMessage(assistantMessageId),
-    ]);
+    setMessages((currentMessages) => {
+      const base = startFresh ? [] : currentMessages;
+
+      return [
+        ...base,
+        {
+          id: userMessageId,
+          question: nextQuestion,
+          role: "user",
+        },
+        createPendingAssistantMessage(assistantMessageId),
+      ];
+    });
 
     try {
       await client.submit(

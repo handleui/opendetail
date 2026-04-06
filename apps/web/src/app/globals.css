@@ -74,3 +74,22 @@ html > body[data-scroll-locked] {
   width: 0;
   height: 0;
 }
+
+/* Components /shell demo: fill the tall preview (override fixed embed height) */
+.docs-shell-embed-demo .opendetail-sidebar.opendetail-sidebar--embed {
+  height: 100%;
+  min-height: 0;
+  max-height: none;
+}
+
+/* Components /shell demo: hide assistant thread scrollbar (still scrollable) */
+.docs-shell-embed-demo .opendetail-sidebar__body {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.docs-shell-embed-demo .opendetail-sidebar__body::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}

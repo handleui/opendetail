@@ -173,7 +173,7 @@ export interface AssistantSidebarProps {
   embedded?: boolean;
   /** When `embedded`, omit the collapse control (e.g. shell primitive demo). */
   embeddedHideCollapse?: boolean;
-  /** When `embedded` is set: `compact` = rounded 400px column; `dock` = flush left in the preview, left border only. */
+  /** When `embedded` is set: `compact` = rounded 400px column; `dock` = flush to the preview edge as a right rail, left border only. */
   embeddedLayout?: "compact" | "dock";
   emptyState?: ReactNode;
   headerTitle?: string | null;

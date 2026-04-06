@@ -13,29 +13,17 @@ import { SuggestionsDemo } from "@/components/component-demos/suggestions-demo";
 import { ComponentPreviewSurface } from "@/components/component-preview-surface";
 import { getDocsMdxComponents } from "@/components/docs-mdx-components";
 import { DocsPageChrome } from "@/components/docs-page-chrome";
+import {
+  COMPONENT_DOCS_SLUGS,
+  type ComponentDocsSlug,
+  isComponentDocsSlug,
+} from "@/lib/component-docs-slugs";
+import { getComponentPreviewPreset } from "@/lib/component-preview-viewport";
 import { knownSourcePageUrls } from "@/lib/known-source-page-urls";
 import { gitConfig } from "@/lib/shared";
 import { getPageImage, getPageMarkdownUrl, source } from "@/lib/source";
 
-const COMPONENT_SLUGS = [
-  "shell",
-  "sidebar",
-  "input",
-  "recommendations",
-  "sources",
-  "conversation-title",
-  "pressable",
-  "loader",
-  "error",
-] as const;
-
-type ComponentSlug = (typeof COMPONENT_SLUGS)[number];
-
-function isComponentSlug(value: string): value is ComponentSlug {
-  return (COMPONENT_SLUGS as readonly string[]).includes(value);
-}
-
-function ComponentPreview({ slug }: { slug: ComponentSlug }) {
+function ComponentPreview({ slug }: { slug: ComponentDocsSlug }) {
   switch (slug) {
     case "conversation-title":
       return <ConversationTitleDemo />;
@@ -62,7 +50,7 @@ function ComponentPreview({ slug }: { slug: ComponentSlug }) {
 
 export default async function Page(props: PageProps<"/components/[slug]">) {
   const params = await props.params;
-  if (!isComponentSlug(params.slug)) {
+  if (!isComponentDocsSlug(params.slug)) {
     notFound();
   }
 
@@ -84,7 +72,7 @@ export default async function Page(props: PageProps<"/components/[slug]">) {
         markdownUrl={markdownUrl}
         pageTitle={page.data.title}
         preview={
-          <ComponentPreviewSurface>
+          <ComponentPreviewSurface preset={getComponentPreviewPreset(params.slug)}>
             <ComponentPreview slug={params.slug} />
           </ComponentPreviewSurface>
         }
@@ -98,14 +86,14 @@ export default async function Page(props: PageProps<"/components/[slug]">) {
 }
 
 export function generateStaticParams() {
-  return COMPONENT_SLUGS.map((slug) => ({ slug }));
+  return COMPONENT_DOCS_SLUGS.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata(
   props: PageProps<"/components/[slug]">
 ): Promise<Metadata> {
   const params = await props.params;
-  if (!isComponentSlug(params.slug)) {
+  if (!isComponentDocsSlug(params.slug)) {
     notFound();
   }
 

@@ -3,11 +3,11 @@ title: Conversation title
 description: Chat session titles come from NDJSON title events consumed by useOpenDetail and shown in the assistant sidebar header.
 ---
 
-The **sidebar header title** is not a separate React component: **`useOpenDetail`** listens for stream events of type **`title`** and exposes **`conversationTitle`**. **`AssistantSidebarShell`** passes that string to **`AssistantSidebar`** as **`headerTitle`**.
+The sidebar header title is not a separate React component: `useOpenDetail` listens for stream events of type `title` and exposes `conversationTitle`. `AssistantSidebarShell` passes that string to `AssistantSidebar` as `headerTitle`.
 
-The **preview** below is a minimal interaction: submitting the prompt updates a **standalone title string** from your query (no stream) so you can see how the header label tracks user input. In production, titles usually come from NDJSON **`title`** events instead.
+The preview below uses the same client and server path as the site: `useOpenDetail` with `POST /api/opendetail`, `conversationTitle: true` on the first message in a thread, and NDJSON `title` events that update `conversationTitle` (not a truncated copy of the prompt).
 
-Titles are **persisted** when you pass **`persistence`** (same storage as messages and the draft question).
+Titles are persisted when you pass `persistence` (same storage as messages and the draft question).
 
 ## `useOpenDetail`
 
@@ -15,4 +15,4 @@ Titles are **persisted** when you pass **`persistence`** (same storage as messag
 | --- | --- | --- |
 | `conversationTitle` | `string \| null` | Latest title from the stream, or restored from persistence. |
 
-The client sets the title when it receives a **`{ type: "title", title: string }`** event from **`createOpenDetailClient`** (see [**opendetail-next**](/docs/next) route handler). Requesting a title on submit is opt-in via the client request shape (e.g. **`conversationTitle: true`** where supported).
+The client sets the title when it receives a `{ type: "title", title: string }` event from `createOpenDetailClient` (see [opendetail-next](/docs/next) route handler). Requesting a title on submit is opt-in via the client request shape (for example `conversationTitle: true` where supported).

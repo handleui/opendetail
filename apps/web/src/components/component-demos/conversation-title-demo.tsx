@@ -1,41 +1,56 @@
 "use client";
 
-import { AssistantInput, type AssistantInputRequest } from "opendetail-react";
-import { type FormEvent, useState } from "react";
-
-const truncate = (value: string, max: number): string =>
-  value.length <= max ? value : `${value.slice(0, Math.max(0, max - 1))}…`;
+import {
+  AssistantInput,
+  type AssistantInputRequest,
+  useOpenDetail,
+} from "opendetail-react";
+import type { FormEvent } from "react";
 
 /**
- * Minimal title demo: submitting sets the header string from the question (no streaming).
+ * Live title from the same path as the app: `useOpenDetail` + `POST /api/opendetail`,
+ * with `conversationTitle: true` on each send here via `startFreshConversation` (docs-only).
  */
 export const ConversationTitleDemo = () => {
-  const [title, setTitle] = useState("New chat");
+  const { conversationTitle, question, setQuestion, status, stop, submit } =
+    useOpenDetail({
+      endpoint: "/api/opendetail",
+      persistence: {
+        key: "opendetail-web-docs-conversation-title-demo",
+        storage: "session",
+      },
+      sitePaths: ["/docs", "/components"],
+    });
 
-  const handleSubmit = (
+  const displayTitle = conversationTitle ?? "New chat";
+
+  const handleSubmit = async (
     request: AssistantInputRequest,
     event: FormEvent<HTMLFormElement>
   ) => {
     event.preventDefault();
-    const q = request.question.trim();
-    if (!q) {
-      return;
-    }
-    setTitle(truncate(q, 48));
+    await submit({
+      question: request.question,
+      startFreshConversation: true,
+    });
   };
 
   return (
-    <div className="flex min-h-[min(70vh,22rem)] w-full max-w-[400px] flex-col items-center justify-center gap-6">
-      <p className="px-2 text-center font-medium text-[15px] text-neutral-950">
-        {title}
+    <div className="mx-auto flex min-h-[min(70vh,22rem)] w-full max-w-[400px] flex-col items-center justify-center gap-6">
+      <p className="px-2 text-center font-normal text-[15px] text-neutral-950 capitalize">
+        {displayTitle}
       </p>
       <div className="w-full">
         <AssistantInput
           name="conversation-title-demo"
+          onStop={stop}
           onSubmit={handleSubmit}
-          placeholder="Send a message — the title follows your query"
+          onValueChange={setQuestion}
+          placeholder="Each send starts a new chat and requests a title"
+          requestState={status}
           showShellUnderlay={true}
           size="shell"
+          value={question}
         />
       </div>
     </div>

@@ -460,22 +460,25 @@
   background: var(--opendetail-color-hover);
 }
 
-/* Embed docked to preview (docs /components/sidebar): flush left, left edge stroke only, no outer chrome. */
+/* Embed docked to preview (docs /components/sidebar): flush to the right edge, full preview height, left stroke only. */
 .opendetail-sidebar.opendetail-sidebar--embed-dock {
   width: 100%;
   max-width: none;
-  height: min(75vh, 40rem);
+  height: 100%;
   min-height: min(70vh, 28rem);
-  max-height: min(75vh, 40rem);
+  max-height: none;
   margin-inline: 0;
   border: none;
   border-radius: 0;
   background: transparent;
+  align-items: stretch;
   --opendetail-sidebar-width: min(100%, 25rem);
 }
 
 .opendetail-sidebar.opendetail-sidebar--embed-dock .opendetail-sidebar__embed-reopen {
-  min-height: min(64vh, 26rem);
+  min-height: 0;
+  padding-left: 0;
+  padding-right: 0;
   background: white;
 }
 
@@ -493,6 +496,7 @@
   flex: none;
   width: min(100vw, var(--opendetail-sidebar-width));
   max-width: min(100%, var(--opendetail-sidebar-width));
+  margin-left: auto;
   border-left: 1px solid var(--opendetail-color-sidebar-stroke);
   border-top: none;
   border-right: none;

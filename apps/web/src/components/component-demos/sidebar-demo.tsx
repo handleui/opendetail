@@ -11,7 +11,7 @@ const PROMPT_SUGGESTIONS = [
   "What is NDJSON streaming?",
 ] as const;
 
-/** Full `AssistantSidebar` docked to the left of the preview: left stroke only, collapse + reopen. */
+/** Full `AssistantSidebar` docked to the right edge of the preview: left stroke only, collapse + reopen. */
 export const SidebarDemo = ({
   knownSourcePageUrls,
 }: {
@@ -23,8 +23,9 @@ export const SidebarDemo = ({
   );
 
   return (
-    <div className="w-full">
+    <div className="flex h-full min-h-0 w-full flex-1 flex-col">
       <AssistantSidebarShell
+        className="h-full min-h-0 flex-1"
         defaultOpen
         embedded
         embeddedLayout="dock"

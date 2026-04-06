@@ -27,8 +27,9 @@ export const ShellDemo = ({
   );
 
   return (
-    <div className="w-full">
+    <div className="docs-shell-embed-demo flex h-full min-h-0 w-full flex-1 flex-col">
       <AssistantSidebarShell
+        className="min-h-0 flex-1"
         defaultOpen
         embedded
         embeddedHideCollapse

@@ -3,31 +3,31 @@ title: Sidebar
 description: AssistantSidebar is the full assistant column—header actions, thread, resizable width, and input—used with your main content or in embedded demos.
 ---
 
-**`AssistantSidebar`** composes the same pieces as this site’s AI panel: **title**, **copy transcript**, **new session** (+), **collapse**, optional **resize handle**, **thread** (or custom `thread` slot), and **`AssistantInput`**.
+`AssistantSidebar` composes the same pieces as this site’s AI panel: title, copy transcript, new session (+), collapse, optional resize handle, thread (or custom `thread` slot), and `AssistantInput`.
 
-Use **`AssistantSidebarShell`** when you want **`useOpenDetail`** wired to your **`POST /api/opendetail`** route (streaming, stop, persistence, **`conversationTitle`**).
+Use `AssistantSidebarShell` when you want `useOpenDetail` wired to your `POST /api/opendetail` route (streaming, stop, persistence, `conversationTitle`).
 
 ## Header actions
 
 | Control | Behavior |
 | --- | --- |
 | Copy | Copies user + assistant transcript to the clipboard (disabled when empty). |
-| New session | Calls **`onClearThread`** (shell clears thread + question via **`useOpenDetail`**). |
-| Collapse | Closes the panel; **`embedded`** mode shows an “Open assistant” affordance. |
+| New session | Calls `onClearThread` (shell clears thread + question via `useOpenDetail`). |
+| Collapse | Closes the panel; `embedded` mode shows an “Open assistant” affordance. |
 
 ## Props (high level)
 
-See **`AssistantSidebarProps`** in **`opendetail-react`** for the full list. Common fields:
+See `AssistantSidebarProps` in `opendetail-react` for the full list. Common fields:
 
 | Prop | Description |
 | --- | --- |
 | `messages` | Thread for default rendering (user + assistant turns). |
-| `headerTitle` | Usually **`conversationTitle`** from **`useOpenDetail`**. |
+| `headerTitle` | Usually `conversationTitle` from `useOpenDetail`. |
 | `onSubmitQuestion` / `onStop` | Prompt submit and streaming stop. |
 | `question` / `onQuestionChange` | Controlled input value. |
-| `requestState` | **`idle` \| `pending` \| `streaming` \| `error`**. |
+| `requestState` | `idle` \| `pending` \| `streaming` \| `error`. |
 | `promptSuggestions` | Chips when the thread is empty. |
 | `sidebarResizeEnabled` / `sidebarWidthPx` / `onSidebarWidthChange` | Resizable panel width. |
 | `embedded` | In-page preview without a main content column. |
-| `embeddedLayout` | **`compact`** — rounded 400px column ([Shell](/components/shell)); **`dock`** — this page: left edge, left stroke only, square corners. |
+| `embeddedLayout` | `compact` — rounded 400px column ([Shell](/components/shell)); `dock` — this page: flush to the right edge of the preview, left stroke only, square corners. |
 | `navigation` / `renderMobileShell` | Site nav + mobile triptych (see site layout). |
