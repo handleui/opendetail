@@ -137,6 +137,25 @@ describe("assistant source rendering", () => {
     expect(html).toContain("fumadocs.dev");
   });
 
+  test("normalizes cite SOURCE prose and [SOURCE n] into clickable [n] citations", () => {
+    const html = renderToStaticMarkup(
+      createElement(
+        AssistantMessage,
+        {
+          sources: [
+            { id: "1", kind: "local", title: "Alpha", url: "/a" },
+            { id: "3", kind: "local", title: "Gamma", url: "/c" },
+          ],
+        },
+        "See cite SOURCE 1 SOURCE 3."
+      )
+    );
+
+    expect(html).toContain('href="/a"');
+    expect(html).toContain('href="/c"');
+    expect(html).toContain(">2 sources<");
+  });
+
   test("lists only sources cited in the response body", () => {
     const html = renderToStaticMarkup(
       createElement(

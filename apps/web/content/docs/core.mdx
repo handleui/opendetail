@@ -3,7 +3,7 @@ title: Core package
 description: opendetail — index build, opendetail.toml, createOpenDetail in Node, defaults, and fallback behavior.
 ---
 
-The **`opendetail`** package is the engine: it reads **`opendetail.toml`**, builds **`.opendetail/index.json`**, and exposes **`createOpenDetail`** for answering from that index. The CLI (`build`, `setup`, `doctor`) lives in the same package — see [CLI quickstart](/docs/cli/quickstart).
+The **`opendetail`** package is the engine: it reads **`opendetail.toml`**, builds **`.opendetail/index.json`**, and exposes **`createOpenDetail`** for answering from that index. The CLI (`build`, `setup`, `doctor`) lives in the same package — see [**CLI**](/docs/cli).
 
 ## What ships in the package
 
@@ -11,7 +11,7 @@ The **`opendetail`** package is the engine: it reads **`opendetail.toml`**, buil
 | --- | --- |
 | **Build** | Parse matched Markdown/MDX, chunk by headings, write the index (CLI or `buildOpenDetailIndex`). |
 | **Runtime** | Load the index, lexical search, Responses API, stream NDJSON — [Create an assistant](#create-an-assistant). |
-| **CLI** | Setup, index builds, doctor — [CLI quickstart](/docs/cli/quickstart). |
+| **CLI** | Setup, index builds, doctor — [**CLI**](/docs/cli). |
 | **Config** | `opendetail.toml` — [Fields](#fields). |
 
 ## When to use it directly

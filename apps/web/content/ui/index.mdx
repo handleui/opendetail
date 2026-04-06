@@ -1,29 +1,35 @@
 ---
 title: Overview
-description: How Assistant UI docs are organized — foundations, then hooks and component primitives.
+description: Hooks and component primitives with live previews — styling concepts live in the main docs.
 ---
 
-Assistant UI documentation starts with **foundations**—**systems**, **themes**, **primitives**, and **hooks**—then the **Hooks** pages (`useOpenDetail`, `createOpenDetailClient`) and the **Primitives** component reference (each with a live preview).
+Assistant UI documentation is **reference**: **hooks** (`useOpenDetail`, `createOpenDetailClient`) and **primitives** (layout, thread, composer, messages) with live previews.
+
+**Styling** — systems, themes, and what “primitives” means in the architecture: [**Styling**](/docs/design-system).
+
+In React, a **hook** is a function that follows the `use*` convention and lets you **subscribe to React state and lifecycle** from function components. **`useOpenDetail`** owns **thread state**, **streaming NDJSON**, **persistence**, and **submit / stop** controls. When you **cannot** use a hook—vanilla JS or a store you manage yourself—use **`createOpenDetailClient`**, the same **`POST`** / **`application/x-ndjson`** contract without React bindings.
+
+| API | Use when |
+| --- | --- |
+| [`useOpenDetail`](/ui/hooks/use-opendetail) | React state: thread, question, `submit` / `stop`, persistence, streaming updates bound to UI. |
+| [`createOpenDetailClient`](/ui/hooks/create-open-detail-client) | Same stream **without** the hook (vanilla JS, custom state, non-React surfaces). |
+
+**Primitives** ([**Styling**](/docs/design-system#primitives)) are the styled building blocks above these clients; the full **`opendetail-react`** API is in [**React**](/docs/react).
 
 <Cards>
   <Card
-    title="Systems"
-    description="What a UI system is, base CSS, and how it differs from themes."
-    href="/ui/systems"
+    title="useOpenDetail"
+    description="React hook for streaming thread state and controls."
+    href="/ui/hooks/use-opendetail"
   />
   <Card
-    title="Themes"
-    description="Palette layers on the system—Midnight, Signal, imports."
-    href="/ui/themes"
+    title="createOpenDetailClient"
+    description="Headless client factory for the same NDJSON stream."
+    href="/ui/hooks/create-open-detail-client"
   />
   <Card
-    title="Primitives"
-    description="What we mean by primitives versus hooks, and what ships."
-    href="/ui/primitives"
-  />
-  <Card
-    title="Hooks"
-    description="What we mean by hooks here and how the streaming APIs fit together."
-    href="/ui/hooks"
+    title="Shell"
+    description="Compact entry point among component primitives."
+    href="/ui/opendetail/shell"
   />
 </Cards>

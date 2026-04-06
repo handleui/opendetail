@@ -2,354 +2,277 @@
   "chunks": [
     {
       "anchor": null,
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/build.mdx",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli.mdx",
       "headings": [
-        "$ build"
+        "CLI"
       ],
-      "id": "content/docs/cli/build.mdx",
+      "id": "content/docs/cli.mdx",
       "images": [],
-      "relativePath": "cli/build.mdx",
-      "text": "opendetail build is the index build step: it resolves paths from your config, walks the include globs, and writes .opendetail/index.json (or --output).",
-      "title": "$ build",
-      "url": "/docs/cli/build"
+      "relativePath": "cli.mdx",
+      "text": "The CLI ships in the opendetail package. Prefer npx, bunx, or pnpm dlx so you always run the version pinned by your project.\n\nThe opendetail package exposes build (index your docs), setup (scaffold config and route), and doctor (verify the setup).",
+      "title": "CLI",
+      "url": "/docs/cli"
     },
     {
-      "anchor": "usage",
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/build.mdx",
+      "anchor": "install-and-first-run",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli.mdx",
       "headings": [
-        "Usage"
+        "Install and first run"
       ],
-      "id": "content/docs/cli/build.mdx#usage",
+      "id": "content/docs/cli.mdx#install-and-first-run",
       "images": [],
-      "relativePath": "cli/build.mdx",
-      "text": "Usage\n\n`opendetail build [--config <path>] [--output <path>] [--cwd <path>]\n`",
-      "title": "$ build",
-      "url": "/docs/cli/build#usage"
-    },
-    {
-      "anchor": "flags",
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/build.mdx",
-      "headings": [
-        "Flags"
-      ],
-      "id": "content/docs/cli/build.mdx#flags",
-      "images": [],
-      "relativePath": "cli/build.mdx",
-      "text": "Flags\n\n| Flag | Meaning |\n| --- | --- |\n| --config | Path to opendetail.toml (default: ./opendetail.toml). |\n| --output | Where to write the index JSON (default: .opendetail/index.json relative to cwd). |\n| --cwd | Working directory for resolving paths. |",
-      "title": "$ build",
-      "url": "/docs/cli/build#flags"
-    },
-    {
-      "anchor": "examples",
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/build.mdx",
-      "headings": [
-        "Examples"
-      ],
-      "id": "content/docs/cli/build.mdx#examples",
-      "images": [],
-      "relativePath": "cli/build.mdx",
-      "text": "Examples",
-      "title": "$ build",
-      "url": "/docs/cli/build#examples"
-    },
-    {
-      "anchor": "related",
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/build.mdx",
-      "headings": [
-        "Related"
-      ],
-      "id": "content/docs/cli/build.mdx#related",
-      "images": [],
-      "relativePath": "cli/build.mdx",
-      "text": "Related\n\nsetup can run an initial build after scaffolding.doctor checks that the index file exists and looks sane for your integration mode.",
-      "title": "$ build",
-      "url": "/docs/cli/build#related"
-    },
-    {
-      "anchor": null,
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/commands.mdx",
-      "headings": [
-        "CLI reference"
-      ],
-      "id": "content/docs/cli/commands.mdx",
-      "images": [],
-      "relativePath": "cli/commands.mdx",
-      "text": "The opendetail package exposes a small CLI: build (index your docs), setup (scaffold config and route), and doctor (verify the setup). Run it via npx, bunx, or pnpm dlx so the version matches your package.json.",
-      "title": "CLI reference",
-      "url": "/docs/cli/commands"
-    },
-    {
-      "anchor": "commands",
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/commands.mdx",
-      "headings": [
-        "Commands"
-      ],
-      "id": "content/docs/cli/commands.mdx#commands",
-      "images": [],
-      "relativePath": "cli/commands.mdx",
-      "text": "Commands\n\n| Command | Purpose |\n| --- | --- |\n| opendetail build | Write .opendetail/index.json from your config and content globs. |\n| opendetail setup | Create opendetail.toml, optional route, optional first build. |\n| opendetail doctor | Check files and env for the selected integration mode. |\n\nEach command has its own page with full flags and copy-paste examples.",
-      "title": "CLI reference",
-      "url": "/docs/cli/commands#commands"
-    },
-    {
-      "anchor": "one-liner-usage",
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/commands.mdx",
-      "headings": [
-        "One-liner usage"
-      ],
-      "id": "content/docs/cli/commands.mdx#one-liner-usage",
-      "images": [],
-      "relativePath": "cli/commands.mdx",
-      "text": "One-liner usage\n\n`opendetail build [--config <path>] [--output <path>] [--cwd <path>]\nopendetail setup [--integration <self-hosted|hosted>] [--config <path>] [--route <path>] [--base-path <url>] [--include <glob>] [--media-include <glob>] [--with-media] [--skip-build] [--force] [--interactive] [--no-interactive] [--cwd <path>]\nopendetail doctor [--integration <self-hosted|hosted>] [--config <path>] [--route <path>] [--cwd <path>]\n`",
-      "title": "CLI reference",
-      "url": "/docs/cli/commands#one-liner-usage"
-    },
-    {
-      "anchor": "suggested-order",
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/commands.mdx",
-      "headings": [
-        "Suggested order"
-      ],
-      "id": "content/docs/cli/commands.mdx#suggested-order",
-      "images": [],
-      "relativePath": "cli/commands.mdx",
-      "text": "Suggested order\n\nsetup once per repo (or when you change integration mode).build whenever docs or media globs change.doctor when something fails or after upgrading packages.",
-      "title": "CLI reference",
-      "url": "/docs/cli/commands#suggested-order"
-    },
-    {
-      "anchor": "see-also",
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/commands.mdx",
-      "headings": [
-        "See also"
-      ],
-      "id": "content/docs/cli/commands.mdx#see-also",
-      "images": [],
-      "relativePath": "cli/commands.mdx",
-      "text": "See also\n\nCLI quickstart — install check and first steps.",
-      "title": "CLI reference",
-      "url": "/docs/cli/commands#see-also"
-    },
-    {
-      "anchor": null,
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/doctor.mdx",
-      "headings": [
-        "$ doctor"
-      ],
-      "id": "content/docs/cli/doctor.mdx",
-      "images": [],
-      "relativePath": "cli/doctor.mdx",
-      "text": "opendetail doctor runs a checklist and prints ✓ or ✗ for each item. It exits with an error if anything required is missing.",
-      "title": "$ doctor",
-      "url": "/docs/cli/doctor"
-    },
-    {
-      "anchor": "usage",
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/doctor.mdx",
-      "headings": [
-        "Usage"
-      ],
-      "id": "content/docs/cli/doctor.mdx#usage",
-      "images": [],
-      "relativePath": "cli/doctor.mdx",
-      "text": "Usage\n\n`opendetail doctor [--integration <self-hosted|hosted>] [--config <path>] [--route <path>] [--cwd <path>]\n`",
-      "title": "$ doctor",
-      "url": "/docs/cli/doctor#usage"
-    },
-    {
-      "anchor": "self-hosted-expectations",
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/doctor.mdx",
-      "headings": [
-        "Self-hosted expectations"
-      ],
-      "id": "content/docs/cli/doctor.mdx#self-hosted-expectations",
-      "images": [],
-      "relativePath": "cli/doctor.mdx",
-      "text": "Self-hosted expectations\n\nConfig: opendetail.toml (or --config) exists.Index: .opendetail/index.json (or configured output) exists.Route: the API route file exists at the configured path.Env: OPENAI_API_KEY is set where the route runs.",
-      "title": "$ doctor",
-      "url": "/docs/cli/doctor#self-hosted-expectations"
-    },
-    {
-      "anchor": "hosted-expectations",
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/doctor.mdx",
-      "headings": [
-        "Hosted expectations"
-      ],
-      "id": "content/docs/cli/doctor.mdx#hosted-expectations",
-      "images": [],
-      "relativePath": "cli/doctor.mdx",
-      "text": "Hosted expectations\n\nConfig and index as above.Env: OPENDETAIL_ENDPOINT points at your hosted OpenDetail HTTP API.",
-      "title": "$ doctor",
-      "url": "/docs/cli/doctor#hosted-expectations"
-    },
-    {
-      "anchor": "examples",
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/doctor.mdx",
-      "headings": [
-        "Examples"
-      ],
-      "id": "content/docs/cli/doctor.mdx#examples",
-      "images": [],
-      "relativePath": "cli/doctor.mdx",
-      "text": "Examples",
-      "title": "$ doctor",
-      "url": "/docs/cli/doctor#examples"
-    },
-    {
-      "anchor": "related",
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/doctor.mdx",
-      "headings": [
-        "Related"
-      ],
-      "id": "content/docs/cli/doctor.mdx#related",
-      "images": [],
-      "relativePath": "cli/doctor.mdx",
-      "text": "Related\n\nsetup if files are missing.build if the index is stale or absent.",
-      "title": "$ doctor",
-      "url": "/docs/cli/doctor#related"
-    },
-    {
-      "anchor": null,
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/quickstart.mdx",
-      "headings": [
-        "CLI quickstart"
-      ],
-      "id": "content/docs/cli/quickstart.mdx",
-      "images": [],
-      "relativePath": "cli/quickstart.mdx",
-      "text": "The CLI ships in the opendetail package. Prefer npx, bunx, or pnpm dlx so you always run the version pinned by your project.",
-      "title": "CLI quickstart",
-      "url": "/docs/cli/quickstart"
-    },
-    {
-      "anchor": "check-the-binary",
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/quickstart.mdx",
-      "headings": [
-        "Check the binary"
-      ],
-      "id": "content/docs/cli/quickstart.mdx#check-the-binary",
-      "images": [],
-      "relativePath": "cli/quickstart.mdx",
-      "text": "Check the binary\n\nIf that prints a version, the executable resolves correctly from your package manager.",
-      "title": "CLI quickstart",
-      "url": "/docs/cli/quickstart#check-the-binary"
-    },
-    {
-      "anchor": "see-usage",
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/quickstart.mdx",
-      "headings": [
-        "See usage"
-      ],
-      "id": "content/docs/cli/quickstart.mdx#see-usage",
-      "images": [],
-      "relativePath": "cli/quickstart.mdx",
-      "text": "See usage\n\nRunning the CLI without a subcommand prints supported commands and example invocations (same as opendetail build, opendetail setup, and opendetail doctor).",
-      "title": "CLI quickstart",
-      "url": "/docs/cli/quickstart#see-usage"
+      "relativePath": "cli.mdx",
+      "text": "Install and first run\n\nIf that prints a version, the executable resolves correctly from your package manager.\n\nRunning the CLI without a subcommand prints supported commands and example invocations (same sections below).",
+      "title": "CLI",
+      "url": "/docs/cli#install-and-first-run"
     },
     {
       "anchor": "typical-flows",
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/quickstart.mdx",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli.mdx",
       "headings": [
+        "Install and first run",
         "Typical flows"
       ],
-      "id": "content/docs/cli/quickstart.mdx#typical-flows",
+      "id": "content/docs/cli.mdx#typical-flows",
       "images": [],
-      "relativePath": "cli/quickstart.mdx",
+      "relativePath": "cli.mdx",
       "text": "Typical flows\n\nGreenfield app: opendetail setup to write opendetail.toml, scaffold the default route (self-hosted), and optionally run an initial index build.Docs changed: opendetail build to refresh .opendetail/index.json.Something looks wrong: opendetail doctor to verify config, index, route, and environment expectations.",
-      "title": "CLI quickstart",
-      "url": "/docs/cli/quickstart#typical-flows"
+      "title": "CLI",
+      "url": "/docs/cli#typical-flows"
     },
     {
-      "anchor": "next",
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/quickstart.mdx",
+      "anchor": "command-overview",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli.mdx",
       "headings": [
-        "Next"
+        "Command overview"
       ],
-      "id": "content/docs/cli/quickstart.mdx#next",
+      "id": "content/docs/cli.mdx#command-overview",
       "images": [],
-      "relativePath": "cli/quickstart.mdx",
-      "text": "Next",
-      "title": "CLI quickstart",
-      "url": "/docs/cli/quickstart#next"
+      "relativePath": "cli.mdx",
+      "text": "Command overview\n\n| Command | Purpose |\n| --- | --- |\n| opendetail build | Write .opendetail/index.json from your config and content globs. |\n| opendetail setup | Create opendetail.toml, optional route, optional first build. |\n| opendetail doctor | Check files and env for the selected integration mode. |",
+      "title": "CLI",
+      "url": "/docs/cli#command-overview"
     },
     {
-      "anchor": null,
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/setup.mdx",
+      "anchor": "one-liner-usage",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli.mdx",
       "headings": [
-        "$ setup"
+        "Command overview",
+        "One-liner usage"
       ],
-      "id": "content/docs/cli/setup.mdx",
+      "id": "content/docs/cli.mdx#one-liner-usage",
       "images": [],
-      "relativePath": "cli/setup.mdx",
-      "text": "opendetail setup writes the standard project shape for either self-hosted (local Next route + OpenAI) or hosted (client talks to your deployed endpoint).",
-      "title": "$ setup",
-      "url": "/docs/cli/setup"
+      "relativePath": "cli.mdx",
+      "text": "One-liner usage\n\n`opendetail build [--config <path>] [--output <path>] [--cwd <path>]\nopendetail setup [--integration <self-hosted|hosted>] [--config <path>] [--route <path>] [--base-path <url>] [--include <glob>] [--media-include <glob>] [--with-media] [--skip-build] [--force] [--interactive] [--no-interactive] [--cwd <path>]\nopendetail doctor [--integration <self-hosted|hosted>] [--config <path>] [--route <path>] [--cwd <path>]\n`",
+      "title": "CLI",
+      "url": "/docs/cli#one-liner-usage"
+    },
+    {
+      "anchor": "suggested-order",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli.mdx",
+      "headings": [
+        "Command overview",
+        "Suggested order"
+      ],
+      "id": "content/docs/cli.mdx#suggested-order",
+      "images": [],
+      "relativePath": "cli.mdx",
+      "text": "Suggested order\n\nsetup once per repo (or when you change integration mode).build whenever docs or media globs change.doctor when something fails or after upgrading packages.",
+      "title": "CLI",
+      "url": "/docs/cli#suggested-order"
+    },
+    {
+      "anchor": "build",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli.mdx",
+      "headings": [
+        "build"
+      ],
+      "id": "content/docs/cli.mdx#build",
+      "images": [],
+      "relativePath": "cli.mdx",
+      "text": "build\n\nopendetail build is the index build step: it resolves paths from your config, walks the include globs, and writes .opendetail/index.json (or --output).",
+      "title": "CLI",
+      "url": "/docs/cli#build"
     },
     {
       "anchor": "usage",
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/setup.mdx",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli.mdx",
       "headings": [
+        "build",
         "Usage"
       ],
-      "id": "content/docs/cli/setup.mdx#usage",
+      "id": "content/docs/cli.mdx#usage",
       "images": [],
-      "relativePath": "cli/setup.mdx",
-      "text": "Usage\n\n`opendetail setup [--integration <self-hosted|hosted>] [--config <path>] [--route <path>] [--base-path <url>] [--include <glob>] [--media-include <glob>] [--with-media] [--skip-build] [--force] [--interactive] [--no-interactive] [--cwd <path>]\n`",
-      "title": "$ setup",
-      "url": "/docs/cli/setup#usage"
+      "relativePath": "cli.mdx",
+      "text": "Usage\n\n`opendetail build [--config <path>] [--output <path>] [--cwd <path>]\n`",
+      "title": "CLI",
+      "url": "/docs/cli#usage"
     },
     {
-      "anchor": "what-it-can-write",
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/setup.mdx",
+      "anchor": "flags",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli.mdx",
       "headings": [
-        "What it can write"
+        "build",
+        "Flags"
       ],
-      "id": "content/docs/cli/setup.mdx#what-it-can-write",
+      "id": "content/docs/cli.mdx#flags",
       "images": [],
-      "relativePath": "cli/setup.mdx",
-      "text": "What it can write\n\nopendetail.tomlIn self-hosted mode, a route at src/app/api/opendetail/route.ts by default (override with --route).opendetail/index.json unless you pass --skip-build",
-      "title": "$ setup",
-      "url": "/docs/cli/setup#what-it-can-write"
-    },
-    {
-      "anchor": "important-flags",
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/setup.mdx",
-      "headings": [
-        "Important flags"
-      ],
-      "id": "content/docs/cli/setup.mdx#important-flags",
-      "images": [],
-      "relativePath": "cli/setup.mdx",
-      "text": "Important flags\n\n| Flag | Meaning |\n| --- | --- |\n| --integration | self-hosted or hosted. |\n| --config | Custom config path. |\n| --route | Custom route file path (self-hosted). |\n| --base-path | Public source URL base (default /docs). |\n| --include | Docs glob (default matches typical content/**/*.{md,mdx}). |\n| --media-include | Media glob when media is enabled. |\n| --with-media | Include [media] in config. |\n| --skip-build | Skip the initial index build. |\n| --force | Overwrite generated files. |\n| --interactive / --no-interactive | Control the setup wizard when stdin is a TTY. |\n| --cwd | Run against another working directory. |",
-      "title": "$ setup",
-      "url": "/docs/cli/setup#important-flags"
+      "relativePath": "cli.mdx",
+      "text": "Flags\n\n| Flag | Meaning |\n| --- | --- |\n| --config | Path to opendetail.toml (default: ./opendetail.toml). |\n| --output | Where to write the index JSON (default: .opendetail/index.json relative to cwd). |\n| --cwd | Working directory for resolving paths. |",
+      "title": "CLI",
+      "url": "/docs/cli#flags"
     },
     {
       "anchor": "examples",
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/setup.mdx",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli.mdx",
       "headings": [
+        "build",
         "Examples"
       ],
-      "id": "content/docs/cli/setup.mdx#examples",
+      "id": "content/docs/cli.mdx#examples",
       "images": [],
-      "relativePath": "cli/setup.mdx",
+      "relativePath": "cli.mdx",
       "text": "Examples",
-      "title": "$ setup",
-      "url": "/docs/cli/setup#examples"
+      "title": "CLI",
+      "url": "/docs/cli#examples"
     },
     {
-      "anchor": "related",
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/setup.mdx",
+      "anchor": "setup",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli.mdx",
       "headings": [
-        "Related"
+        "setup"
       ],
-      "id": "content/docs/cli/setup.mdx#related",
+      "id": "content/docs/cli.mdx#setup",
       "images": [],
-      "relativePath": "cli/setup.mdx",
-      "text": "Related\n\nbuild for rebuilding the index after docs change.doctor to verify the result.",
-      "title": "$ setup",
-      "url": "/docs/cli/setup#related"
+      "relativePath": "cli.mdx",
+      "text": "setup\n\nopendetail setup writes the standard project shape for either self-hosted (local Next route + OpenAI) or hosted (client talks to your deployed endpoint).",
+      "title": "CLI",
+      "url": "/docs/cli#setup"
+    },
+    {
+      "anchor": "usage-1",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli.mdx",
+      "headings": [
+        "setup",
+        "Usage"
+      ],
+      "id": "content/docs/cli.mdx#usage-1",
+      "images": [],
+      "relativePath": "cli.mdx",
+      "text": "Usage\n\n`opendetail setup [--integration <self-hosted|hosted>] [--config <path>] [--route <path>] [--base-path <url>] [--include <glob>] [--media-include <glob>] [--with-media] [--skip-build] [--force] [--interactive] [--no-interactive] [--cwd <path>]\n`",
+      "title": "CLI",
+      "url": "/docs/cli#usage-1"
+    },
+    {
+      "anchor": "what-it-can-write",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli.mdx",
+      "headings": [
+        "setup",
+        "What it can write"
+      ],
+      "id": "content/docs/cli.mdx#what-it-can-write",
+      "images": [],
+      "relativePath": "cli.mdx",
+      "text": "What it can write\n\nopendetail.tomlIn self-hosted mode, a route at src/app/api/opendetail/route.ts by default (override with --route).opendetail/index.json unless you pass --skip-build",
+      "title": "CLI",
+      "url": "/docs/cli#what-it-can-write"
+    },
+    {
+      "anchor": "important-flags",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli.mdx",
+      "headings": [
+        "setup",
+        "Important flags"
+      ],
+      "id": "content/docs/cli.mdx#important-flags",
+      "images": [],
+      "relativePath": "cli.mdx",
+      "text": "Important flags\n\n| Flag | Meaning |\n| --- | --- |\n| --integration | self-hosted or hosted. |\n| --config | Custom config path. |\n| --route | Custom route file path (self-hosted). |\n| --base-path | Public source URL base (default /docs). |\n| --include | Docs glob (default matches typical content/**/*.{md,mdx}). |\n| --media-include | Media glob when media is enabled. |\n| --with-media | Include [media] in config. |\n| --skip-build | Skip the initial index build. |\n| --force | Overwrite generated files. |\n| --interactive / --no-interactive | Control the setup wizard when stdin is a TTY. |\n| --cwd | Run against another working directory. |",
+      "title": "CLI",
+      "url": "/docs/cli#important-flags"
+    },
+    {
+      "anchor": "examples-1",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli.mdx",
+      "headings": [
+        "setup",
+        "Examples"
+      ],
+      "id": "content/docs/cli.mdx#examples-1",
+      "images": [],
+      "relativePath": "cli.mdx",
+      "text": "Examples",
+      "title": "CLI",
+      "url": "/docs/cli#examples-1"
+    },
+    {
+      "anchor": "doctor",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli.mdx",
+      "headings": [
+        "doctor"
+      ],
+      "id": "content/docs/cli.mdx#doctor",
+      "images": [],
+      "relativePath": "cli.mdx",
+      "text": "doctor\n\nopendetail doctor runs a checklist and prints ✓ or ✗ for each item. It exits with an error if anything required is missing.",
+      "title": "CLI",
+      "url": "/docs/cli#doctor"
+    },
+    {
+      "anchor": "usage-2",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli.mdx",
+      "headings": [
+        "doctor",
+        "Usage"
+      ],
+      "id": "content/docs/cli.mdx#usage-2",
+      "images": [],
+      "relativePath": "cli.mdx",
+      "text": "Usage\n\n`opendetail doctor [--integration <self-hosted|hosted>] [--config <path>] [--route <path>] [--cwd <path>]\n`",
+      "title": "CLI",
+      "url": "/docs/cli#usage-2"
+    },
+    {
+      "anchor": "self-hosted-expectations",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli.mdx",
+      "headings": [
+        "doctor",
+        "Self-hosted expectations"
+      ],
+      "id": "content/docs/cli.mdx#self-hosted-expectations",
+      "images": [],
+      "relativePath": "cli.mdx",
+      "text": "Self-hosted expectations\n\nConfig: opendetail.toml (or --config) exists.Index: .opendetail/index.json (or configured output) exists.Route: the API route file exists at the configured path.Env: OPENAI_API_KEY is set where the route runs.",
+      "title": "CLI",
+      "url": "/docs/cli#self-hosted-expectations"
+    },
+    {
+      "anchor": "hosted-expectations",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli.mdx",
+      "headings": [
+        "doctor",
+        "Hosted expectations"
+      ],
+      "id": "content/docs/cli.mdx#hosted-expectations",
+      "images": [],
+      "relativePath": "cli.mdx",
+      "text": "Hosted expectations\n\nConfig and index as above.Env: OPENDETAIL_ENDPOINT points at your hosted OpenDetail HTTP API.",
+      "title": "CLI",
+      "url": "/docs/cli#hosted-expectations"
+    },
+    {
+      "anchor": "examples-2",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli.mdx",
+      "headings": [
+        "doctor",
+        "Examples"
+      ],
+      "id": "content/docs/cli.mdx#examples-2",
+      "images": [],
+      "relativePath": "cli.mdx",
+      "text": "Examples",
+      "title": "CLI",
+      "url": "/docs/cli#examples-2"
     },
     {
       "anchor": null,
@@ -360,7 +283,7 @@
       "id": "content/docs/core.mdx",
       "images": [],
       "relativePath": "core.mdx",
-      "text": "The opendetail package is the engine: it reads opendetail.toml, builds .opendetail/index.json, and exposes createOpenDetail for answering from that index. The CLI (build, setup, doctor) lives in the same package — see CLI quickstart.",
+      "text": "The opendetail package is the engine: it reads opendetail.toml, builds .opendetail/index.json, and exposes createOpenDetail for answering from that index. The CLI (build, setup, doctor) lives in the same package — see CLI.",
       "title": "Core package",
       "url": "/docs/core"
     },
@@ -373,7 +296,7 @@
       "id": "content/docs/core.mdx#what-ships-in-the-package",
       "images": [],
       "relativePath": "core.mdx",
-      "text": "What ships in the package\n\n| Area | Role |\n| --- | --- |\n| Build | Parse matched Markdown/MDX, chunk by headings, write the index (CLI or buildOpenDetailIndex). |\n| Runtime | Load the index, lexical search, Responses API, stream NDJSON — Create an assistant. |\n| CLI | Setup, index builds, doctor — CLI quickstart. |\n| Config | opendetail.toml — Fields. |",
+      "text": "What ships in the package\n\n| Area | Role |\n| --- | --- |\n| Build | Parse matched Markdown/MDX, chunk by headings, write the index (CLI or buildOpenDetailIndex). |\n| Runtime | Load the index, lexical search, Responses API, stream NDJSON — Create an assistant. |\n| CLI | Setup, index builds, doctor — CLI. |\n| Config | opendetail.toml — Fields. |",
       "title": "Core package",
       "url": "/docs/core#what-ships-in-the-package"
     },
@@ -550,26 +473,162 @@
       "anchor": null,
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/design-system.mdx",
       "headings": [
-        "Systems and themes"
+        "Styling"
       ],
       "id": "content/docs/design-system.mdx",
       "images": [],
       "relativePath": "design-system.mdx",
-      "text": "OpenDetail splits systems (full UI identity: structure, semantics, layout) from themes (palette layers on top of one system). The default OpenDetail system and Midnight / Signal themes ship with opendetail-react styles.\n\nFull guide (import paths, primitives, tokens): Assistant UI — Systems, Themes, Primitives.\n\nHeadless API (same for every system): React — useOpenDetail, createOpenDetailClient.",
-      "title": "Systems and themes",
+      "text": "OpenDetail splits systems (full UI identity: structure, semantics, layout) from themes (palette layers on top of one system). Primitives are the documented React components that implement the system. The default OpenDetail system and Midnight / Signal themes ship with opendetail-react styles.\n\nHeadless API (same for every system): React — useOpenDetail, createOpenDetailClient. Live component reference (props and previews): Assistant UI.",
+      "title": "Styling",
       "url": "/docs/design-system"
+    },
+    {
+      "anchor": "systems",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/design-system.mdx",
+      "headings": [
+        "Systems"
+      ],
+      "id": "content/docs/design-system.mdx#systems",
+      "images": [],
+      "relativePath": "design-system.mdx",
+      "text": "Systems\n\nA system is a full UI identity for the assistant: semantic class contract, layout and density, motion, and component anatomy (thread, composer, messages, sources). The default OpenDetail system ships in opendetail-react under src/styles/systems/opendetail/ (aggregated by opendetail-base.css).\n\nAdd a new system when you need different chrome or structure—not just different colors—while keeping the same headless transport (useOpenDetail, createOpenDetailClient) and message shapes.",
+      "title": "Styling",
+      "url": "/docs/design-system#systems"
+    },
+    {
+      "anchor": "systems-vs-themes",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/design-system.mdx",
+      "headings": [
+        "Systems",
+        "Systems vs themes"
+      ],
+      "id": "content/docs/design-system.mdx#systems-vs-themes",
+      "images": [],
+      "relativePath": "design-system.mdx",
+      "text": "Systems vs themes\n\nThemes are palette layers inside one system: same layout and components, different tokens. See Themes.Systems stay isolated when a product line needs different chrome but the same streaming protocol.In the repo: new colors → themes/; new chrome → systems/.",
+      "title": "Styling",
+      "url": "/docs/design-system#systems-vs-themes"
+    },
+    {
+      "anchor": "import-order-system-css",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/design-system.mdx",
+      "headings": [
+        "Systems",
+        "Import order (system CSS)"
+      ],
+      "id": "content/docs/design-system.mdx#import-order-system-css",
+      "images": [],
+      "relativePath": "design-system.mdx",
+      "text": "Import order (system CSS)\n\nImport the base system stylesheet (opendetail-base.css or systems/opendetail/index.css).Optionally layer a theme after base (opendetail-midnight.css, opendetail-signal.css, or a custom palette file).\n\nRoot elements use data-od-system=\"opendetail\" where layout marks the design system for theming.",
+      "title": "Styling",
+      "url": "/docs/design-system#import-order-system-css"
+    },
+    {
+      "anchor": "themes",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/design-system.mdx",
+      "headings": [
+        "Themes"
+      ],
+      "id": "content/docs/design-system.mdx#themes",
+      "images": [],
+      "relativePath": "design-system.mdx",
+      "text": "Themes\n\nA theme is a palette (and optional minor token tweaks) inside one system: background, foreground, accent, borders. Layout and React primitives stay the same; only paint changes.\n\nThemes are palette layers on top of opendetail-base.css: same layout classes and components; only tokens change. Import base first, then one theme file.",
+      "title": "Styling",
+      "url": "/docs/design-system#themes"
+    },
+    {
+      "anchor": "midnight",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/design-system.mdx",
+      "headings": [
+        "Themes",
+        "Midnight"
+      ],
+      "id": "content/docs/design-system.mdx#midnight",
+      "images": [],
+      "relativePath": "design-system.mdx",
+      "text": "Midnight\n\nMidnight uses a cooler dark palette: semantic color tokens (background, foreground, accent) shift while structure stays the same.\n\n@import \"opendetail-base.css\";\n@import \"opendetail-midnight.css\";\n\nPackage paths follow your bundler’s resolution for opendetail-react styles (see the style README).",
+      "title": "Styling",
+      "url": "/docs/design-system#midnight"
+    },
+    {
+      "anchor": "signal",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/design-system.mdx",
+      "headings": [
+        "Themes",
+        "Signal"
+      ],
+      "id": "content/docs/design-system.mdx#signal",
+      "images": [],
+      "relativePath": "design-system.mdx",
+      "text": "Signal\n\nSignal is a warmer accent / palette variant on the same base contract—layout and components are unchanged.\n\n@import \"opendetail-base.css\";\n@import \"opendetail-signal.css\";",
+      "title": "Styling",
+      "url": "/docs/design-system#signal"
+    },
+    {
+      "anchor": "adding-your-own",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/design-system.mdx",
+      "headings": [
+        "Themes",
+        "Adding your own"
+      ],
+      "id": "content/docs/design-system.mdx#adding-your-own",
+      "images": [],
+      "relativePath": "design-system.mdx",
+      "text": "Adding your own\n\nCustom themes belong next to the base import: override semantic CSS variables scoped to data-od-system=\"opendetail\" (or your system) without forking React primitives.",
+      "title": "Styling",
+      "url": "/docs/design-system#adding-your-own"
+    },
+    {
+      "anchor": "primitives",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/design-system.mdx",
+      "headings": [
+        "Primitives"
+      ],
+      "id": "content/docs/design-system.mdx#primitives",
+      "images": [],
+      "relativePath": "design-system.mdx",
+      "text": "Primitives\n\nPrimitives are the documented React exports that implement the OpenDetail system: layout regions, the thread and composer, messages, sources, and status—styled by opendetail-base.css and optional themes. They are not the headless streaming layer; that lives in useOpenDetail and createOpenDetailClient (useOpenDetail, createOpenDetailClient, full reference React).",
+      "title": "Styling",
+      "url": "/docs/design-system#primitives"
+    },
+    {
+      "anchor": "what-ships",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/design-system.mdx",
+      "headings": [
+        "Primitives",
+        "What ships"
+      ],
+      "id": "content/docs/design-system.mdx#what-ships",
+      "images": [],
+      "relativePath": "design-system.mdx",
+      "text": "What ships\n\nLayout — ConversationLayout (thread + composer regions); AssistantSidebar and AssistantModal compose it for a full column or modal assistant.Conversation UI — Thread, Composer, UserMessage, AssistantMessage, AssistantSources, suggestions, AssistantStatus, and source link helpers.Styles — Structural tokens and component classes from the system stylesheet; palette from themes.\n\nRecipes (AssistantSidebar, AssistantModal) bundle primitives for a drop-in experience; you can also compose primitives inside your own shell.\n\nBrowse Primitives in the Assistant UI sidebar for live previews and props—Shell is a compact entry point.",
+      "title": "Styling",
+      "url": "/docs/design-system#what-ships"
+    },
+    {
+      "anchor": "see-also",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/design-system.mdx",
+      "headings": [
+        "See also"
+      ],
+      "id": "content/docs/design-system.mdx#see-also",
+      "images": [],
+      "relativePath": "design-system.mdx",
+      "text": "See also\n\nReact API · UI integration · style README",
+      "title": "Styling",
+      "url": "/docs/design-system#see-also"
     },
     {
       "anchor": null,
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/fumadocs.mdx",
       "headings": [
-        "opendetail-fumadocs"
+        "Fumadocs"
       ],
       "id": "content/docs/fumadocs.mdx",
       "images": [],
       "relativePath": "fumadocs.mdx",
       "text": "opendetail-fumadocs is optional glue for apps that already serve docs under predictable URLs (often Fumadocs-style /docs/... routes). It does not add a different assistant runtime: it supplies resolveSourceTarget helpers and a thin FumadocsAssistant wrapper around AssistantSidebar from opendetail-react, wired with renderNextSourceLink from opendetail-next.\n\nFor when to use this vs hand-wiring, see Packages & composition.",
-      "title": "opendetail-fumadocs",
+      "title": "Fumadocs",
       "url": "/docs/fumadocs"
     },
     {
@@ -582,7 +641,7 @@
       "images": [],
       "relativePath": "fumadocs.mdx",
       "text": "API\n\nresolveFumadocsSourceTarget — Given knownPageUrls and a source (kind: \"local\" or \"remote\"), returns { external, href } or null for unknown local paths.createFumadocsSourceTargetResolver(knownPageUrls) — Returns a ResolveAssistantSourceTarget you pass to AssistantSidebar as resolveSourceTarget.getFumadocsPageUrls(source) — Maps a Fumadocs-style source with getPages() to a flat list of URLs for the allowlist.",
-      "title": "opendetail-fumadocs",
+      "title": "Fumadocs",
       "url": "/docs/fumadocs#api"
     },
     {
@@ -595,7 +654,7 @@
       "images": [],
       "relativePath": "fumadocs.mdx",
       "text": "Convenience wrapper\n\nFumadocsAssistant (import from opendetail-fumadocs/assistant) bundles:\n\nAssistantSidebar (with connection for endpoint/persistence when you pass those props)renderNextSourceLink from opendetail-nextcreateFumadocsSourceTargetResolver(knownSourcePageUrls)\n\nPass the same props you would to AssistantSidebar, plus knownSourcePageUrls. Site navigation chrome stays in your app (for example the demo’s Sidebar in apps/web), not in this package.\n\n`import { FumadocsAssistant } from \"opendetail-fumadocs/assistant\";\n\n<FumadocsAssistant\nknownSourcePageUrls={[\"/docs\", \"/docs/quickstart\", \"/docs/core\", /* … */]}\nnavigation={<YourNav />}\n/* …AssistantSidebar props (e.g. endpoint, persistence) */\n/>;\n`",
-      "title": "opendetail-fumadocs",
+      "title": "Fumadocs",
       "url": "/docs/fumadocs#convenience-wrapper"
     },
     {
@@ -608,7 +667,7 @@
       "images": [],
       "relativePath": "fumadocs.mdx",
       "text": "Wiring without the wrapper\n\nCollect the doc page URLs your site actually serves (same slugs as your MDX routes), then pass them as knownPageUrls:\n\n`import { createFumadocsSourceTargetResolver } from \"opendetail-fumadocs\";\n\nconst resolveSourceTarget = createFumadocsSourceTargetResolver([\n\"/docs\",\n\"/docs/quickstart\",\n\"/docs/core\",\n// …\n]);\n`\n\nPair with renderNextSourceLink from opendetail-next so resolved targets render as next/link where appropriate.\n\nLocal URLs must match a known pathname (no hash required for the allowlist match; hashes are preserved on output). Unknown paths like /docs/old-page resolve to null so the UI does not invent links.",
-      "title": "opendetail-fumadocs",
+      "title": "Fumadocs",
       "url": "/docs/fumadocs#wiring-without-the-wrapper"
     },
     {
@@ -659,7 +718,7 @@
       "id": "content/docs/index.mdx#packages-at-a-glance",
       "images": [],
       "relativePath": "index.mdx",
-      "text": "Packages (at a glance)\n\n| Package | Role |\n| --- | --- |\n| opendetail | Build, core runtime, CLI. |\n| opendetail-next | Next.js App Router route, NDJSON streaming, renderNextSourceLink. |\n| opendetail-react | useOpenDetail, AssistantSidebar (connection for streaming), streaming client. |\n| opendetail-fumadocs | Optional: known-page resolver + FumadocsAssistant. |\n| trifold | Optional: parallel columns for small viewports. |\n\nLayering and naming details: Packages & composition.\n\nUI systems vs palette themes: the default OpenDetail system and Midnight / Signal themes are documented under Assistant UI; a short glossary lives at Systems and themes.",
+      "text": "Packages (at a glance)\n\n| Package | Role |\n| --- | --- |\n| opendetail | Build, core runtime, CLI. |\n| opendetail-next | Next.js App Router route, NDJSON streaming, renderNextSourceLink. |\n| opendetail-react | useOpenDetail, AssistantSidebar (connection for streaming), streaming client. |\n| opendetail-fumadocs | Optional: known-page resolver + FumadocsAssistant. |\n| trifold | Optional: parallel columns for small viewports. |\n\nLayering and naming details: Packages & composition.\n\nStyling: systems, themes, and primitives are covered in Styling. Component reference (live previews) is under Assistant UI.",
       "title": "Documentation",
       "url": "/docs#packages-at-a-glance"
     },
@@ -672,7 +731,7 @@
       "id": "content/docs/index.mdx#where-to-go-next",
       "images": [],
       "relativePath": "index.mdx",
-      "text": "Where to go next\n\nCLI: Quickstart · Reference · Adapters: Next.js · React · opendetail-fumadocs",
+      "text": "Where to go next\n\nCLI: CLI · Integrations: Next.js · React · Fumadocs",
       "title": "Documentation",
       "url": "/docs#where-to-go-next"
     },
@@ -680,13 +739,13 @@
       "anchor": null,
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/next.mdx",
       "headings": [
-        "opendetail-next"
+        "Next.js"
       ],
       "id": "content/docs/next.mdx",
       "images": [],
       "relativePath": "next.mdx",
       "text": "opendetail-next wraps the core runtime for self-hosted deployments on the Next.js App Router: a POST handler that validates the request body, streams NDJSON, and optional renderNextSourceLink for assistant citations in MDX.",
-      "title": "opendetail-next",
+      "title": "Next.js",
       "url": "/docs/next"
     },
     {
@@ -699,7 +758,7 @@
       "images": [],
       "relativePath": "next.mdx",
       "text": "Route handler\n\nThe scaffolded route is a thin wrapper:\n\n`import { createNextRoute } from \"opendetail-next\";\n\nexport const { POST, runtime } = createNextRoute();\n`\n\nOr wire the handler yourself:\n\n`import { createNextRouteHandler } from \"opendetail-next\";\n\nexport const runtime = \"nodejs\";\nexport const POST = createNextRouteHandler();\n`\n\nRequirements\n\nNode.js 18+Route on the Node.js runtime (not Edge) for the default adapterOPENAI_API_KEY set where the handler runs.opendetail/index.json present after build\n\ncreateNextRouteHandler accepts the same options as createOpenDetail (CreateOpenDetailOptions) when you need custom cwd, indexPath, or client injection.",
-      "title": "opendetail-next",
+      "title": "Next.js",
       "url": "/docs/next#route-handler"
     },
     {
@@ -712,7 +771,7 @@
       "images": [],
       "relativePath": "next.mdx",
       "text": "Request and response\n\nThe handler accepts POST with JSON { \"question\": string }. Malformed bodies return a JSON error.\n\nSuccessful responses use application/x-ndjson; charset=utf-8. Event order and semantics match Get started (meta, sources, images, delta, done, error). Initialization failures before streaming return JSON instead of NDJSON.",
-      "title": "opendetail-next",
+      "title": "Next.js",
       "url": "/docs/next#request-and-response"
     },
     {
@@ -725,7 +784,7 @@
       "images": [],
       "relativePath": "next.mdx",
       "text": "Source links in MDX\n\nFor Fumadocs-style docs, pass renderNextSourceLink from opendetail-next into your assistant UI so local /docs/... citations use Next Link and external URLs stay safe:\n\n`import { renderNextSourceLink } from \"opendetail-next\";\n`\n\nUse with resolveSourceTarget from opendetail-fumadocs when you need known-page URL allowlists, or see Packages & composition for how the stack fits together.",
-      "title": "opendetail-next",
+      "title": "Next.js",
       "url": "/docs/next#source-links-in-mdx"
     },
     {
@@ -815,7 +874,7 @@
       "id": "content/docs/packages.mdx#see-also",
       "images": [],
       "relativePath": "packages.mdx",
-      "text": "See also\n\nGet started — install, integration modes, stream shape, grounding.Core package — opendetail.toml and createOpenDetail.UI integration — custom UI; Assistant UI — demos and primitives.opendetail-next — route handler and renderNextSourceLink.React — useOpenDetail and client API.opendetail-fumadocs — resolver API and FumadocsAssistant.",
+      "text": "See also\n\nGet started — install, integration modes, stream shape, grounding.Core package — opendetail.toml and createOpenDetail.UI integration — custom UI; Assistant UI — demos and primitives.Next.js — route handler and renderNextSourceLink.React — useOpenDetail and client API.Fumadocs — resolver API and FumadocsAssistant.",
       "title": "Packages & composition",
       "url": "/docs/packages#see-also"
     },
@@ -881,7 +940,7 @@
       "id": "content/docs/quickstart.mdx#rebuild-when-content-changes",
       "images": [],
       "relativePath": "quickstart.mdx",
-      "text": "Rebuild when content changes\n\nAny time Markdown, MDX, or matched media changes:\n\nRun that in CI before deploy, or as a postbuild step, so production always matches the docs you shipped.\n\nDiagnose when something looks wrong:\n\nCLI details: CLI quickstart · CLI reference.",
+      "text": "Rebuild when content changes\n\nAny time Markdown, MDX, or matched media changes:\n\nRun that in CI before deploy, or as a postbuild step, so production always matches the docs you shipped.\n\nDiagnose when something looks wrong:\n\nCLI details: CLI.",
       "title": "Get started",
       "url": "/docs/quickstart#rebuild-when-content-changes"
     },
@@ -1012,7 +1071,7 @@
       "id": "content/docs/react.mdx",
       "images": [],
       "relativePath": "react.mdx",
-      "text": "Package: opendetail-react. For a Next.js route that serves the same NDJSON stream, see opendetail-next. For AssistantSidebar with a connection prop, optional opendetail-fumadocs, and how packages compound, see Packages & composition. Systems vs themes (short glossary): Systems and themes. Deep dive: Assistant UI. Custom UI: UI integration. Hook docs: useOpenDetail, createOpenDetailClient (full API: React).",
+      "text": "Package: opendetail-react. For a Next.js route that serves the same NDJSON stream, see opendetail-next. For AssistantSidebar with a connection prop, optional opendetail-fumadocs, and how packages compound, see Packages & composition. Styling (systems, themes, primitives): Styling. Deep dive: Assistant UI. Custom UI: UI integration. Hook docs: useOpenDetail, createOpenDetailClient (full API: React).",
       "title": "React",
       "url": "/docs/react"
     },
@@ -1371,7 +1430,7 @@
       "public_path": "/content-media"
     }
   },
-  "generatedAt": "2026-04-06T21:00:42.646Z",
-  "manifestHash": "7de1423d151f442038a94939972243f3ded8cb959ec273798166ac9e5f71b4dd",
+  "generatedAt": "2026-04-06T21:10:29.242Z",
+  "manifestHash": "6fafeed64119054fc35aa075b2d103b081bd9969c634ff62139be208f5704c5a",
   "version": 1
 }

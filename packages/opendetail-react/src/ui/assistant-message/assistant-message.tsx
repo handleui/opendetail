@@ -1,6 +1,7 @@
 import { Globe, type LucideIcon } from "lucide-react";
 import { type ReactNode, useMemo } from "react";
 import { type AllowedTags, Streamdown } from "streamdown";
+import "streamdown/styles.css";
 
 import { AssistantSources } from "../assistant-sources/assistant-sources";
 import type { AssistantSourceItem } from "../assistant-sources/source-links";
@@ -16,6 +17,25 @@ const IMAGE_WIDTH = 549;
 const IMAGE_HEIGHT = 254;
 const CITATION_REGEX = /\[(\d+)\]/gu;
 const CITATION_TAG = "citation";
+
+/**
+ * Maps common model drift (often from seeing "document 1" labels in the prompt) to `[n]`
+ * citations expected by {@link replaceCitationMarkers}.
+ */
+const normalizeAssistantMarkdown = (markdown: string): string => {
+  let out = markdown;
+  out = out.replace(/\[\s*SOURCE\s+(\d+)\s*\]/gi, "[$1]");
+  out = out.replace(
+    /\bcite\s+((?:SOURCE\s+\d+\s*)+)/gi,
+    (_match, chunk: string) => {
+      const nums = [...chunk.matchAll(/SOURCE\s+(\d+)/gi)]
+        .map((m) => m[1])
+        .filter((n): n is string => Boolean(n));
+      return nums.map((n) => `[${n}]`).join("");
+    }
+  );
+  return out;
+};
 const ALLOWED_MARKDOWN_TAGS: AllowedTags = {
   [CITATION_TAG]: ["ref"],
 };
@@ -90,7 +110,7 @@ export const getSourcesCitedInContent = ({
     segments.push(children);
   }
 
-  const combined = segments.join("\n");
+  const combined = segments.map(normalizeAssistantMarkdown).join("\n");
   const seen = new Set<string>();
   const ordered: AssistantSourceItem[] = [];
 
@@ -203,12 +223,14 @@ const replaceCitationMarkers = (markdown: string): string =>
 const getTextBlock = ({
   className,
   content,
+  isStreaming,
   renderSourceLink,
   resolveSourceTarget,
   sources,
 }: {
   className: string;
   content: ReactNode;
+  isStreaming: boolean;
   renderSourceLink?: RenderAssistantSourceLink;
   resolveSourceTarget?: ResolveAssistantSourceTarget;
   sources: AssistantSourceItem[];
@@ -222,10 +244,13 @@ const getTextBlock = ({
   }
 
   if (typeof content === "string") {
+    const normalized = normalizeAssistantMarkdown(content);
     return (
       <Streamdown
         allowedTags={ALLOWED_MARKDOWN_TAGS}
-        className={className}
+        className={[className, "opendetail-assistant-streamdown"]
+          .filter(Boolean)
+          .join(" ")}
         components={{
           citation: (props) => {
             const citationNumber =
@@ -251,8 +276,19 @@ const getTextBlock = ({
             );
           },
         }}
+        controls={{
+          code: {
+            copy: true,
+            download: false,
+          },
+        }}
+        isAnimating={isStreaming}
+        lineNumbers={false}
+        mode={isStreaming ? "streaming" : "static"}
+        parseIncompleteMarkdown={isStreaming}
+        shikiTheme={["github-light", "github-light"]}
       >
-        {replaceCitationMarkers(content)}
+        {replaceCitationMarkers(normalized)}
       </Streamdown>
     );
   }
@@ -274,6 +310,7 @@ export const AssistantMessage = ({
   sources = [],
 }: AssistantMessageProps) => {
   const sourceLabel = meta?.sourceLabel;
+  const isStreaming = status === "streaming";
   const citedSources = useMemo(
     () => getSourcesCitedInContent({ children, lead, sources }),
     [children, lead, sources]
@@ -306,6 +343,7 @@ export const AssistantMessage = ({
       {getTextBlock({
         className: "opendetail-response__lead",
         content: lead,
+        isStreaming,
         renderSourceLink,
         resolveSourceTarget,
         sources,
@@ -330,6 +368,7 @@ export const AssistantMessage = ({
       {getTextBlock({
         className: "opendetail-response-markdown",
         content: children,
+        isStreaming,
         renderSourceLink,
         resolveSourceTarget,
         sources,

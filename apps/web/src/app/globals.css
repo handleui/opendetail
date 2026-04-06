@@ -6,6 +6,7 @@
 }
 
 @source "../../../../registry";
+@source "../../../../node_modules/streamdown/dist/*.js";
 /* App + workspace packages: utilities must appear in scanned files (Tailwind cannot infer imported className strings). */
 @source "../../**/*.{tsx,ts,mdx}";
 @source "../../../../packages/opendetail-fumadocs/src/**/*.tsx";

@@ -36,12 +36,27 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/themes/opendetail/systems-and-themes",
-        destination: "/ui/systems",
+        destination: "/docs/design-system",
         permanent: true,
       },
       {
         source: "/ui/systems-and-themes",
-        destination: "/ui/systems",
+        destination: "/docs/design-system",
+        permanent: true,
+      },
+      {
+        source: "/ui/systems",
+        destination: "/docs/design-system",
+        permanent: true,
+      },
+      {
+        source: "/ui/themes",
+        destination: "/docs/design-system",
+        permanent: true,
+      },
+      {
+        source: "/ui/primitives",
+        destination: "/docs/design-system",
         permanent: true,
       },
       {
@@ -51,7 +66,12 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/themes/opendetail/hooks",
-        destination: "/ui/hooks",
+        destination: "/ui",
+        permanent: true,
+      },
+      {
+        source: "/ui/hooks",
+        destination: "/ui",
         permanent: true,
       },
       {
@@ -61,12 +81,12 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/themes/opendetail/themes/midnight",
-        destination: "/ui/themes",
+        destination: "/docs/design-system",
         permanent: true,
       },
       {
         source: "/themes/opendetail/themes/signal",
-        destination: "/ui/themes",
+        destination: "/docs/design-system",
         permanent: true,
       },
       {
@@ -81,17 +101,17 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/ui/opendetail/themes/midnight",
-        destination: "/ui/themes",
+        destination: "/docs/design-system",
         permanent: true,
       },
       {
         source: "/ui/opendetail/themes/signal",
-        destination: "/ui/themes",
+        destination: "/docs/design-system",
         permanent: true,
       },
       {
         source: "/components/systems-and-themes",
-        destination: "/ui/systems",
+        destination: "/docs/design-system",
         permanent: true,
       },
       {
@@ -101,7 +121,7 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/components/hooks",
-        destination: "/ui/hooks",
+        destination: "/ui",
         permanent: true,
       },
       {
@@ -116,7 +136,7 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/docs/components/systems-and-themes",
-        destination: "/ui/systems",
+        destination: "/docs/design-system",
         permanent: true,
       },
       {
@@ -126,7 +146,7 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/docs/components/hooks",
-        destination: "/ui/hooks",
+        destination: "/ui",
         permanent: true,
       },
       {
@@ -140,8 +160,28 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
-        source: "/docs/cli",
-        destination: "/docs/cli/quickstart",
+        source: "/docs/cli/quickstart",
+        destination: "/docs/cli",
+        permanent: true,
+      },
+      {
+        source: "/docs/cli/commands",
+        destination: "/docs/cli",
+        permanent: true,
+      },
+      {
+        source: "/docs/cli/build",
+        destination: "/docs/cli",
+        permanent: true,
+      },
+      {
+        source: "/docs/cli/setup",
+        destination: "/docs/cli",
+        permanent: true,
+      },
+      {
+        source: "/docs/cli/doctor",
+        destination: "/docs/cli",
         permanent: true,
       },
       {

@@ -3,11 +3,6 @@
   "root": true,
   "pages": [
     "index",
-    "---Foundations---",
-    "systems",
-    "themes",
-    "primitives",
-    "hooks/index",
     "---Hooks---",
     "hooks/use-opendetail",
     "hooks/create-open-detail-client",

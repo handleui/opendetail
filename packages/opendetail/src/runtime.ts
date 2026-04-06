@@ -259,7 +259,7 @@ const formatContext = (chunks: OpenDetailIndexArtifact["chunks"]): string =>
   chunks
     .map(
       (chunk, index) =>
-        `[SOURCE ${index + 1}]
+        `### Retrieved document ${index + 1}
 kind: ${chunk.sourceKind ?? "local"}
 url: ${chunk.url}
 title: ${chunk.title}
@@ -302,6 +302,7 @@ const SYSTEM_INSTRUCTIONS = `You are an in-product informational assistant.
 Answer from the Sources block in the user message, from any project instructions above, and from tool results (for example file search or web search) when tools are available.
 Never present unsupported guesses as facts about the product or its materials.
 Every factual statement grounded in those sources or tool results must cite one or more sources with [1], [2], etc.
+Use only bracketed numbers for citations. Do not write "SOURCE 1", "cite SOURCE …", or similar — only [1], [2], and so on.
 Use normal sentence case and never answer in all caps unless the source text is all caps.
 If the provided sources and tools do not answer the question, do not answer from general knowledge.
 Instead, give a short, direct response that the topic is not covered in the available materials or cannot be confirmed from them.
