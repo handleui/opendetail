@@ -1,5 +1,20 @@
 # opendetail-fumadocs
 
+## 1.0.0
+
+### Major Changes
+
+- f3310df: - **Breaking:** Remove compatibility exports and deprecated components. Public API uses **`Composer`**, **`Thread`**, **`UserMessage`**, **`AssistantMessage`**, **`ConversationLayout`**, and **`AssistantSidebar`** with **`connection`** only—no **`AssistantShell`**, **`AssistantSidebarShell`**, **`AssistantError`**, **`AssistantInput`**, **`AssistantResponse`**, **`AssistantThread`**, **`AssistantUserMessage`**, or **`AssistantLoader`** aliases.
+  - **`FumadocsAssistant`** now wraps **`AssistantSidebar`** with **`connection`** (same props as before: `endpoint`, `persistence`, `sitePaths`, `transport`).
+
+### Patch Changes
+
+- Updated dependencies [f3310df]
+- Updated dependencies [f3310df]
+- Updated dependencies [f3310df]
+  - opendetail-react@1.0.0
+  - opendetail-next@0.6.1
+
 ## 0.6.0
 
 ### Minor Changes

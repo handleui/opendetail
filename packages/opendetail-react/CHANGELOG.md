@@ -1,5 +1,31 @@
 # opendetail-react
 
+## 1.0.0
+
+### Major Changes
+
+- f3310df: - **Breaking:** Remove compatibility exports and deprecated components. Public API uses **`Composer`**, **`Thread`**, **`UserMessage`**, **`AssistantMessage`**, **`ConversationLayout`**, and **`AssistantSidebar`** with **`connection`** only—no **`AssistantShell`**, **`AssistantSidebarShell`**, **`AssistantError`**, **`AssistantInput`**, **`AssistantResponse`**, **`AssistantThread`**, **`AssistantUserMessage`**, or **`AssistantLoader`** aliases.
+  - **`FumadocsAssistant`** now wraps **`AssistantSidebar`** with **`connection`** (same props as before: `endpoint`, `persistence`, `sitePaths`, `transport`).
+
+### Minor Changes
+
+- f3310df: **Component system**
+
+  - Add **`ConversationLayout`** (shell, sidebar, and modal variants) and compose it from **`AssistantShell`**, **`AssistantSidebar`**, and **`AssistantModal`**; existing class names and layout behavior are preserved.
+  - Add **`AssistantSidebar` `connection`** prop (options forwarded to **`useOpenDetail`**). **`AssistantSidebarShell`** is a thin wrapper that passes **`connection`**; existing usage is unchanged.
+  - Split styles into **`src/styles/systems/opendetail/`** and **`src/styles/themes/opendetail/`**; root **`opendetail-*.css`** files re-export so import paths stay stable.
+  - Export optional aliases: **`Composer`**, **`UserMessage`**, **`AssistantMessage`** (alongside **`AssistantInput`**, **`AssistantUserMessage`**, **`AssistantResponse`**). Deprecate **`AssistantError`** in favor of assistant message / response error state.
+  - Add **`data-od-system="opendetail"`** on shell, sidebar, and modal roots where applicable.
+
+  **Docs:** new **Systems and themes** doc, `src/styles/README.md`, and package README updates.
+
+  **Registry:** add **`conversation-layout`** item; **`assistant-shell`**, **`assistant-modal`**, and **`assistant-sidebar`** depend on it.
+
+### Patch Changes
+
+- f3310df: - **Security:** Reject protocol-relative source URLs (`//host/...`) in `getDefaultAssistantSourceTarget` and `isSafeAssistantSourceHref` so local/path citations cannot navigate off-site.
+  - **Performance:** Stable `useOpenDetail` callbacks (`clearThread`, `stop`, `submit`) via ref indirection; `AssistantSidebar` uses `onOpenChangeRef` for global listeners, memoized mobile `setColumn`, and a stable default input submit handler; `AssistantModal` uses stable dialog ref and submit handler, and `onOpenChangeRef` for open effects; `AssistantSidebarShell` memoizes the `connection` object.
+
 ## 0.6.0
 
 ### Minor Changes

@@ -1,5 +1,14 @@
 # opendetail-next
 
+## 0.6.1
+
+### Patch Changes
+
+- Updated dependencies [f3310df]
+- Updated dependencies [f3310df]
+- Updated dependencies [f3310df]
+  - opendetail-react@1.0.0
+
 ## 0.6.0
 
 ### Minor Changes
