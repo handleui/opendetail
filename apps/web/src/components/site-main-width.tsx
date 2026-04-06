@@ -27,7 +27,7 @@ export const SiteMainWidth = ({ children }: { children: ReactNode }) => {
   const changelogMain = isChangelogPathname(pathname);
   const docsMain = isDocsPathname(pathname);
 
-  /** Matches `DocsPageChrome` `components` grid: article (650) + gap + TOC (≤14rem). */
+  /** Matches `DocsPageChrome` `components` grid at `min-[1420px]`: article (650) + gap + TOC (≤14rem). */
   const componentsDocsMax = "max-w-[min(100%,calc(650px+4rem+14rem))]";
 
   let widthClass = "mx-auto w-full max-w-[650px]";

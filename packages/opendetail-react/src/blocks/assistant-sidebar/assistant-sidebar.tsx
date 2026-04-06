@@ -812,8 +812,9 @@ export const AssistantSidebar = (props: AssistantSidebarProps): ReactNode => {
   const previousRequestStateRef = useRef(requestState);
   const panelRef = useRef<HTMLElement | null>(null);
   const [isSidebarResizing, setIsSidebarResizing] = useState(false);
-  const [mobileShellColumn, setMobileShellColumn] =
-    useState<TrifoldColumn3>("center");
+  const [mobileShellColumn, setMobileShellColumn] = useState<TrifoldColumn3>(
+    () => (open === true ? "trailing" : "center")
+  );
   const isMdUp = useSyncExternalStore(
     subscribeMdUp,
     getMdUpSnapshot,
@@ -821,6 +822,15 @@ export const AssistantSidebar = (props: AssistantSidebarProps): ReactNode => {
   );
   const isMobileTriptychLayout = Boolean(navigation && renderMobileShell);
   const isMobileTriptychActive = isMobileTriptychLayout && !isMdUp;
+
+  useEffect(() => {
+    if (!isMobileTriptychActive || open === undefined) {
+      return;
+    }
+
+    setMobileShellColumn(open ? "trailing" : "center");
+  }, [isMobileTriptychActive, open]);
+
   const embeddedLayoutResolved = embedded ? embeddedLayout : undefined;
   const showCollapseButton = !(embedded && embeddedHideCollapse);
   const isSidebarOpen = isMobileTriptychActive

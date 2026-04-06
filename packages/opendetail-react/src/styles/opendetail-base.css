@@ -170,6 +170,22 @@
   height: 0;
 }
 
+/* iOS Safari: font-size <16px on inputs triggers focus zoom; keep 16px on the
+   textarea for the computed size, then scale the field to ~14px visually (see
+   https://x.com/nonzeroexitcode/status/2041156113664495857). */
+@media (hover: none) and (pointer: coarse) {
+  .opendetail-input__field {
+    width: calc(100% / 0.875);
+    transform: scale(0.875);
+    transform-origin: top left;
+  }
+
+  .opendetail-input__textarea {
+    font-size: 16px;
+    line-height: 1.3125;
+  }
+}
+
 .opendetail-input__fade {
   position: absolute;
   right: 0;

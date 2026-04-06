@@ -350,7 +350,28 @@ export const ParallelTrack = forwardRef<
       startClientY: event.clientY,
     };
     setPhaseBoth("pending");
-    event.currentTarget.setPointerCapture(event.pointerId);
+    // Defer setPointerCapture until we commit to a horizontal drag so inner
+    // overflow regions (e.g. trifold center column) can scroll on touch.
+  };
+
+  const commitPendingAsHorizontal = (event: ReactPointerEvent<HTMLElement>) => {
+    snapControlsRef.current?.stop();
+    setPhaseBoth("horizontal");
+    try {
+      event.currentTarget.setPointerCapture(event.pointerId);
+    } catch {
+      // ignore
+    }
+  };
+
+  const finishPendingAsVertical = (event: ReactPointerEvent<HTMLElement>) => {
+    dragRef.current = null;
+    setPhaseBoth("idle");
+    try {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    } catch {
+      // ignore
+    }
   };
 
   const onPointerMove = (event: ReactPointerEvent<HTMLElement>) => {
@@ -372,16 +393,9 @@ export const ParallelTrack = forwardRef<
       }
 
       if (absX > absY * drag.horizontalDominance) {
-        snapControlsRef.current?.stop();
-        setPhaseBoth("horizontal");
+        commitPendingAsHorizontal(event);
       } else {
-        dragRef.current = null;
-        setPhaseBoth("idle");
-        try {
-          event.currentTarget.releasePointerCapture(event.pointerId);
-        } catch {
-          // ignore
-        }
+        finishPendingAsVertical(event);
         return;
       }
     }

@@ -38,37 +38,42 @@ export function DocsPageChrome({
 }) {
   const isComponents = variant === "components";
   const hasPreview = Boolean(preview) && isComponents;
-  const contentRowClass = hasPreview ? "xl:row-start-2" : "xl:row-start-1";
+  /** Wider than `xl` (1280px): TOC + grid only when there is enough width (assistant sidebar open). */
+  const contentRowClass = hasPreview
+    ? "min-[1420px]:row-start-2"
+    : "min-[1420px]:row-start-1";
 
   return (
     <AnchorProvider toc={[...toc]}>
       <div
         className={
           isComponents
-            ? "flex w-full min-w-0 flex-col gap-8 xl:grid xl:grid-cols-[minmax(0,650px)_minmax(11rem,14rem)] xl:items-start xl:gap-x-16"
-            : "flex flex-col gap-8 xl:grid xl:grid-cols-[minmax(0,1fr)_minmax(0,650px)_minmax(11rem,14rem)] xl:items-start xl:gap-x-16"
+            ? "flex w-full min-w-0 flex-col gap-8 min-[1420px]:grid min-[1420px]:grid-cols-[minmax(0,650px)_minmax(11rem,14rem)] min-[1420px]:items-start min-[1420px]:gap-x-16"
+            : "flex flex-col gap-8 min-[1420px]:grid min-[1420px]:grid-cols-[minmax(0,1fr)_minmax(0,650px)_minmax(11rem,14rem)] min-[1420px]:items-start min-[1420px]:gap-x-16"
         }
       >
-        <div className="mb-6 xl:hidden">
+        <div className="mb-6 min-[1420px]:hidden">
           <DocsPageToolbar githubUrl={githubUrl} markdownUrl={markdownUrl} />
         </div>
 
         {isComponents ? null : (
           <div
             aria-hidden
-            className="hidden min-h-px min-w-0 xl:col-start-1 xl:row-start-1 xl:block"
+            className="hidden min-h-px min-w-0 min-[1420px]:col-start-1 min-[1420px]:row-start-1 min-[1420px]:block"
           />
         )}
 
         {hasPreview ? (
-          <div className="min-w-0 xl:col-span-2 xl:row-start-1">{preview}</div>
+          <div className="min-w-0 min-[1420px]:col-span-2 min-[1420px]:row-start-1">
+            {preview}
+          </div>
         ) : null}
 
         <div
           className={
             isComponents
-              ? `min-w-0 max-w-[650px] xl:col-start-1 ${contentRowClass} xl:w-full`
-              : "min-w-0 max-w-[650px] xl:col-start-2 xl:row-start-1 xl:w-full"
+              ? `min-w-0 max-w-[650px] min-[1420px]:col-start-1 ${contentRowClass} min-[1420px]:w-full`
+              : "min-w-0 max-w-[650px] min-[1420px]:col-start-2 min-[1420px]:row-start-1 min-[1420px]:w-full"
           }
         >
           {lead ?? null}
