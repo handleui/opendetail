@@ -20,24 +20,24 @@ export function DocsToc({
   toc: readonly TOCItemType[];
   markdownUrl: string;
   githubUrl: string;
-  /** Grid column for `xl` layout: `2` when there is no leading spacer column (components docs). */
+  /** Grid column for wide layout: `2` when there is no leading spacer column (components docs). */
   gridColumnStart?: 2 | 3;
   /** Row for article + TOC when a full-width preview sits in row 1 (component detail pages). */
   gridRowStart?: 1 | 2;
 }) {
-  /** Wider than default `xl` (1280px) so article stays readable with the assistant sidebar open. */
+  /** In sync with `DocsPageChrome` TOC + grid breakpoint (`min-[1350px]`). */
   const colStart =
     gridColumnStart === 2
-      ? "min-[1420px]:col-start-2"
-      : "min-[1420px]:col-start-3";
+      ? "min-[1350px]:col-start-2"
+      : "min-[1350px]:col-start-3";
   const rowStart =
     gridRowStart === 2
-      ? "min-[1420px]:row-start-2"
-      : "min-[1420px]:row-start-1";
+      ? "min-[1350px]:row-start-2"
+      : "min-[1350px]:row-start-1";
 
   return (
     <aside
-      className={`hidden w-[min(100%,14rem)] shrink-0 min-[1420px]:sticky min-[1420px]:top-8 min-[1420px]:block min-[1420px]:max-h-[calc(100vh-2rem)] min-[1420px]:self-start min-[1420px]:overflow-y-auto min-[1420px]:overscroll-contain min-[1420px]:[scrollbar-width:none] min-[1420px]:[&::-webkit-scrollbar]:hidden ${rowStart} ${colStart}`}
+      className={`hidden w-[min(100%,14rem)] shrink-0 min-[1350px]:sticky min-[1350px]:top-8 min-[1350px]:block min-[1350px]:max-h-[calc(100vh-2rem)] min-[1350px]:self-start min-[1350px]:overflow-y-auto min-[1350px]:overscroll-contain min-[1350px]:[scrollbar-width:none] min-[1350px]:[&::-webkit-scrollbar]:hidden ${rowStart} ${colStart}`}
     >
       <div className="flex flex-col gap-6 pb-4">
         {toc.length > 0 ? (

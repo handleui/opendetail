@@ -141,8 +141,8 @@ const INNER_NAV_CLASS =
 
 /** Lucide / row raster slot — keep in sync with `web-root-shell` social icon size. */
 const ROW_ICON_PX = 14;
-/** Lucide default stroke is 2; GitHub/npm slots use custom SVGs and keep their own strokes. */
-const SIDEBAR_LUCIDE_STROKE_PX = 1.2;
+/** Site icon stroke width; GitHub/npm slots use filled SVGs (no stroke). */
+const SIDEBAR_LUCIDE_STROKE_PX = 1.5;
 const DEFAULT_ROW_ICON_SIZE = ROW_ICON_PX;
 const DEFAULT_MADE_BY_HUMAN_HREF = "https://x.com/handleui";
 

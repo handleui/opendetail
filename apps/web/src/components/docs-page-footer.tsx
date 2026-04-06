@@ -45,7 +45,7 @@ export function DocsPageFooter({ pagePath }: { pagePath: string }) {
         }}
         type="button"
       >
-        <ThumbsUpIcon className="size-[14px]" />
+        <ThumbsUpIcon className="size-[14px]" strokeWidth={1.5} />
       </button>
       <button
         aria-label="No"
@@ -58,7 +58,7 @@ export function DocsPageFooter({ pagePath }: { pagePath: string }) {
         }}
         type="button"
       >
-        <ThumbsDownIcon className="size-[14px]" />
+        <ThumbsDownIcon className="size-[14px]" strokeWidth={1.5} />
       </button>
       {sentiment === null ? null : (
         <span className="text-[#a4a4a4] text-[13px]">

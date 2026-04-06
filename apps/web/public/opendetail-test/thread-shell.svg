@@ -10,6 +10,6 @@
   <rect x="238" y="560" width="724" height="56" rx="18" fill="#FFFFFF"/>
   <rect x="278" y="580" width="260" height="14" rx="7" fill="#D4D4D4"/>
   <rect x="902" y="574" width="28" height="28" rx="8" fill="#C7EF2B"/>
-  <path d="M913 588H919" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round"/>
-  <path d="M917 584L921 588L917 592" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M913 588H919" stroke="#0A0A0A" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M917 584L921 588L917 592" stroke="#0A0A0A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

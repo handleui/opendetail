@@ -38,33 +38,29 @@ export function DocsPageChrome({
 }) {
   const isComponents = variant === "components";
   const hasPreview = Boolean(preview) && isComponents;
-  /** Wider than `xl` (1280px): TOC + grid only when there is enough width (assistant sidebar open). */
+  /** Slightly above `xl` (1280px): show TOC + grid only when the main column has enough room. */
   const contentRowClass = hasPreview
-    ? "min-[1420px]:row-start-2"
-    : "min-[1420px]:row-start-1";
+    ? "min-[1350px]:row-start-2"
+    : "min-[1350px]:row-start-1";
 
   return (
     <AnchorProvider toc={[...toc]}>
       <div
         className={
           isComponents
-            ? "flex w-full min-w-0 flex-col gap-8 min-[1420px]:grid min-[1420px]:grid-cols-[minmax(0,650px)_minmax(11rem,14rem)] min-[1420px]:items-start min-[1420px]:gap-x-16"
-            : "flex flex-col gap-8 min-[1420px]:grid min-[1420px]:grid-cols-[minmax(0,1fr)_minmax(0,650px)_minmax(11rem,14rem)] min-[1420px]:items-start min-[1420px]:gap-x-16"
+            ? "flex w-full min-w-0 flex-col gap-8 min-[1350px]:grid min-[1350px]:grid-cols-[minmax(0,650px)_minmax(11rem,14rem)] min-[1350px]:items-start min-[1350px]:gap-x-16"
+            : "flex flex-col gap-8 min-[1350px]:grid min-[1350px]:grid-cols-[minmax(0,1fr)_minmax(0,650px)_minmax(11rem,14rem)] min-[1350px]:items-start min-[1350px]:gap-x-16"
         }
       >
-        <div className="mb-6 min-[1420px]:hidden">
-          <DocsPageToolbar githubUrl={githubUrl} markdownUrl={markdownUrl} />
-        </div>
-
         {isComponents ? null : (
           <div
             aria-hidden
-            className="hidden min-h-px min-w-0 min-[1420px]:col-start-1 min-[1420px]:row-start-1 min-[1420px]:block"
+            className="hidden min-h-px min-w-0 min-[1350px]:col-start-1 min-[1350px]:row-start-1 min-[1350px]:block"
           />
         )}
 
         {hasPreview ? (
-          <div className="min-w-0 min-[1420px]:col-span-2 min-[1420px]:row-start-1">
+          <div className="min-w-0 min-[1350px]:col-span-2 min-[1350px]:row-start-1">
             {preview}
           </div>
         ) : null}
@@ -72,8 +68,8 @@ export function DocsPageChrome({
         <div
           className={
             isComponents
-              ? `min-w-0 max-w-[650px] min-[1420px]:col-start-1 ${contentRowClass} min-[1420px]:w-full`
-              : "min-w-0 max-w-[650px] min-[1420px]:col-start-2 min-[1420px]:row-start-1 min-[1420px]:w-full"
+              ? `mx-auto w-full min-w-0 max-w-[650px] min-[1350px]:col-start-1 ${contentRowClass} min-[1350px]:w-full`
+              : "mx-auto w-full min-w-0 max-w-[650px] min-[1350px]:col-start-2 min-[1350px]:row-start-1 min-[1350px]:w-full"
           }
         >
           {lead ?? null}
@@ -84,6 +80,9 @@ export function DocsPageChrome({
               </h1>
             </header>
           )}
+          <div className="mb-6 min-[1350px]:hidden">
+            <DocsPageToolbar githubUrl={githubUrl} markdownUrl={markdownUrl} />
+          </div>
           {children}
           <DocsPageFooter pagePath={feedbackPath} />
         </div>
