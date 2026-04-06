@@ -3,7 +3,6 @@ import { join, resolve } from "node:path";
 import { docsRoute, uiRoute } from "./shared";
 
 const docsContentDirectory = resolve(process.cwd(), "content/docs");
-const uiContentDirectory = resolve(process.cwd(), "content/ui");
 
 const collectKnownSourcePageUrls = (
   directoryPath: string,
@@ -46,6 +45,6 @@ const collectKnownSourcePageUrls = (
 
 export const knownSourcePageUrls = [
   "/changelog",
+  uiRoute,
   ...collectKnownSourcePageUrls(docsContentDirectory, docsRoute),
-  ...collectKnownSourcePageUrls(uiContentDirectory, uiRoute),
 ].sort();

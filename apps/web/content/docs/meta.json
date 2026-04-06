@@ -15,6 +15,9 @@
     "next",
     "react",
     "design-system",
+    "---Hooks---",
+    "hooks/use-opendetail",
+    "hooks/create-open-detail-client",
     "fumadocs"
   ]
 }

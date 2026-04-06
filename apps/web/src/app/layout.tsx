@@ -1,10 +1,12 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { headers } from "next/headers";
 import type { ReactNode } from "react";
 import "./globals.css";
 import { WebRootShell } from "@/components/web-root-shell";
 import { getDocsSidebarSections } from "@/lib/docs-sidebar-sections";
 import { knownSourcePageUrls } from "@/lib/known-source-page-urls";
+import { SANDBOX_PREVIEW_DOCUMENT_HEADER } from "@/lib/ui-sandbox/paths";
 import { getUiSidebarSections } from "@/lib/ui-sidebar-sections";
 
 const geistSans = Geist({
@@ -47,11 +49,31 @@ export const viewport: Viewport = {
   width: "device-width",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: ReactNode;
 }>) {
+  const headerList = await headers();
+  const isSandboxPreviewDocument =
+    headerList.get(SANDBOX_PREVIEW_DOCUMENT_HEADER) === "1";
+
+  if (isSandboxPreviewDocument) {
+    return (
+      <html
+        className={`${geistSans.variable} ${geistMono.variable} h-full`}
+        lang="en"
+        suppressHydrationWarning
+      >
+        <body
+          className={`${geistSans.className} m-0 h-full min-h-0 bg-white font-sans text-neutral-900 tracking-tight antialiased`}
+        >
+          {children}
+        </body>
+      </html>
+    );
+  }
+
   const docsSidebarSections = getDocsSidebarSections();
   const uiSidebarSections = getUiSidebarSections();
 

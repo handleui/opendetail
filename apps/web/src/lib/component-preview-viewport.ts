@@ -1,7 +1,7 @@
-import type { UiOpendetailPreviewSlug } from "@/lib/ui-opendetail-preview-slugs";
+import type { SandboxPrimitiveId } from "@/lib/ui-sandbox/primitives";
 
 /**
- * Live demo frame for `/ui/opendetail/*` — one preset bundles height, inset, and alignment.
+ * Live demo frame for the UI sandbox — one preset bundles height, inset, and alignment.
  * Customize per slug: edit `PRESET_BY_SLUG` or add a preset in `PRESET_CLASS_NAMES`.
  */
 export type ComponentPreviewPreset =
@@ -44,15 +44,16 @@ export const PRESET_CLASS_NAMES: Record<
 };
 
 const PRESET_BY_SLUG: Partial<
-  Record<UiOpendetailPreviewSlug, ComponentPreviewPreset>
+  Record<SandboxPrimitiveId, ComponentPreviewPreset>
 > = {
   shell: "tall-fill",
   sidebar: "flush-tall",
   "conversation-title": "tall-centered",
+  thread: "tall-fill",
 };
 
 export function getComponentPreviewPreset(
-  slug: UiOpendetailPreviewSlug
+  slug: SandboxPrimitiveId
 ): ComponentPreviewPreset {
   return PRESET_BY_SLUG[slug] ?? "default";
 }

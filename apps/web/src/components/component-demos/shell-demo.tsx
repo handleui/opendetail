@@ -37,7 +37,12 @@ export const ShellDemo = ({
         key: "opendetail-web-docs-shell-demo",
         storage: "session" as const,
       },
-      sitePaths: ["/docs", "/ui"],
+      sitePaths: [
+        "/docs",
+        "/ui",
+        "/docs/hooks/use-opendetail",
+        "/docs/hooks/create-open-detail-client",
+      ],
     }),
     []
   );

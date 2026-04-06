@@ -61,22 +61,12 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/themes/opendetail/hooks/:path*",
-        destination: "/ui/hooks/:path*",
+        destination: "/docs/hooks/:path*",
         permanent: true,
       },
       {
         source: "/themes/opendetail/hooks",
-        destination: "/ui",
-        permanent: true,
-      },
-      {
-        source: "/ui/hooks",
-        destination: "/ui",
-        permanent: true,
-      },
-      {
-        source: "/themes/opendetail",
-        destination: "/ui",
+        destination: "/docs/hooks/use-opendetail",
         permanent: true,
       },
       {
@@ -91,22 +81,12 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/themes/opendetail/:path*",
-        destination: "/ui/opendetail/:path*",
-        permanent: true,
-      },
-      {
-        source: "/ui/opendetail",
         destination: "/ui",
         permanent: true,
       },
       {
-        source: "/ui/opendetail/themes/midnight",
-        destination: "/docs/design-system",
-        permanent: true,
-      },
-      {
-        source: "/ui/opendetail/themes/signal",
-        destination: "/docs/design-system",
+        source: "/themes/opendetail",
+        destination: "/ui",
         permanent: true,
       },
       {
@@ -116,11 +96,16 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/components/hooks/:path*",
-        destination: "/ui/hooks/:path*",
+        destination: "/docs/hooks/:path*",
         permanent: true,
       },
       {
         source: "/components/hooks",
+        destination: "/docs/hooks/use-opendetail",
+        permanent: true,
+      },
+      {
+        source: "/components/:path*",
         destination: "/ui",
         permanent: true,
       },
@@ -130,33 +115,28 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
-        source: "/components/:path*",
-        destination: "/ui/opendetail/:path*",
-        permanent: true,
-      },
-      {
         source: "/docs/components/systems-and-themes",
         destination: "/docs/design-system",
         permanent: true,
       },
       {
         source: "/docs/components/hooks/:path*",
-        destination: "/ui/hooks/:path*",
+        destination: "/docs/hooks/:path*",
         permanent: true,
       },
       {
         source: "/docs/components/hooks",
+        destination: "/docs/hooks/use-opendetail",
+        permanent: true,
+      },
+      {
+        source: "/docs/components/:path*",
         destination: "/ui",
         permanent: true,
       },
       {
         source: "/docs/components",
         destination: "/ui",
-        permanent: true,
-      },
-      {
-        source: "/docs/components/:path*",
-        destination: "/ui/opendetail/:path*",
         permanent: true,
       },
       {

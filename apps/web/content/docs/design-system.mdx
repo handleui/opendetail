@@ -5,7 +5,7 @@ description: Systems, themes, and React primitives — CSS import order, Midnigh
 
 OpenDetail splits **systems** (full UI identity: structure, semantics, layout) from **themes** (palette layers on top of one system). **Primitives** are the documented React components that implement the system. The default **OpenDetail** system and **Midnight** / **Signal** themes ship with `opendetail-react` styles.
 
-**Headless API (same for every system):** [**React**](/docs/react) — `useOpenDetail`, `createOpenDetailClient`. **Live component reference** (props and previews): [**Assistant UI**](/ui).
+**Headless API (same for every system):** [**React**](/docs/react) — `useOpenDetail`, `createOpenDetailClient`. **Live component reference** (props and previews): [**UI sandbox**](/ui).
 
 ## Systems
 
@@ -58,7 +58,7 @@ Custom themes belong next to the base import: override semantic CSS variables sc
 
 ## Primitives
 
-**Primitives** are the **documented React exports** that implement the OpenDetail **system**: layout regions, the thread and composer, messages, sources, and status—styled by **`opendetail-base.css`** and optional [themes](#themes). They are **not** the headless streaming layer; that lives in **`useOpenDetail`** and **`createOpenDetailClient`** ([**useOpenDetail**](/ui/hooks/use-opendetail), [**createOpenDetailClient**](/ui/hooks/create-open-detail-client), full reference [**React**](/docs/react)).
+**Primitives** are the **documented React exports** that implement the OpenDetail **system**: layout regions, the thread and composer, messages, sources, and status—styled by **`opendetail-base.css`** and optional [themes](#themes). They are **not** the headless streaming layer; that lives in **`useOpenDetail`** and **`createOpenDetailClient`** ([**useOpenDetail**](/docs/hooks/use-opendetail), [**createOpenDetailClient**](/docs/hooks/create-open-detail-client), full reference [**React**](/docs/react)).
 
 ### What ships
 
@@ -68,7 +68,7 @@ Custom themes belong next to the base import: override semantic CSS variables sc
 
 **Recipes** (`AssistantSidebar`, `AssistantModal`) bundle primitives for a drop-in experience; you can also compose primitives inside your own shell.
 
-Browse **Primitives** in the [Assistant UI](/ui) sidebar for live previews and props—[**Shell**](/ui/opendetail/shell) is a compact entry point.
+Browse **Primitives** in the [UI sandbox](/ui) for live previews and props—[**Shell**](/ui?primitive=shell) is a compact entry point.
 
 ## See also
 

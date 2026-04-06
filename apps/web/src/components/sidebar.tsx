@@ -280,7 +280,7 @@ export interface SidebarProps {
   productVersionLabel: string;
   /** Root row icons (site nav + Social) — default 14px. */
   rowIconSize?: number;
-  /** Assistant UI nested panel — from `uiSource.getPageTree()` (server). */
+  /** Assistant UI nested panel — static link to the UI sandbox. */
   uiSidebarSections: readonly SiteNavSection[];
 }
 
@@ -478,7 +478,7 @@ export function Sidebar({
                           strokeWidth={SIDEBAR_LUCIDE_STROKE_PX}
                         />
                       </RootRowIconSlot>
-                      <span>Assistant UI</span>
+                      <span>UI sandbox</span>
                     </span>
                     <ArrowRight
                       aria-hidden="true"
@@ -559,7 +559,7 @@ export function Sidebar({
                   key="nest-ui-docs"
                 >
                   <p className="sr-only" id={`${navId}-ui-docs`}>
-                    Assistant UI
+                    UI sandbox
                   </p>
                   <div className="flex flex-col gap-4">
                     <div>

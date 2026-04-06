@@ -19,13 +19,6 @@ export const docs = defineDocs({
   meta: metaOptions,
 });
 
-/** Assistant UI — `/ui` (separate loader / page tree, Fumadocs-native split). */
-export const assistantUi = defineDocs({
-  dir: "content/ui",
-  docs: docsPageOptions,
-  meta: metaOptions,
-});
-
 export default defineConfig({
   mdxOptions: {
     // MDX options

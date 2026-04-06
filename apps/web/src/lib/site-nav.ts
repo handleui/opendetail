@@ -1,5 +1,5 @@
 /**
- * Site shell sidebar: path helpers for the dual Fumadocs loaders (`/docs` + `/ui`).
+ * Site shell sidebar: path helpers for docs (`/docs`) and the UI sandbox (`/ui`).
  * Nav trees come from `getPageTree()` — see `docs-sidebar-sections` / `ui-sidebar-sections`.
  */
 
@@ -28,10 +28,10 @@ export const SITE_DOCS_ROUTER: { href: string; label: string } = {
 /** Canonical path prefix for Assistant UI docs + previews. */
 export const UI_DOCS_PATH_PREFIX = "/ui";
 
-/** Assistant UI collection index — top link in the Assistant UI nested panel. */
+/** Assistant UI — top link in the nested panel (UI sandbox). */
 export const SITE_UI_DOCS_ROUTER: { href: string; label: string } = {
   href: "/ui",
-  label: "Overview",
+  label: "UI sandbox",
 };
 
 function normalizePath(path: string): string {
