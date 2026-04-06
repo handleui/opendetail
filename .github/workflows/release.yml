@@ -37,6 +37,10 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
+      # Workspace packages must have dist/ before publish (prepublishOnly runs before prepack).
+      - name: Build packages to publish
+        run: bunx turbo run build --filter=opendetail --filter=trifold --filter=opendetail-react --filter=opendetail-next --filter=opendetail-fumadocs
+
       - name: Create release PR or publish packages
         uses: changesets/action@v1
         with:

@@ -48,7 +48,7 @@
     "test": "vitest run",
     "publint": "publint",
     "prepack": "npm run build",
-    "prepublishOnly": "npm run check-types && npm run test && npm run publint",
+    "prepublishOnly": "npm run build && npm run check-types && npm run test && npm run publint",
     "publish:dry-run": "npm publish --dry-run"
   },
   "peerDependencies": {

@@ -353,6 +353,45 @@
     },
     {
       "anchor": null,
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/conversation-title.mdx",
+      "headings": [
+        "Conversation title"
+      ],
+      "id": "content/docs/components/conversation-title.mdx",
+      "images": [],
+      "relativePath": "components/conversation-title.mdx",
+      "text": "The sidebar header title is not a separate React component: useOpenDetail listens for stream events of type title and exposes conversationTitle. AssistantSidebarShell passes that string to AssistantSidebar as headerTitle.\n\nThe preview below uses the same client and server path as the site: useOpenDetail with POST /api/opendetail, conversationTitle: true on the first message in a thread, and NDJSON title events that update conversationTitle (not a truncated copy of the prompt).\n\nTitles are persisted when you pass persistence (same storage as messages and the draft question).",
+      "title": "Conversation title",
+      "url": "/docs/components/conversation-title"
+    },
+    {
+      "anchor": "useopendetail",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/conversation-title.mdx",
+      "headings": [
+        "useOpenDetail"
+      ],
+      "id": "content/docs/components/conversation-title.mdx#useopendetail",
+      "images": [],
+      "relativePath": "components/conversation-title.mdx",
+      "text": "useOpenDetail\n\n| Field | Type | Description |\n| --- | --- | --- |\n| conversationTitle | string \\| null | Latest title from the stream, or restored from persistence. |\n\nThe client sets the title when it receives a { type: \"title\", title: string } event from createOpenDetailClient (see opendetail-next route handler). Requesting a title on submit is opt-in via the client request shape (for example conversationTitle: true where supported).",
+      "title": "Conversation title",
+      "url": "/docs/components/conversation-title#useopendetail"
+    },
+    {
+      "anchor": "props",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/error.mdx",
+      "headings": [
+        "Props"
+      ],
+      "id": "content/docs/components/error.mdx#props",
+      "images": [],
+      "relativePath": "components/error.mdx",
+      "text": "Props\n\n| Prop | Type | Default | Description |\n| --- | --- | --- | --- |\n| message | string \\| null | \"Ouch, please try again\" | Error copy; null renders nothing. |\n| label | string | — | Overrides visible label (defaults to message). |\n\nUse alongside AssistantInput status or inline in AssistantResponse error for richer layouts.",
+      "title": "Error",
+      "url": "/docs/components/error#props"
+    },
+    {
+      "anchor": null,
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/index.mdx",
       "headings": [
         "Components"
@@ -360,7 +399,7 @@
       "id": "content/docs/components/index.mdx",
       "images": [],
       "relativePath": "components/index.mdx",
-      "text": "Browse UI primitives from opendetail-react: layout shell, the prompt field, and suggestion chips. Each page includes a live preview and API notes.\n\nCustom integrations: UI integration. Same examples on the public site: opendetail.dev/components.",
+      "text": "Browse UI primitives from opendetail-react: shell, sidebar, input, sources, suggestions, status, and styling hooks. Each page includes a live preview where it makes sense, plus API notes.\n\nCustom integrations: UI integration. Same examples on the public site: opendetail.dev/components.",
       "title": "Components",
       "url": "/docs/components"
     },
@@ -386,7 +425,7 @@
       "id": "content/docs/components/input.mdx",
       "images": [],
       "relativePath": "components/input.mdx",
-      "text": "AssistantInput renders the branded textarea surface, send/stop control, and optional status line. It pairs with useOpenDetail request state for pending and streaming modes.",
+      "text": "AssistantInput renders the textarea, send/stop control, and optional status line. Pair it with useOpenDetail (or your own state machine) via requestState so the button shows stop while a request is pending or streaming.",
       "title": "Input",
       "url": "/docs/components/input"
     },
@@ -399,7 +438,7 @@
       "id": "content/docs/components/input.mdx#sizes",
       "images": [],
       "relativePath": "components/input.mdx",
-      "text": "Sizes\n\ncompact — default width for narrow rails.shell — wider surface aligned with modal/shell layouts.",
+      "text": "Sizes\n\n| Value | When to use |\n| --- | --- |\n| compact | Narrow rails, sidebars (default). |\n| shell | Wider surface aligned with AssistantShell / modal layouts. |",
       "title": "Input",
       "url": "/docs/components/input#sizes"
     },
@@ -412,9 +451,87 @@
       "id": "content/docs/components/input.mdx#props",
       "images": [],
       "relativePath": "components/input.mdx",
-      "text": "Props\n\nSee TypeScript types on AssistantInputProps in opendetail-react for the full list, including requestState, onSubmit, onStop, placeholder, and showShellUnderlay.",
+      "text": "Props",
       "title": "Input",
       "url": "/docs/components/input#props"
+    },
+    {
+      "anchor": "props",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/input.mdx",
+      "headings": [
+        "Props"
+      ],
+      "id": "content/docs/components/input.mdx#props::part-2",
+      "images": [],
+      "relativePath": "components/input.mdx",
+      "text": "| Prop | Type | Default | Description |\n| --- | --- | --- | --- |\n| name | string | \"question\" | Form field name (also used to build the textarea id if id is omitted). |\n| id | string | — | Explicit id for the textarea. |\n| size | \"compact\" \\| \"shell\" | \"compact\" | Layout width / shell styling. |\n| placeholder | string | (package default) | Placeholder copy. |\n| requestState | \"idle\" \\| \"pending\" \\| \"streaming\" \\| \"error\" | \"idle\" | Drives send vs stop and busy styling. |\n| onSubmit | (request: AssistantInputRequest, event) => void \\| Promise<void> | — | Called with { question } on submit. |\n| onStop | () => void | — | Invoked when the user hits stop in pending/streaming mode. |\n| onValueChange | (value: string) => void | — | Fires as the textarea changes (use with controlled value). |\n| value | string | — | Controlled value. If omitted, the input manages its own state (optionally seeded with defaultValue). |\n| defaultValue | string | — | Uncontrolled initial value. |\n| disabled | boolean | false | Disables the field and actions. |\n| readOnly | boolean | false | Read-only textarea. |\n| autoFocus | boolean | false | Focus on mount. |\n| maxLength | number | 4000 | Hard cap on question length. |\n| maxRows | number | 6 | Soft cap for auto-growing height (combined with maxExpandMultiplier). |\n| maxExpandMultiplier | number | 4 | Limits growth relative to a single line. |\n| showShellUnderlay | boolean | true | Shell underlay visuals (used in demos and wide layouts). |\n| status | { label?: string; variant: \"thinking\" \\| \"error\" } \\| null | — | Optional status line under the field. |\n| className | string | — | Root class. |",
+      "title": "Input",
+      "url": "/docs/components/input#props"
+    },
+    {
+      "anchor": "props",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/input.mdx",
+      "headings": [
+        "Props"
+      ],
+      "id": "content/docs/components/input.mdx#props::part-3",
+      "images": [],
+      "relativePath": "components/input.mdx",
+      "text": "For TypeScript, import AssistantInputProps and AssistantInputRequest from opendetail-react for the exact shapes.",
+      "title": "Input",
+      "url": "/docs/components/input#props"
+    },
+    {
+      "anchor": null,
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/loader.mdx",
+      "headings": [
+        "Loader"
+      ],
+      "id": "content/docs/components/loader.mdx",
+      "images": [],
+      "relativePath": "components/loader.mdx",
+      "text": "Import AssistantLoader from opendetail-react (same implementation as AssistantStatus; the Loader name matches the spinner affordance).",
+      "title": "Loader",
+      "url": "/docs/components/loader"
+    },
+    {
+      "anchor": "props",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/loader.mdx",
+      "headings": [
+        "Props"
+      ],
+      "id": "content/docs/components/loader.mdx#props",
+      "images": [],
+      "relativePath": "components/loader.mdx",
+      "text": "Props\n\n| Prop | Type | Default | Description |\n| --- | --- | --- | --- |\n| variant | \"thinking\" \\| \"error\" | — | Use thinking for the spinner; error shows error text (see Error for a dedicated error helper). |\n| label | string | variant default | Screen-reader label; thinking keeps a visible Loader icon. |\n| id | string | — | Optional DOM id. |\n\nThinking variant maps to opendetail-status; error uses opendetail-status--error.",
+      "title": "Loader",
+      "url": "/docs/components/loader#props"
+    },
+    {
+      "anchor": null,
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/pressable.mdx",
+      "headings": [
+        "Pressable"
+      ],
+      "id": "content/docs/components/pressable.mdx",
+      "images": [],
+      "relativePath": "components/pressable.mdx",
+      "text": "Not a React component: import the OpenDetail base stylesheet and add the class opendetail-pressable to interactive elements (typically button).",
+      "title": "Pressable",
+      "url": "/docs/components/pressable"
+    },
+    {
+      "anchor": "behavior",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/pressable.mdx",
+      "headings": [
+        "Behavior"
+      ],
+      "id": "content/docs/components/pressable.mdx#behavior",
+      "images": [],
+      "relativePath": "components/pressable.mdx",
+      "text": "Behavior\n\ntransition on transform for a short press scale.:active:not(:disabled) applies scale(0.97) so disabled controls do not animate.\n\nPair with your own border / background utilities (see AssistantSuggestion / sidebar icon buttons in opendetail-base.css).",
+      "title": "Pressable",
+      "url": "/docs/components/pressable#behavior"
     },
     {
       "anchor": null,
@@ -425,9 +542,50 @@
       "id": "content/docs/components/recommendations.mdx",
       "images": [],
       "relativePath": "components/recommendations.mdx",
-      "text": "Use AssistantSuggestions as a container and AssistantSuggestion for each chip-style button. Suggestions are client components and support onClick and disabled.",
+      "text": "Use AssistantSuggestions as a row or wrap container and AssistantSuggestion for each chip. Both are client components; suggestions are plain buttons with optional disabled and onClick.\n\nStyling uses opendetail-assistant-suggestions and opendetail-assistant-suggestion (plus opendetail-pressable) from the OpenDetail base stylesheet.",
       "title": "Recommendations",
       "url": "/docs/components/recommendations"
+    },
+    {
+      "anchor": "props",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/recommendations.mdx",
+      "headings": [
+        "Props"
+      ],
+      "id": "content/docs/components/recommendations.mdx#props",
+      "images": [],
+      "relativePath": "components/recommendations.mdx",
+      "text": "Props",
+      "title": "Recommendations",
+      "url": "/docs/components/recommendations#props"
+    },
+    {
+      "anchor": "assistantsuggestions",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/recommendations.mdx",
+      "headings": [
+        "Props",
+        "AssistantSuggestions"
+      ],
+      "id": "content/docs/components/recommendations.mdx#assistantsuggestions",
+      "images": [],
+      "relativePath": "components/recommendations.mdx",
+      "text": "AssistantSuggestions\n\n| Prop | Type | Default | Description |\n| --- | --- | --- | --- |\n| children | ReactNode | — | Typically several AssistantSuggestion elements. |\n| className | string | — | Optional class on the list wrapper. |",
+      "title": "Recommendations",
+      "url": "/docs/components/recommendations#assistantsuggestions"
+    },
+    {
+      "anchor": "assistantsuggestion",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/recommendations.mdx",
+      "headings": [
+        "Props",
+        "AssistantSuggestion"
+      ],
+      "id": "content/docs/components/recommendations.mdx#assistantsuggestion",
+      "images": [],
+      "relativePath": "components/recommendations.mdx",
+      "text": "AssistantSuggestion\n\n| Prop | Type | Default | Description |\n| --- | --- | --- | --- |\n| children | ReactNode | — | Label for the chip. |\n| onClick | () => void | — | Called when the suggestion is activated (keyboard or pointer). |\n| disabled | boolean | false | Disables interaction and dims the chip. |\n| className | string | — | Optional class on the button. |",
+      "title": "Recommendations",
+      "url": "/docs/components/recommendations#assistantsuggestion"
     },
     {
       "anchor": "composition",
@@ -438,48 +596,170 @@
       "id": "content/docs/components/recommendations.mdx#composition",
       "images": [],
       "relativePath": "components/recommendations.mdx",
-      "text": "Composition\n\nWrap multiple AssistantSuggestion elements inside AssistantSuggestions. Style hooks use opendetail-assistant-suggestions and opendetail-assistant-suggestion classes from the OpenDetail base stylesheet.",
+      "text": "Composition\n\nWrap multiple AssistantSuggestion nodes inside AssistantSuggestions. In the Shell preview they sit inside the thread so they scroll with the conversation; you can also render them directly under AssistantShell’s input if you prefer them fixed.",
       "title": "Recommendations",
       "url": "/docs/components/recommendations#composition"
     },
     {
-      "anchor": null,
+      "anchor": "assistantshell-layout-primitive",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/shell.mdx",
       "headings": [
-        "Shell"
+        "AssistantShell (layout primitive)"
       ],
-      "id": "content/docs/components/shell.mdx",
+      "id": "content/docs/components/shell.mdx#assistantshell-layout-primitive",
       "images": [],
       "relativePath": "components/shell.mdx",
-      "text": "The AssistantShell component wraps the conversation area and the input in a vertical layout with semantic regions (opendetail-shell, opendetail-shell__thread, opendetail-shell__input).",
+      "text": "AssistantShell (layout primitive)\n\nAssistantShell is the vertical layout that pairs the scrollable conversation with the fixed prompt. It does not include the sidebar header (copy, new chat, collapse) or model streaming—you compose those yourself or use AssistantSidebarShell.\n\nRegions use semantic hooks (opendetail-shell, opendetail-shell__thread, opendetail-shell__input) so you can theme or measure them consistently.",
       "title": "Shell",
-      "url": "/docs/components/shell"
+      "url": "/docs/components/shell#assistantshell-layout-primitive"
+    },
+    {
+      "anchor": "composition",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/shell.mdx",
+      "headings": [
+        "AssistantShell (layout primitive)",
+        "Composition"
+      ],
+      "id": "content/docs/components/shell.mdx#composition",
+      "images": [],
+      "relativePath": "components/shell.mdx",
+      "text": "Composition\n\nThe thread slot usually contains AssistantThread, AssistantUserMessage / AssistantResponse, and optionally AssistantSuggestions (see Input and Recommendations).",
+      "title": "Shell",
+      "url": "/docs/components/shell#composition"
+    },
+    {
+      "anchor": "props-assistantshell",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/shell.mdx",
+      "headings": [
+        "AssistantShell (layout primitive)",
+        "Props (AssistantShell)"
+      ],
+      "id": "content/docs/components/shell.mdx#props-assistantshell",
+      "images": [],
+      "relativePath": "components/shell.mdx",
+      "text": "Props (AssistantShell)\n\n| Prop | Type | Default | Description |\n| --- | --- | --- | --- |\n| input | ReactNode | — | Required. Almost always an AssistantInput. |\n| thread | ReactNode | — | Scrollable conversation. Prefer this when you have a structured thread. |\n| children | ReactNode | — | If thread is omitted, children render inside the thread region. |\n| className | string | — | Optional class on the root section. |",
+      "title": "Shell",
+      "url": "/docs/components/shell#props-assistantshell"
     },
     {
       "anchor": "usage",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/shell.mdx",
       "headings": [
+        "AssistantShell (layout primitive)",
         "Usage"
       ],
       "id": "content/docs/components/shell.mdx#usage",
       "images": [],
       "relativePath": "components/shell.mdx",
-      "text": "Usage\n\nImport AssistantShell from opendetail-react and pass input (required). Use thread for the scrollable message list, or pass children as a shortcut when you only need a single thread body.",
+      "text": "Usage\n\nimport {\n  AssistantInput,\n  AssistantShell,\n  AssistantThread,\n  AssistantUserMessage,\n} from \"opendetail-react\";\n\n<AssistantShell\n  input={<AssistantInput name=\"q\" size=\"shell\" onSubmit={handleSubmit} />}\n  thread={\n    <AssistantThread>\n      <AssistantUserMessage>Hello</AssistantUserMessage>\n    </AssistantThread>\n  }\n/>;",
       "title": "Shell",
       "url": "/docs/components/shell#usage"
     },
     {
-      "anchor": "props",
+      "anchor": "site-assistant-assistantsidebar--assistantsidebarshell",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/shell.mdx",
       "headings": [
-        "Props"
+        "Site assistant (AssistantSidebar / AssistantSidebarShell)"
       ],
-      "id": "content/docs/components/shell.mdx#props",
+      "id": "content/docs/components/shell.mdx#site-assistant-assistantsidebar--assistantsidebarshell",
       "images": [],
       "relativePath": "components/shell.mdx",
-      "text": "Props\n\n| Prop | Type | Description |\n| --- | --- | --- |\n| input | ReactNode | Required. Typically an AssistantInput. |\n| thread | ReactNode | Optional. Main conversation content. |\n| children | ReactNode | Used when thread is omitted (renders inside the thread region). |\n| className | string | Optional class on the root section. |",
+      "text": "Site assistant (AssistantSidebar / AssistantSidebarShell)\n\nWhat you see in the live preview below is the same stack as this docs app: AssistantSidebarShell → useOpenDetail → POST /api/opendetail, with renderNextSourceLink and a Fumadocs-style resolveSourceTarget so citations resolve safely.\n\nThis Shell preview uses embedded + embeddedLayout=\"compact\" (rounded 400px column), embeddedHideCollapse (no collapse control—focus stays on thread + input), plus copy, new session, resize, suggestions, and AssistantInput filling the column width.\n\nOn the Sidebar page, the preview uses embeddedLayout=\"dock\" instead: the panel sits flush on the left of the white preview with a left stroke only (no outer rounded chrome), and collapse + Open assistant behave like the full app.",
       "title": "Shell",
-      "url": "/docs/components/shell#props"
+      "url": "/docs/components/shell#site-assistant-assistantsidebar--assistantsidebarshell"
+    },
+    {
+      "anchor": "assistantsidebar--embedded",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/shell.mdx",
+      "headings": [
+        "Site assistant (AssistantSidebar / AssistantSidebarShell)",
+        "AssistantSidebar — embedded"
+      ],
+      "id": "content/docs/components/shell.mdx#assistantsidebar--embedded",
+      "images": [],
+      "relativePath": "components/shell.mdx",
+      "text": "AssistantSidebar — embedded\n\n| Prop | Type | Default | Description |\n| --- | --- | --- | --- |\n| embedded | boolean | false | Single-column preview: same sidebar UI without a main content sibling. |\n| embeddedLayout | \"compact\" \\| \"dock\" | \"compact\" | compact — 400px rounded box; dock — left-aligned column, left border only (see Sidebar). |\n| embeddedHideCollapse | boolean | false | Hide the collapse icon (used on this page’s preview). |\n\nOther sidebar props (headerTitle, messages, onSubmitQuestion, promptSuggestions, sidebarResizeEnabled, etc.) are unchanged—see AssistantSidebar / AssistantSidebarShell in the main React docs and Packages & composition.",
+      "title": "Shell",
+      "url": "/docs/components/shell#assistantsidebar--embedded"
+    },
+    {
+      "anchor": null,
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/sidebar.mdx",
+      "headings": [
+        "Sidebar"
+      ],
+      "id": "content/docs/components/sidebar.mdx",
+      "images": [],
+      "relativePath": "components/sidebar.mdx",
+      "text": "AssistantSidebar composes the same pieces as this site’s AI panel: title, copy transcript, new session (+), collapse, optional resize handle, thread (or custom thread slot), and AssistantInput.\n\nUse AssistantSidebarShell when you want useOpenDetail wired to your POST /api/opendetail route (streaming, stop, persistence, conversationTitle).",
+      "title": "Sidebar",
+      "url": "/docs/components/sidebar"
+    },
+    {
+      "anchor": "header-actions",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/sidebar.mdx",
+      "headings": [
+        "Header actions"
+      ],
+      "id": "content/docs/components/sidebar.mdx#header-actions",
+      "images": [],
+      "relativePath": "components/sidebar.mdx",
+      "text": "Header actions\n\n| Control | Behavior |\n| --- | --- |\n| Copy | Copies user + assistant transcript to the clipboard (disabled when empty). |\n| New session | Calls onClearThread (shell clears thread + question via useOpenDetail). |\n| Collapse | Closes the panel; embedded mode shows an “Open assistant” affordance. |",
+      "title": "Sidebar",
+      "url": "/docs/components/sidebar#header-actions"
+    },
+    {
+      "anchor": "props-high-level",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/sidebar.mdx",
+      "headings": [
+        "Props (high level)"
+      ],
+      "id": "content/docs/components/sidebar.mdx#props-high-level",
+      "images": [],
+      "relativePath": "components/sidebar.mdx",
+      "text": "Props (high level)\n\nSee AssistantSidebarProps in opendetail-react for the full list. Common fields:\n\n| Prop | Description |\n| --- | --- |\n| messages | Thread for default rendering (user + assistant turns). |\n| headerTitle | Usually conversationTitle from useOpenDetail. |\n| onSubmitQuestion / onStop | Prompt submit and streaming stop. |\n| question / onQuestionChange | Controlled input value. |\n| requestState | idle | pending | streaming | error. |\n| promptSuggestions | Chips when the thread is empty. |\n| sidebarResizeEnabled / sidebarWidthPx / onSidebarWidthChange | Resizable panel width. |\n| embedded | In-page preview without a main content column. |\n| embeddedLayout | compact — rounded 400px column (Shell); dock — this page: flush to the right edge of the preview, left stroke only, square corners. |\n| navigation / renderMobileShell | Site nav + mobile triptych (see site layout). |",
+      "title": "Sidebar",
+      "url": "/docs/components/sidebar#props-high-level"
+    },
+    {
+      "anchor": null,
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/sources.mdx",
+      "headings": [
+        "Sources"
+      ],
+      "id": "content/docs/components/sources.mdx",
+      "images": [],
+      "relativePath": "components/sources.mdx",
+      "text": "Retrieval sources are passed as structured items (AssistantSourceItem). AssistantResponse scans markdown for [n] citations and shows matching pills in the footer; use getSourcesCitedInContent if you need the same ordering outside the response.\n\nFor link resolution (in-app routes vs external URLs), wire renderSourceLink and resolveSourceTarget — the Next.js docs app uses renderNextSourceLink from opendetail-next and a Fumadocs-style resolver (see opendetail-fumadocs).",
+      "title": "Sources",
+      "url": "/docs/components/sources"
+    },
+    {
+      "anchor": "props-assistantsources",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/sources.mdx",
+      "headings": [
+        "Props (AssistantSources)"
+      ],
+      "id": "content/docs/components/sources.mdx#props-assistantsources",
+      "images": [],
+      "relativePath": "components/sources.mdx",
+      "text": "Props (AssistantSources)\n\n| Prop | Type | Default | Description |\n| --- | --- | --- | --- |\n| items | AssistantSourceItem[] | — | Source rows (id, title, url, kind). |\n| open / defaultOpen | boolean | — | Controlled or initial collapsed state. |\n| onOpenChange | (open: boolean) => void | — | Collapsible toggle callback. |\n| count / countLabel | number / string | — | Optional header count override. |\n| renderSourceLink | RenderAssistantSourceLink | — | Renders each pill link (e.g. Next Link). |\n| resolveSourceTarget | ResolveAssistantSourceTarget | — | Maps a source to { href, external }. |\n| className | string | — | Root class. |",
+      "title": "Sources",
+      "url": "/docs/components/sources#props-assistantsources"
+    },
+    {
+      "anchor": "assistantsourceitem-shape",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/sources.mdx",
+      "headings": [
+        "Props (AssistantSources)",
+        "AssistantSourceItem (shape)"
+      ],
+      "id": "content/docs/components/sources.mdx#assistantsourceitem-shape",
+      "images": [],
+      "relativePath": "components/sources.mdx",
+      "text": "AssistantSourceItem (shape)\n\n| Field | Type | Description |\n| --- | --- | --- |\n| id | string | Matches [n] citations in markdown. |\n| title | string | Pill label. |\n| url | string | Target URL or path. |\n| kind | \"local\" \\| \"page\" \\| \"remote\" | Affects icon / link treatment. |\n\nAlso exported: renderAssistantSourceLink, resolveAssistantSourceTarget, isSafeAssistantSourceHref.",
+      "title": "Sources",
+      "url": "/docs/components/sources#assistantsourceitem-shape"
     },
     {
       "anchor": null,
@@ -1376,7 +1656,7 @@
     },
     "version": 1
   },
-  "generatedAt": "2026-04-06T16:54:19.900Z",
-  "manifestHash": "0b60b5e7de50c54e37fd79ccdd0c3f4632f24a93dbd8b8073c5826bea575239a",
+  "generatedAt": "2026-04-06T18:03:22.389Z",
+  "manifestHash": "c8c02926dafee4e630c45c113a13301e2279fea4d65b219d0d17faf9b9cb01f6",
   "version": 1
 }
