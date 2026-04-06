@@ -256,6 +256,7 @@ const pushUniqueImages = (
 const splitSectionIntoChunks = (
   filePath: string,
   relativePath: string,
+  chunkIdPath: string,
   title: string,
   baseUrl: string,
   section: MarkdownSection,
@@ -292,7 +293,7 @@ const splitSectionIntoChunks = (
     anchor: section.anchor,
     filePath,
     headings: [...section.headings],
-    id: createChunkId(relativePath, section.anchor, index),
+    id: createChunkId(chunkIdPath, section.anchor, index),
     images: [...section.images],
     relativePath,
     text: group.join("\n\n").trim(),
@@ -472,12 +473,14 @@ const extractImagesFromNode = ({
 };
 
 export const extractMarkdownChunks = ({
+  chunkIdPath,
   config,
   fileContent,
   filePath,
   relativePath,
   resolveImage,
 }: {
+  chunkIdPath?: string;
   config: Pick<OpenDetailConfig, "base_path">;
   fileContent: string;
   filePath: string;
@@ -571,8 +574,17 @@ export const extractMarkdownChunks = ({
     });
   }
 
+  const resolvedChunkIdPath = chunkIdPath ?? relativePath;
+
   return sections.flatMap((section) =>
-    splitSectionIntoChunks(filePath, relativePath, title, baseUrl, section)
+    splitSectionIntoChunks(
+      filePath,
+      relativePath,
+      resolvedChunkIdPath,
+      title,
+      baseUrl,
+      section
+    )
   );
 };
 

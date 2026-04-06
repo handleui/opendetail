@@ -56,12 +56,13 @@ export const getErrorMessage = (error: unknown): string => {
 export const ensureTrailingNewline = (value: string): string =>
   value.endsWith("\n") ? value : `${value}\n`;
 
+/** Stable path segment for chunk IDs (typically repo-relative to the build `cwd`), unique across include groups. */
 export const createChunkId = (
-  relativePath: string,
+  chunkIdPath: string,
   anchor: string | null,
   partIndex: number
 ): string => {
-  const baseId = anchor ? `${relativePath}#${anchor}` : relativePath;
+  const baseId = anchor ? `${chunkIdPath}#${anchor}` : chunkIdPath;
 
   return partIndex === 0 ? baseId : `${baseId}::part-${partIndex + 1}`;
 };

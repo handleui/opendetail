@@ -2,12 +2,15 @@ import { createNextRouteHandler } from "opendetail-next";
 
 export const runtime = "nodejs";
 
-// Use `process.cwd()` for the app root. `import.meta.url` refers to the
-// compiled route under `.next/server` in production, so relative paths to the
-// repo root break and `.opendetail/index.json` is not found even when the
-// build step (`bunx opendetail build` in `apps/web` `package.json` `build`)
-// produced it.
+// Use the app root for resolving `.opendetail/index.json` and `opendetail.toml`.
+// `import.meta.url` points at the compiled route under `.next/server`, so we
+// cannot derive the repo root from the route file path. `process.cwd()` is the
+// Next.js app root in dev and typical Vercel installs when the project root is
+// `apps/web`. For monorepo builds where the server cwd is the repository root,
+// set `OPENDETAIL_CWD` (for example `apps/web`).
+const opendetailCwd = process.env.OPENDETAIL_CWD?.trim() || process.cwd();
+
 export const POST = createNextRouteHandler({
   assistantInstructions: " ",
-  cwd: process.cwd(),
+  cwd: opendetailCwd,
 });

@@ -4,9 +4,10 @@ import { notFound } from "next/navigation";
 import { InputDemo } from "@/components/component-demos/input-demo";
 import { ShellDemo } from "@/components/component-demos/shell-demo";
 import { SuggestionsDemo } from "@/components/component-demos/suggestions-demo";
-import { ComponentShowcaseLayout } from "@/components/component-showcase-layout";
+import { ComponentPreviewSurface } from "@/components/component-preview-surface";
 import { getDocsMdxComponents } from "@/components/docs-mdx-components";
 import { DocsPageChrome } from "@/components/docs-page-chrome";
+import { knownSourcePageUrls } from "@/lib/known-source-page-urls";
 import { gitConfig } from "@/lib/shared";
 import { getPageImage, getPageMarkdownUrl, source } from "@/lib/source";
 
@@ -18,14 +19,18 @@ function isComponentSlug(value: string): value is ComponentSlug {
   return (COMPONENT_SLUGS as readonly string[]).includes(value);
 }
 
-function ComponentPreview({ slug }: { slug: ComponentSlug }) {
+function ComponentPreview({
+  slug,
+}: {
+  slug: ComponentSlug;
+}) {
   switch (slug) {
     case "input":
       return <InputDemo />;
     case "recommendations":
       return <SuggestionsDemo />;
     case "shell":
-      return <ShellDemo />;
+      return <ShellDemo knownSourcePageUrls={knownSourcePageUrls} />;
     default:
       return null;
   }
@@ -48,20 +53,23 @@ export default async function Page(props: PageProps<"/components/[slug]">) {
   const toc = page.data.toc ?? [];
 
   return (
-    <ComponentShowcaseLayout preview={<ComponentPreview slug={params.slug} />}>
-      <article className="docs-article">
-        <DocsPageChrome
-          feedbackPath={page.url}
-          githubUrl={githubUrl}
-          markdownUrl={markdownUrl}
-          pageTitle={page.data.title}
-          toc={toc}
-          variant="components"
-        >
-          <MDX components={getDocsMdxComponents(source, page)} />
-        </DocsPageChrome>
-      </article>
-    </ComponentShowcaseLayout>
+    <article className="docs-article pb-16">
+      <DocsPageChrome
+        feedbackPath={page.url}
+        githubUrl={githubUrl}
+        markdownUrl={markdownUrl}
+        pageTitle={page.data.title}
+        preview={
+          <ComponentPreviewSurface>
+            <ComponentPreview slug={params.slug} />
+          </ComponentPreviewSurface>
+        }
+        toc={toc}
+        variant="components"
+      >
+        <MDX components={getDocsMdxComponents(source, page)} />
+      </DocsPageChrome>
+    </article>
   );
 }
 

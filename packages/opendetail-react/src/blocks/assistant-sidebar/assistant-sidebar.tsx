@@ -166,6 +166,11 @@ export interface AssistantSidebarProps {
   children?: ReactNode;
   className?: string;
   defaultOpen?: boolean;
+  /**
+   * Docs / embed: assistant column only (no main `children` slot), bounded height, reopen
+   * affordance when collapsed — matches the real sidebar chrome (header actions, thread, input).
+   */
+  embedded?: boolean;
   emptyState?: ReactNode;
   headerTitle?: string | null;
   hotkeyEnabled?: boolean;
@@ -655,9 +660,11 @@ function buildAssistantAsidePanel({
 function renderAssistantSidebarRoots({
   assistantAside,
   children,
+  embedded,
   isControlled,
   isMdUp,
   isMobileTriptychLayout,
+  isSidebarOpen,
   navigation,
   onOpenChange,
   renderMobileShell,
@@ -665,13 +672,16 @@ function renderAssistantSidebarRoots({
   rootStyle,
   setInternalOpen,
   setMobileShellColumn,
+  setSidebarOpen,
   mobileShellColumn,
 }: {
   assistantAside: ReactNode;
   children: ReactNode;
+  embedded: boolean;
   isControlled: boolean;
   isMdUp: boolean;
   isMobileTriptychLayout: boolean;
+  isSidebarOpen: boolean;
   navigation: AssistantSidebarProps["navigation"];
   onOpenChange: AssistantSidebarProps["onOpenChange"];
   renderMobileShell: AssistantSidebarProps["renderMobileShell"];
@@ -679,8 +689,30 @@ function renderAssistantSidebarRoots({
   rootStyle: CSSProperties | undefined;
   setInternalOpen: Dispatch<SetStateAction<boolean>>;
   setMobileShellColumn: Dispatch<SetStateAction<TrifoldColumn3>>;
+  setSidebarOpen: (nextOpen: boolean) => void;
   mobileShellColumn: TrifoldColumn3;
 }): ReactNode {
+  if (embedded) {
+    return (
+      <div className={rootClassName} style={rootStyle}>
+        {isSidebarOpen ? null : (
+          <div className="opendetail-sidebar__embed-reopen">
+            <button
+              className="opendetail-sidebar__embed-reopen-button opendetail-pressable"
+              onClick={() => {
+                setSidebarOpen(true);
+              }}
+              type="button"
+            >
+              Open assistant
+            </button>
+          </div>
+        )}
+        {assistantAside}
+      </div>
+    );
+  }
+
   if (isMobileTriptychLayout && !isMdUp && renderMobileShell && navigation) {
     return (
       <div className={rootClassName} style={rootStyle}>
@@ -735,6 +767,7 @@ export const AssistantSidebar = (props: AssistantSidebarProps): ReactNode => {
     children,
     className,
     defaultOpen = false,
+    embedded = false,
     emptyState = "Ask the docs",
     headerTitle,
     hotkeyEnabled = true,
@@ -971,6 +1004,7 @@ export const AssistantSidebar = (props: AssistantSidebarProps): ReactNode => {
 
   const rootClassName = [
     getClassName({ className, open: isSidebarOpen }),
+    embedded ? "opendetail-sidebar--embed" : "",
     isSidebarResizing ? "opendetail-sidebar--resizing" : "",
   ]
     .filter(Boolean)
@@ -1027,9 +1061,11 @@ export const AssistantSidebar = (props: AssistantSidebarProps): ReactNode => {
   return renderAssistantSidebarRoots({
     assistantAside,
     children,
+    embedded,
     isControlled,
     isMdUp,
     isMobileTriptychLayout,
+    isSidebarOpen,
     navigation,
     onOpenChange,
     renderMobileShell,
@@ -1037,6 +1073,7 @@ export const AssistantSidebar = (props: AssistantSidebarProps): ReactNode => {
     rootStyle,
     setInternalOpen,
     setMobileShellColumn,
+    setSidebarOpen,
     mobileShellColumn,
   });
 };

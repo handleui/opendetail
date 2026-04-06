@@ -15,18 +15,22 @@ export function DocsToc({
   markdownUrl,
   githubUrl,
   gridColumnStart = 3,
+  gridRowStart = 1,
 }: {
   toc: readonly TOCItemType[];
   markdownUrl: string;
   githubUrl: string;
   /** Grid column for `xl` layout: `2` when there is no leading spacer column (components docs). */
   gridColumnStart?: 2 | 3;
+  /** Row for article + TOC when a full-width preview sits in row 1 (component detail pages). */
+  gridRowStart?: 1 | 2;
 }) {
   const colStart = gridColumnStart === 2 ? "xl:col-start-2" : "xl:col-start-3";
+  const rowStart = gridRowStart === 2 ? "xl:row-start-2" : "xl:row-start-1";
 
   return (
     <aside
-      className={`hidden w-[min(100%,14rem)] shrink-0 xl:sticky xl:top-8 xl:row-start-1 xl:block xl:max-h-[calc(100vh-2rem)] xl:self-start xl:overflow-y-auto xl:overscroll-contain xl:[scrollbar-width:none] xl:[&::-webkit-scrollbar]:hidden ${colStart}`}
+      className={`hidden w-[min(100%,14rem)] shrink-0 xl:sticky xl:top-8 xl:block xl:max-h-[calc(100vh-2rem)] xl:self-start xl:overflow-y-auto xl:overscroll-contain xl:[scrollbar-width:none] xl:[&::-webkit-scrollbar]:hidden ${rowStart} ${colStart}`}
     >
       <div className="flex flex-col gap-6 pb-4">
         {toc.length > 0 ? (

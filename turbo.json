@@ -11,7 +11,8 @@
         ".next/**",
         ".output/**",
         ".tanstack/**",
-        ".vinxi/**"
+        ".vinxi/**",
+        ".opendetail/**"
       ]
     },
     "check-types": {

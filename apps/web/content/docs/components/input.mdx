@@ -3,13 +3,37 @@ title: Input
 description: AssistantInput is the composable prompt field with submit/stop actions, sizing for sidebar and shell layouts, and streaming status integration.
 ---
 
-**AssistantInput** renders the branded textarea surface, send/stop control, and optional status line. It pairs with `useOpenDetail` request state for pending and streaming modes.
+**AssistantInput** renders the textarea, send/stop control, and optional status line. Pair it with `useOpenDetail` (or your own state machine) via **`requestState`** so the button shows stop while a request is **pending** or **streaming**.
 
 ## Sizes
 
-- **`compact`** — default width for narrow rails.
-- **`shell`** — wider surface aligned with modal/shell layouts.
+| Value | When to use |
+| --- | --- |
+| `compact` | Narrow rails, sidebars (default). |
+| `shell` | Wider surface aligned with `AssistantShell` / modal layouts. |
 
 ## Props
 
-See TypeScript types on `AssistantInputProps` in `opendetail-react` for the full list, including `requestState`, `onSubmit`, `onStop`, `placeholder`, and `showShellUnderlay`.
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `name` | `string` | `"question"` | Form field name (also used to build the textarea id if `id` is omitted). |
+| `id` | `string` | — | Explicit id for the textarea. |
+| `size` | `"compact" \| "shell"` | `"compact"` | Layout width / shell styling. |
+| `placeholder` | `string` | (package default) | Placeholder copy. |
+| `requestState` | `"idle" \| "pending" \| "streaming" \| "error"` | `"idle"` | Drives send vs stop and busy styling. |
+| `onSubmit` | `(request: AssistantInputRequest, event) => void \| Promise<void>` | — | Called with `{ question }` on submit. |
+| `onStop` | `() => void` | — | Invoked when the user hits stop in pending/streaming mode. |
+| `onValueChange` | `(value: string) => void` | — | Fires as the textarea changes (use with controlled `value`). |
+| `value` | `string` | — | Controlled value. If omitted, the input manages its own state (optionally seeded with `defaultValue`). |
+| `defaultValue` | `string` | — | Uncontrolled initial value. |
+| `disabled` | `boolean` | `false` | Disables the field and actions. |
+| `readOnly` | `boolean` | `false` | Read-only textarea. |
+| `autoFocus` | `boolean` | `false` | Focus on mount. |
+| `maxLength` | `number` | `4000` | Hard cap on question length. |
+| `maxRows` | `number` | `6` | Soft cap for auto-growing height (combined with `maxExpandMultiplier`). |
+| `maxExpandMultiplier` | `number` | `4` | Limits growth relative to a single line. |
+| `showShellUnderlay` | `boolean` | `true` | Shell underlay visuals (used in demos and wide layouts). |
+| `status` | `{ label?: string; variant: "thinking" \| "error" } \| null` | — | Optional status line under the field. |
+| `className` | `string` | — | Root class. |
+
+For TypeScript, import `AssistantInputProps` and `AssistantInputRequest` from `opendetail-react` for the exact shapes.

@@ -243,9 +243,7 @@ describe("createNextRouteHandler", () => {
 
       expect(payload).toMatchObject({
         code: "missing_index",
-        error: expect.stringContaining(
-          "Run `npx opendetail build` before starting the production server."
-        ),
+        error: expect.stringContaining("Run `npx opendetail build`"),
         retryable: false,
       });
       expect(payload).not.toMatchObject({

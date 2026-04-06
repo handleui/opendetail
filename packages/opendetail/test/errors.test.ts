@@ -14,6 +14,18 @@ describe("toOpenDetailPublicError", () => {
     });
   });
 
+  test("maps MiniSearch index failures to a rebuild hint without raw engine text", () => {
+    const publicError = toOpenDetailPublicError(
+      new Error("MiniSearch: duplicate ID index.mdx")
+    );
+
+    expect(publicError).toMatchObject({
+      code: "request_failed",
+      message:
+        "The search index is inconsistent or could not be loaded. Run `npx opendetail build` in your app root to regenerate `.opendetail/index.json`.",
+    });
+  });
+
   test("maps OpenAI connection errors to provider_unavailable", () => {
     const publicError = toOpenDetailPublicError(
       new APIConnectionError({ cause: undefined })

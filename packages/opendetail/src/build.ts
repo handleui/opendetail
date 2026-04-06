@@ -281,6 +281,7 @@ export const buildOpenDetailIndex = async ({
 
       return {
         chunks: extractMarkdownChunks({
+          chunkIdPath: createRelativeChunkPath(resolvedCwd, realFilePath),
           config,
           fileContent,
           filePath: realFilePath,
@@ -337,6 +338,7 @@ export const buildOpenDetailIndex = async ({
 
             return {
               chunks: extractMarkdownChunks({
+                chunkIdPath: createRelativeChunkPath(resolvedCwd, realFilePath),
                 config: siteConfig,
                 fileContent,
                 filePath: realFilePath,

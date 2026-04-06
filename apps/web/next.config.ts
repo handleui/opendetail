@@ -9,6 +9,10 @@ const nextConfig: NextConfig = {
   reactCompiler: true,
   allowedDevOrigins: ["opendetail.localhost"],
   serverExternalPackages: ["@takumi-rs/image-response"],
+  // Ensure the prebuilt lexical index is present in the Node serverless bundle (Vercel / output file tracing).
+  outputFileTracingIncludes: {
+    "/api/opendetail": ["./.opendetail/index.json"],
+  },
   transpilePackages: [
     "opendetail",
     "opendetail-react",

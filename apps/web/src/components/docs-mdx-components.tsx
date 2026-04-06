@@ -45,7 +45,7 @@ function Card({
   );
 
   const className =
-    "block rounded-xl border border-solid bg-white p-4 text-left transition-colors hover:bg-neutral-50";
+    "block rounded-xl border border-solid bg-white p-4 text-left transition-colors hover:border-neutral-400/70";
 
   const style = {
     borderColor: "var(--opendetail-color-sidebar-stroke)",

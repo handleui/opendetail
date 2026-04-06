@@ -1,19 +1,59 @@
 ---
 title: Shell
-description: AssistantShell composes the thread region and the assistant input into a single layout primitive.
+description: AssistantShell is the minimal thread + input layout; the site assistant uses AssistantSidebar / AssistantSidebarShell on top of the same primitives.
 ---
 
-The **AssistantShell** component wraps the conversation area and the input in a vertical layout with semantic regions (`opendetail-shell`, `opendetail-shell__thread`, `opendetail-shell__input`).
+## `AssistantShell` (layout primitive)
 
-## Usage
+**AssistantShell** is the vertical layout that pairs the **scrollable conversation** with the **fixed prompt**. It does not include the sidebar header (copy, new chat, collapse) or model streaming—you compose those yourself or use **`AssistantSidebarShell`**.
 
-Import `AssistantShell` from `opendetail-react` and pass `input` (required). Use `thread` for the scrollable message list, or pass `children` as a shortcut when you only need a single thread body.
+Regions use semantic hooks (`opendetail-shell`, `opendetail-shell__thread`, `opendetail-shell__input`) so you can theme or measure them consistently.
 
-## Props
+### Composition
 
-| Prop | Type | Description |
-| --- | --- | --- |
-| `input` | `ReactNode` | Required. Typically an `AssistantInput`. |
-| `thread` | `ReactNode` | Optional. Main conversation content. |
-| `children` | `ReactNode` | Used when `thread` is omitted (renders inside the thread region). |
-| `className` | `string` | Optional class on the root `section`. |
+The `thread` slot usually contains **`AssistantThread`**, **`AssistantUserMessage`** / **`AssistantResponse`**, and optionally **`AssistantSuggestions`** (see [Input](/components/input) and [Recommendations](/components/recommendations)).
+
+### Props (`AssistantShell`)
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `input` | `ReactNode` | — | **Required.** Almost always an `AssistantInput`. |
+| `thread` | `ReactNode` | — | Scrollable conversation. Prefer this when you have a structured thread. |
+| `children` | `ReactNode` | — | If `thread` is omitted, `children` render inside the thread region. |
+| `className` | `string` | — | Optional class on the root `section`. |
+
+### Usage
+
+```tsx
+import {
+  AssistantInput,
+  AssistantShell,
+  AssistantThread,
+  AssistantUserMessage,
+} from "opendetail-react";
+
+<AssistantShell
+  input={<AssistantInput name="q" size="shell" onSubmit={handleSubmit} />}
+  thread={
+    <AssistantThread>
+      <AssistantUserMessage>Hello</AssistantUserMessage>
+    </AssistantThread>
+  }
+/>;
+```
+
+## Site assistant (`AssistantSidebar` / `AssistantSidebarShell`)
+
+What you see in the **live preview** below is the same stack as this docs app: **`AssistantSidebarShell`** → **`useOpenDetail`** → **`POST /api/opendetail`**, with **`renderNextSourceLink`** and a Fumadocs-style **`resolveSourceTarget`** so citations resolve safely.
+
+That layer adds the **header** (title, **copy thread**, **new chat**, **collapse**), the **resizable** panel, default **prompt suggestions** when the thread is empty, and the wired **`AssistantInput`** / thread rendering—you do not reimplement those for a standard app shell.
+
+### `AssistantSidebar` — `embedded`
+
+For bounded in-page demos (like this page), pass **`embedded`** on **`AssistantSidebar`** (or through **`AssistantSidebarShell`**): one assistant column, no separate main `children` slot, fixed height, and an **Open assistant** control if the user collapses the panel.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `embedded` | `boolean` | `false` | Single-column preview: same sidebar UI without a main content sibling. |
+
+Other sidebar props (`headerTitle`, `messages`, `onSubmitQuestion`, `promptSuggestions`, `sidebarResizeEnabled`, etc.) are unchanged—see **`AssistantSidebar`** / **`AssistantSidebarShell`** in the main [React](/docs/react) docs and [Packages & composition](/docs/packages).

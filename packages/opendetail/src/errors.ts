@@ -21,6 +21,7 @@ const OPENAI_PROVIDER_ERROR_FIELDS = [
   "requestID",
   "status",
 ] as const;
+const MINISEARCH_INDEX_FAILURE_MESSAGE = /MiniSearch|duplicate ID/iu;
 
 const PUBLIC_ERROR_DEFAULTS = {
   invalid_request: {
@@ -62,7 +63,7 @@ const PUBLIC_ERROR_DEFAULTS = {
   },
   missing_index: {
     message:
-      "OpenDetail index is missing. Run `npx opendetail build` before starting the production server. The default location is `.opendetail/index.json`.",
+      "OpenDetail could not find `.opendetail/index.json` from the app process directory. Run `npx opendetail build` in the Next.js app root (where `opendetail.toml` lives), ensure that file is included in serverless output tracing on Vercel (`outputFileTracingIncludes` for `/api/opendetail`), and set `OPENDETAIL_CWD` if the deployed app root differs from `process.cwd()`.",
     param: null,
     provider: null,
     providerCode: null,
@@ -385,6 +386,17 @@ export const toOpenDetailPublicError = (
     return createOpenDetailPublicError("provider_unavailable", {
       message: OPENAI_UNREACHABLE_MESSAGE,
       retryable: true,
+    });
+  }
+
+  if (
+    error instanceof Error &&
+    error.message.trim().length > 0 &&
+    MINISEARCH_INDEX_FAILURE_MESSAGE.test(error.message)
+  ) {
+    return createOpenDetailPublicError("request_failed", {
+      message:
+        "The search index is inconsistent or could not be loaded. Run `npx opendetail build` in your app root to regenerate `.opendetail/index.json`.",
     });
   }
 

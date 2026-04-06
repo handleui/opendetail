@@ -14,6 +14,7 @@ type AssistantSidebarShellBaseProps = Pick<
   AssistantSidebarProps,
   | "className"
   | "defaultOpen"
+  | "embedded"
   | "emptyState"
   | "hotkeyEnabled"
   | "input"
@@ -35,6 +36,7 @@ export interface AssistantSidebarShellProps
   children?: ReactNode;
   endpoint?: UseOpenDetailOptions["endpoint"];
   persistence?: UseOpenDetailOptions["persistence"];
+  sitePaths?: UseOpenDetailOptions["sitePaths"];
   transport?: UseOpenDetailOptions["transport"];
 }
 
@@ -43,6 +45,7 @@ export const AssistantSidebarShell = ({
   children,
   endpoint,
   persistence,
+  sitePaths,
   transport,
   ...sidebarProps
 }: AssistantSidebarShellProps) => {
@@ -62,6 +65,7 @@ export const AssistantSidebarShell = ({
   } = useOpenDetail({
     endpoint,
     persistence,
+    sitePaths,
     transport,
   });
 

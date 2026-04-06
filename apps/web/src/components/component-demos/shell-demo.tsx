@@ -1,37 +1,46 @@
 "use client";
 
-import {
-  AssistantInput,
-  type AssistantInputRequest,
-  AssistantShell,
-} from "opendetail-react";
-import type { FormEvent } from "react";
+import { createFumadocsSourceTargetResolver } from "opendetail-fumadocs";
+import { renderNextSourceLink } from "opendetail-next/link";
+import { AssistantSidebarShell } from "opendetail-react";
+import { useMemo } from "react";
 
-export const ShellDemo = () => {
-  const handleSubmit = (
-    _request: AssistantInputRequest,
-    event: FormEvent<HTMLFormElement>
-  ) => {
-    event.preventDefault();
-  };
+const PROMPT_SUGGESTIONS = [
+  "What's OpenDetail?",
+  "How do I integrate the React package?",
+  "What is NDJSON streaming?",
+] as const;
+
+/**
+ * Same assistant surface as the site: `AssistantSidebarShell` + live `/api/opendetail`.
+ * `knownSourcePageUrls` must be passed from a Server Component (see `known-source-page-urls.ts`)
+ * so this file stays client-safe (no `node:fs` in the bundle).
+ */
+export const ShellDemo = ({
+  knownSourcePageUrls,
+}: {
+  knownSourcePageUrls: readonly string[];
+}) => {
+  const resolveSourceTarget = useMemo(
+    () => createFumadocsSourceTargetResolver(knownSourcePageUrls),
+    [knownSourcePageUrls]
+  );
 
   return (
-    <div className="max-h-[min(75vh,40rem)] w-full max-w-[min(100%,var(--opendetail-shell-max-width))] overflow-y-auto">
-      <AssistantShell
-        input={
-          <AssistantInput
-            name="demo-question"
-            onSubmit={handleSubmit}
-            placeholder="Ask something…"
-            showShellUnderlay={true}
-            size="shell"
-          />
-        }
-        thread={
-          <p className="px-1 text-[14px] text-[var(--opendetail-color-meta)]">
-            Thread area — messages and sources render here.
-          </p>
-        }
+    <div className="w-full">
+      <AssistantSidebarShell
+        defaultOpen
+        embedded
+        endpoint="/api/opendetail"
+        hotkeyEnabled={false}
+        persistence={{
+          key: "opendetail-web-docs-shell-demo",
+          storage: "session",
+        }}
+        promptSuggestions={PROMPT_SUGGESTIONS}
+        renderSourceLink={renderNextSourceLink}
+        resolveSourceTarget={resolveSourceTarget}
+        sitePaths={["/docs", "/components"]}
       />
     </div>
   );

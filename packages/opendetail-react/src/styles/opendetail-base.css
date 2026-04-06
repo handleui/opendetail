@@ -400,6 +400,53 @@
   overscroll-behavior: none;
 }
 
+/* Bounded preview (e.g. docs /components/shell): one column, no main slot, same sidebar UI. */
+.opendetail-sidebar.opendetail-sidebar--embed {
+  height: min(75vh, 40rem);
+  min-height: min(70vh, 28rem);
+  max-height: min(75vh, 40rem);
+  border: 1px solid var(--opendetail-color-sidebar-stroke);
+  border-radius: 0.75rem;
+  background: var(--opendetail-color-background);
+}
+
+.opendetail-sidebar.opendetail-sidebar--embed .opendetail-sidebar__panel {
+  height: 100%;
+  min-height: 0;
+}
+
+.opendetail-sidebar.opendetail-sidebar--embed.opendetail-sidebar--open .opendetail-sidebar__panel {
+  flex: 1 1 auto;
+  width: 100%;
+  max-width: 100%;
+  border-left-width: 0;
+}
+
+.opendetail-sidebar__embed-reopen {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: center;
+  min-height: min(64vh, 26rem);
+  padding: 1.5rem;
+  background: var(--opendetail-color-background);
+}
+
+.opendetail-sidebar__embed-reopen-button {
+  padding: 0.5rem 1rem;
+  font: inherit;
+  font-size: 0.875rem;
+  color: var(--opendetail-color-foreground);
+  cursor: pointer;
+  background: white;
+  border: 1px solid var(--opendetail-color-sidebar-stroke);
+  border-radius: 0.5rem;
+}
+
+.opendetail-sidebar__embed-reopen-button:hover {
+  background: var(--opendetail-color-hover);
+}
+
 .opendetail-sidebar__content {
   display: flex;
   flex: 1 1 auto;

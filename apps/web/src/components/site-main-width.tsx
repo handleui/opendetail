@@ -27,9 +27,12 @@ export const SiteMainWidth = ({ children }: { children: ReactNode }) => {
   const changelogMain = isChangelogPathname(pathname);
   const docsMain = isDocsPathname(pathname);
 
+  /** Matches `DocsPageChrome` `components` grid: article (650) + gap + TOC (≤14rem). */
+  const componentsDocsMax = "max-w-[min(100%,calc(650px+4rem+14rem))]";
+
   let widthClass = "mx-auto w-full max-w-[650px]";
   if (fullWidthMain) {
-    widthClass = "mx-auto w-full max-w-none";
+    widthClass = `mx-auto w-full ${componentsDocsMax}`;
   } else if (changelogMain) {
     widthClass = "mx-auto w-full max-w-[52rem] px-0";
   } else if (docsMain) {

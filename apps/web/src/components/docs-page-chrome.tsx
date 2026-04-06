@@ -15,6 +15,7 @@ export function DocsPageChrome({
   feedbackPath,
   lead,
   pageTitle,
+  preview,
   children,
   variant = "docs",
 }: {
@@ -26,6 +27,8 @@ export function DocsPageChrome({
   lead?: ReactNode;
   /** When set, rendered in the article column so the title aligns with body copy. */
   pageTitle?: string;
+  /** Full-width live demo above the article, same width as article + TOC (`components` only). */
+  preview?: ReactNode;
   children: ReactNode;
   /**
    * `docs` — leading `1fr` column for asymmetric page balance (routes under `/docs`).
@@ -34,13 +37,15 @@ export function DocsPageChrome({
   variant?: "docs" | "components";
 }) {
   const isComponents = variant === "components";
+  const hasPreview = Boolean(preview) && isComponents;
+  const contentRowClass = hasPreview ? "xl:row-start-2" : "xl:row-start-1";
 
   return (
     <AnchorProvider toc={[...toc]}>
       <div
         className={
           isComponents
-            ? "flex flex-col gap-8 xl:grid xl:grid-cols-[minmax(0,650px)_minmax(11rem,14rem)] xl:items-start xl:gap-x-16"
+            ? "flex w-full min-w-0 flex-col gap-8 xl:grid xl:grid-cols-[minmax(0,650px)_minmax(11rem,14rem)] xl:items-start xl:gap-x-16"
             : "flex flex-col gap-8 xl:grid xl:grid-cols-[minmax(0,1fr)_minmax(0,650px)_minmax(11rem,14rem)] xl:items-start xl:gap-x-16"
         }
       >
@@ -55,10 +60,14 @@ export function DocsPageChrome({
           />
         )}
 
+        {hasPreview ? (
+          <div className="min-w-0 xl:col-span-2 xl:row-start-1">{preview}</div>
+        ) : null}
+
         <div
           className={
             isComponents
-              ? "min-w-0 max-w-[650px] xl:col-start-1 xl:row-start-1 xl:w-full"
+              ? `min-w-0 max-w-[650px] xl:col-start-1 ${contentRowClass} xl:w-full`
               : "min-w-0 max-w-[650px] xl:col-start-2 xl:row-start-1 xl:w-full"
           }
         >
@@ -77,6 +86,7 @@ export function DocsPageChrome({
         <DocsToc
           githubUrl={githubUrl}
           gridColumnStart={isComponents ? 2 : 3}
+          gridRowStart={hasPreview ? 2 : 1}
           markdownUrl={markdownUrl}
           toc={toc}
         />
