@@ -3,6 +3,7 @@
 import {
   type Dispatch,
   type SetStateAction,
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -567,7 +568,7 @@ const createErrorStateFromCaughtError = (
   };
 };
 
-const applyAssistantErrorState = ({
+const applyStreamErrorState = ({
   assistantMessageId,
   errorState,
   setMessages,
@@ -896,7 +897,7 @@ export const useOpenDetail = (
       applyErrorState(nextErrorState);
       setStatus("error");
       clearActiveRequest();
-      applyAssistantErrorState({
+      applyStreamErrorState({
         assistantMessageId,
         errorState: nextErrorState,
         setMessages,
@@ -905,8 +906,29 @@ export const useOpenDetail = (
     }
   };
 
+  const clearThreadRef = useRef(clearThread);
+  const stopRef = useRef(stop);
+  const submitRef = useRef(submit);
+
+  clearThreadRef.current = clearThread;
+  stopRef.current = stop;
+  submitRef.current = submit;
+
+  const stableClearThread = useCallback(() => {
+    clearThreadRef.current();
+  }, []);
+
+  const stableStop = useCallback(() => {
+    stopRef.current();
+  }, []);
+
+  const stableSubmit = useCallback(
+    (request?: OpenDetailSubmitRequest) => submitRef.current(request),
+    []
+  );
+
   return {
-    clearThread,
+    clearThread: stableClearThread,
     conversationTitle,
     error: errorState.error,
     errorCode: errorState.errorCode,
@@ -921,7 +943,7 @@ export const useOpenDetail = (
     question,
     setQuestion,
     status,
-    stop,
-    submit,
+    stop: stableStop,
+    submit: stableSubmit,
   };
 };

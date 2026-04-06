@@ -3,9 +3,7 @@
     {
       "anchor": null,
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/build.mdx",
-      "headings": [
-        "$ build"
-      ],
+      "headings": ["$ build"],
       "id": "content/docs/cli/build.mdx",
       "images": [],
       "relativePath": "cli/build.mdx",
@@ -16,9 +14,7 @@
     {
       "anchor": "usage",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/build.mdx",
-      "headings": [
-        "Usage"
-      ],
+      "headings": ["Usage"],
       "id": "content/docs/cli/build.mdx#usage",
       "images": [],
       "relativePath": "cli/build.mdx",
@@ -29,9 +25,7 @@
     {
       "anchor": "flags",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/build.mdx",
-      "headings": [
-        "Flags"
-      ],
+      "headings": ["Flags"],
       "id": "content/docs/cli/build.mdx#flags",
       "images": [],
       "relativePath": "cli/build.mdx",
@@ -42,9 +36,7 @@
     {
       "anchor": "examples",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/build.mdx",
-      "headings": [
-        "Examples"
-      ],
+      "headings": ["Examples"],
       "id": "content/docs/cli/build.mdx#examples",
       "images": [],
       "relativePath": "cli/build.mdx",
@@ -55,9 +47,7 @@
     {
       "anchor": "related",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/build.mdx",
-      "headings": [
-        "Related"
-      ],
+      "headings": ["Related"],
       "id": "content/docs/cli/build.mdx#related",
       "images": [],
       "relativePath": "cli/build.mdx",
@@ -68,9 +58,7 @@
     {
       "anchor": null,
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/commands.mdx",
-      "headings": [
-        "CLI reference"
-      ],
+      "headings": ["CLI reference"],
       "id": "content/docs/cli/commands.mdx",
       "images": [],
       "relativePath": "cli/commands.mdx",
@@ -81,9 +69,7 @@
     {
       "anchor": "commands",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/commands.mdx",
-      "headings": [
-        "Commands"
-      ],
+      "headings": ["Commands"],
       "id": "content/docs/cli/commands.mdx#commands",
       "images": [],
       "relativePath": "cli/commands.mdx",
@@ -94,9 +80,7 @@
     {
       "anchor": "one-liner-usage",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/commands.mdx",
-      "headings": [
-        "One-liner usage"
-      ],
+      "headings": ["One-liner usage"],
       "id": "content/docs/cli/commands.mdx#one-liner-usage",
       "images": [],
       "relativePath": "cli/commands.mdx",
@@ -107,9 +91,7 @@
     {
       "anchor": "suggested-order",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/commands.mdx",
-      "headings": [
-        "Suggested order"
-      ],
+      "headings": ["Suggested order"],
       "id": "content/docs/cli/commands.mdx#suggested-order",
       "images": [],
       "relativePath": "cli/commands.mdx",
@@ -120,9 +102,7 @@
     {
       "anchor": "see-also",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/commands.mdx",
-      "headings": [
-        "See also"
-      ],
+      "headings": ["See also"],
       "id": "content/docs/cli/commands.mdx#see-also",
       "images": [],
       "relativePath": "cli/commands.mdx",
@@ -133,9 +113,7 @@
     {
       "anchor": null,
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/doctor.mdx",
-      "headings": [
-        "$ doctor"
-      ],
+      "headings": ["$ doctor"],
       "id": "content/docs/cli/doctor.mdx",
       "images": [],
       "relativePath": "cli/doctor.mdx",
@@ -146,9 +124,7 @@
     {
       "anchor": "usage",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/doctor.mdx",
-      "headings": [
-        "Usage"
-      ],
+      "headings": ["Usage"],
       "id": "content/docs/cli/doctor.mdx#usage",
       "images": [],
       "relativePath": "cli/doctor.mdx",
@@ -159,9 +135,7 @@
     {
       "anchor": "self-hosted-expectations",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/doctor.mdx",
-      "headings": [
-        "Self-hosted expectations"
-      ],
+      "headings": ["Self-hosted expectations"],
       "id": "content/docs/cli/doctor.mdx#self-hosted-expectations",
       "images": [],
       "relativePath": "cli/doctor.mdx",
@@ -172,9 +146,7 @@
     {
       "anchor": "hosted-expectations",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/doctor.mdx",
-      "headings": [
-        "Hosted expectations"
-      ],
+      "headings": ["Hosted expectations"],
       "id": "content/docs/cli/doctor.mdx#hosted-expectations",
       "images": [],
       "relativePath": "cli/doctor.mdx",
@@ -185,9 +157,7 @@
     {
       "anchor": "examples",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/doctor.mdx",
-      "headings": [
-        "Examples"
-      ],
+      "headings": ["Examples"],
       "id": "content/docs/cli/doctor.mdx#examples",
       "images": [],
       "relativePath": "cli/doctor.mdx",
@@ -198,9 +168,7 @@
     {
       "anchor": "related",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/doctor.mdx",
-      "headings": [
-        "Related"
-      ],
+      "headings": ["Related"],
       "id": "content/docs/cli/doctor.mdx#related",
       "images": [],
       "relativePath": "cli/doctor.mdx",
@@ -211,9 +179,7 @@
     {
       "anchor": null,
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/quickstart.mdx",
-      "headings": [
-        "CLI quickstart"
-      ],
+      "headings": ["CLI quickstart"],
       "id": "content/docs/cli/quickstart.mdx",
       "images": [],
       "relativePath": "cli/quickstart.mdx",
@@ -224,9 +190,7 @@
     {
       "anchor": "check-the-binary",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/quickstart.mdx",
-      "headings": [
-        "Check the binary"
-      ],
+      "headings": ["Check the binary"],
       "id": "content/docs/cli/quickstart.mdx#check-the-binary",
       "images": [],
       "relativePath": "cli/quickstart.mdx",
@@ -237,9 +201,7 @@
     {
       "anchor": "see-usage",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/quickstart.mdx",
-      "headings": [
-        "See usage"
-      ],
+      "headings": ["See usage"],
       "id": "content/docs/cli/quickstart.mdx#see-usage",
       "images": [],
       "relativePath": "cli/quickstart.mdx",
@@ -250,9 +212,7 @@
     {
       "anchor": "typical-flows",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/quickstart.mdx",
-      "headings": [
-        "Typical flows"
-      ],
+      "headings": ["Typical flows"],
       "id": "content/docs/cli/quickstart.mdx#typical-flows",
       "images": [],
       "relativePath": "cli/quickstart.mdx",
@@ -263,9 +223,7 @@
     {
       "anchor": "next",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/quickstart.mdx",
-      "headings": [
-        "Next"
-      ],
+      "headings": ["Next"],
       "id": "content/docs/cli/quickstart.mdx#next",
       "images": [],
       "relativePath": "cli/quickstart.mdx",
@@ -276,9 +234,7 @@
     {
       "anchor": null,
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/setup.mdx",
-      "headings": [
-        "$ setup"
-      ],
+      "headings": ["$ setup"],
       "id": "content/docs/cli/setup.mdx",
       "images": [],
       "relativePath": "cli/setup.mdx",
@@ -289,9 +245,7 @@
     {
       "anchor": "usage",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/setup.mdx",
-      "headings": [
-        "Usage"
-      ],
+      "headings": ["Usage"],
       "id": "content/docs/cli/setup.mdx#usage",
       "images": [],
       "relativePath": "cli/setup.mdx",
@@ -302,9 +256,7 @@
     {
       "anchor": "what-it-can-write",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/setup.mdx",
-      "headings": [
-        "What it can write"
-      ],
+      "headings": ["What it can write"],
       "id": "content/docs/cli/setup.mdx#what-it-can-write",
       "images": [],
       "relativePath": "cli/setup.mdx",
@@ -315,9 +267,7 @@
     {
       "anchor": "important-flags",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/setup.mdx",
-      "headings": [
-        "Important flags"
-      ],
+      "headings": ["Important flags"],
       "id": "content/docs/cli/setup.mdx#important-flags",
       "images": [],
       "relativePath": "cli/setup.mdx",
@@ -328,9 +278,7 @@
     {
       "anchor": "examples",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/setup.mdx",
-      "headings": [
-        "Examples"
-      ],
+      "headings": ["Examples"],
       "id": "content/docs/cli/setup.mdx#examples",
       "images": [],
       "relativePath": "cli/setup.mdx",
@@ -341,9 +289,7 @@
     {
       "anchor": "related",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/cli/setup.mdx",
-      "headings": [
-        "Related"
-      ],
+      "headings": ["Related"],
       "id": "content/docs/cli/setup.mdx#related",
       "images": [],
       "relativePath": "cli/setup.mdx",
@@ -354,22 +300,18 @@
     {
       "anchor": null,
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/conversation-title.mdx",
-      "headings": [
-        "Conversation title"
-      ],
+      "headings": ["Conversation title"],
       "id": "content/docs/components/conversation-title.mdx",
       "images": [],
       "relativePath": "components/conversation-title.mdx",
-      "text": "The sidebar header title is not a separate React component: useOpenDetail listens for stream events of type title and exposes conversationTitle. AssistantSidebarShell passes that string to AssistantSidebar as headerTitle.\n\nThe preview below uses the same client and server path as the site: useOpenDetail with POST /api/opendetail, conversationTitle: true on the first message in a thread, and NDJSON title events that update conversationTitle (not a truncated copy of the prompt).\n\nTitles are persisted when you pass persistence (same storage as messages and the draft question).",
+      "text": "The sidebar header title is not a separate React component: useOpenDetail listens for stream events of type title and exposes conversationTitle. When you use AssistantSidebar with connection, that string is passed through as headerTitle.\n\nThe preview below uses the same client and server path as the site: useOpenDetail with POST /api/opendetail, conversationTitle: true on the first message in a thread, and NDJSON title events that update conversationTitle (not a truncated copy of the prompt).\n\nTitles are persisted when you pass persistence (same storage as messages and the draft question).",
       "title": "Conversation title",
       "url": "/docs/components/conversation-title"
     },
     {
       "anchor": "useopendetail",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/conversation-title.mdx",
-      "headings": [
-        "useOpenDetail"
-      ],
+      "headings": ["useOpenDetail"],
       "id": "content/docs/components/conversation-title.mdx#useopendetail",
       "images": [],
       "relativePath": "components/conversation-title.mdx",
@@ -378,24 +320,20 @@
       "url": "/docs/components/conversation-title#useopendetail"
     },
     {
-      "anchor": "props",
+      "anchor": "assistantstatus-error",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/error.mdx",
-      "headings": [
-        "Props"
-      ],
-      "id": "content/docs/components/error.mdx#props",
+      "headings": ["AssistantStatus (error)"],
+      "id": "content/docs/components/error.mdx#assistantstatus-error",
       "images": [],
       "relativePath": "components/error.mdx",
-      "text": "Props\n\n| Prop | Type | Default | Description |\n| --- | --- | --- | --- |\n| message | string \\| null | \"Ouch, please try again\" | Error copy; null renders nothing. |\n| label | string | — | Overrides visible label (defaults to message). |\n\nUse alongside AssistantInput status or inline in AssistantResponse error for richer layouts.",
+      "text": "AssistantStatus (error)\n\n| Prop | Type | Default | Description |\n| --- | --- | --- | --- |\n| variant | \"error\" | — | Required for error styling. |\n| label | string | package default | Visible error copy. |\n\nUse alongside Composer status or inside AssistantMessage error / status=\"error\" for richer layouts.",
       "title": "Error",
-      "url": "/docs/components/error#props"
+      "url": "/docs/components/error#assistantstatus-error"
     },
     {
       "anchor": null,
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/index.mdx",
-      "headings": [
-        "Components"
-      ],
+      "headings": ["Components"],
       "id": "content/docs/components/index.mdx",
       "images": [],
       "relativePath": "components/index.mdx",
@@ -406,9 +344,7 @@
     {
       "anchor": "imports",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/index.mdx",
-      "headings": [
-        "Imports"
-      ],
+      "headings": ["Imports"],
       "id": "content/docs/components/index.mdx#imports",
       "images": [],
       "relativePath": "components/index.mdx",
@@ -419,35 +355,29 @@
     {
       "anchor": null,
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/input.mdx",
-      "headings": [
-        "Input"
-      ],
+      "headings": ["Input"],
       "id": "content/docs/components/input.mdx",
       "images": [],
       "relativePath": "components/input.mdx",
-      "text": "AssistantInput renders the textarea, send/stop control, and optional status line. Pair it with useOpenDetail (or your own state machine) via requestState so the button shows stop while a request is pending or streaming.",
+      "text": "Composer renders the textarea, send/stop control, and optional status line. Pair it with useOpenDetail (or your own state machine) via requestState so the button shows stop while a request is pending or streaming.",
       "title": "Input",
       "url": "/docs/components/input"
     },
     {
       "anchor": "sizes",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/input.mdx",
-      "headings": [
-        "Sizes"
-      ],
+      "headings": ["Sizes"],
       "id": "content/docs/components/input.mdx#sizes",
       "images": [],
       "relativePath": "components/input.mdx",
-      "text": "Sizes\n\n| Value | When to use |\n| --- | --- |\n| compact | Narrow rails, sidebars (default). |\n| shell | Wider surface aligned with AssistantShell / modal layouts. |",
+      "text": "Sizes\n\n| Value | When to use |\n| --- | --- |\n| compact | Narrow rails, sidebars (default). |\n| shell | Wider surface aligned with ConversationLayout (shell) / modal layouts. |",
       "title": "Input",
       "url": "/docs/components/input#sizes"
     },
     {
       "anchor": "props",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/input.mdx",
-      "headings": [
-        "Props"
-      ],
+      "headings": ["Props"],
       "id": "content/docs/components/input.mdx#props",
       "images": [],
       "relativePath": "components/input.mdx",
@@ -458,61 +388,51 @@
     {
       "anchor": "props",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/input.mdx",
-      "headings": [
-        "Props"
-      ],
+      "headings": ["Props"],
       "id": "content/docs/components/input.mdx#props::part-2",
       "images": [],
       "relativePath": "components/input.mdx",
-      "text": "| Prop | Type | Default | Description |\n| --- | --- | --- | --- |\n| name | string | \"question\" | Form field name (also used to build the textarea id if id is omitted). |\n| id | string | — | Explicit id for the textarea. |\n| size | \"compact\" \\| \"shell\" | \"compact\" | Layout width / shell styling. |\n| placeholder | string | (package default) | Placeholder copy. |\n| requestState | \"idle\" \\| \"pending\" \\| \"streaming\" \\| \"error\" | \"idle\" | Drives send vs stop and busy styling. |\n| onSubmit | (request: AssistantInputRequest, event) => void \\| Promise<void> | — | Called with { question } on submit. |\n| onStop | () => void | — | Invoked when the user hits stop in pending/streaming mode. |\n| onValueChange | (value: string) => void | — | Fires as the textarea changes (use with controlled value). |\n| value | string | — | Controlled value. If omitted, the input manages its own state (optionally seeded with defaultValue). |\n| defaultValue | string | — | Uncontrolled initial value. |\n| disabled | boolean | false | Disables the field and actions. |\n| readOnly | boolean | false | Read-only textarea. |\n| autoFocus | boolean | false | Focus on mount. |\n| maxLength | number | 4000 | Hard cap on question length. |\n| maxRows | number | 6 | Soft cap for auto-growing height (combined with maxExpandMultiplier). |\n| maxExpandMultiplier | number | 4 | Limits growth relative to a single line. |\n| showShellUnderlay | boolean | true | Shell underlay visuals (used in demos and wide layouts). |\n| status | { label?: string; variant: \"thinking\" \\| \"error\" } \\| null | — | Optional status line under the field. |\n| className | string | — | Root class. |",
+      "text": "| Prop | Type | Default | Description |\n| --- | --- | --- | --- |\n| name | string | \"question\" | Form field name (also used to build the textarea id if id is omitted). |\n| id | string | — | Explicit id for the textarea. |\n| size | \"compact\" \\| \"shell\" | \"compact\" | Layout width / shell styling. |\n| placeholder | string | (package default) | Placeholder copy. |\n| requestState | \"idle\" \\| \"pending\" \\| \"streaming\" \\| \"error\" | \"idle\" | Drives send vs stop and busy styling. |\n| onSubmit | (request: ComposerRequest, event) => void \\| Promise<void> | — | Called with { question } on submit. |\n| onStop | () => void | — | Invoked when the user hits stop in pending/streaming mode. |\n| onValueChange | (value: string) => void | — | Fires as the textarea changes (use with controlled value). |\n| value | string | — | Controlled value. If omitted, the input manages its own state (optionally seeded with defaultValue). |\n| defaultValue | string | — | Uncontrolled initial value. |\n| disabled | boolean | false | Disables the field and actions. |\n| readOnly | boolean | false | Read-only textarea. |\n| autoFocus | boolean | false | Focus on mount. |\n| maxLength | number | 4000 | Hard cap on question length. |\n| maxRows | number | 6 | Soft cap for auto-growing height (combined with maxExpandMultiplier). |\n| maxExpandMultiplier | number | 4 | Limits growth relative to a single line. |\n| showShellUnderlay | boolean | true | Shell underlay visuals (used in demos and wide layouts). |\n| status | { label?: string; variant: \"thinking\" \\| \"error\" } \\| null | — | Optional status line under the field. |\n| className | string | — | Root class. |",
       "title": "Input",
       "url": "/docs/components/input#props"
     },
     {
       "anchor": "props",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/input.mdx",
-      "headings": [
-        "Props"
-      ],
+      "headings": ["Props"],
       "id": "content/docs/components/input.mdx#props::part-3",
       "images": [],
       "relativePath": "components/input.mdx",
-      "text": "For TypeScript, import AssistantInputProps and AssistantInputRequest from opendetail-react for the exact shapes.",
+      "text": "For TypeScript, import ComposerProps and ComposerRequest from opendetail-react for the exact shapes.",
       "title": "Input",
       "url": "/docs/components/input#props"
     },
     {
       "anchor": null,
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/loader.mdx",
-      "headings": [
-        "Loader"
-      ],
+      "headings": ["Loader"],
       "id": "content/docs/components/loader.mdx",
       "images": [],
       "relativePath": "components/loader.mdx",
-      "text": "Import AssistantLoader from opendetail-react (same implementation as AssistantStatus; the Loader name matches the spinner affordance).",
+      "text": "Import AssistantStatus from opendetail-react.",
       "title": "Loader",
       "url": "/docs/components/loader"
     },
     {
       "anchor": "props",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/loader.mdx",
-      "headings": [
-        "Props"
-      ],
+      "headings": ["Props"],
       "id": "content/docs/components/loader.mdx#props",
       "images": [],
       "relativePath": "components/loader.mdx",
-      "text": "Props\n\n| Prop | Type | Default | Description |\n| --- | --- | --- | --- |\n| variant | \"thinking\" \\| \"error\" | — | Use thinking for the spinner; error shows error text (see Error for a dedicated error helper). |\n| label | string | variant default | Screen-reader label; thinking keeps a visible Loader icon. |\n| id | string | — | Optional DOM id. |\n\nThinking variant maps to opendetail-status; error uses opendetail-status--error.",
+      "text": "Props\n\n| Prop | Type | Default | Description |\n| --- | --- | --- | --- |\n| variant | \"thinking\" \\| \"error\" | — | Use thinking for the spinner; error shows error text (see Error). |\n| label | string | variant default | Screen-reader label; thinking keeps a visible spinner icon. |\n| id | string | — | Optional DOM id. |\n\nThinking variant maps to opendetail-status; error uses opendetail-status--error.",
       "title": "Loader",
       "url": "/docs/components/loader#props"
     },
     {
       "anchor": null,
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/pressable.mdx",
-      "headings": [
-        "Pressable"
-      ],
+      "headings": ["Pressable"],
       "id": "content/docs/components/pressable.mdx",
       "images": [],
       "relativePath": "components/pressable.mdx",
@@ -523,9 +443,7 @@
     {
       "anchor": "behavior",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/pressable.mdx",
-      "headings": [
-        "Behavior"
-      ],
+      "headings": ["Behavior"],
       "id": "content/docs/components/pressable.mdx#behavior",
       "images": [],
       "relativePath": "components/pressable.mdx",
@@ -536,9 +454,7 @@
     {
       "anchor": null,
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/recommendations.mdx",
-      "headings": [
-        "Recommendations"
-      ],
+      "headings": ["Recommendations"],
       "id": "content/docs/components/recommendations.mdx",
       "images": [],
       "relativePath": "components/recommendations.mdx",
@@ -549,9 +465,7 @@
     {
       "anchor": "props",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/recommendations.mdx",
-      "headings": [
-        "Props"
-      ],
+      "headings": ["Props"],
       "id": "content/docs/components/recommendations.mdx#props",
       "images": [],
       "relativePath": "components/recommendations.mdx",
@@ -562,10 +476,7 @@
     {
       "anchor": "assistantsuggestions",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/recommendations.mdx",
-      "headings": [
-        "Props",
-        "AssistantSuggestions"
-      ],
+      "headings": ["Props", "AssistantSuggestions"],
       "id": "content/docs/components/recommendations.mdx#assistantsuggestions",
       "images": [],
       "relativePath": "components/recommendations.mdx",
@@ -576,10 +487,7 @@
     {
       "anchor": "assistantsuggestion",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/recommendations.mdx",
-      "headings": [
-        "Props",
-        "AssistantSuggestion"
-      ],
+      "headings": ["Props", "AssistantSuggestion"],
       "id": "content/docs/components/recommendations.mdx#assistantsuggestion",
       "images": [],
       "relativePath": "components/recommendations.mdx",
@@ -590,117 +498,101 @@
     {
       "anchor": "composition",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/recommendations.mdx",
-      "headings": [
-        "Composition"
-      ],
+      "headings": ["Composition"],
       "id": "content/docs/components/recommendations.mdx#composition",
       "images": [],
       "relativePath": "components/recommendations.mdx",
-      "text": "Composition\n\nWrap multiple AssistantSuggestion nodes inside AssistantSuggestions. In the Shell preview they sit inside the thread so they scroll with the conversation; you can also render them directly under AssistantShell’s input if you prefer them fixed.",
+      "text": "Composition\n\nWrap multiple AssistantSuggestion nodes inside AssistantSuggestions. In the Shell preview they sit inside the thread so they scroll with the conversation; you can also render them directly under ConversationLayout’s input if you prefer them fixed.",
       "title": "Recommendations",
       "url": "/docs/components/recommendations#composition"
     },
     {
-      "anchor": "assistantshell-layout-primitive",
+      "anchor": "conversationlayout-shell-variant",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/shell.mdx",
-      "headings": [
-        "AssistantShell (layout primitive)"
-      ],
-      "id": "content/docs/components/shell.mdx#assistantshell-layout-primitive",
+      "headings": ["ConversationLayout (shell variant)"],
+      "id": "content/docs/components/shell.mdx#conversationlayout-shell-variant",
       "images": [],
       "relativePath": "components/shell.mdx",
-      "text": "AssistantShell (layout primitive)\n\nAssistantShell is the vertical layout that pairs the scrollable conversation with the fixed prompt. It does not include the sidebar header (copy, new chat, collapse) or model streaming—you compose those yourself or use AssistantSidebarShell.\n\nRegions use semantic hooks (opendetail-shell, opendetail-shell__thread, opendetail-shell__input) so you can theme or measure them consistently.",
+      "text": "ConversationLayout (shell variant)\n\nConversationLayout with variant=\"shell\" is the vertical layout that pairs the scrollable conversation with the fixed prompt. It does not include the sidebar header (copy, new chat, collapse) or model streaming—you compose those yourself or use AssistantSidebar with connection.\n\nRegions use semantic hooks (opendetail-shell, opendetail-shell__thread, opendetail-shell__input) so you can theme or measure them consistently.",
       "title": "Shell",
-      "url": "/docs/components/shell#assistantshell-layout-primitive"
+      "url": "/docs/components/shell#conversationlayout-shell-variant"
     },
     {
       "anchor": "composition",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/shell.mdx",
-      "headings": [
-        "AssistantShell (layout primitive)",
-        "Composition"
-      ],
+      "headings": ["ConversationLayout (shell variant)", "Composition"],
       "id": "content/docs/components/shell.mdx#composition",
       "images": [],
       "relativePath": "components/shell.mdx",
-      "text": "Composition\n\nThe thread slot usually contains AssistantThread, AssistantUserMessage / AssistantResponse, and optionally AssistantSuggestions (see Input and Recommendations).",
+      "text": "Composition\n\nThe thread slot usually contains Thread, UserMessage / AssistantMessage, and optionally AssistantSuggestions (see Input and Recommendations).",
       "title": "Shell",
       "url": "/docs/components/shell#composition"
     },
     {
-      "anchor": "props-assistantshell",
+      "anchor": "props-conversationlayout-shell",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/shell.mdx",
       "headings": [
-        "AssistantShell (layout primitive)",
-        "Props (AssistantShell)"
+        "ConversationLayout (shell variant)",
+        "Props (ConversationLayout, shell)"
       ],
-      "id": "content/docs/components/shell.mdx#props-assistantshell",
+      "id": "content/docs/components/shell.mdx#props-conversationlayout-shell",
       "images": [],
       "relativePath": "components/shell.mdx",
-      "text": "Props (AssistantShell)\n\n| Prop | Type | Default | Description |\n| --- | --- | --- | --- |\n| input | ReactNode | — | Required. Almost always an AssistantInput. |\n| thread | ReactNode | — | Scrollable conversation. Prefer this when you have a structured thread. |\n| children | ReactNode | — | If thread is omitted, children render inside the thread region. |\n| className | string | — | Optional class on the root section. |",
+      "text": "Props (ConversationLayout, shell)\n\n| Prop | Type | Default | Description |\n| --- | --- | --- | --- |\n| variant | \"shell\" | — | Required for this layout. |\n| input | ReactNode | — | Required. Almost always a Composer. |\n| thread | ReactNode | — | Scrollable conversation. Prefer this when you have a structured thread. |\n| children | ReactNode | — | If thread is omitted, children render inside the thread region. |\n| className | string | — | Optional class on the root section. |",
       "title": "Shell",
-      "url": "/docs/components/shell#props-assistantshell"
+      "url": "/docs/components/shell#props-conversationlayout-shell"
     },
     {
       "anchor": "usage",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/shell.mdx",
-      "headings": [
-        "AssistantShell (layout primitive)",
-        "Usage"
-      ],
+      "headings": ["ConversationLayout (shell variant)", "Usage"],
       "id": "content/docs/components/shell.mdx#usage",
       "images": [],
       "relativePath": "components/shell.mdx",
-      "text": "Usage\n\nimport {\n  AssistantInput,\n  AssistantShell,\n  AssistantThread,\n  AssistantUserMessage,\n} from \"opendetail-react\";\n\n<AssistantShell\n  input={<AssistantInput name=\"q\" size=\"shell\" onSubmit={handleSubmit} />}\n  thread={\n    <AssistantThread>\n      <AssistantUserMessage>Hello</AssistantUserMessage>\n    </AssistantThread>\n  }\n/>;",
+      "text": "Usage\n\nimport {\n  Composer,\n  ConversationLayout,\n  Thread,\n  UserMessage,\n} from \"opendetail-react\";\n\n<ConversationLayout\n  input={<Composer name=\"q\" size=\"shell\" onSubmit={handleSubmit} />}\n  thread={\n    <Thread>\n      <UserMessage>Hello</UserMessage>\n    </Thread>\n  }\n  variant=\"shell\"\n/>;",
       "title": "Shell",
       "url": "/docs/components/shell#usage"
     },
     {
-      "anchor": "site-assistant-assistantsidebar--assistantsidebarshell",
+      "anchor": "site-assistant-assistantsidebar",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/shell.mdx",
-      "headings": [
-        "Site assistant (AssistantSidebar / AssistantSidebarShell)"
-      ],
-      "id": "content/docs/components/shell.mdx#site-assistant-assistantsidebar--assistantsidebarshell",
+      "headings": ["Site assistant (AssistantSidebar)"],
+      "id": "content/docs/components/shell.mdx#site-assistant-assistantsidebar",
       "images": [],
       "relativePath": "components/shell.mdx",
-      "text": "Site assistant (AssistantSidebar / AssistantSidebarShell)\n\nWhat you see in the live preview below is the same stack as this docs app: AssistantSidebarShell → useOpenDetail → POST /api/opendetail, with renderNextSourceLink and a Fumadocs-style resolveSourceTarget so citations resolve safely.\n\nThis Shell preview uses embedded + embeddedLayout=\"compact\" (rounded 400px column), embeddedHideCollapse (no collapse control—focus stays on thread + input), plus copy, new session, resize, suggestions, and AssistantInput filling the column width.\n\nOn the Sidebar page, the preview uses embeddedLayout=\"dock\" instead: the panel sits flush on the left of the white preview with a left stroke only (no outer rounded chrome), and collapse + Open assistant behave like the full app.",
+      "text": "Site assistant (AssistantSidebar)\n\nWhat you see in the live preview below is the same stack as this docs app: AssistantSidebar with connection → useOpenDetail → POST /api/opendetail, with renderNextSourceLink and a Fumadocs-style resolveSourceTarget so citations resolve safely.\n\nThis Shell preview uses embedded + embeddedLayout=\"compact\" (rounded 400px column), embeddedHideCollapse (no collapse control—focus stays on thread + input), plus copy, new session, resize, suggestions, and Composer filling the column width.\n\nOn the Sidebar page, the preview uses embeddedLayout=\"dock\" instead: the panel sits flush on the left of the white preview with a left stroke only (no outer rounded chrome), and collapse + Open assistant behave like the full app.",
       "title": "Shell",
-      "url": "/docs/components/shell#site-assistant-assistantsidebar--assistantsidebarshell"
+      "url": "/docs/components/shell#site-assistant-assistantsidebar"
     },
     {
       "anchor": "assistantsidebar--embedded",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/shell.mdx",
       "headings": [
-        "Site assistant (AssistantSidebar / AssistantSidebarShell)",
+        "Site assistant (AssistantSidebar)",
         "AssistantSidebar — embedded"
       ],
       "id": "content/docs/components/shell.mdx#assistantsidebar--embedded",
       "images": [],
       "relativePath": "components/shell.mdx",
-      "text": "AssistantSidebar — embedded\n\n| Prop | Type | Default | Description |\n| --- | --- | --- | --- |\n| embedded | boolean | false | Single-column preview: same sidebar UI without a main content sibling. |\n| embeddedLayout | \"compact\" \\| \"dock\" | \"compact\" | compact — 400px rounded box; dock — left-aligned column, left border only (see Sidebar). |\n| embeddedHideCollapse | boolean | false | Hide the collapse icon (used on this page’s preview). |\n\nOther sidebar props (headerTitle, messages, onSubmitQuestion, promptSuggestions, sidebarResizeEnabled, etc.) are unchanged—see AssistantSidebar / AssistantSidebarShell in the main React docs and Packages & composition.",
+      "text": "AssistantSidebar — embedded\n\n| Prop | Type | Default | Description |\n| --- | --- | --- | --- |\n| embedded | boolean | false | Single-column preview: same sidebar UI without a main content sibling. |\n| embeddedLayout | \"compact\" \\| \"dock\" | \"compact\" | compact — 400px rounded box; dock — left-aligned column, left border only (see Sidebar). |\n| embeddedHideCollapse | boolean | false | Hide the collapse icon (used on this page’s preview). |\n\nOther sidebar props (headerTitle, messages, onSubmitQuestion, promptSuggestions, sidebarResizeEnabled, etc.) are unchanged—see AssistantSidebar in the main React docs and Packages & composition.",
       "title": "Shell",
       "url": "/docs/components/shell#assistantsidebar--embedded"
     },
     {
       "anchor": null,
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/sidebar.mdx",
-      "headings": [
-        "Sidebar"
-      ],
+      "headings": ["Sidebar"],
       "id": "content/docs/components/sidebar.mdx",
       "images": [],
       "relativePath": "components/sidebar.mdx",
-      "text": "AssistantSidebar composes the same pieces as this site’s AI panel: title, copy transcript, new session (+), collapse, optional resize handle, thread (or custom thread slot), and AssistantInput.\n\nUse AssistantSidebarShell when you want useOpenDetail wired to your POST /api/opendetail route (streaming, stop, persistence, conversationTitle).",
+      "text": "AssistantSidebar composes the same pieces as this site’s AI panel: title, copy transcript, new session (+), collapse, optional resize handle, thread (or custom thread slot), and Composer.\n\nPass connection (endpoint, persistence, sitePaths, transport) when you want useOpenDetail wired to your POST /api/opendetail route (streaming, stop, persistence, conversationTitle).",
       "title": "Sidebar",
       "url": "/docs/components/sidebar"
     },
     {
       "anchor": "header-actions",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/sidebar.mdx",
-      "headings": [
-        "Header actions"
-      ],
+      "headings": ["Header actions"],
       "id": "content/docs/components/sidebar.mdx#header-actions",
       "images": [],
       "relativePath": "components/sidebar.mdx",
@@ -711,9 +603,7 @@
     {
       "anchor": "props-high-level",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/sidebar.mdx",
-      "headings": [
-        "Props (high level)"
-      ],
+      "headings": ["Props (high level)"],
       "id": "content/docs/components/sidebar.mdx#props-high-level",
       "images": [],
       "relativePath": "components/sidebar.mdx",
@@ -724,22 +614,18 @@
     {
       "anchor": null,
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/sources.mdx",
-      "headings": [
-        "Sources"
-      ],
+      "headings": ["Sources"],
       "id": "content/docs/components/sources.mdx",
       "images": [],
       "relativePath": "components/sources.mdx",
-      "text": "Retrieval sources are passed as structured items (AssistantSourceItem). AssistantResponse scans markdown for [n] citations and shows matching pills in the footer; use getSourcesCitedInContent if you need the same ordering outside the response.\n\nFor link resolution (in-app routes vs external URLs), wire renderSourceLink and resolveSourceTarget — the Next.js docs app uses renderNextSourceLink from opendetail-next and a Fumadocs-style resolver (see opendetail-fumadocs).",
+      "text": "Retrieval sources are passed as structured items (AssistantSourceItem). AssistantMessage scans markdown for [n] citations and shows matching pills in the footer; use getSourcesCitedInContent if you need the same ordering outside the message.\n\nFor link resolution (in-app routes vs external URLs), wire renderSourceLink and resolveSourceTarget — the Next.js docs app uses renderNextSourceLink from opendetail-next and a Fumadocs-style resolver (see opendetail-fumadocs).",
       "title": "Sources",
       "url": "/docs/components/sources"
     },
     {
       "anchor": "props-assistantsources",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/sources.mdx",
-      "headings": [
-        "Props (AssistantSources)"
-      ],
+      "headings": ["Props (AssistantSources)"],
       "id": "content/docs/components/sources.mdx#props-assistantsources",
       "images": [],
       "relativePath": "components/sources.mdx",
@@ -750,10 +636,7 @@
     {
       "anchor": "assistantsourceitem-shape",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/components/sources.mdx",
-      "headings": [
-        "Props (AssistantSources)",
-        "AssistantSourceItem (shape)"
-      ],
+      "headings": ["Props (AssistantSources)", "AssistantSourceItem (shape)"],
       "id": "content/docs/components/sources.mdx#assistantsourceitem-shape",
       "images": [],
       "relativePath": "components/sources.mdx",
@@ -764,9 +647,7 @@
     {
       "anchor": null,
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/core.mdx",
-      "headings": [
-        "Core package"
-      ],
+      "headings": ["Core package"],
       "id": "content/docs/core.mdx",
       "images": [],
       "relativePath": "core.mdx",
@@ -777,9 +658,7 @@
     {
       "anchor": "what-ships-in-the-package",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/core.mdx",
-      "headings": [
-        "What ships in the package"
-      ],
+      "headings": ["What ships in the package"],
       "id": "content/docs/core.mdx#what-ships-in-the-package",
       "images": [],
       "relativePath": "core.mdx",
@@ -790,9 +669,7 @@
     {
       "anchor": "when-to-use-it-directly",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/core.mdx",
-      "headings": [
-        "When to use it directly"
-      ],
+      "headings": ["When to use it directly"],
       "id": "content/docs/core.mdx#when-to-use-it-directly",
       "images": [],
       "relativePath": "core.mdx",
@@ -803,9 +680,7 @@
     {
       "anchor": "minimal-config",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/core.mdx",
-      "headings": [
-        "Minimal config"
-      ],
+      "headings": ["Minimal config"],
       "id": "content/docs/core.mdx#minimal-config",
       "images": [],
       "relativePath": "core.mdx",
@@ -816,9 +691,7 @@
     {
       "anchor": "fields",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/core.mdx",
-      "headings": [
-        "Fields"
-      ],
+      "headings": ["Fields"],
       "id": "content/docs/core.mdx#fields",
       "images": [],
       "relativePath": "core.mdx",
@@ -829,9 +702,7 @@
     {
       "anchor": "base-path",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/core.mdx",
-      "headings": [
-        "Base path"
-      ],
+      "headings": ["Base path"],
       "id": "content/docs/core.mdx#base-path",
       "images": [],
       "relativePath": "core.mdx",
@@ -842,9 +713,7 @@
     {
       "anchor": "media",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/core.mdx",
-      "headings": [
-        "Media"
-      ],
+      "headings": ["Media"],
       "id": "content/docs/core.mdx#media",
       "images": [],
       "relativePath": "core.mdx",
@@ -855,9 +724,7 @@
     {
       "anchor": "remote-resources",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/core.mdx",
-      "headings": [
-        "Remote resources"
-      ],
+      "headings": ["Remote resources"],
       "id": "content/docs/core.mdx#remote-resources",
       "images": [],
       "relativePath": "core.mdx",
@@ -868,9 +735,7 @@
     {
       "anchor": "create-an-assistant",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/core.mdx",
-      "headings": [
-        "Create an assistant"
-      ],
+      "headings": ["Create an assistant"],
       "id": "content/docs/core.mdx#create-an-assistant",
       "images": [],
       "relativePath": "core.mdx",
@@ -881,9 +746,7 @@
     {
       "anchor": "assistant-instructions",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/core.mdx",
-      "headings": [
-        "Assistant instructions"
-      ],
+      "headings": ["Assistant instructions"],
       "id": "content/docs/core.mdx#assistant-instructions",
       "images": [],
       "relativePath": "core.mdx",
@@ -894,9 +757,7 @@
     {
       "anchor": "remote-retrieval",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/core.mdx",
-      "headings": [
-        "Remote retrieval"
-      ],
+      "headings": ["Remote retrieval"],
       "id": "content/docs/core.mdx#remote-retrieval",
       "images": [],
       "relativePath": "core.mdx",
@@ -907,9 +768,7 @@
     {
       "anchor": "defaults",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/core.mdx",
-      "headings": [
-        "Defaults"
-      ],
+      "headings": ["Defaults"],
       "id": "content/docs/core.mdx#defaults",
       "images": [],
       "relativePath": "core.mdx",
@@ -920,9 +779,7 @@
     {
       "anchor": "important-options",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/core.mdx",
-      "headings": [
-        "Important options"
-      ],
+      "headings": ["Important options"],
       "id": "content/docs/core.mdx#important-options",
       "images": [],
       "relativePath": "core.mdx",
@@ -933,9 +790,7 @@
     {
       "anchor": "fallback-behavior",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/core.mdx",
-      "headings": [
-        "Fallback behavior"
-      ],
+      "headings": ["Fallback behavior"],
       "id": "content/docs/core.mdx#fallback-behavior",
       "images": [],
       "relativePath": "core.mdx",
@@ -944,50 +799,97 @@
       "url": "/docs/core#fallback-behavior"
     },
     {
+      "anchor": "systems",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/design-system.mdx",
+      "headings": ["Systems"],
+      "id": "content/docs/design-system.mdx#systems",
+      "images": [],
+      "relativePath": "design-system.mdx",
+      "text": "Systems\n\nA system is a full UI identity for the assistant: semantic class contract, layout and density, motion, and component anatomy (thread, composer, messages, sources). The default OpenDetail system ships in opendetail-react styles under systems/opendetail/ (imported via opendetail-base.css).\n\nAdd a new system when you need different chrome or structure—not just different colors—while keeping the same headless transport (useOpenDetail, createOpenDetailClient) and message shapes.",
+      "title": "Systems and themes",
+      "url": "/docs/design-system#systems"
+    },
+    {
+      "anchor": "themes",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/design-system.mdx",
+      "headings": ["Themes"],
+      "id": "content/docs/design-system.mdx#themes",
+      "images": [],
+      "relativePath": "design-system.mdx",
+      "text": "Themes\n\nA theme is a palette (and optional minor token tweaks) inside one system: background, foreground, accent, borders. Components and layout stay the same; only paint changes. Shipped examples: Midnight and Signal (opendetail-midnight.css, opendetail-signal.css), implemented as files under themes/opendetail/.",
+      "title": "Systems and themes",
+      "url": "/docs/design-system#themes"
+    },
+    {
+      "anchor": "why-we-split-them",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/design-system.mdx",
+      "headings": ["Why we split them"],
+      "id": "content/docs/design-system.mdx#why-we-split-them",
+      "images": [],
+      "relativePath": "design-system.mdx",
+      "text": "Why we split them\n\nThemes can be swapped or extended without forking React components or duplicating layout CSS.Systems stay isolated when a second product line or white-label needs different chrome but the same streaming protocol.Contributors know where to look: new colors → themes/; new chrome → systems/.",
+      "title": "Systems and themes",
+      "url": "/docs/design-system#why-we-split-them"
+    },
+    {
+      "anchor": "minimum-primitives-opendetail-team-recommendation",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/design-system.mdx",
+      "headings": ["Minimum primitives (OpenDetail team recommendation)"],
+      "id": "content/docs/design-system.mdx#minimum-primitives-opendetail-team-recommendation",
+      "images": [],
+      "relativePath": "design-system.mdx",
+      "text": "Minimum primitives (OpenDetail team recommendation)\n\nTo build a custom system that stays compatible with citations, sources, and NDJSON streaming:\n\nHeadless — createOpenDetailClient, useOpenDetail, and shared thread message types.Layout — ConversationLayout (thread/body + composer regions); Sidebar and Modal compose it internally.Conversation UI — Thread, Composer, UserMessage, AssistantMessage, AssistantSources, and source link helpers.Styles — A system entry stylesheet (structural tokens + default palette) plus optional theme files under themes/<system>/.\n\nRecipes (AssistantSidebar, AssistantModal) are optional: use them for a drop-in experience, or compose primitives inside your own shell.",
+      "title": "Systems and themes",
+      "url": "/docs/design-system#minimum-primitives-opendetail-team-recommendation"
+    },
+    {
+      "anchor": "import-order",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/design-system.mdx",
+      "headings": ["Import order"],
+      "id": "content/docs/design-system.mdx#import-order",
+      "images": [],
+      "relativePath": "design-system.mdx",
+      "text": "Import order\n\nImport base system CSS (opendetail-base.css or systems/opendetail/index.css).Optionally layer a theme after base (opendetail-midnight.css, opendetail-signal.css, or a custom palette file).\n\nSee also: React, UI integration, and the style README in the package.",
+      "title": "Systems and themes",
+      "url": "/docs/design-system#import-order"
+    },
+    {
       "anchor": null,
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/fumadocs.mdx",
-      "headings": [
-        "opendetail-fumadocs"
-      ],
+      "headings": ["opendetail-fumadocs"],
       "id": "content/docs/fumadocs.mdx",
       "images": [],
       "relativePath": "fumadocs.mdx",
-      "text": "opendetail-fumadocs is optional glue for apps that already serve docs under predictable URLs (often Fumadocs-style /docs/... routes). It does not add a different assistant runtime: it supplies resolveSourceTarget helpers and a thin FumadocsAssistant wrapper around AssistantSidebarShell from opendetail-react, wired with renderNextSourceLink from opendetail-next.\n\nFor when to use this vs hand-wiring, see Packages & composition.",
+      "text": "opendetail-fumadocs is optional glue for apps that already serve docs under predictable URLs (often Fumadocs-style /docs/... routes). It does not add a different assistant runtime: it supplies resolveSourceTarget helpers and a thin FumadocsAssistant wrapper around AssistantSidebar from opendetail-react, wired with renderNextSourceLink from opendetail-next.\n\nFor when to use this vs hand-wiring, see Packages & composition.",
       "title": "opendetail-fumadocs",
       "url": "/docs/fumadocs"
     },
     {
       "anchor": "api",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/fumadocs.mdx",
-      "headings": [
-        "API"
-      ],
+      "headings": ["API"],
       "id": "content/docs/fumadocs.mdx#api",
       "images": [],
       "relativePath": "fumadocs.mdx",
-      "text": "API\n\nresolveFumadocsSourceTarget — Given knownPageUrls and a source (kind: \"local\" or \"remote\"), returns { external, href } or null for unknown local paths.createFumadocsSourceTargetResolver(knownPageUrls) — Returns a ResolveAssistantSourceTarget you pass to AssistantSidebarShell as resolveSourceTarget.getFumadocsPageUrls(source) — Maps a Fumadocs-style source with getPages() to a flat list of URLs for the allowlist.",
+      "text": "API\n\nresolveFumadocsSourceTarget — Given knownPageUrls and a source (kind: \"local\" or \"remote\"), returns { external, href } or null for unknown local paths.createFumadocsSourceTargetResolver(knownPageUrls) — Returns a ResolveAssistantSourceTarget you pass to AssistantSidebar as resolveSourceTarget.getFumadocsPageUrls(source) — Maps a Fumadocs-style source with getPages() to a flat list of URLs for the allowlist.",
       "title": "opendetail-fumadocs",
       "url": "/docs/fumadocs#api"
     },
     {
       "anchor": "convenience-wrapper",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/fumadocs.mdx",
-      "headings": [
-        "Convenience wrapper"
-      ],
+      "headings": ["Convenience wrapper"],
       "id": "content/docs/fumadocs.mdx#convenience-wrapper",
       "images": [],
       "relativePath": "fumadocs.mdx",
-      "text": "Convenience wrapper\n\nFumadocsAssistant (import from opendetail-fumadocs/assistant) bundles:\n\nAssistantSidebarShellrenderNextSourceLink from opendetail-nextcreateFumadocsSourceTargetResolver(knownSourcePageUrls)\n\nPass the same props you would to the shell, plus knownSourcePageUrls. Site navigation chrome stays in your app (for example the demo’s Sidebar in apps/web), not in this package.\n\n`import { FumadocsAssistant } from \"opendetail-fumadocs/assistant\";\n\n<FumadocsAssistant\nknownSourcePageUrls={[\"/docs\", \"/docs/quickstart\", \"/docs/core\", /* … */]}\nnavigation={<YourNav />}\n/* …AssistantSidebarShell props */\n/>;\n`",
+      "text": "Convenience wrapper\n\nFumadocsAssistant (import from opendetail-fumadocs/assistant) bundles:\n\nAssistantSidebar (with connection for endpoint/persistence when you pass those props)renderNextSourceLink from opendetail-nextcreateFumadocsSourceTargetResolver(knownSourcePageUrls)\n\nPass the same props you would to AssistantSidebar, plus knownSourcePageUrls. Site navigation chrome stays in your app (for example the demo’s Sidebar in apps/web), not in this package.\n\n`import { FumadocsAssistant } from \"opendetail-fumadocs/assistant\";\n\n<FumadocsAssistant\nknownSourcePageUrls={[\"/docs\", \"/docs/quickstart\", \"/docs/core\", /* … */]}\nnavigation={<YourNav />}\n/* …AssistantSidebar props (e.g. endpoint, persistence) */\n/>;\n`",
       "title": "opendetail-fumadocs",
       "url": "/docs/fumadocs#convenience-wrapper"
     },
     {
       "anchor": "wiring-without-the-wrapper",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/fumadocs.mdx",
-      "headings": [
-        "Wiring without the wrapper"
-      ],
+      "headings": ["Wiring without the wrapper"],
       "id": "content/docs/fumadocs.mdx#wiring-without-the-wrapper",
       "images": [],
       "relativePath": "fumadocs.mdx",
@@ -998,9 +900,7 @@
     {
       "anchor": null,
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/index.mdx",
-      "headings": [
-        "Documentation"
-      ],
+      "headings": ["Documentation"],
       "id": "content/docs/index.mdx",
       "images": [],
       "relativePath": "index.mdx",
@@ -1011,9 +911,7 @@
     {
       "anchor": "how-it-fits-together",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/index.mdx",
-      "headings": [
-        "How it fits together"
-      ],
+      "headings": ["How it fits together"],
       "id": "content/docs/index.mdx#how-it-fits-together",
       "images": [],
       "relativePath": "index.mdx",
@@ -1024,9 +922,7 @@
     {
       "anchor": "who-it-is-for",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/index.mdx",
-      "headings": [
-        "Who it is for"
-      ],
+      "headings": ["Who it is for"],
       "id": "content/docs/index.mdx#who-it-is-for",
       "images": [],
       "relativePath": "index.mdx",
@@ -1037,22 +933,18 @@
     {
       "anchor": "packages-at-a-glance",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/index.mdx",
-      "headings": [
-        "Packages (at a glance)"
-      ],
+      "headings": ["Packages (at a glance)"],
       "id": "content/docs/index.mdx#packages-at-a-glance",
       "images": [],
       "relativePath": "index.mdx",
-      "text": "Packages (at a glance)\n\n| Package | Role |\n| --- | --- |\n| opendetail | Build, core runtime, CLI. |\n| opendetail-next | Next.js App Router route, NDJSON streaming, renderNextSourceLink. |\n| opendetail-react | useOpenDetail, AssistantSidebarShell, streaming client. |\n| opendetail-fumadocs | Optional: known-page resolver + FumadocsAssistant. |\n| trifold | Optional: parallel columns for small viewports. |\n\nLayering and naming details: Packages & composition.",
+      "text": "Packages (at a glance)\n\n| Package | Role |\n| --- | --- |\n| opendetail | Build, core runtime, CLI. |\n| opendetail-next | Next.js App Router route, NDJSON streaming, renderNextSourceLink. |\n| opendetail-react | useOpenDetail, AssistantSidebar (connection for streaming), streaming client. |\n| opendetail-fumadocs | Optional: known-page resolver + FumadocsAssistant. |\n| trifold | Optional: parallel columns for small viewports. |\n\nLayering and naming details: Packages & composition.",
       "title": "Documentation",
       "url": "/docs#packages-at-a-glance"
     },
     {
       "anchor": "where-to-go-next",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/index.mdx",
-      "headings": [
-        "Where to go next"
-      ],
+      "headings": ["Where to go next"],
       "id": "content/docs/index.mdx#where-to-go-next",
       "images": [],
       "relativePath": "index.mdx",
@@ -1063,9 +955,7 @@
     {
       "anchor": null,
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/next.mdx",
-      "headings": [
-        "opendetail-next"
-      ],
+      "headings": ["opendetail-next"],
       "id": "content/docs/next.mdx",
       "images": [],
       "relativePath": "next.mdx",
@@ -1076,9 +966,7 @@
     {
       "anchor": "route-handler",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/next.mdx",
-      "headings": [
-        "Route handler"
-      ],
+      "headings": ["Route handler"],
       "id": "content/docs/next.mdx#route-handler",
       "images": [],
       "relativePath": "next.mdx",
@@ -1089,9 +977,7 @@
     {
       "anchor": "request-and-response",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/next.mdx",
-      "headings": [
-        "Request and response"
-      ],
+      "headings": ["Request and response"],
       "id": "content/docs/next.mdx#request-and-response",
       "images": [],
       "relativePath": "next.mdx",
@@ -1102,9 +988,7 @@
     {
       "anchor": "source-links-in-mdx",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/next.mdx",
-      "headings": [
-        "Source links in MDX"
-      ],
+      "headings": ["Source links in MDX"],
       "id": "content/docs/next.mdx#source-links-in-mdx",
       "images": [],
       "relativePath": "next.mdx",
@@ -1115,9 +999,7 @@
     {
       "anchor": null,
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/packages.mdx",
-      "headings": [
-        "Packages & composition"
-      ],
+      "headings": ["Packages & composition"],
       "id": "content/docs/packages.mdx",
       "images": [],
       "relativePath": "packages.mdx",
@@ -1128,22 +1010,29 @@
     {
       "anchor": "layers-bottom-to-top",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/packages.mdx",
-      "headings": [
-        "Layers (bottom to top)"
-      ],
+      "headings": ["Layers (bottom to top)"],
       "id": "content/docs/packages.mdx#layers-bottom-to-top",
       "images": [],
       "relativePath": "packages.mdx",
-      "text": "Layers (bottom to top)\n\nopendetail — CLI, config, opendetail build, .opendetail/index.json, and the core runtime that loads the index and talks to the model. Start here for any integration.opendetail-next — Next.js App Router: createNextRoute / createNextRouteHandler, NDJSON streaming, and renderNextSourceLink so assistant citations can render as next/link where appropriate.opendetail-react — Browser UI: useOpenDetail, createOpenDetailClient, AssistantSidebarShell, and related assistant UI. Framework-agnostic (works with Vite, etc.) as long as you point the client at your HTTP endpoint.opendetail-fumadocs (optional) — A small preset on top of opendetail-react + opendetail-next: createFumadocsSourceTargetResolver, FumadocsAssistant, and helpers for known doc URLs. The name reflects common Fumadocs-style /docs/... routes; the code does not import Fumadocs packages — it is an allowlisted pathname resolver you can use for any Next docs site that lists its routes.\n\ntrifold (optional, separate package) — Parallel columns for small viewports (leading · center · trailing geometry). The OpenDetail web demo uses it inside renderMobileShell; it is not required for retrieval or streaming.",
+      "text": "Layers (bottom to top)\n\nopendetail — CLI, config, opendetail build, .opendetail/index.json, and the core runtime that loads the index and talks to the model. Start here for any integration.opendetail-next — Next.js App Router: createNextRoute / createNextRouteHandler, NDJSON streaming, and renderNextSourceLink so assistant citations can render as next/link where appropriate.opendetail-react — Browser UI: useOpenDetail, createOpenDetailClient, AssistantSidebar (with optional connection for the streaming client), and related assistant UI. Framework-agnostic (works with Vite, etc.) as long as you point the client at your HTTP endpoint.opendetail-fumadocs (optional) — A small preset on top of opendetail-react + opendetail-next: createFumadocsSourceTargetResolver, FumadocsAssistant, and helpers for known doc URLs. The name reflects common Fumadocs-style /docs/... routes; the code does not import Fumadocs packages — it is an allowlisted pathname resolver you can use for any Next docs site that lists its routes.",
+      "title": "Packages & composition",
+      "url": "/docs/packages#layers-bottom-to-top"
+    },
+    {
+      "anchor": "layers-bottom-to-top",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/packages.mdx",
+      "headings": ["Layers (bottom to top)"],
+      "id": "content/docs/packages.mdx#layers-bottom-to-top::part-2",
+      "images": [],
+      "relativePath": "packages.mdx",
+      "text": "trifold (optional, separate package) — Parallel columns for small viewports (leading · center · trailing geometry). The OpenDetail web demo uses it inside renderMobileShell; it is not required for retrieval or streaming.",
       "title": "Packages & composition",
       "url": "/docs/packages#layers-bottom-to-top"
     },
     {
       "anchor": "when-to-use-which-package",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/packages.mdx",
-      "headings": [
-        "When to use which package"
-      ],
+      "headings": ["When to use which package"],
       "id": "content/docs/packages.mdx#when-to-use-which-package",
       "images": [],
       "relativePath": "packages.mdx",
@@ -1154,35 +1043,29 @@
     {
       "anchor": "how-they-compound",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/packages.mdx",
-      "headings": [
-        "How they compound"
-      ],
+      "headings": ["How they compound"],
       "id": "content/docs/packages.mdx#how-they-compound",
       "images": [],
       "relativePath": "packages.mdx",
-      "text": "How they compound\n\nTypical Next.js + self-hosted app:\n\nopendetail (build + runtime) +opendetail-next (route + renderNextSourceLink) +opendetail-react (useOpenDetail + AssistantSidebarShell).\n\nOptional additions:\n\nopendetail-fumadocs — same stack, plus createFumadocsSourceTargetResolver([...]) passed into the shell (or use FumadocsAssistant, which bundles resolver + link renderer + shell — see opendetail-fumadocs).trifold — only the mobile shell layout; compose via renderMobileShell on the assistant shell, not inside core packages.\n\nThere is one assistant pipeline (question → NDJSON → UI). FumadocsAssistant is not a second product — it is AssistantSidebarShell with Next-aware source links and a preset resolver.",
+      "text": "How they compound\n\nTypical Next.js + self-hosted app:\n\nopendetail (build + runtime) +opendetail-next (route + renderNextSourceLink) +opendetail-react (useOpenDetail + AssistantSidebar).\n\nOptional additions:\n\nopendetail-fumadocs — same stack, plus createFumadocsSourceTargetResolver([...]) passed into the shell (or use FumadocsAssistant, which bundles resolver + link renderer + shell — see opendetail-fumadocs).trifold — only the mobile shell layout; compose via renderMobileShell on the assistant shell, not inside core packages.\n\nThere is one assistant pipeline (question → NDJSON → UI). FumadocsAssistant is not a second product — it is AssistantSidebar with connection, Next-aware source links, and a preset resolver.",
       "title": "Packages & composition",
       "url": "/docs/packages#how-they-compound"
     },
     {
       "anchor": "naming-in-this-monorepo",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/packages.mdx",
-      "headings": [
-        "Naming in this monorepo"
-      ],
+      "headings": ["Naming in this monorepo"],
       "id": "content/docs/packages.mdx#naming-in-this-monorepo",
       "images": [],
       "relativePath": "packages.mdx",
-      "text": "Naming in this monorepo\n\n| Name | Role |\n| --- | --- |\n| AssistantSidebarShell | opendetail-react — slots for navigation, main content, and the assistant column. |\n| FumadocsAssistant | opendetail-fumadocs/assistant — convenience wrapper: shell + renderNextSourceLink + allowlist resolver. |\n| Sidebar | apps/web only — marketing site nav (not published as a package). |\n\nIf you outgrow the allowlist (e.g. dynamic internal URLs), keep opendetail-react + opendetail-next and supply your own resolveSourceTarget; you do not need opendetail-fumadocs.",
+      "text": "Naming in this monorepo\n\n| Name | Role |\n| --- | --- |\n| AssistantSidebar | opendetail-react — slots for navigation, main content, and the assistant column. |\n| FumadocsAssistant | opendetail-fumadocs/assistant — convenience wrapper: AssistantSidebar + renderNextSourceLink + allowlist resolver. |\n| Sidebar | apps/web only — marketing site nav (not published as a package). |\n\nIf you outgrow the allowlist (e.g. dynamic internal URLs), keep opendetail-react + opendetail-next and supply your own resolveSourceTarget; you do not need opendetail-fumadocs.",
       "title": "Packages & composition",
       "url": "/docs/packages#naming-in-this-monorepo"
     },
     {
       "anchor": "see-also",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/packages.mdx",
-      "headings": [
-        "See also"
-      ],
+      "headings": ["See also"],
       "id": "content/docs/packages.mdx#see-also",
       "images": [],
       "relativePath": "packages.mdx",
@@ -1193,9 +1076,7 @@
     {
       "anchor": null,
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/quickstart.mdx",
-      "headings": [
-        "Get started"
-      ],
+      "headings": ["Get started"],
       "id": "content/docs/quickstart.mdx",
       "images": [],
       "relativePath": "quickstart.mdx",
@@ -1206,9 +1087,7 @@
     {
       "anchor": "install",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/quickstart.mdx",
-      "headings": [
-        "Install"
-      ],
+      "headings": ["Install"],
       "id": "content/docs/quickstart.mdx#install",
       "images": [],
       "relativePath": "quickstart.mdx",
@@ -1219,9 +1098,7 @@
     {
       "anchor": "scaffold",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/quickstart.mdx",
-      "headings": [
-        "Scaffold"
-      ],
+      "headings": ["Scaffold"],
       "id": "content/docs/quickstart.mdx#scaffold",
       "images": [],
       "relativePath": "quickstart.mdx",
@@ -1232,10 +1109,7 @@
     {
       "anchor": "default-config-shape",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/quickstart.mdx",
-      "headings": [
-        "Scaffold",
-        "Default config shape"
-      ],
+      "headings": ["Scaffold", "Default config shape"],
       "id": "content/docs/quickstart.mdx#default-config-shape",
       "images": [],
       "relativePath": "quickstart.mdx",
@@ -1246,9 +1120,7 @@
     {
       "anchor": "rebuild-when-content-changes",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/quickstart.mdx",
-      "headings": [
-        "Rebuild when content changes"
-      ],
+      "headings": ["Rebuild when content changes"],
       "id": "content/docs/quickstart.mdx#rebuild-when-content-changes",
       "images": [],
       "relativePath": "quickstart.mdx",
@@ -1259,9 +1131,7 @@
     {
       "anchor": "integration-modes",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/quickstart.mdx",
-      "headings": [
-        "Integration modes"
-      ],
+      "headings": ["Integration modes"],
       "id": "content/docs/quickstart.mdx#integration-modes",
       "images": [],
       "relativePath": "quickstart.mdx",
@@ -1272,10 +1142,7 @@
     {
       "anchor": "self-hosted-default",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/quickstart.mdx",
-      "headings": [
-        "Integration modes",
-        "Self-hosted (default)"
-      ],
+      "headings": ["Integration modes", "Self-hosted (default)"],
       "id": "content/docs/quickstart.mdx#self-hosted-default",
       "images": [],
       "relativePath": "quickstart.mdx",
@@ -1286,10 +1153,7 @@
     {
       "anchor": "self-hosted-default",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/quickstart.mdx",
-      "headings": [
-        "Integration modes",
-        "Self-hosted (default)"
-      ],
+      "headings": ["Integration modes", "Self-hosted (default)"],
       "id": "content/docs/quickstart.mdx#self-hosted-default::part-2",
       "images": [],
       "relativePath": "quickstart.mdx",
@@ -1300,10 +1164,7 @@
     {
       "anchor": "hosted-shaped-scaffold-only",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/quickstart.mdx",
-      "headings": [
-        "Integration modes",
-        "Hosted-shaped (scaffold only)"
-      ],
+      "headings": ["Integration modes", "Hosted-shaped (scaffold only)"],
       "id": "content/docs/quickstart.mdx#hosted-shaped-scaffold-only",
       "images": [],
       "relativePath": "quickstart.mdx",
@@ -1314,9 +1175,7 @@
     {
       "anchor": "grounding-short",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/quickstart.mdx",
-      "headings": [
-        "Grounding (short)"
-      ],
+      "headings": ["Grounding (short)"],
       "id": "content/docs/quickstart.mdx#grounding-short",
       "images": [],
       "relativePath": "quickstart.mdx",
@@ -1327,9 +1186,7 @@
     {
       "anchor": "ask-the-first-question",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/quickstart.mdx",
-      "headings": [
-        "Ask the first question"
-      ],
+      "headings": ["Ask the first question"],
       "id": "content/docs/quickstart.mdx#ask-the-first-question",
       "images": [],
       "relativePath": "quickstart.mdx",
@@ -1340,9 +1197,7 @@
     {
       "anchor": "reference-layouts-this-site",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/quickstart.mdx",
-      "headings": [
-        "Reference layouts (this site)"
-      ],
+      "headings": ["Reference layouts (this site)"],
       "id": "content/docs/quickstart.mdx#reference-layouts-this-site",
       "images": [
         {
@@ -1364,9 +1219,7 @@
     {
       "anchor": "faq",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/quickstart.mdx",
-      "headings": [
-        "FAQ"
-      ],
+      "headings": ["FAQ"],
       "id": "content/docs/quickstart.mdx#faq",
       "images": [],
       "relativePath": "quickstart.mdx",
@@ -1377,22 +1230,18 @@
     {
       "anchor": null,
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/react.mdx",
-      "headings": [
-        "React"
-      ],
+      "headings": ["React"],
       "id": "content/docs/react.mdx",
       "images": [],
       "relativePath": "react.mdx",
-      "text": "Package: opendetail-react. For a Next.js route that serves the same NDJSON stream, see opendetail-next. For AssistantSidebarShell, optional opendetail-fumadocs, and how packages compound, see Packages & composition. Custom UI: UI integration; premade examples: Components.",
+      "text": "Package: opendetail-react. For a Next.js route that serves the same NDJSON stream, see opendetail-next. For AssistantSidebar with a connection prop, optional opendetail-fumadocs, and how packages compound, see Packages & composition. Systems vs themes (CSS layering): Systems and themes. Custom UI: UI integration; premade examples: Components.",
       "title": "React",
       "url": "/docs/react"
     },
     {
       "anchor": "react-hook",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/react.mdx",
-      "headings": [
-        "React hook"
-      ],
+      "headings": ["React hook"],
       "id": "content/docs/react.mdx#react-hook",
       "images": [],
       "relativePath": "react.mdx",
@@ -1403,10 +1252,7 @@
     {
       "anchor": "basic-usage",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/react.mdx",
-      "headings": [
-        "React hook",
-        "Basic usage"
-      ],
+      "headings": ["React hook", "Basic usage"],
       "id": "content/docs/react.mdx#basic-usage",
       "images": [],
       "relativePath": "react.mdx",
@@ -1417,10 +1263,7 @@
     {
       "anchor": "options",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/react.mdx",
-      "headings": [
-        "React hook",
-        "Options"
-      ],
+      "headings": ["React hook", "Options"],
       "id": "content/docs/react.mdx#options",
       "images": [],
       "relativePath": "react.mdx",
@@ -1431,10 +1274,7 @@
     {
       "anchor": "returned-state",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/react.mdx",
-      "headings": [
-        "React hook",
-        "Returned state"
-      ],
+      "headings": ["React hook", "Returned state"],
       "id": "content/docs/react.mdx#returned-state",
       "images": [],
       "relativePath": "react.mdx",
@@ -1445,10 +1285,7 @@
     {
       "anchor": "persistence",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/react.mdx",
-      "headings": [
-        "React hook",
-        "Persistence"
-      ],
+      "headings": ["React hook", "Persistence"],
       "id": "content/docs/react.mdx#persistence",
       "images": [],
       "relativePath": "react.mdx",
@@ -1459,9 +1296,7 @@
     {
       "anchor": "http-client",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/react.mdx",
-      "headings": [
-        "HTTP client"
-      ],
+      "headings": ["HTTP client"],
       "id": "content/docs/react.mdx#http-client",
       "images": [],
       "relativePath": "react.mdx",
@@ -1472,10 +1307,7 @@
     {
       "anchor": "client-options",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/react.mdx",
-      "headings": [
-        "HTTP client",
-        "Client options"
-      ],
+      "headings": ["HTTP client", "Client options"],
       "id": "content/docs/react.mdx#client-options",
       "images": [],
       "relativePath": "react.mdx",
@@ -1486,10 +1318,7 @@
     {
       "anchor": "request",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/react.mdx",
-      "headings": [
-        "HTTP client",
-        "Request"
-      ],
+      "headings": ["HTTP client", "Request"],
       "id": "content/docs/react.mdx#request",
       "images": [],
       "relativePath": "react.mdx",
@@ -1500,10 +1329,7 @@
     {
       "anchor": "status-values",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/react.mdx",
-      "headings": [
-        "HTTP client",
-        "Status values"
-      ],
+      "headings": ["HTTP client", "Status values"],
       "id": "content/docs/react.mdx#status-values",
       "images": [],
       "relativePath": "react.mdx",
@@ -1514,10 +1340,7 @@
     {
       "anchor": "stream-event-types",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/react.mdx",
-      "headings": [
-        "HTTP client",
-        "Stream event types"
-      ],
+      "headings": ["HTTP client", "Stream event types"],
       "id": "content/docs/react.mdx#stream-event-types",
       "images": [],
       "relativePath": "react.mdx",
@@ -1528,10 +1351,7 @@
     {
       "anchor": "stop-behavior",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/react.mdx",
-      "headings": [
-        "HTTP client",
-        "Stop behavior"
-      ],
+      "headings": ["HTTP client", "Stop behavior"],
       "id": "content/docs/react.mdx#stop-behavior",
       "images": [],
       "relativePath": "react.mdx",
@@ -1542,9 +1362,7 @@
     {
       "anchor": null,
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/ui-integration.mdx",
-      "headings": [
-        "UI integration"
-      ],
+      "headings": ["UI integration"],
       "id": "content/docs/ui-integration.mdx",
       "images": [],
       "relativePath": "ui-integration.mdx",
@@ -1555,35 +1373,29 @@
     {
       "anchor": "building-blocks",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/ui-integration.mdx",
-      "headings": [
-        "Building blocks"
-      ],
+      "headings": ["Building blocks"],
       "id": "content/docs/ui-integration.mdx#building-blocks",
       "images": [],
       "relativePath": "ui-integration.mdx",
-      "text": "Building blocks\n\n| Approach | Primary APIs |\n| --- | --- |\n| Hook + your layout | useOpenDetail |\n| HTTP client, no hook | createOpenDetailClient |\n| Shell preset | AssistantSidebarShell — React |\n| Citations as Next links | renderNextSourceLink |\n| Allowlisted doc URLs | opendetail-fumadocs (optional) |\n\nNDJSON route setup and Node requirements: opendetail-next. Request shape and stream order: Get started. Hook, client, and events: React.",
+      "text": "Building blocks\n\n| Approach | Primary APIs |\n| --- | --- |\n| Hook + your layout | useOpenDetail |\n| HTTP client, no hook | createOpenDetailClient |\n| Shell preset | AssistantSidebar with connection — React |\n| Citations as Next links | renderNextSourceLink |\n| Allowlisted doc URLs | opendetail-fumadocs (optional) |\n\nNDJSON route setup and Node requirements: opendetail-next. Request shape and stream order: Get started. Hook, client, and events: React.",
       "title": "UI integration",
       "url": "/docs/ui-integration#building-blocks"
     },
     {
       "anchor": "package-exports",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/ui-integration.mdx",
-      "headings": [
-        "Package exports"
-      ],
+      "headings": ["Package exports"],
       "id": "content/docs/ui-integration.mdx#package-exports",
       "images": [],
       "relativePath": "ui-integration.mdx",
-      "text": "Package exports\n\nopendetail-react documents useOpenDetail, createOpenDetailClient, AssistantResponse, AssistantSources, AssistantSidebarShell, and related exports. Take the pieces you need; the full shell is optional.",
+      "text": "Package exports\n\nopendetail-react documents useOpenDetail, createOpenDetailClient, AssistantMessage, AssistantSources, AssistantSidebar, and related exports. Take the pieces you need; the full shell is optional.",
       "title": "UI integration",
       "url": "/docs/ui-integration#package-exports"
     },
     {
       "anchor": "see-also",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/ui-integration.mdx",
-      "headings": [
-        "See also"
-      ],
+      "headings": ["See also"],
       "id": "content/docs/ui-integration.mdx#see-also",
       "images": [],
       "relativePath": "ui-integration.mdx",
@@ -1594,9 +1406,7 @@
     {
       "anchor": null,
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/marketing/index.mdx",
-      "headings": [
-        "OpenDetail"
-      ],
+      "headings": ["OpenDetail"],
       "id": "content/marketing/index.mdx",
       "images": [],
       "relativePath": "index.mdx",
@@ -1608,9 +1418,7 @@
     {
       "anchor": "in-one-sentence",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/marketing/index.mdx",
-      "headings": [
-        "In one sentence"
-      ],
+      "headings": ["In one sentence"],
       "id": "content/marketing/index.mdx#in-one-sentence",
       "images": [],
       "relativePath": "index.mdx",
@@ -1622,9 +1430,7 @@
     {
       "anchor": "try-the-assistant-here",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/marketing/index.mdx",
-      "headings": [
-        "Try the assistant here"
-      ],
+      "headings": ["Try the assistant here"],
       "id": "content/marketing/index.mdx#try-the-assistant-here",
       "images": [],
       "relativePath": "index.mdx",
@@ -1637,26 +1443,19 @@
   "config": {
     "base_path": "/docs",
     "exclude": [],
-    "include": [
-      "content/docs/**/*.md",
-      "content/docs/**/*.mdx"
-    ],
+    "include": ["content/docs/**/*.md", "content/docs/**/*.mdx"],
     "site_pages": {
       "base_path": "/",
       "exclude": [],
-      "include": [
-        "content/marketing/**/*.mdx"
-      ]
+      "include": ["content/marketing/**/*.mdx"]
     },
     "site_pages_fetch": {
-      "allowed_path_prefixes": [
-        "/"
-      ],
+      "allowed_path_prefixes": ["/"],
       "max_bytes": 500000
     },
     "version": 1
   },
-  "generatedAt": "2026-04-06T18:23:29.007Z",
-  "manifestHash": "c8c02926dafee4e630c45c113a13301e2279fea4d65b219d0d17faf9b9cb01f6",
+  "generatedAt": "2026-04-06T19:13:42.204Z",
+  "manifestHash": "077988f43efb07472e7282c00bc9bfdff1f89a4ee8a57d259d110de81beb30ff",
   "version": 1
 }

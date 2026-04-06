@@ -1,6 +1,6 @@
 "use client";
 
-import { AssistantResponse, type AssistantSourceItem } from "opendetail-react";
+import { AssistantMessage, type AssistantSourceItem } from "opendetail-react";
 
 const DEMO_SOURCES: AssistantSourceItem[] = [
   { id: "1", kind: "page", title: "Docs index", url: "/docs" },
@@ -9,9 +9,9 @@ const DEMO_SOURCES: AssistantSourceItem[] = [
 
 export const SourcesDemo = () => (
   <div className="w-full max-w-[400px]">
-    <AssistantResponse sources={DEMO_SOURCES} status="complete">
+    <AssistantMessage sources={DEMO_SOURCES} status="complete">
       Citations like [1] and [2] appear in the body; matching sources render as
       pills below.
-    </AssistantResponse>
+    </AssistantMessage>
   </div>
 );

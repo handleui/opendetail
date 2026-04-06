@@ -3,32 +3,32 @@ title: opendetail-fumadocs
 description: Optional preset for assistant citation links — known doc URLs, Next Link, and FumadocsAssistant.
 ---
 
-**`opendetail-fumadocs`** is **optional glue** for apps that already serve docs under predictable URLs (often **Fumadocs-style** `/docs/...` routes). It does **not** add a different assistant runtime: it supplies **`resolveSourceTarget`** helpers and a thin **`FumadocsAssistant`** wrapper around **`AssistantSidebarShell`** from **`opendetail-react`**, wired with **`renderNextSourceLink`** from **`opendetail-next`**.
+**`opendetail-fumadocs`** is **optional glue** for apps that already serve docs under predictable URLs (often **Fumadocs-style** `/docs/...` routes). It does **not** add a different assistant runtime: it supplies **`resolveSourceTarget`** helpers and a thin **`FumadocsAssistant`** wrapper around **`AssistantSidebar`** from **`opendetail-react`**, wired with **`renderNextSourceLink`** from **`opendetail-next`**.
 
 For **when to use this vs hand-wiring**, see [**Packages & composition**](/docs/packages).
 
 ## API
 
 - **`resolveFumadocsSourceTarget`** — Given `knownPageUrls` and a source (`kind: "local"` or `"remote"`), returns `{ external, href }` or `null` for unknown local paths.
-- **`createFumadocsSourceTargetResolver(knownPageUrls)`** — Returns a **`ResolveAssistantSourceTarget`** you pass to **`AssistantSidebarShell`** as **`resolveSourceTarget`**.
+- **`createFumadocsSourceTargetResolver(knownPageUrls)`** — Returns a **`ResolveAssistantSourceTarget`** you pass to **`AssistantSidebar`** as **`resolveSourceTarget`**.
 - **`getFumadocsPageUrls(source)`** — Maps a Fumadocs-style source with **`getPages()`** to a flat list of URLs for the allowlist.
 
 ## Convenience wrapper
 
 **`FumadocsAssistant`** (import from **`opendetail-fumadocs/assistant`**) bundles:
 
-- **`AssistantSidebarShell`**
+- **`AssistantSidebar`** (with **`connection`** for endpoint/persistence when you pass those props)
 - **`renderNextSourceLink`** from **`opendetail-next`**
 - **`createFumadocsSourceTargetResolver(knownSourcePageUrls)`**
 
-Pass the same props you would to the shell, plus **`knownSourcePageUrls`**. Site navigation chrome stays in **your** app (for example the demo’s **`Sidebar`** in **`apps/web`**), not in this package.
+Pass the same props you would to **`AssistantSidebar`**, plus **`knownSourcePageUrls`**. Site navigation chrome stays in **your** app (for example the demo’s **`Sidebar`** in **`apps/web`**), not in this package.
 
 <CodeBlock lang="ts">{`import { FumadocsAssistant } from "opendetail-fumadocs/assistant";
 
 <FumadocsAssistant
   knownSourcePageUrls={["/docs", "/docs/quickstart", "/docs/core", /* … */]}
   navigation={<YourNav />}
-  /* …AssistantSidebarShell props */
+  /* …AssistantSidebar props (e.g. endpoint, persistence) */
 />;
 `}</CodeBlock>
 

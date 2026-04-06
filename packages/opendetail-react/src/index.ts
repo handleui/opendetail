@@ -11,6 +11,7 @@ export {
 export {
   AssistantSidebar,
   type AssistantSidebarAssistantMessage,
+  type AssistantSidebarConnectionOptions,
   type AssistantSidebarImage,
   type AssistantSidebarMessage,
   type AssistantSidebarMobileColumn,
@@ -20,15 +21,11 @@ export {
   type AssistantSidebarUserMessage,
 } from "./blocks/assistant-sidebar/assistant-sidebar";
 export {
-  AssistantSidebarShell,
-  type AssistantSidebarShellProps,
-} from "./blocks/assistant-sidebar-shell/assistant-sidebar-shell";
-export {
   type OpenDetailAssistantMessage,
   type OpenDetailPersistenceOptions,
   type OpenDetailPersistenceStorage,
-  type OpenDetailThreadMessage,
   type OpenDetailSubmitRequest,
+  type OpenDetailThreadMessage,
   type OpenDetailUserMessage,
   type UseOpenDetailOptions,
   type UseOpenDetailState,
@@ -54,25 +51,12 @@ export {
   type OpenDetailTransportOptions,
 } from "./lib/opendetail-client/opendetail-client";
 export {
-  AssistantError,
-  type AssistantErrorProps,
-} from "./ui/assistant-error/assistant-error";
-export {
-  AssistantInput,
-  type AssistantInputProps,
-  type AssistantInputRequest,
-} from "./ui/assistant-input/assistant-input";
-export {
-  AssistantResponse,
-  type AssistantResponseImage,
-  type AssistantResponseMeta,
-  type AssistantResponseProps,
+  AssistantMessage,
+  type AssistantMessageImage,
+  type AssistantMessageMeta,
+  type AssistantMessageProps,
   getSourcesCitedInContent,
-} from "./ui/assistant-response/assistant-response";
-export {
-  AssistantShell,
-  type AssistantShellProps,
-} from "./ui/assistant-shell/assistant-shell";
+} from "./ui/assistant-message/assistant-message";
 export {
   AssistantSources,
   type AssistantSourcesProps,
@@ -90,9 +74,7 @@ export {
 } from "./ui/assistant-sources/source-links";
 export {
   AssistantStatus,
-  AssistantStatus as AssistantLoader,
   type AssistantStatusProps,
-  type AssistantStatusProps as AssistantLoaderProps,
 } from "./ui/assistant-status/assistant-status";
 export {
   AssistantSuggestion,
@@ -101,10 +83,17 @@ export {
   type AssistantSuggestionsProps,
 } from "./ui/assistant-suggestions/assistant-suggestions";
 export {
-  AssistantThread,
-  type AssistantThreadProps,
-} from "./ui/assistant-thread/assistant-thread";
+  Composer,
+  type ComposerProps,
+  type ComposerRequest,
+  type ComposerStatus,
+} from "./ui/composer/composer";
 export {
-  AssistantUserMessage,
-  type AssistantUserMessageProps,
-} from "./ui/assistant-user-message/assistant-user-message";
+  ConversationLayout,
+  type ConversationLayoutProps,
+} from "./ui/conversation-layout/conversation-layout";
+export { Thread, type ThreadProps } from "./ui/thread/thread";
+export {
+  UserMessage,
+  type UserMessageProps,
+} from "./ui/user-message/user-message";

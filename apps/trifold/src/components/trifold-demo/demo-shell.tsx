@@ -40,7 +40,6 @@ export function TrifoldDemoShell({ children }: { children: React.ReactNode }) {
       className="min-h-0 flex-1"
       contentMaxWidthClassName={CONTENT_MAX}
       density="comfortable"
-      horizontalDeltaSign={-1}
       onActiveIndexChange={onActiveIndexChange}
       panelClassName={(i) =>
         [i === 0 ? "border-e border-foreground/20" : ""]
@@ -96,10 +95,7 @@ export function TrifoldDemoShell({ children }: { children: React.ReactNode }) {
       <nav className="flex shrink-0 flex-wrap items-center justify-center gap-3 border-foreground/10 border-b bg-foreground/[0.03] py-2 text-foreground/80 text-xs sm:px-2">
         <span>
           <code className="rounded bg-foreground/10 px-1">ScrollPanels</code> ·
-          One column at a time · URL sync · Desktop: links · Touch: swipe ·{" "}
-          <code className="rounded bg-foreground/10 px-1">
-            horizontalDeltaSign −1
-          </code>
+          One column at a time · URL sync · scroll-snap horizontal track
         </span>
       </nav>
 

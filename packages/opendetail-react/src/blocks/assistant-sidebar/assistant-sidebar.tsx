@@ -18,22 +18,23 @@ import {
 } from "react";
 
 import type { TrifoldColumn3 } from "trifold";
-
 import {
-  AssistantInput,
-  type AssistantInputRequest,
-} from "../../ui/assistant-input/assistant-input";
+  type UseOpenDetailOptions,
+  useOpenDetail,
+} from "../../hooks/use-opendetail/use-opendetail";
 import {
-  AssistantResponse,
-  type AssistantResponseProps,
-} from "../../ui/assistant-response/assistant-response";
+  AssistantMessage,
+  type AssistantMessageProps,
+} from "../../ui/assistant-message/assistant-message";
 import type { AssistantSourceItem } from "../../ui/assistant-sources/assistant-sources";
 import {
   AssistantSuggestion,
   AssistantSuggestions,
 } from "../../ui/assistant-suggestions/assistant-suggestions";
-import { AssistantThread } from "../../ui/assistant-thread/assistant-thread";
-import { AssistantUserMessage } from "../../ui/assistant-user-message/assistant-user-message";
+import { Composer, type ComposerRequest } from "../../ui/composer/composer";
+import { ConversationLayout } from "../../ui/conversation-layout/conversation-layout";
+import { Thread } from "../../ui/thread/thread";
+import { UserMessage } from "../../ui/user-message/user-message";
 
 const getClassName = ({
   className,
@@ -149,7 +150,7 @@ export type AssistantSidebarRequestState =
   | "pending"
   | "streaming";
 
-type SubmitHandler = (request: AssistantInputRequest) => Promise<void> | void;
+type SubmitHandler = (request: ComposerRequest) => Promise<void> | void;
 
 /** Mobile horizontal shell column (geometry); matches `trifold`’s `TrifoldColumn3`. */
 export type AssistantSidebarMobileColumn = TrifoldColumn3;
@@ -162,9 +163,17 @@ export interface AssistantSidebarMobileShellSlots {
   setColumn: (column: TrifoldColumn3) => void;
 }
 
+/** Options for `useOpenDetail` when using connected mode (`connection` prop). */
+export type AssistantSidebarConnectionOptions = UseOpenDetailOptions;
+
 export interface AssistantSidebarProps {
   children?: ReactNode;
   className?: string;
+  /**
+   * When set, wires the sidebar to `useOpenDetail` with these options. Overrides
+   * `messages`, `question`, `requestState`, and submit handlers from the hook.
+   */
+  connection?: AssistantSidebarConnectionOptions;
   defaultOpen?: boolean;
   /**
    * Docs / embed: assistant column only (no main `children` slot), bounded height, reopen
@@ -196,9 +205,9 @@ export interface AssistantSidebarProps {
   question?: string;
   /** Mobile (max breakpoint): three-panel horizontal shell (nav | main | assistant). */
   renderMobileShell?: (slots: AssistantSidebarMobileShellSlots) => ReactNode;
-  renderSourceLink?: AssistantResponseProps["renderSourceLink"];
+  renderSourceLink?: AssistantMessageProps["renderSourceLink"];
   requestState?: AssistantSidebarRequestState;
-  resolveSourceTarget?: AssistantResponseProps["resolveSourceTarget"];
+  resolveSourceTarget?: AssistantMessageProps["resolveSourceTarget"];
   /** When true, shows a drag handle on the panel edge to resize width. */
   sidebarResizeEnabled?: boolean;
   /** Controlled panel width in pixels; drives `--opendetail-sidebar-width` when set. */
@@ -253,7 +262,7 @@ function useAssistantSidebarKeyboard({
   isControlled,
   isMobileTriptychActive,
   isSidebarOpen,
-  onOpenChange,
+  onOpenChangeRef,
   setInternalOpen,
   setMobileShellColumn,
   mobileShellColumn,
@@ -262,7 +271,7 @@ function useAssistantSidebarKeyboard({
   isControlled: boolean;
   isMobileTriptychActive: boolean;
   isSidebarOpen: boolean;
-  onOpenChange: AssistantSidebarProps["onOpenChange"];
+  onOpenChangeRef: RefObject<AssistantSidebarProps["onOpenChange"]>;
   setInternalOpen: Dispatch<SetStateAction<boolean>>;
   setMobileShellColumn: Dispatch<SetStateAction<TrifoldColumn3>>;
   mobileShellColumn: TrifoldColumn3;
@@ -277,7 +286,7 @@ function useAssistantSidebarKeyboard({
         setInternalOpen(false);
       }
 
-      onOpenChange?.(false);
+      onOpenChangeRef.current?.(false);
     };
 
     const handleEscape = (event: KeyboardEvent) => {
@@ -306,7 +315,7 @@ function useAssistantSidebarKeyboard({
           setInternalOpen(nextColumn === "trailing");
         }
 
-        onOpenChange?.(nextColumn === "trailing");
+        onOpenChangeRef.current?.(nextColumn === "trailing");
         return;
       }
 
@@ -316,7 +325,7 @@ function useAssistantSidebarKeyboard({
         setInternalOpen(nextOpen);
       }
 
-      onOpenChange?.(nextOpen);
+      onOpenChangeRef.current?.(nextOpen);
     };
 
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -345,7 +354,7 @@ function useAssistantSidebarKeyboard({
     isControlled,
     isMobileTriptychActive,
     isSidebarOpen,
-    onOpenChange,
+    onOpenChangeRef,
     setInternalOpen,
     setMobileShellColumn,
     mobileShellColumn,
@@ -356,7 +365,7 @@ function useAssistantSidebarOpenOnActivity({
   isControlled,
   isMobileTriptychActive,
   messages,
-  onOpenChange,
+  onOpenChangeRef,
   previousMessageCountRef,
   previousRequestStateRef,
   requestState,
@@ -366,7 +375,7 @@ function useAssistantSidebarOpenOnActivity({
   isControlled: boolean;
   isMobileTriptychActive: boolean;
   messages: AssistantSidebarMessage[];
-  onOpenChange: AssistantSidebarProps["onOpenChange"];
+  onOpenChangeRef: RefObject<AssistantSidebarProps["onOpenChange"]>;
   previousMessageCountRef: MutableRefObject<number>;
   previousRequestStateRef: MutableRefObject<AssistantSidebarRequestState>;
   requestState: AssistantSidebarRequestState;
@@ -387,7 +396,7 @@ function useAssistantSidebarOpenOnActivity({
           setInternalOpen(true);
         }
 
-        onOpenChange?.(true);
+        onOpenChangeRef.current?.(true);
       }
     }
 
@@ -396,7 +405,7 @@ function useAssistantSidebarOpenOnActivity({
     isControlled,
     isMobileTriptychActive,
     messages.length,
-    onOpenChange,
+    onOpenChangeRef,
     previousMessageCountRef,
     requestState,
     setInternalOpen,
@@ -418,14 +427,14 @@ function useAssistantSidebarOpenOnActivity({
         setInternalOpen(true);
       }
 
-      onOpenChange?.(true);
+      onOpenChangeRef.current?.(true);
     }
 
     previousRequestStateRef.current = requestState;
   }, [
     isControlled,
     isMobileTriptychActive,
-    onOpenChange,
+    onOpenChangeRef,
     previousRequestStateRef,
     requestState,
     setInternalOpen,
@@ -495,33 +504,33 @@ function buildAssistantAsidePanel({
   placeholder: string;
   promptSuggestions: readonly string[];
   question: string;
-  renderSourceLink?: AssistantResponseProps["renderSourceLink"];
+  renderSourceLink?: AssistantMessageProps["renderSourceLink"];
   requestState: AssistantSidebarRequestState;
   resolvedHeaderTitle: string;
-  resolveSourceTarget?: AssistantResponseProps["resolveSourceTarget"];
+  resolveSourceTarget?: AssistantMessageProps["resolveSourceTarget"];
   showCollapseButton: boolean;
   sidebarResizeEnabled: boolean;
   thread?: ReactNode;
   userInitial: string;
 }): ReactNode {
   const resolvedThread = thread ?? (
-    <AssistantThread
+    <Thread
       animated={isSidebarOpen && hasMessages}
       className="opendetail-sidebar__thread"
     >
       {messages.map((message) => {
         if (message.role === "user") {
           return (
-            <AssistantUserMessage initial={userInitial} key={message.id}>
+            <UserMessage initial={userInitial} key={message.id}>
               {message.question}
-            </AssistantUserMessage>
+            </UserMessage>
           );
         }
 
         const primaryImage = getPrimaryImage(message);
 
         return (
-          <AssistantResponse
+          <AssistantMessage
             error={message.error ?? null}
             image={
               primaryImage
@@ -544,17 +553,17 @@ function buildAssistantAsidePanel({
             status={message.status}
           >
             {message.text}
-          </AssistantResponse>
+          </AssistantMessage>
         );
       })}
-    </AssistantThread>
+    </Thread>
   );
 
   const resolvedInput = input ?? (
-    <AssistantInput
+    <Composer
       id={inputId}
       onStop={onStop}
-      onSubmit={(request) => onSubmitQuestion?.(request)}
+      onSubmit={onSubmitQuestion}
       onValueChange={onQuestionChange}
       placeholder={placeholder}
       requestState={requestState}
@@ -591,6 +600,7 @@ function buildAssistantAsidePanel({
     <aside
       aria-label="OpenDetail assistant sidebar"
       className={assistantPanelClassName}
+      data-od-system="opendetail"
       data-opendetail-component="assistant-sidebar"
       ref={panelRef}
     >
@@ -655,17 +665,17 @@ function buildAssistantAsidePanel({
           </div>
         </header>
 
-        <div
-          className={[
+        <ConversationLayout
+          body={resolvedBody}
+          bodyClassName={[
             "opendetail-sidebar__body",
             hasMessages ? "" : "opendetail-sidebar__body--empty",
           ]
             .filter(Boolean)
             .join(" ")}
-        >
-          {resolvedBody}
-        </div>
-        <div className="opendetail-sidebar__input">{resolvedInput}</div>
+          input={resolvedInput}
+          variant="sidebar"
+        />
       </motion.div>
     </aside>
   );
@@ -675,34 +685,28 @@ function renderAssistantSidebarRoots({
   assistantAside,
   children,
   embedded,
-  isControlled,
   isMdUp,
   isMobileTriptychLayout,
   isSidebarOpen,
   navigation,
-  onOpenChange,
+  onMobileShellSetColumn,
   renderMobileShell,
   rootClassName,
   rootStyle,
-  setInternalOpen,
-  setMobileShellColumn,
   setSidebarOpen,
   mobileShellColumn,
 }: {
   assistantAside: ReactNode;
   children: ReactNode;
   embedded: boolean;
-  isControlled: boolean;
   isMdUp: boolean;
   isMobileTriptychLayout: boolean;
   isSidebarOpen: boolean;
   navigation: AssistantSidebarProps["navigation"];
-  onOpenChange: AssistantSidebarProps["onOpenChange"];
+  onMobileShellSetColumn: (column: TrifoldColumn3) => void;
   renderMobileShell: AssistantSidebarProps["renderMobileShell"];
   rootClassName: string;
   rootStyle: CSSProperties | undefined;
-  setInternalOpen: Dispatch<SetStateAction<boolean>>;
-  setMobileShellColumn: Dispatch<SetStateAction<TrifoldColumn3>>;
   setSidebarOpen: (nextOpen: boolean) => void;
   mobileShellColumn: TrifoldColumn3;
 }): ReactNode {
@@ -735,15 +739,7 @@ function renderAssistantSidebarRoots({
           column: mobileShellColumn,
           main: children,
           navigation,
-          setColumn: (column) => {
-            setMobileShellColumn(column);
-
-            if (!isControlled) {
-              setInternalOpen(column === "trailing");
-            }
-
-            onOpenChange?.(column === "trailing");
-          },
+          setColumn: onMobileShellSetColumn,
         })}
       </div>
     );
@@ -776,7 +772,41 @@ function renderAssistantSidebarRoots({
   );
 }
 
-export const AssistantSidebar = (props: AssistantSidebarProps): ReactNode => {
+function AssistantSidebarConnected({
+  connection,
+  ...rest
+}: AssistantSidebarProps & {
+  connection: NonNullable<AssistantSidebarProps["connection"]>;
+}) {
+  const {
+    clearThread,
+    conversationTitle,
+    messages,
+    question,
+    setQuestion,
+    status,
+    stop,
+    submit,
+  } = useOpenDetail(connection);
+
+  return (
+    <AssistantSidebarInner
+      {...rest}
+      headerTitle={conversationTitle}
+      messages={messages as AssistantSidebarMessage[]}
+      onClearThread={clearThread}
+      onQuestionChange={setQuestion}
+      onStop={stop}
+      onSubmitQuestion={submit}
+      question={question}
+      requestState={status}
+    />
+  );
+}
+
+const AssistantSidebarInner = (
+  props: Omit<AssistantSidebarProps, "connection">
+): ReactNode => {
   const {
     children,
     className,
@@ -810,6 +840,8 @@ export const AssistantSidebar = (props: AssistantSidebarProps): ReactNode => {
     thread,
     userInitial = "U",
   } = props;
+  const onOpenChangeRef = useRef(onOpenChange);
+  onOpenChangeRef.current = onOpenChange;
   const isControlled = open !== undefined;
   const [internalOpen, setInternalOpen] = useState(defaultOpen);
   const [isCopyConfirmed, setIsCopyConfirmed] = useState(false);
@@ -853,12 +885,32 @@ export const AssistantSidebar = (props: AssistantSidebarProps): ReactNode => {
   const transcript = getTranscriptText(messages);
   const canCopy = transcript.length > 0;
 
+  const handleSubmitQuestion = useCallback(
+    (request: ComposerRequest) => {
+      onSubmitQuestion?.(request);
+    },
+    [onSubmitQuestion]
+  );
+
+  const handleMobileShellSetColumn = useCallback(
+    (column: TrifoldColumn3) => {
+      setMobileShellColumn(column);
+
+      if (!isControlled) {
+        setInternalOpen(column === "trailing");
+      }
+
+      onOpenChangeRef.current?.(column === "trailing");
+    },
+    [isControlled]
+  );
+
   useAssistantSidebarKeyboard({
     hotkeyEnabled,
     isControlled,
     isMobileTriptychActive,
     isSidebarOpen,
-    onOpenChange,
+    onOpenChangeRef,
     setInternalOpen,
     setMobileShellColumn,
     mobileShellColumn,
@@ -868,7 +920,7 @@ export const AssistantSidebar = (props: AssistantSidebarProps): ReactNode => {
     isControlled,
     isMobileTriptychActive,
     messages,
-    onOpenChange,
+    onOpenChangeRef,
     previousMessageCountRef,
     previousRequestStateRef,
     requestState,
@@ -937,7 +989,7 @@ export const AssistantSidebar = (props: AssistantSidebarProps): ReactNode => {
       return;
     }
 
-    onSubmitQuestion?.({
+    handleSubmitQuestion({
       question: suggestion,
     });
   };
@@ -1077,7 +1129,7 @@ export const AssistantSidebar = (props: AssistantSidebarProps): ReactNode => {
     messages,
     onQuestionChange,
     onStop,
-    onSubmitQuestion,
+    onSubmitQuestion: handleSubmitQuestion,
     panelRef,
     placeholder,
     promptSuggestions,
@@ -1096,18 +1148,26 @@ export const AssistantSidebar = (props: AssistantSidebarProps): ReactNode => {
     assistantAside,
     children,
     embedded,
-    isControlled,
     isMdUp,
     isMobileTriptychLayout,
     isSidebarOpen,
     navigation,
-    onOpenChange,
+    onMobileShellSetColumn: handleMobileShellSetColumn,
     renderMobileShell,
     rootClassName,
     rootStyle,
-    setInternalOpen,
-    setMobileShellColumn,
     setSidebarOpen,
     mobileShellColumn,
   });
+};
+
+export const AssistantSidebar = (props: AssistantSidebarProps): ReactNode => {
+  if (props.connection) {
+    return (
+      <AssistantSidebarConnected {...props} connection={props.connection} />
+    );
+  }
+
+  const { connection: _omitConnection, ...rest } = props;
+  return <AssistantSidebarInner {...rest} />;
 };

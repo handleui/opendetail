@@ -9,6 +9,7 @@ This directory is the packaging layer for installable OpenDetail assets.
 
 ## Intent
 
+- **Primary install path:** npm packages (`opendetail-react`, `opendetail-next`, …). Use the registry when you want vendored source via the shadcn CLI, not as the default workflow.
 - Keep runtime and framework code in `packages/`
 - Deliver installable source through a shadcn-compatible registry
 - Keep blocks composable through `registryDependencies`

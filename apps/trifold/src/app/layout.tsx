@@ -16,6 +16,9 @@ export const metadata: Metadata = {
   title: "Trifold demo — ParallelTrack",
   description:
     "Sideways panel navigation with the trifold package (ParallelTrack, ScrollPanels, Trifold)",
+  icons: {
+    icon: "/favicon.png",
+  },
 };
 
 export default function RootLayout({

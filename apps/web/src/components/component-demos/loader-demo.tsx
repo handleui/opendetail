@@ -1,9 +1,9 @@
 "use client";
 
-import { AssistantLoader } from "opendetail-react";
+import { AssistantStatus } from "opendetail-react";
 
 export const LoaderDemo = () => (
-  <div className="flex min-h-[min(70vh,22rem)] w-full items-center justify-center">
-    <AssistantLoader variant="thinking" />
+  <div className="w-full max-w-[400px]">
+    <AssistantStatus variant="thinking" />
   </div>
 );

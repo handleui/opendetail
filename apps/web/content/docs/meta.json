@@ -14,6 +14,7 @@
     "cli/doctor",
     "next",
     "react",
+    "design-system",
     "fumadocs",
     "components",
     "components/shell",

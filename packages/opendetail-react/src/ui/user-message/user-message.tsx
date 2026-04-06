@@ -5,17 +5,17 @@ import type { ReactNode } from "react";
 const getClassName = (className?: string): string =>
   ["opendetail-user-message", className].filter(Boolean).join(" ");
 
-export interface AssistantUserMessageProps {
+export interface UserMessageProps {
   children?: ReactNode;
   className?: string;
   initial?: string;
 }
 
-export const AssistantUserMessage = ({
+export const UserMessage = ({
   children,
   className,
   initial: _initial = "R",
-}: AssistantUserMessageProps) => (
+}: UserMessageProps) => (
   <article className={getClassName(className)}>
     {/*
     <span aria-hidden="true" className="opendetail-user-message__badge">

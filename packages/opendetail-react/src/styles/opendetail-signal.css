@@ -1,14 +1,2 @@
-:root {
-  --opendetail-color-accent: #ff7a00;
-  --opendetail-color-background: #fff9f2;
-  --opendetail-color-badge-background: #ffe2bf;
-  --opendetail-color-badge-foreground: #9f3f00;
-  --opendetail-color-border: #f0d6b7;
-  --opendetail-color-foreground: #22150c;
-  --opendetail-color-hover: #fff1e1;
-  --opendetail-color-meta: #9f7a56;
-  --opendetail-color-pill-border: #e7c8a3;
-  --opendetail-color-placeholder: #f3ddc2;
-  --opendetail-color-surface: #fff4e8;
-  color-scheme: light;
-}
+/* Re-export: palette theme for the OpenDetail system. */
+@import "./themes/opendetail/signal.css";

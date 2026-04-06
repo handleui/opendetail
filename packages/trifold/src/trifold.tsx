@@ -7,7 +7,6 @@ import {
   TRIFOLD_COLUMN_ATTRIBUTE,
   TRIFOLD_COLUMN_INDEX,
   type TrifoldProps,
-  type TrifoldSpringConfig,
 } from "./types.js";
 
 function columnFromIndex(
@@ -49,16 +48,11 @@ export function Trifold(props: TrifoldProps) {
     centerClassName,
     centerContentClassName,
     column,
-    directionLockPx,
-    flickVelocityPxPerMs,
-    horizontalDominance,
     leading,
     leadingClassName,
     leadingLinkOpensCenter = true,
     leadingLinkSelector = "a[href]",
     touchSwipeBetweenColumns = true,
-    snapBoundaryFraction,
-    spring,
     trackClassName,
   } = props;
 
@@ -144,10 +138,7 @@ export function Trifold(props: TrifoldProps) {
     >
       <ParallelTrack
         activeIndex={activeIndex}
-        directionLockPx={directionLockPx}
         dragEnabled={touchSwipeBetweenColumns}
-        flickVelocityPxPerMs={flickVelocityPxPerMs}
-        horizontalDominance={horizontalDominance}
         jumpAttribute={TRIFOLD_COLUMN_ATTRIBUTE}
         onActiveIndexChange={handleActiveIndexChange}
         onPanelClickCapture={onPanelClickCapture}
@@ -161,8 +152,6 @@ export function Trifold(props: TrifoldProps) {
           return trailingClassName;
         }}
         parseJumpIndex={parseJumpIndex}
-        snapBoundaryFraction={snapBoundaryFraction}
-        spring={spring as Partial<TrifoldSpringConfig> | undefined}
         trackClassName={trackClassName}
       >
         {leading}

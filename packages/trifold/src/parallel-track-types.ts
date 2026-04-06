@@ -1,7 +1,5 @@
 import type { MouseEvent, ReactNode } from "react";
 
-import type { TrifoldSpringConfig } from "./types.js";
-
 export interface ParallelTrackHandle {
   /** Move to a panel index (clamped). Does not update the URL. */
   goTo: (index: number) => void;
@@ -12,17 +10,12 @@ export interface ParallelTrackProps {
   activeIndex: number;
   children: ReactNode;
   className?: string;
-  /** Pixels before horizontal vs vertical drag is decided. Default 6 (touch-tuned). */
-  directionLockPx?: number;
-  dragCommitThresholdPx?: number;
-  /** When false, horizontal drag is disabled; `goTo` and jump attributes still work. Default true. */
+  /**
+   * When false, horizontal swiping between panels is off (`overflow-x: hidden`); `goTo()` and
+   * declarative jumps still work. When true (default), uses native horizontal scroll +
+   * `scroll-snap` (no transform). Pair with a vertical `overflow-y: auto` scroller inside each panel.
+   */
   dragEnabled?: boolean;
-  dragRevealDeadZonePx?: number;
-  flickVelocityPxPerMs?: number;
-  /** Multiply drag and flick velocity. Default 1. Use -1 if navigation feels inverted. */
-  horizontalDeltaSign?: -1 | 1;
-  /** Horizontal movement must exceed vertical × this. Default 1.08. */
-  horizontalDominance?: number;
   /** Declarative jumps: attribute name (default {@link PARALLEL_INDEX_ATTRIBUTE}). */
   jumpAttribute?: string;
   jumpClickEnabled?: boolean;
@@ -34,9 +27,11 @@ export interface ParallelTrackProps {
   panelClassName?: string | ((panelIndex: number) => string | undefined);
   /** Parse the jump attribute value into a panel index. Default: integer parse. */
   parseJumpIndex?: (raw: string) => number | null;
+  /**
+   * When true (default), programmatic column changes use smooth horizontal scroll when the user
+   * has not requested reduced motion. Maps to `ScrollBehavior` on `scrollTo`.
+   */
   settleTransitionEnabled?: boolean;
-  snapBoundaryFraction?: number;
-  spring?: Partial<TrifoldSpringConfig>;
   trackClassName?: string;
 }
 

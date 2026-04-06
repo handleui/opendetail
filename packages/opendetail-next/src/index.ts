@@ -72,7 +72,7 @@ const getInvalidRequestResponse = (): Response =>
     400
   );
 
-const createAssistantLoader = (
+const createOpenDetailLoader = (
   options: CreateOpenDetailOptions
 ): (() => Promise<OpenDetailAssistant>) => {
   let cachedAssistant: OpenDetailAssistant | null = null;
@@ -143,7 +143,7 @@ export const createNextRouteHandler = (
   options: CreateNextRouteHandlerOptions = {}
 ): ((request: Request) => Promise<Response>) => {
   const { resolveSiteFetchOrigin, ...createDetailOptions } = options;
-  const loadAssistant = createAssistantLoader(createDetailOptions);
+  const loadOpenDetail = createOpenDetailLoader(createDetailOptions);
 
   return async (request: Request): Promise<Response> => {
     if (request.method !== "POST") {
@@ -169,7 +169,7 @@ export const createNextRouteHandler = (
     let assistant: OpenDetailAssistant;
 
     try {
-      assistant = await loadAssistant();
+      assistant = await loadOpenDetail();
     } catch (error) {
       return getInitializationErrorResponse(error);
     }

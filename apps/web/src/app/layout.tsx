@@ -33,6 +33,9 @@ export const metadata: Metadata = {
   },
   description:
     "OpenDetail marketing site, documentation, and registry distribution in one app.",
+  icons: {
+    icon: "/favicon.png",
+  },
 };
 
 /** Reduces iOS Safari shifting the layout when the keyboard opens (pairs with input font-size rules). */

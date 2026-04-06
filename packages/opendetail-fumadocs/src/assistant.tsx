@@ -2,17 +2,23 @@
 
 import { renderNextSourceLink } from "opendetail-next/link";
 import {
-  AssistantSidebarShell,
-  type AssistantSidebarShellProps,
+  AssistantSidebar,
+  type AssistantSidebarProps,
+  type UseOpenDetailOptions,
 } from "opendetail-react";
 import type { ReactNode } from "react";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { createFumadocsSourceTargetResolver } from "./source-targets";
 
 type FumadocsAssistantBaseProps = Omit<
-  AssistantSidebarShellProps,
-  "renderSourceLink" | "resolveSourceTarget"
->;
+  AssistantSidebarProps,
+  "renderSourceLink" | "resolveSourceTarget" | "connection"
+> & {
+  endpoint?: UseOpenDetailOptions["endpoint"];
+  persistence?: UseOpenDetailOptions["persistence"];
+  sitePaths?: UseOpenDetailOptions["sitePaths"];
+  transport?: UseOpenDetailOptions["transport"];
+};
 
 export interface FumadocsAssistantProps extends FumadocsAssistantBaseProps {
   children?: ReactNode;
@@ -27,21 +33,43 @@ export interface FumadocsAssistantProps extends FumadocsAssistantBaseProps {
  */
 export const FumadocsAssistant = ({
   children,
+  endpoint,
   knownSourcePageUrls,
-  ...props
+  persistence,
+  sitePaths,
+  transport,
+  ...sidebarProps
 }: FumadocsAssistantProps) => {
   const resolveSourceTarget = useMemo(
     () => createFumadocsSourceTargetResolver(knownSourcePageUrls),
     [knownSourcePageUrls]
   );
 
+  const [sidebarWidthPx, setSidebarWidthPx] = useState<number | undefined>(
+    undefined
+  );
+
+  const connection = useMemo(
+    () => ({
+      endpoint,
+      persistence,
+      sitePaths,
+      transport,
+    }),
+    [endpoint, persistence, sitePaths, transport]
+  );
+
   return (
-    <AssistantSidebarShell
+    <AssistantSidebar
+      {...sidebarProps}
+      connection={connection}
+      onSidebarWidthChange={setSidebarWidthPx}
       renderSourceLink={renderNextSourceLink}
       resolveSourceTarget={resolveSourceTarget}
-      {...props}
+      sidebarResizeEnabled
+      sidebarWidthPx={sidebarWidthPx}
     >
       {children}
-    </AssistantSidebarShell>
+    </AssistantSidebar>
   );
 };

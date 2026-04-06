@@ -1,8 +1,8 @@
 "use client";
 
 import {
-  AssistantInput,
-  type AssistantInputRequest,
+  Composer,
+  type ComposerRequest,
   useOpenDetail,
 } from "opendetail-react";
 import type { FormEvent } from "react";
@@ -25,7 +25,7 @@ export const ConversationTitleDemo = () => {
   const displayTitle = conversationTitle ?? "New chat";
 
   const handleSubmit = async (
-    request: AssistantInputRequest,
+    request: ComposerRequest,
     event: FormEvent<HTMLFormElement>
   ) => {
     event.preventDefault();
@@ -41,7 +41,7 @@ export const ConversationTitleDemo = () => {
         {displayTitle}
       </p>
       <div className="w-full">
-        <AssistantInput
+        <Composer
           name="conversation-title-demo"
           onStop={stop}
           onSubmit={handleSubmit}

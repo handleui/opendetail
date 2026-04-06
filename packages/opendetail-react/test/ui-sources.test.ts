@@ -2,9 +2,11 @@ import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, test } from "vitest";
 import {
-  AssistantResponse,
+  AssistantMessage,
   AssistantSources,
+  getDefaultAssistantSourceTarget,
   getSourcesCitedInContent,
+  isSafeAssistantSourceHref,
   renderAssistantSourceLink,
 } from "../src/index";
 
@@ -12,7 +14,7 @@ describe("assistant source rendering", () => {
   test("renders clickable local and remote inline citations", () => {
     const html = renderToStaticMarkup(
       createElement(
-        AssistantResponse,
+        AssistantMessage,
         {
           sources: [
             {
@@ -45,7 +47,7 @@ describe("assistant source rendering", () => {
   test("does not load third-party favicon urls for remote citations", () => {
     const html = renderToStaticMarkup(
       createElement(
-        AssistantResponse,
+        AssistantMessage,
         {
           sources: [
             {
@@ -67,7 +69,7 @@ describe("assistant source rendering", () => {
   test("keeps unsupported inline citations non-clickable", () => {
     const html = renderToStaticMarkup(
       createElement(
-        AssistantResponse,
+        AssistantMessage,
         {
           sources: [
             {
@@ -89,7 +91,7 @@ describe("assistant source rendering", () => {
 
   test("does not crash when a citation has no matching source", () => {
     const html = renderToStaticMarkup(
-      createElement(AssistantResponse, null, "Missing source [3].")
+      createElement(AssistantMessage, null, "Missing source [3].")
     );
 
     expect(html).toContain('title="Citation 3"');
@@ -138,7 +140,7 @@ describe("assistant source rendering", () => {
   test("lists only sources cited in the response body", () => {
     const html = renderToStaticMarkup(
       createElement(
-        AssistantResponse,
+        AssistantMessage,
         {
           defaultSourcesOpen: true,
           sources: [
@@ -160,7 +162,7 @@ describe("assistant source rendering", () => {
   test("omits sources footer when the response cites no sources", () => {
     const html = renderToStaticMarkup(
       createElement(
-        AssistantResponse,
+        AssistantMessage,
         {
           sources: [{ id: "1", kind: "local", title: "Alpha", url: "/a" }],
         },
@@ -185,10 +187,23 @@ describe("assistant source rendering", () => {
     ).toEqual(["B", "A"]);
   });
 
+  test("rejects protocol-relative URLs for local sources and href safety", () => {
+    expect(
+      getDefaultAssistantSourceTarget({
+        id: "1",
+        kind: "local",
+        title: "Network-path reference",
+        url: "//evil.example/phish",
+      })
+    ).toBeNull();
+    expect(isSafeAssistantSourceHref("//evil.example/x", false)).toBe(false);
+    expect(isSafeAssistantSourceHref("//evil.example/x", true)).toBe(false);
+  });
+
   test("drops unsafe custom source hrefs", () => {
     const html = renderToStaticMarkup(
       createElement(
-        AssistantResponse,
+        AssistantMessage,
         {
           renderSourceLink: (props) => renderAssistantSourceLink(props),
           resolveSourceTarget: () => ({

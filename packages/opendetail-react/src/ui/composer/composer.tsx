@@ -16,21 +16,21 @@ const TEXTAREA_VERTICAL_PADDING = 8;
 const SINGLE_LINE_HEIGHT = TEXTAREA_LINE_HEIGHT + TEXTAREA_VERTICAL_PADDING;
 const SCROLL_TOLERANCE = 1;
 
-export interface AssistantInputRequest {
+export interface ComposerRequest {
   question: string;
 }
 
-export interface AssistantInputStatus {
+export interface ComposerStatus {
   label?: string;
   variant: "error" | "thinking";
 }
 
 type SubmitHandler = (
-  request: AssistantInputRequest,
+  request: ComposerRequest,
   event: FormEvent<HTMLFormElement>
 ) => Promise<void> | void;
 
-export interface AssistantInputProps {
+export interface ComposerProps {
   autoFocus?: boolean;
   className?: string;
   defaultValue?: string;
@@ -48,18 +48,18 @@ export interface AssistantInputProps {
   requestState?: OpenDetailClientStatus;
   showShellUnderlay?: boolean;
   size?: "compact" | "shell";
-  status?: AssistantInputStatus | null;
+  status?: ComposerStatus | null;
   value?: string;
 }
 
-type AssistantInputSize = NonNullable<AssistantInputProps["size"]>;
+type ComposerSize = NonNullable<ComposerProps["size"]>;
 
 const getRootClassName = ({
   className,
   size,
 }: {
   className?: string;
-  size: AssistantInputSize;
+  size: ComposerSize;
 }): string =>
   [
     "opendetail-input-root",
@@ -110,7 +110,7 @@ const getTextareaScrollState = (textarea: HTMLTextAreaElement) => {
   };
 };
 
-const AssistantInputActionButton = ({
+const ComposerActionButton = ({
   isActionDisabled,
   isActive,
   isStopMode,
@@ -119,7 +119,7 @@ const AssistantInputActionButton = ({
   isActionDisabled: boolean;
   isActive: boolean;
   isStopMode: boolean;
-  size: AssistantInputSize;
+  size: ComposerSize;
 }) => (
   <button
     aria-label={isStopMode ? "Stop request" : "Send question"}
@@ -141,7 +141,7 @@ const AssistantInputActionButton = ({
   </button>
 );
 
-export const AssistantInput = ({
+export const Composer = ({
   autoFocus = false,
   className,
   defaultValue,
@@ -160,7 +160,7 @@ export const AssistantInput = ({
   showShellUnderlay = true,
   size = "compact",
   value,
-}: AssistantInputProps) => {
+}: ComposerProps) => {
   const inputId = getInputId({ id, name });
   const isControlled = value !== undefined;
   const [internalValue, setInternalValue] = useState(defaultValue ?? "");
@@ -359,7 +359,7 @@ export const AssistantInput = ({
               ? "opendetail-input__surface--disabled"
               : "opendetail-input__surface--interactive",
           ].join(" ")}
-          data-opendetail-placeholder="assistant-input"
+          data-opendetail-placeholder="composer"
           onMouseDown={handleSurfaceMouseDown}
         >
           <label className="w-full" htmlFor={inputId}>
@@ -411,7 +411,7 @@ export const AssistantInput = ({
             </span>
           </label>
 
-          <AssistantInputActionButton
+          <ComposerActionButton
             isActionDisabled={isActionDisabled}
             isActive={hasValue || isStopMode}
             isStopMode={isStopMode}

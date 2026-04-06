@@ -9,16 +9,14 @@ import {
 } from "react";
 
 import {
-  AssistantInput,
-  type AssistantInputRequest,
-} from "../../ui/assistant-input/assistant-input";
-import {
-  AssistantResponse,
-  type AssistantResponseProps,
-} from "../../ui/assistant-response/assistant-response";
+  AssistantMessage,
+  type AssistantMessageProps,
+} from "../../ui/assistant-message/assistant-message";
 import type { AssistantSourceItem } from "../../ui/assistant-sources/assistant-sources";
-import { AssistantThread } from "../../ui/assistant-thread/assistant-thread";
-import { AssistantUserMessage } from "../../ui/assistant-user-message/assistant-user-message";
+import { Composer, type ComposerRequest } from "../../ui/composer/composer";
+import { ConversationLayout } from "../../ui/conversation-layout/conversation-layout";
+import { Thread } from "../../ui/thread/thread";
+import { UserMessage } from "../../ui/user-message/user-message";
 
 const getClassName = (className?: string): string =>
   ["opendetail-modal", className].filter(Boolean).join(" ");
@@ -56,7 +54,7 @@ export type AssistantModalRequestState =
   | "pending"
   | "streaming";
 
-type SubmitHandler = (request: AssistantInputRequest) => Promise<void> | void;
+type SubmitHandler = (request: ComposerRequest) => Promise<void> | void;
 
 const FOCUSABLE_SELECTOR = [
   "a[href]",
@@ -125,9 +123,9 @@ export interface AssistantModalProps {
   open?: boolean;
   placeholder?: string;
   question?: string;
-  renderSourceLink?: AssistantResponseProps["renderSourceLink"];
+  renderSourceLink?: AssistantMessageProps["renderSourceLink"];
   requestState?: AssistantModalRequestState;
-  resolveSourceTarget?: AssistantResponseProps["resolveSourceTarget"];
+  resolveSourceTarget?: AssistantMessageProps["resolveSourceTarget"];
   thread?: ReactNode;
   userInitial?: string;
 }
@@ -159,7 +157,9 @@ export const AssistantModal = ({
   userInitial = "U",
 }: AssistantModalProps) => {
   const closeButtonRef = useRef<HTMLButtonElement>(null);
-  const dialogElementRef = useRef<HTMLElement | null>(null);
+  const dialogElementRef = useRef<HTMLDivElement | null>(null);
+  const onOpenChangeRef = useRef(onOpenChange);
+  onOpenChangeRef.current = onOpenChange;
   const isControlled = open !== undefined;
   const [internalOpen, setInternalOpen] = useState(defaultOpen);
   const previousFocusedElementRef = useRef<HTMLElement | null>(null);
@@ -172,9 +172,9 @@ export const AssistantModal = ({
       setInternalOpen(false);
     }
 
-    onOpenChange?.(false);
+    onOpenChangeRef.current?.(false);
     onCloseThread?.();
-  }, [isControlled, onCloseThread, onOpenChange]);
+  }, [isControlled, onCloseThread]);
 
   useEffect(() => {
     if (messages.length > previousMessageCountRef.current) {
@@ -182,11 +182,11 @@ export const AssistantModal = ({
         setInternalOpen(true);
       }
 
-      onOpenChange?.(true);
+      onOpenChangeRef.current?.(true);
     }
 
     previousMessageCountRef.current = messages.length;
-  }, [isControlled, messages.length, onOpenChange]);
+  }, [isControlled, messages.length]);
 
   useEffect(() => {
     const previousRequestState = previousRequestStateRef.current;
@@ -199,32 +199,29 @@ export const AssistantModal = ({
         setInternalOpen(true);
       }
 
-      onOpenChange?.(true);
+      onOpenChangeRef.current?.(true);
     }
 
     previousRequestStateRef.current = requestState;
-  }, [isControlled, onOpenChange, requestState]);
+  }, [isControlled, requestState]);
 
   const resolvedThread =
     thread ??
     (messages.length > 0 ? (
-      <AssistantThread
-        animated={isThreadOpen}
-        className="opendetail-modal__thread"
-      >
+      <Thread animated={isThreadOpen} className="opendetail-modal__thread">
         {messages.map((message) => {
           if (message.role === "user") {
             return (
-              <AssistantUserMessage initial={userInitial} key={message.id}>
+              <UserMessage initial={userInitial} key={message.id}>
                 {message.question}
-              </AssistantUserMessage>
+              </UserMessage>
             );
           }
 
           const primaryImage = getPrimaryImage(message);
 
           return (
-            <AssistantResponse
+            <AssistantMessage
               error={message.error ?? null}
               image={
                 primaryImage
@@ -247,10 +244,10 @@ export const AssistantModal = ({
               status={message.status}
             >
               {message.text}
-            </AssistantResponse>
+            </AssistantMessage>
           );
         })}
-      </AssistantThread>
+      </Thread>
     ) : null);
 
   const shouldShowThread = isThreadOpen && resolvedThread !== null;
@@ -315,11 +312,22 @@ export const AssistantModal = ({
     };
   }, [handleCloseThread, shouldShowThread]);
 
+  const handleSubmitQuestion = useCallback(
+    (request: ComposerRequest) => {
+      onSubmitQuestion?.(request);
+    },
+    [onSubmitQuestion]
+  );
+
+  const setDialogElementRef = useCallback((node: HTMLDivElement | null) => {
+    dialogElementRef.current = node;
+  }, []);
+
   const resolvedInput = input ?? (
-    <AssistantInput
+    <Composer
       id={inputId}
       onStop={onStop}
-      onSubmit={(request) => onSubmitQuestion?.(request)}
+      onSubmit={handleSubmitQuestion}
       onValueChange={onQuestionChange}
       placeholder={placeholder}
       requestState={requestState}
@@ -334,10 +342,9 @@ export const AssistantModal = ({
       aria-label="OpenDetail assistant modal"
       aria-modal={shouldShowThread || undefined}
       className={getClassName(className)}
+      data-od-system="opendetail"
       data-opendetail-component="assistant-modal"
-      ref={(node) => {
-        dialogElementRef.current = node;
-      }}
+      ref={setDialogElementRef}
       role="dialog"
       tabIndex={shouldShowThread ? -1 : undefined}
     >
@@ -352,23 +359,24 @@ export const AssistantModal = ({
       />
 
       {shouldShowThread ? (
-        <>
-          <div className="opendetail-modal__close">
-            <button
-              className="opendetail-modal__close-button opendetail-pressable"
-              onClick={handleCloseThread}
-              ref={closeButtonRef}
-              type="button"
-            >
-              {closeLabel}
-            </button>
-          </div>
-
-          <div className="opendetail-modal__thread-layer">{resolvedThread}</div>
-        </>
+        <div className="opendetail-modal__close">
+          <button
+            className="opendetail-modal__close-button opendetail-pressable"
+            onClick={handleCloseThread}
+            ref={closeButtonRef}
+            type="button"
+          >
+            {closeLabel}
+          </button>
+        </div>
       ) : null}
 
-      <div className="opendetail-modal__input-layer">{resolvedInput}</div>
+      <ConversationLayout
+        input={resolvedInput}
+        modalShowThread={shouldShowThread}
+        thread={resolvedThread}
+        variant="modal"
+      />
     </div>
   );
 };

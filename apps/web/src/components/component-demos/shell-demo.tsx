@@ -2,8 +2,8 @@
 
 import { createFumadocsSourceTargetResolver } from "opendetail-fumadocs";
 import { renderNextSourceLink } from "opendetail-next/link";
-import { AssistantSidebarShell } from "opendetail-react";
-import { useMemo } from "react";
+import { AssistantSidebar } from "opendetail-react";
+import { useMemo, useState } from "react";
 
 const PROMPT_SUGGESTIONS = [
   "What's OpenDetail?",
@@ -12,7 +12,7 @@ const PROMPT_SUGGESTIONS = [
 ] as const;
 
 /**
- * Same assistant surface as the site: `AssistantSidebarShell` + live `/api/opendetail`.
+ * Same assistant surface as the site: `AssistantSidebar` with `connection` + live `/api/opendetail`.
  * `knownSourcePageUrls` must be passed from a Server Component (see `known-source-page-urls.ts`)
  * so this file stays client-safe (no `node:fs` in the bundle).
  */
@@ -26,24 +26,38 @@ export const ShellDemo = ({
     [knownSourcePageUrls]
   );
 
+  const [sidebarWidthPx, setSidebarWidthPx] = useState<number | undefined>(
+    undefined
+  );
+
+  const connection = useMemo(
+    () => ({
+      endpoint: "/api/opendetail",
+      persistence: {
+        key: "opendetail-web-docs-shell-demo",
+        storage: "session" as const,
+      },
+      sitePaths: ["/docs", "/components"],
+    }),
+    []
+  );
+
   return (
     <div className="docs-shell-embed-demo flex h-full min-h-0 w-full flex-1 flex-col">
-      <AssistantSidebarShell
+      <AssistantSidebar
         className="min-h-0 flex-1"
+        connection={connection}
         defaultOpen
         embedded
         embeddedHideCollapse
         embeddedLayout="compact"
-        endpoint="/api/opendetail"
         hotkeyEnabled={false}
-        persistence={{
-          key: "opendetail-web-docs-shell-demo",
-          storage: "session",
-        }}
+        onSidebarWidthChange={setSidebarWidthPx}
         promptSuggestions={PROMPT_SUGGESTIONS}
         renderSourceLink={renderNextSourceLink}
         resolveSourceTarget={resolveSourceTarget}
-        sitePaths={["/docs", "/components"]}
+        sidebarResizeEnabled
+        sidebarWidthPx={sidebarWidthPx}
       />
     </div>
   );

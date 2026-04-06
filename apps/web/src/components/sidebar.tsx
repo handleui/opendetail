@@ -11,6 +11,7 @@ import {
   Wand2,
 } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -141,6 +142,8 @@ const INNER_NAV_CLASS =
 
 /** Lucide / row raster slot — keep in sync with `web-root-shell` social icon size. */
 const ROW_ICON_PX = 14;
+/** Sidebar header mark — matches public favicon (slightly larger than nav row icons). */
+const HEADER_MARK_PX = 16;
 /** Site icon stroke width; GitHub/npm slots use filled SVGs (no stroke). */
 const SIDEBAR_LUCIDE_STROKE_PX = 1.5;
 const DEFAULT_ROW_ICON_SIZE = ROW_ICON_PX;
@@ -301,13 +304,23 @@ export function Sidebar({
     <div className="flex h-full min-h-0 flex-col">
       <div className="flex min-h-0 flex-1 flex-col gap-5">
         <div className="shrink-0 px-5 pt-5">
-          <div className="flex flex-wrap items-baseline gap-1">
-            <span className="font-normal text-[14px] text-black tracking-[-0.56px]">
-              {productTitle}
-            </span>
-            <span className="font-normal text-[#a4a4a4] text-[13px] tabular-nums tracking-tight">
-              {productVersionLabel}
-            </span>
+          <div className="flex w-full min-w-0 items-center justify-between gap-3">
+            <Image
+              alt=""
+              className="block shrink-0 rounded-[4px] object-contain"
+              height={HEADER_MARK_PX}
+              src="/favicon.png"
+              unoptimized
+              width={HEADER_MARK_PX}
+            />
+            <div className="flex min-w-0 flex-wrap items-baseline justify-end gap-1 text-right">
+              <span className="font-normal text-[14px] text-black tracking-[-0.56px]">
+                {productTitle}
+              </span>
+              <span className="font-normal text-[#a4a4a4] text-[13px] tabular-nums tracking-tight">
+                {productVersionLabel}
+              </span>
+            </div>
           </div>
         </div>
 
@@ -342,7 +355,7 @@ export function Sidebar({
             animate={{
               x: showSecondaryPanel ? "-50%" : "0%",
             }}
-            className="flex h-full min-h-0 w-[200%] touch-pan-x flex-row will-change-transform"
+            className="flex h-full min-h-0 w-[200%] touch-manipulation flex-row will-change-transform"
             initial={false}
             transition={innerTransition}
           >

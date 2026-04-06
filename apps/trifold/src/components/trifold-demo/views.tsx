@@ -124,7 +124,6 @@ export function DetailView({ itemId }: { itemId: string | null }) {
           <ParallelTrack
             activeIndex={nestedIndex}
             className="min-h-[140px]"
-            horizontalDeltaSign={-1}
             onActiveIndexChange={setNestedIndex}
           >
             <div className="flex h-full min-h-[120px] flex-col justify-center gap-3 bg-foreground/[0.02] p-4">

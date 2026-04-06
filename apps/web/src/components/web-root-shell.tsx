@@ -81,7 +81,6 @@ export const WebRootShell = ({
           leadingClassName="border-[var(--opendetail-color-sidebar-stroke)] border-e border-solid bg-white"
           leadingLinkSelector="a[href]:not([data-trifold-stay])"
           onColumnChange={slots.setColumn}
-          touchSwipeBetweenColumns={false}
           trailing={slots.assistant}
           trailingClassName="bg-[var(--opendetail-color-background)]"
         />

@@ -20,13 +20,13 @@ const ALLOWED_MARKDOWN_TAGS: AllowedTags = {
   [CITATION_TAG]: ["ref"],
 };
 
-export interface AssistantResponseImage {
+export interface AssistantMessageImage {
   alt?: string;
   placeholder?: boolean;
   src?: string;
 }
 
-export interface AssistantResponseMeta {
+export interface AssistantMessageMeta {
   durationLabel?: string;
   /**
    * @deprecated Ignored for the sources footer. Source pills are derived from
@@ -36,14 +36,14 @@ export interface AssistantResponseMeta {
   sourceLabel?: string;
 }
 
-export interface AssistantResponseProps {
+export interface AssistantMessageProps {
   children?: ReactNode;
   className?: string;
   defaultSourcesOpen?: boolean;
   error?: string | null;
-  image?: AssistantResponseImage | null;
+  image?: AssistantMessageImage | null;
   lead?: ReactNode;
-  meta?: AssistantResponseMeta | null;
+  meta?: AssistantMessageMeta | null;
   renderSourceLink?: RenderAssistantSourceLink;
   resolveSourceTarget?: ResolveAssistantSourceTarget;
   sources?: AssistantSourceItem[];
@@ -260,7 +260,7 @@ const getTextBlock = ({
   return <div className={className}>{content}</div>;
 };
 
-export const AssistantResponse = ({
+export const AssistantMessage = ({
   children,
   className,
   defaultSourcesOpen = false,
@@ -272,7 +272,7 @@ export const AssistantResponse = ({
   resolveSourceTarget,
   status = "complete",
   sources = [],
-}: AssistantResponseProps) => {
+}: AssistantMessageProps) => {
   const sourceLabel = meta?.sourceLabel;
   const citedSources = useMemo(
     () => getSourcesCitedInContent({ children, lead, sources }),

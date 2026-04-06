@@ -21,7 +21,6 @@ export type {
   TrifoldColumn2,
   TrifoldColumn3,
   TrifoldProps,
-  TrifoldSpringConfig,
 } from "./types.js";
 export {
   TRIFOLD_COLUMN_ATTRIBUTE,

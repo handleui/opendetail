@@ -1,16 +1,16 @@
 ---
 title: Input
-description: AssistantInput is the composable prompt field with submit/stop actions, sizing for sidebar and shell layouts, and streaming status integration.
+description: Composer is the composable prompt field with submit/stop actions, sizing for sidebar and shell layouts, and streaming status integration.
 ---
 
-**AssistantInput** renders the textarea, send/stop control, and optional status line. Pair it with `useOpenDetail` (or your own state machine) via **`requestState`** so the button shows stop while a request is **pending** or **streaming**.
+**`Composer`** renders the textarea, send/stop control, and optional status line. Pair it with `useOpenDetail` (or your own state machine) via **`requestState`** so the button shows stop while a request is **pending** or **streaming**.
 
 ## Sizes
 
 | Value | When to use |
 | --- | --- |
 | `compact` | Narrow rails, sidebars (default). |
-| `shell` | Wider surface aligned with `AssistantShell` / modal layouts. |
+| `shell` | Wider surface aligned with **`ConversationLayout`** (shell) / modal layouts. |
 
 ## Props
 
@@ -21,7 +21,7 @@ description: AssistantInput is the composable prompt field with submit/stop acti
 | `size` | `"compact" \| "shell"` | `"compact"` | Layout width / shell styling. |
 | `placeholder` | `string` | (package default) | Placeholder copy. |
 | `requestState` | `"idle" \| "pending" \| "streaming" \| "error"` | `"idle"` | Drives send vs stop and busy styling. |
-| `onSubmit` | `(request: AssistantInputRequest, event) => void \| Promise<void>` | — | Called with `{ question }` on submit. |
+| `onSubmit` | `(request: ComposerRequest, event) => void \| Promise<void>` | — | Called with `{ question }` on submit. |
 | `onStop` | `() => void` | — | Invoked when the user hits stop in pending/streaming mode. |
 | `onValueChange` | `(value: string) => void` | — | Fires as the textarea changes (use with controlled `value`). |
 | `value` | `string` | — | Controlled value. If omitted, the input manages its own state (optionally seeded with `defaultValue`). |
@@ -36,4 +36,4 @@ description: AssistantInput is the composable prompt field with submit/stop acti
 | `status` | `{ label?: string; variant: "thinking" \| "error" } \| null` | — | Optional status line under the field. |
 | `className` | `string` | — | Root class. |
 
-For TypeScript, import `AssistantInputProps` and `AssistantInputRequest` from `opendetail-react` for the exact shapes.
+For TypeScript, import **`ComposerProps`** and **`ComposerRequest`** from **`opendetail-react`** for the exact shapes.

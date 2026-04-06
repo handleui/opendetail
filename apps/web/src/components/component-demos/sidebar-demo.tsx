@@ -2,8 +2,8 @@
 
 import { createFumadocsSourceTargetResolver } from "opendetail-fumadocs";
 import { renderNextSourceLink } from "opendetail-next/link";
-import { AssistantSidebarShell } from "opendetail-react";
-import { useMemo } from "react";
+import { AssistantSidebar } from "opendetail-react";
+import { useMemo, useState } from "react";
 
 const PROMPT_SUGGESTIONS = [
   "What's OpenDetail?",
@@ -22,23 +22,37 @@ export const SidebarDemo = ({
     [knownSourcePageUrls]
   );
 
+  const [sidebarWidthPx, setSidebarWidthPx] = useState<number | undefined>(
+    undefined
+  );
+
+  const connection = useMemo(
+    () => ({
+      endpoint: "/api/opendetail",
+      persistence: {
+        key: "opendetail-web-docs-sidebar-demo",
+        storage: "session" as const,
+      },
+      sitePaths: ["/docs", "/components"],
+    }),
+    []
+  );
+
   return (
     <div className="flex h-full min-h-0 w-full flex-1 flex-col">
-      <AssistantSidebarShell
+      <AssistantSidebar
         className="h-full min-h-0 flex-1"
+        connection={connection}
         defaultOpen
         embedded
         embeddedLayout="dock"
-        endpoint="/api/opendetail"
         hotkeyEnabled={false}
-        persistence={{
-          key: "opendetail-web-docs-sidebar-demo",
-          storage: "session",
-        }}
+        onSidebarWidthChange={setSidebarWidthPx}
         promptSuggestions={PROMPT_SUGGESTIONS}
         renderSourceLink={renderNextSourceLink}
         resolveSourceTarget={resolveSourceTarget}
-        sitePaths={["/docs", "/components"]}
+        sidebarResizeEnabled
+        sidebarWidthPx={sidebarWidthPx}
       />
     </div>
   );

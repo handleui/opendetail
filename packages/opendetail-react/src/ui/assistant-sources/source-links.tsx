@@ -42,6 +42,13 @@ export const isSafeAssistantSourceHref = (
     return false;
   }
 
+  const trimmed = href.trimStart();
+
+  // Reject protocol-relative URLs (`//evil.example`) — they are not same-origin paths.
+  if (trimmed.startsWith("//")) {
+    return false;
+  }
+
   if (!hasUrlProtocol(href)) {
     return true;
   }
@@ -79,14 +86,15 @@ export const getDefaultAssistantSourceTarget = (
     }
   }
 
+  const url = source.url;
+
   if (
-    source.url.startsWith("/") ||
-    source.url.startsWith("./") ||
-    source.url.startsWith("../")
+    (url.startsWith("/") || url.startsWith("./") || url.startsWith("../")) &&
+    !url.startsWith("//")
   ) {
     return {
       external: false,
-      href: source.url,
+      href: url,
     };
   }
 
@@ -95,6 +103,10 @@ export const getDefaultAssistantSourceTarget = (
   }
 
   if (source.url.length === 0) {
+    return null;
+  }
+
+  if (url.trimStart().startsWith("//")) {
     return null;
   }
 

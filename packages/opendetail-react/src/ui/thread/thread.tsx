@@ -34,19 +34,19 @@ const getClassName = (className?: string): string =>
 const getItemKey = (item: ReactNode, index: number): Key =>
   isValidElement(item) && item.key !== null ? item.key : `item-${index}`;
 
-export interface AssistantThreadProps {
+export interface ThreadProps {
   animated?: boolean;
   ariaLabel?: string;
   children?: ReactNode;
   className?: string;
 }
 
-export const AssistantThread = ({
+export const Thread = ({
   animated = false,
   ariaLabel = "OpenDetail assistant thread",
   children,
   className,
-}: AssistantThreadProps) => {
+}: ThreadProps) => {
   const items = Children.toArray(children);
 
   if (!animated) {

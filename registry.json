@@ -31,71 +31,67 @@
       ]
     },
     {
-      "name": "assistant-shell",
+      "name": "conversation-layout",
       "type": "registry:ui",
-      "title": "Assistant Shell",
-      "description": "Centered thread and input composition matching the canonical OpenDetail shell frame.",
+      "title": "Conversation Layout",
+      "description": "Shared thread/body and composer regions for shell, sidebar, and modal layouts.",
       "categories": ["opendetail", "ui"],
-      "registryDependencies": [
-        "opendetail-base",
-        "opendetail-client",
-        "use-opendetail"
-      ],
+      "registryDependencies": ["opendetail-base"],
       "files": [
         {
-          "path": "packages/opendetail-react/src/ui/assistant-shell/assistant-shell.tsx",
+          "path": "packages/opendetail-react/src/ui/conversation-layout/conversation-layout.tsx",
           "type": "registry:ui"
         }
       ]
     },
     {
-      "name": "assistant-input",
+      "name": "composer",
       "type": "registry:ui",
-      "title": "Assistant Input",
+      "title": "Composer",
       "description": "Exact Figma input primitive with animated multiline layout plus send or stop action for an OpenDetail request.",
       "categories": ["opendetail", "ui"],
       "dependencies": ["lucide-react@^1.7.0", "motion@^12.38.0"],
       "registryDependencies": ["opendetail-client", "use-opendetail"],
       "files": [
         {
-          "path": "packages/opendetail-react/src/ui/assistant-input/assistant-input.tsx",
+          "path": "packages/opendetail-react/src/ui/composer/composer.tsx",
           "type": "registry:ui"
         }
       ]
     },
     {
-      "name": "assistant-thread",
+      "name": "thread",
       "type": "registry:ui",
-      "title": "Assistant Thread",
+      "title": "Thread",
       "description": "Thread container for OpenDetail conversations with optional Motion-based reveal.",
       "categories": ["opendetail", "ui"],
       "dependencies": ["motion@^12.38.0"],
       "registryDependencies": ["opendetail-base"],
       "files": [
         {
-          "path": "packages/opendetail-react/src/ui/assistant-thread/assistant-thread.tsx",
+          "path": "packages/opendetail-react/src/ui/thread/thread.tsx",
           "type": "registry:ui"
         }
       ]
     },
     {
-      "name": "assistant-user-message",
+      "name": "user-message",
       "type": "registry:ui",
-      "title": "Assistant User Message",
+      "title": "User message",
       "description": "Question row primitive with the OpenDetail badge and muted query styling from the shell design.",
       "categories": ["opendetail", "ui"],
       "registryDependencies": ["opendetail-base"],
       "files": [
         {
-          "path": "packages/opendetail-react/src/ui/assistant-user-message/assistant-user-message.tsx",
+          "path": "packages/opendetail-react/src/ui/user-message/user-message.tsx",
           "type": "registry:ui"
         }
       ]
     },
     {
-      "name": "assistant-response",
+      "name": "assistant-message",
       "type": "registry:ui",
-      "title": "Assistant Response",
+      "title": "Assistant message",
       "description": "Assistant answer primitive with inline loading and error states, optional image, markdown slot content, and response metadata.",
       "categories": ["opendetail", "ui"],
       "dependencies": ["streamdown@^2.5.0"],
@@ -108,7 +104,7 @@
       ],
       "files": [
         {
-          "path": "packages/opendetail-react/src/ui/assistant-response/assistant-response.tsx",
+          "path": "packages/opendetail-react/src/ui/assistant-message/assistant-message.tsx",
           "type": "registry:ui"
         },
         {
@@ -155,20 +151,6 @@
       ]
     },
     {
-      "name": "assistant-error",
-      "type": "registry:ui",
-      "title": "Assistant Error",
-      "description": "Compatibility alias that renders assistant-status as inline red error copy.",
-      "categories": ["opendetail", "ui"],
-      "registryDependencies": ["assistant-status"],
-      "files": [
-        {
-          "path": "packages/opendetail-react/src/ui/assistant-error/assistant-error.tsx",
-          "type": "registry:ui"
-        }
-      ]
-    },
-    {
       "name": "assistant-modal",
       "type": "registry:block",
       "title": "Assistant Modal",
@@ -176,11 +158,12 @@
       "docs": "Composes the input, user-message, response, and thread primitives into the installable website-style overlay shell.",
       "categories": ["opendetail", "block"],
       "registryDependencies": [
-        "assistant-input",
-        "assistant-response",
-        "assistant-thread",
-        "assistant-user-message",
-        "opendetail-base"
+        "assistant-message",
+        "composer",
+        "conversation-layout",
+        "opendetail-base",
+        "thread",
+        "user-message"
       ],
       "files": [
         {
@@ -197,30 +180,16 @@
       "docs": "Composes the input, user-message, response, and thread primitives into a fixed right-side assistant surface for app-wide use.",
       "categories": ["opendetail", "block"],
       "registryDependencies": [
-        "assistant-input",
-        "assistant-response",
-        "assistant-thread",
-        "assistant-user-message",
-        "opendetail-base"
+        "assistant-message",
+        "composer",
+        "conversation-layout",
+        "opendetail-base",
+        "thread",
+        "user-message"
       ],
       "files": [
         {
           "path": "packages/opendetail-react/src/blocks/assistant-sidebar/assistant-sidebar.tsx",
-          "type": "registry:component"
-        }
-      ]
-    },
-    {
-      "name": "assistant-sidebar-shell",
-      "type": "registry:block",
-      "title": "Assistant Sidebar Shell",
-      "description": "App-shell wrapper that mounts the assistant sidebar next to the main content and wires it to useOpenDetail.",
-      "docs": "Use this when the sidebar should be the application shell itself instead of a separately mounted widget.",
-      "categories": ["opendetail", "block"],
-      "registryDependencies": ["assistant-sidebar", "use-opendetail"],
-      "files": [
-        {
-          "path": "packages/opendetail-react/src/blocks/assistant-sidebar-shell/assistant-sidebar-shell.tsx",
           "type": "registry:component"
         }
       ]

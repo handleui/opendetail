@@ -1,13 +1,13 @@
 ---
 title: Error
-description: AssistantError is a thin wrapper around AssistantLoader / AssistantStatus (error variant) for failed assistant turns or transport errors.
+description: AssistantStatus (error variant) renders inline error copy for failed assistant turns or transport errors.
 ---
 
-## Props
+## `AssistantStatus` (error)
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `message` | `string \| null` | `"Ouch, please try again"` | Error copy; **`null`** renders nothing. |
-| `label` | `string` | — | Overrides visible label (defaults to **`message`**). |
+| `variant` | `"error"` | — | **Required** for error styling. |
+| `label` | `string` | package default | Visible error copy. |
 
-Use alongside **`AssistantInput`** **`status`** or inline in **`AssistantResponse`** **`error`** for richer layouts.
+Use alongside **`Composer`** **`status`** or inside **`AssistantMessage`** **`error`** / **`status="error"`** for richer layouts.

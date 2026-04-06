@@ -1,16 +1,16 @@
 # trifold
 
-**Swipe between columns on phones** (and desktop): a small React layout layer on top of [Motion](https://motion.dev/). Each column is full viewport width; users drag horizontally to move between them. Taps can still jump columns with `data-*` attributes.
+**Phone-first column shell for React:** native horizontal scrolling + CSS scroll-snap between full-width columns (nav · main · optional third). No animation-library requirement—peer dependency is **React** only. Each column should use its **own** vertical scroll (`min-h-0` + `overflow-y-auto` on an inner wrapper), not the window.
 
-**Typical use:** nav · main content · optional third column (e.g. tools), without turning your whole app into a carousel library.
+**Typical use:** same pattern as many mobile apps and responsive sites—swipe left/right between columns, scroll up/down inside the column you’re on.
 
 ## Install
 
 ```bash
-npm install trifold motion react react-dom
+npm install trifold react react-dom
 ```
 
-Peer dependencies: **React 18+**, **Motion 12+**.
+Peer dependencies: **React 18+**.
 
 ## Minimal `Trifold` (controlled column)
 
@@ -46,7 +46,9 @@ export function Shell() {
 
 Two columns: omit `trailing`. Three columns: pass `trailing={...}` and use `'leading' | 'center' | 'trailing'` in state.
 
-**Accessibility:** animated settle respects `prefers-reduced-motion`.
+**`touchSwipeBetweenColumns`** (default `true`): set `false` to disable horizontal swiping between columns (e.g. kiosk or embed); use `data-trifold-column` / buttons / `ParallelTrack`’s `goTo()` instead.
+
+**Accessibility:** programmatic column changes use smooth horizontal scrolling unless `prefers-reduced-motion` is set.
 
 ## More building blocks
 

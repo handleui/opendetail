@@ -1,11 +1,11 @@
 "use client";
 
-import { AssistantInput, type AssistantInputRequest } from "opendetail-react";
+import { Composer, type ComposerRequest } from "opendetail-react";
 import type { FormEvent } from "react";
 
 export const InputDemo = () => {
   const handleSubmit = (
-    _request: AssistantInputRequest,
+    _request: ComposerRequest,
     event: FormEvent<HTMLFormElement>
   ) => {
     event.preventDefault();
@@ -13,7 +13,7 @@ export const InputDemo = () => {
 
   return (
     <div className="w-full max-w-[min(100%,var(--opendetail-input-width-shell))]">
-      <AssistantInput
+      <Composer
         name="demo-input"
         onSubmit={handleSubmit}
         placeholder="Type a question…"

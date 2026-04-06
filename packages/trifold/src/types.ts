@@ -15,21 +15,11 @@ export const TRIFOLD_COLUMN_INDEX: Record<TrifoldColumn, number> = {
   trailing: 2,
 };
 
-export interface TrifoldSpringConfig {
-  damping: number;
-  mass: number;
-  stiffness: number;
-}
-
 interface TrifoldSharedProps {
   center: ReactNode;
   centerClassName?: string;
   centerContentClassName?: string;
   className?: string;
-  /** Pixels moved before horizontal vs vertical is decided. Default 6. */
-  directionLockPx?: number;
-  flickVelocityPxPerMs?: number;
-  horizontalDominance?: number;
   leading: ReactNode;
   leadingClassName?: string;
   /** When true, clicks matching `leadingLinkSelector` on the leading column call `onColumnChange('center')`. Default true. */
@@ -37,14 +27,12 @@ interface TrifoldSharedProps {
   /** CSS selector for clicks that move to the center column. Default `a[href]`. */
   leadingLinkSelector?: string;
   /**
-   * First boundary between column 0 and 1 is at this fraction of viewport width.
-   * Default 0.38.
-   */
-  snapBoundaryFraction?: number;
-  spring?: Partial<TrifoldSpringConfig>;
-  /**
-   * When false, touch users cannot horizontally drag between columns (jump buttons / `data-trifold-column` still work).
-   * Disable on mobile web when each column should scroll independently without gesture conflict. Default true.
+   * When true (default), a **one-finger horizontal swipe** on the track moves between columns
+   * (native `overflow-x: scroll` + `scroll-snap`). When false, horizontal swiping is disabled;
+   * use `data-trifold-column`, buttons, or `ParallelTrack`’s `goTo()` instead.
+   *
+   * **Phone layout:** give each column a nested vertical scroller (`min-h-0`, `overflow-y-auto`);
+   * do not rely on the window/body to scroll the main content.
    */
   touchSwipeBetweenColumns?: boolean;
   trackClassName?: string;
