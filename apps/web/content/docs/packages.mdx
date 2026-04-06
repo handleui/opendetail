@@ -12,7 +12,7 @@ OpenDetail is intentionally **layered**: core runtime and build, then framework 
 3. **`opendetail-react`** — Browser UI: **`useOpenDetail`**, **`createOpenDetailClient`**, **`AssistantSidebarShell`**, and related assistant UI. **Framework-agnostic** (works with Vite, etc.) as long as you point the client at your HTTP endpoint.
 4. **`opendetail-fumadocs`** (optional) — A **small preset** on top of **`opendetail-react`** + **`opendetail-next`**: **`createFumadocsSourceTargetResolver`**, **`FumadocsAssistant`**, and helpers for **known doc URLs**. The name reflects common **Fumadocs-style** `/docs/...` routes; the code does **not** import Fumadocs packages — it is an **allowlisted pathname resolver** you can use for any Next docs site that lists its routes.
 
-**`trifold`** (optional, [separate package](https://github.com/handleui/opendetail/tree/main/packages/trifold)) — Horizontal **panel** layout (e.g. nav · main · assistant on small viewports). The OpenDetail **web** demo uses it inside **`renderMobileShell`**; it is **not** required for retrieval or streaming.
+**`trifold`** (optional, [separate package](https://github.com/handleui/opendetail/tree/main/packages/trifold)) — **Parallel columns** for small viewports (**`leading` · `center` · `trailing`** geometry). The OpenDetail **web** demo uses it inside **`renderMobileShell`**; it is **not** required for retrieval or streaming.
 
 ## When to use which package
 
@@ -22,7 +22,7 @@ OpenDetail is intentionally **layered**: core runtime and build, then framework 
 | **`opendetail-next`** | You deploy on **Next.js App Router** and want the official route handler + **`renderNextSourceLink`**. |
 | **`opendetail-react`** | You build the **in-browser** assistant (hook, shell, streaming client). |
 | **`opendetail-fumadocs`** | You want a **known-page allowlist** for citation URLs and/or the **`FumadocsAssistant`** wrapper instead of wiring **`resolveSourceTarget`** by hand. Skip it if you implement your own resolver (e.g. internal tools, multiple origins). |
-| **`trifold`** | You want the **3-panel horizontal shell** UX; purely presentational. |
+| **`trifold`** | You want the **parallel-column** mobile shell UX (`Trifold` / `ParallelTrack`); purely presentational. |
 
 ## How they compound
 
@@ -51,7 +51,9 @@ If you outgrow the allowlist (e.g. dynamic internal URLs), keep **`opendetail-re
 
 ## See also
 
-- [Integration](/docs/integration) — self-hosted vs hosted-shaped, stream shape, grounding.
+- [Get started](/docs/quickstart) — install, integration modes, stream shape, grounding.
+- [Core package](/docs/core) — **`opendetail.toml`** and **`createOpenDetail`**.
+- [UI integration](/docs/ui-integration) — custom layouts vs **`/components`** demos.
 - [opendetail-next](/docs/next) — route handler and **`renderNextSourceLink`**.
 - [React](/docs/react) — **`useOpenDetail`** and client API.
 - [opendetail-fumadocs](/docs/fumadocs) — resolver API and **`FumadocsAssistant`**.

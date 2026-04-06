@@ -104,7 +104,7 @@ describe("assistant source rendering", () => {
             id: "1",
             kind: "local",
             title: "Configuration",
-            url: "/docs/configuration#minimal-config",
+            url: "/docs/core#minimal-config",
           },
           {
             id: "2",
@@ -124,7 +124,7 @@ describe("assistant source rendering", () => {
 
     expect(html).toContain(">3 sources<");
     expect(html).toContain("opendetail-sources__pills");
-    expect(html).toContain('href="/docs/configuration#minimal-config"');
+    expect(html).toContain('href="/docs/core#minimal-config"');
     expect(html).toContain('href="https://fumadocs.dev/docs/ui/mdx"');
     expect(html).not.toContain("vector-store-file://file_123");
     expect(html).toContain("Configuration");

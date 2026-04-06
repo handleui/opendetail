@@ -26,7 +26,7 @@ Pass the same props you would to the shell, plus **`knownSourcePageUrls`**. Site
 <CodeBlock lang="ts">{`import { FumadocsAssistant } from "opendetail-fumadocs/assistant";
 
 <FumadocsAssistant
-  knownSourcePageUrls={["/docs", "/docs/quickstart", /* … */]}
+  knownSourcePageUrls={["/docs", "/docs/quickstart", "/docs/core", /* … */]}
   navigation={<YourNav />}
   /* …AssistantSidebarShell props */
 />;
@@ -41,6 +41,7 @@ Collect the doc page URLs your site actually serves (same slugs as your MDX rout
 const resolveSourceTarget = createFumadocsSourceTargetResolver([
   "/docs",
   "/docs/quickstart",
+  "/docs/core",
   // …
 ]);
 `}</CodeBlock>

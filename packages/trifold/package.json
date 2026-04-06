@@ -1,7 +1,7 @@
 {
   "name": "trifold",
   "version": "0.1.0",
-  "description": "Trifold: a three-panel mobile shell with swipe navigation (leading | main | trailing).",
+  "description": "Parallel columns for React (Trifold, ParallelTrack, ScrollPanels) with touch swipe and declarative column/index jumps.",
   "type": "module",
   "license": "MIT",
   "sideEffects": false,

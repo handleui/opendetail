@@ -1,0 +1,39 @@
+---
+title: UI integration
+description: Build your own assistant UI with opendetail-react — hook, client, shell — versus browsing reference layouts on this site.
+---
+
+This page is for **your product**: wiring OpenDetail into **custom layouts**, design systems, and existing apps.
+
+It is **not** the [**Components**](/components) gallery on this site. Those pages document **reference implementations** (shell, input, recommendations) used in the OpenDetail marketing demo. They are useful for ideas and copy-paste starting points, but they are **not** a separate product surface — the supported integration APIs live in **`opendetail-react`** and **`opendetail-next`**.
+
+## Choose an integration depth
+
+| Approach | When to use | Primary APIs |
+| --- | --- | --- |
+| **Hook + your layout** | Full control over markup, styling, and state | [`useOpenDetail`](/docs/react) |
+| **HTTP client only** | No React, or non-React UI | [`createOpenDetailClient`](/docs/react) |
+| **Shell preset** | Opinionated three-column assistant layout | `AssistantSidebarShell` from **`opendetail-react`** — props in [React](/docs/react) |
+| **Next + citations** | MDX answers should link like **`next/link`** | [`renderNextSourceLink`](/docs/next) from **`opendetail-next`** |
+| **Known doc URLs** | Citations must resolve only to paths you allow | Optional [**opendetail-fumadocs**](/docs/fumadocs) helpers |
+
+## Custom UI (typical path)
+
+1. **Backend** — Expose a route that streams NDJSON (self-hosted: [**opendetail-next**](/docs/next); or your own handler with the same event order as [Get started](/docs/quickstart#integration-modes)).
+2. **Transport** — Point `useOpenDetail` or `createOpenDetailClient` at that endpoint (`/api/opendetail` by default).
+3. **Render** — Subscribe to `messages`, `status`, sources, and images from the hook; render with your components.
+4. **Optional** — Thread persistence (`persistence` on the hook), headers, or a custom `fetch`.
+
+For stream events and headers, see [**React**](/docs/react). For route setup and Node requirements, see [**opendetail-next**](/docs/next).
+
+## Using “our” components individually
+
+Published building blocks (from **`opendetail-react`**) are documented in [**React**](/docs/react): **`useOpenDetail`**, **`createOpenDetailClient`**, **`AssistantResponse`**, **`AssistantSources`**, **`AssistantSidebarShell`**, and related exports. Import only what you need; you do not have to adopt the full shell.
+
+The [**Components**](/components) section of this site shows **one** way to combine those ideas for the demo. Treat it as **patterns**, not a second package — ship your own JSX and CSS.
+
+## See also
+
+- [**Packages & composition**](/docs/packages) — how **`opendetail`**, **`opendetail-next`**, **`opendetail-react`**, and optional **`opendetail-fumadocs`** stack.
+- [**Get started**](/docs/quickstart) — install, scaffold, first request, integration modes.
+- [**Core package**](/docs/core) — config and Node **`createOpenDetail`** when the browser is not involved.

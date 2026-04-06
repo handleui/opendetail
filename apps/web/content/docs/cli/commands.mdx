@@ -1,15 +1,26 @@
 ---
-title: CLI commands
-description: Index of opendetail build, setup, and doctor — jump to the full page for each command.
+title: CLI reference
+description: The opendetail binary — build, setup, and doctor — command index, one-liner usage, and suggested order.
 ---
 
-Each command is a separate page with flags, behavior, and copy-paste examples.
+The **`opendetail`** package exposes a small CLI: **`build`** (index your docs), **`setup`** (scaffold config and route), and **`doctor`** (verify the setup). Run it via **`npx`**, **`bunx`**, or **`pnpm dlx`** so the version matches your `package.json`.
 
-| Command | Role |
+## Commands
+
+| Command | Purpose |
 | --- | --- |
-| [`build`](/docs/cli/build) | Read `opendetail.toml`, match content, write `.opendetail/index.json`. |
-| [`setup`](/docs/cli/setup) | Scaffold config, optional Next.js route, and optionally run an initial build. |
-| [`doctor`](/docs/cli/doctor) | Verify config, built index, route (self-hosted), and required environment variables. |
+| [`opendetail build`](/docs/cli/build) | Write `.opendetail/index.json` from your config and content globs. |
+| [`opendetail setup`](/docs/cli/setup) | Create `opendetail.toml`, optional route, optional first build. |
+| [`opendetail doctor`](/docs/cli/doctor) | Check files and env for the selected integration mode. |
+
+Each command has its own page with full flags and copy-paste examples.
+
+## One-liner usage
+
+<CodeBlock lang="bash">{`opendetail build [--config <path>] [--output <path>] [--cwd <path>]
+opendetail setup [--integration <self-hosted|hosted>] [--config <path>] [--route <path>] [--base-path <url>] [--include <glob>] [--media-include <glob>] [--with-media] [--skip-build] [--force] [--interactive] [--no-interactive] [--cwd <path>]
+opendetail doctor [--integration <self-hosted|hosted>] [--config <path>] [--route <path>] [--cwd <path>]
+`}</CodeBlock>
 
 ## Suggested order
 
@@ -20,4 +31,3 @@ Each command is a separate page with flags, behavior, and copy-paste examples.
 ## See also
 
 - [CLI quickstart](/docs/cli/quickstart) — install check and first steps.
-- [CLI overview](/docs/cli) — how the binary fits the rest of OpenDetail.

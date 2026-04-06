@@ -8,16 +8,16 @@ describe("resolveFumadocsSourceTarget", () => {
   test("resolves a known docs page and preserves the hash fragment", () => {
     expect(
       resolveFumadocsSourceTarget({
-        knownPageUrls: ["/docs/quickstart", "/docs/configuration"],
+        knownPageUrls: ["/docs/quickstart", "/docs/core"],
         source: {
           kind: "local",
           title: "Configuration",
-          url: "/docs/configuration#base-path",
+          url: "/docs/core#base-path",
         },
       })
     ).toEqual({
       external: false,
-      href: "/docs/configuration#base-path",
+      href: "/docs/core#base-path",
     });
   });
 

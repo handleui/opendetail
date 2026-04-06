@@ -311,6 +311,32 @@ export function Sidebar({
           </div>
         </div>
 
+        {onAssistantToggle ? (
+          <div
+            className={`flex w-full shrink-0 flex-col ${SLIDE_PANEL_TOP_CLASS}`}
+          >
+            <button
+              aria-pressed={assistantOpen}
+              className={[
+                "mx-2 flex min-w-0 cursor-pointer items-center justify-center gap-2 self-stretch rounded-md border-0 px-3 py-1.5 font-normal text-[14px] text-neutral-900 leading-snug transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-neutral-400 focus-visible:outline-offset-2",
+                assistantOpen
+                  ? "bg-neutral-200/90 hover:bg-neutral-300/80"
+                  : "bg-neutral-100 hover:bg-neutral-200/90",
+              ].join(" ")}
+              onClick={onAssistantToggle}
+              type="button"
+            >
+              <Wand2
+                aria-hidden="true"
+                className="shrink-0 text-black"
+                size={rowIconSize}
+                strokeWidth={SIDEBAR_LUCIDE_STROKE_PX}
+              />
+              Ask AI
+            </button>
+          </div>
+        ) : null}
+
         <div className="relative min-h-0 flex-1 overflow-hidden">
           <motion.div
             animate={{
@@ -325,72 +351,49 @@ export function Sidebar({
                 aria-label="Site"
                 className={`flex shrink-0 flex-col gap-5 ${SLIDE_PANEL_TOP_CLASS} pb-4`}
               >
-                <div className="flex flex-col gap-5">
-                  {onAssistantToggle ? (
-                    <button
-                      aria-pressed={assistantOpen}
-                      className={[
-                        "mx-2 flex min-w-0 cursor-pointer items-center justify-center gap-2 self-stretch rounded-md border-0 px-3 py-1.5 font-normal text-[14px] text-neutral-900 leading-snug transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-neutral-400 focus-visible:outline-offset-2",
-                        assistantOpen
-                          ? "bg-neutral-200/90 hover:bg-neutral-300/80"
-                          : "bg-neutral-100 hover:bg-neutral-200/90",
-                      ].join(" ")}
-                      onClick={onAssistantToggle}
-                      type="button"
-                    >
-                      <Wand2
+                <div className="flex flex-col gap-0.5">
+                  <Link
+                    className={[
+                      navLinkClass(pathname === "/"),
+                      "flex items-center gap-2",
+                    ].join(" ")}
+                    href="/"
+                    onClick={() => {
+                      setNavIntent("/");
+                      openHome();
+                    }}
+                  >
+                    <RootRowIconSlot rowIconSize={rowIconSize}>
+                      <House
                         aria-hidden="true"
                         className="shrink-0 text-black"
                         size={rowIconSize}
                         strokeWidth={SIDEBAR_LUCIDE_STROKE_PX}
                       />
-                      Ask AI
-                    </button>
-                  ) : null}
-                  <div className="flex flex-col gap-0.5">
-                    <Link
-                      className={[
-                        navLinkClass(pathname === "/"),
-                        "flex items-center gap-2",
-                      ].join(" ")}
-                      href="/"
-                      onClick={() => {
-                        setNavIntent("/");
-                        openHome();
-                      }}
-                    >
-                      <RootRowIconSlot rowIconSize={rowIconSize}>
-                        <House
-                          aria-hidden="true"
-                          className="shrink-0 text-black"
-                          size={rowIconSize}
-                          strokeWidth={SIDEBAR_LUCIDE_STROKE_PX}
-                        />
-                      </RootRowIconSlot>
-                      Home
-                    </Link>
-                    <Link
-                      className={[
-                        navLinkClass(pathname === "/changelog"),
-                        "flex items-center gap-2",
-                      ].join(" ")}
-                      href="/changelog"
-                      onClick={() => {
-                        setNavIntent("/changelog");
-                        openHome();
-                      }}
-                    >
-                      <RootRowIconSlot rowIconSize={rowIconSize}>
-                        <ScrollText
-                          aria-hidden="true"
-                          className="shrink-0 text-black"
-                          size={rowIconSize}
-                          strokeWidth={SIDEBAR_LUCIDE_STROKE_PX}
-                        />
-                      </RootRowIconSlot>
-                      Changelog
-                    </Link>
-                  </div>
+                    </RootRowIconSlot>
+                    Home
+                  </Link>
+                  <Link
+                    className={[
+                      navLinkClass(pathname === "/changelog"),
+                      "flex items-center gap-2",
+                    ].join(" ")}
+                    href="/changelog"
+                    onClick={() => {
+                      setNavIntent("/changelog");
+                      openHome();
+                    }}
+                  >
+                    <RootRowIconSlot rowIconSize={rowIconSize}>
+                      <ScrollText
+                        aria-hidden="true"
+                        className="shrink-0 text-black"
+                        size={rowIconSize}
+                        strokeWidth={SIDEBAR_LUCIDE_STROKE_PX}
+                      />
+                    </RootRowIconSlot>
+                    Changelog
+                  </Link>
                 </div>
 
                 <div>

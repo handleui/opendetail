@@ -1,26 +1,29 @@
 // biome-ignore-all lint/performance/noBarrelFile: package entrypoint defines the public API surface.
 export {
   clamp,
-  panelIndexFromTrackX,
   panelIndexFromTrackXN,
-  trackXForDrag,
   trackXForDragN,
 } from "./gesture-math.js";
-export { SlideRow } from "./slide-row.js";
+export { ParallelTrack } from "./parallel-track.js";
 export {
-  SLIDE_TO_ATTRIBUTE,
-  type SlideRowHandle,
-  type SlideRowProps,
-  type SlideRowSplitLayout,
-} from "./slide-row-types.js";
+  PARALLEL_INDEX_ATTRIBUTE,
+  type ParallelTrackHandle,
+  type ParallelTrackProps,
+} from "./parallel-track-types.js";
 export {
-  StackedPanels,
-  type StackedPanelsDensity,
-  type StackedPanelsProps,
-} from "./stacked-panels.js";
+  ScrollPanels,
+  type ScrollPanelsDensity,
+  type ScrollPanelsProps,
+} from "./scroll-panels.js";
 export { Trifold } from "./trifold.js";
 export type {
-  TrifoldPanelIndex,
+  TrifoldColumn,
+  TrifoldColumn2,
+  TrifoldColumn3,
   TrifoldProps,
   TrifoldSpringConfig,
+} from "./types.js";
+export {
+  TRIFOLD_COLUMN_ATTRIBUTE,
+  TRIFOLD_COLUMN_INDEX,
 } from "./types.js";

@@ -27,15 +27,15 @@ export const POST = createNextRouteHandler();
 - Node.js 18+
 - Route on the **Node.js** runtime (not Edge) for the default adapter
 - **`OPENAI_API_KEY`** set where the handler runs
-- **`.opendetail/index.json`** present after [build](/docs/cli)
+- **`.opendetail/index.json`** present after [`build`](/docs/cli/build)
 
-`createNextRouteHandler` accepts the same options as [`createOpenDetail`](/docs/runtime) (`CreateOpenDetailOptions`) when you need custom `cwd`, `indexPath`, or client injection.
+`createNextRouteHandler` accepts the same options as [`createOpenDetail`](/docs/core#create-an-assistant) (`CreateOpenDetailOptions`) when you need custom `cwd`, `indexPath`, or client injection.
 
 ## Request and response
 
 The handler accepts **POST** with JSON `{ "question": string }`. Malformed bodies return a JSON error.
 
-Successful responses use **`application/x-ndjson; charset=utf-8`**. Event order and semantics match [Integration](/docs/integration) (meta, sources, images, delta, done, error). Initialization failures before streaming return JSON instead of NDJSON.
+Successful responses use **`application/x-ndjson; charset=utf-8`**. Event order and semantics match [Get started](/docs/quickstart#integration-modes) (meta, sources, images, delta, done, error). Initialization failures before streaming return JSON instead of NDJSON.
 
 ## Source links in MDX
 

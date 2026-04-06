@@ -48,6 +48,7 @@
     "react-dom": "^19.0.0"
   },
   "dependencies": {
+    "trifold": "workspace:*",
     "lucide-react": "^1.7.0",
     "motion": "^12.38.0",
     "streamdown": "^2.5.0"

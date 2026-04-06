@@ -27,7 +27,7 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/docs/reference",
-        destination: "/docs/configuration",
+        destination: "/docs/core",
         permanent: true,
       },
       {
@@ -38,6 +38,31 @@ const nextConfig: NextConfig = {
       {
         source: "/docs/components/:path*",
         destination: "/components/:path*",
+        permanent: true,
+      },
+      {
+        source: "/docs/cli",
+        destination: "/docs/cli/quickstart",
+        permanent: true,
+      },
+      {
+        source: "/docs/integration",
+        destination: "/docs/quickstart",
+        permanent: true,
+      },
+      {
+        source: "/docs/opendetail",
+        destination: "/docs/core",
+        permanent: true,
+      },
+      {
+        source: "/docs/configuration",
+        destination: "/docs/core",
+        permanent: true,
+      },
+      {
+        source: "/docs/runtime",
+        destination: "/docs/core",
         permanent: true,
       },
     ];

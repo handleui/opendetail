@@ -13,8 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Lateral demo — SlideRow",
-  description: "Sideways panel navigation with the trifold SlideRow primitive",
+  title: "Trifold demo — ParallelTrack",
+  description:
+    "Sideways panel navigation with the trifold package (ParallelTrack, ScrollPanels, Trifold)",
 };
 
 export default function RootLayout({

@@ -59,7 +59,7 @@ html > body[data-scroll-locked] {
   overflow: hidden;
 }
 
-[data-trifold] [data-trifold-main] .site-shell__main {
+[data-trifold] [data-trifold-center] .site-shell__main {
   min-height: 0;
 }
 

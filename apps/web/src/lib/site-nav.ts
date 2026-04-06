@@ -23,27 +23,22 @@ export const SITE_DOCS_NAV_TREE: readonly SiteNavSection[] = [
     title: "Get started",
     items: [
       { kind: "page", label: "Documentation", href: "/docs" },
-      { kind: "page", label: "Quickstart", href: "/docs/quickstart" },
-      { kind: "page", label: "Integration", href: "/docs/integration" },
+      { kind: "page", label: "Get started", href: "/docs/quickstart" },
+      { kind: "page", label: "UI integration", href: "/docs/ui-integration" },
     ],
   },
   {
-    title: "OpenDetail",
-    items: [
-      { kind: "page", label: "Overview", href: "/docs/opendetail" },
-      { kind: "page", label: "Configuration", href: "/docs/configuration" },
-      { kind: "page", label: "Runtime", href: "/docs/runtime" },
-    ],
+    title: "Core",
+    items: [{ kind: "page", label: "Package & runtime", href: "/docs/core" }],
   },
   {
     title: "CLI",
     items: [
-      { kind: "page", label: "Overview", href: "/docs/cli" },
       { kind: "page", label: "Quickstart", href: "/docs/cli/quickstart" },
       { kind: "page", label: "Reference", href: "/docs/cli/commands" },
-      { kind: "page", label: "build", href: "/docs/cli/build" },
-      { kind: "page", label: "setup", href: "/docs/cli/setup" },
-      { kind: "page", label: "doctor", href: "/docs/cli/doctor" },
+      { kind: "page", label: "$ build", href: "/docs/cli/build" },
+      { kind: "page", label: "$ setup", href: "/docs/cli/setup" },
+      { kind: "page", label: "$ doctor", href: "/docs/cli/doctor" },
     ],
   },
   {

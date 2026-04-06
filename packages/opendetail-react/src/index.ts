@@ -13,10 +13,10 @@ export {
   type AssistantSidebarAssistantMessage,
   type AssistantSidebarImage,
   type AssistantSidebarMessage,
+  type AssistantSidebarMobileColumn,
   type AssistantSidebarMobileShellSlots,
   type AssistantSidebarProps,
   type AssistantSidebarRequestState,
-  type AssistantSidebarTriptychPanelIndex,
   type AssistantSidebarUserMessage,
 } from "./blocks/assistant-sidebar/assistant-sidebar";
 export {

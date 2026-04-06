@@ -73,13 +73,13 @@ export const WebRootShell = ({
       placeholder="Ask AI anything..."
       renderMobileShell={(slots) => (
         <Trifold
+          center={slots.main}
+          centerClassName="bg-white"
           className="flex h-full min-h-0 w-full flex-1 flex-col overflow-hidden overscroll-none"
+          column={slots.column}
           leading={slots.navigation}
           leadingClassName="border-[var(--opendetail-color-sidebar-stroke)] border-e border-solid bg-white"
-          main={slots.main}
-          mainClassName="bg-white"
-          onPanelIndexChange={slots.setPanelIndex}
-          panelIndex={slots.panelIndex}
+          onColumnChange={slots.setColumn}
           trailing={slots.assistant}
           trailingClassName="bg-[var(--opendetail-color-background)]"
         />

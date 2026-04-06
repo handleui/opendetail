@@ -4,15 +4,15 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import type { ReactNode } from "react";
 import { useCallback, useEffect, useState } from "react";
-import { StackedPanels } from "trifold";
+import { ScrollPanels } from "trifold";
 
-import { DetailView, IndexView } from "@/components/lateral/views";
+import { DetailView, IndexView } from "@/components/trifold-demo/views";
 
 const CONTENT_MAX = "max-w-[1080px]";
 const BASE = "/full";
 const DETAIL_PATH = `${BASE}/detail`;
 
-export function LateralDemoShell({ children }: { children: React.ReactNode }) {
+export function TrifoldDemoShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const isDetail = pathname === DETAIL_PATH;
@@ -35,12 +35,11 @@ export function LateralDemoShell({ children }: { children: React.ReactNode }) {
   const activeIndex = slideIndex;
 
   const shell: ReactNode = (
-    <StackedPanels
+    <ScrollPanels
       activeIndex={activeIndex}
       className="min-h-0 flex-1"
       contentMaxWidthClassName={CONTENT_MAX}
       density="comfortable"
-      finePointerDragEnabled={false}
       horizontalDeltaSign={-1}
       onActiveIndexChange={onActiveIndexChange}
       panelClassName={(i) =>
@@ -96,7 +95,7 @@ export function LateralDemoShell({ children }: { children: React.ReactNode }) {
     <div className="flex min-h-0 flex-1 flex-col bg-background px-3 text-foreground sm:px-5">
       <nav className="flex shrink-0 flex-wrap items-center justify-center gap-3 border-foreground/10 border-b bg-foreground/[0.03] py-2 text-foreground/80 text-xs sm:px-2">
         <span>
-          <code className="rounded bg-foreground/10 px-1">StackedPanels</code> ·
+          <code className="rounded bg-foreground/10 px-1">ScrollPanels</code> ·
           One column at a time · URL sync · Desktop: links · Touch: swipe ·{" "}
           <code className="rounded bg-foreground/10 px-1">
             horizontalDeltaSign −1

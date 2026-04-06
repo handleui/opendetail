@@ -1,58 +1,65 @@
 ---
 title: Documentation
-description: What OpenDetail is, how it works end-to-end, and where to read next — for humans and for tools.
+description: What OpenDetail is, how the pipeline fits together, and where to read next.
 ---
 
 OpenDetail turns the Markdown and MDX you already ship into **grounded answers inside your product**: same content your team edits, retrieved with citations instead of vibes. It is intentionally small: a build step, a local index file, a narrow HTTP contract, and thin adapters — not a second CMS and not a generic chat platform.
 
-From your app root, the CLI can scaffold config, an optional Next.js route, and your first index build:
-
 <CopyCommand bun="bunx opendetail setup" npm="npx opendetail setup" />
 
-## How the pieces connect
+## How it fits together
 
-Your docs and media live in the repo. **Build** turns matched files into `.opendetail/index.json`. When someone asks a question, your **route or client** loads that index, picks the best chunks with lexical search, and calls the OpenAI Responses API using only that context — plus any remote tools you configured. The UI receives streamed NDJSON (text, sources, images) so you can render like a live dev tool instead of blocking on a full response.
+| Stage | What happens |
+| --- | --- |
+| **Build** | Matched docs become **`.opendetail/index.json`**. |
+| **Request** | Your route or client loads the index, runs lexical search, calls the Responses API with that context. |
+| **UI** | Streamed NDJSON (text, sources, images) — you render with **your** components or **`opendetail-react`**. |
 
-The same pages stay readable as normal docs. Machine-readable routes (for example `/llms.mdx/docs`) stay available for tooling without maintaining a parallel format.
+Docs stay human-readable on the web; machine-readable routes (for example `/llms.mdx/docs`) remain available for tooling.
 
 ## Who it is for
 
-- **Product and devrel teams** who want in-app help without training a separate knowledge base.
-- **Developers** who want a boring, testable pipeline: build artifact in git, predictable API, clear errors.
-- **Agents** that need stable URLs and structured retrieval — the index and routes are built for that use case too.
+| Audience | Why |
+| --- | --- |
+| **Product & devrel** | In-app help without a separate knowledge base. |
+| **Engineering** | Testable pipeline: artifact in git, predictable API, clear errors. |
+| **Agents** | Stable URLs and structured retrieval from the same index. |
 
 ## Packages (at a glance)
 
 | Package | Role |
 | --- | --- |
-| [`opendetail`](/docs/opendetail) | Build, core runtime, CLI (`opendetail` binary). |
+| [`opendetail`](/docs/core) | Build, core runtime, CLI. |
 | [`opendetail-next`](/docs/next) | Next.js App Router route, NDJSON streaming, `renderNextSourceLink`. |
 | [`opendetail-react`](/docs/react) | `useOpenDetail`, `AssistantSidebarShell`, streaming client. |
-| [`opendetail-fumadocs`](/docs/fumadocs) | Optional: known-page resolver + `FumadocsAssistant` preset (works with any `/docs/...` allowlist). |
-| [`trifold`](https://github.com/handleui/opendetail/tree/main/packages/trifold) | Optional: horizontal nav · main · assistant panel layout (e.g. mobile shell). |
+| [`opendetail-fumadocs`](/docs/fumadocs) | Optional: known-page resolver + `FumadocsAssistant`. |
+| [`trifold`](https://github.com/handleui/opendetail/tree/main/packages/trifold) | Optional: parallel columns for small viewports. |
 
-For **which to install, how they stack, and naming**, see [**Packages & composition**](/docs/packages).
+Layering and naming details: [**Packages & composition**](/docs/packages).
 
 ## Where to go next
 
 <Cards>
   <Card
-    title="Quickstart"
+    title="Get started"
     href="/docs/quickstart"
-    description="Install packages, run setup, rebuild, diagnose, and send your first request."
+    description="Install, scaffold, rebuild, diagnose, integration modes, and first request."
   />
   <Card
-    title="Integration"
-    href="/docs/integration"
-    description="Self-hosted Next route, streaming shape, hosted-shaped client, grounding, and FAQ."
+    title="UI integration"
+    href="/docs/ui-integration"
+    description="Custom UI with the hook or client — distinct from the Components gallery on this site."
+  />
+  <Card
+    title="Core package"
+    href="/docs/core"
+    description="opendetail.toml, createOpenDetail, defaults, and fallback behavior."
   />
   <Card
     title="Packages & composition"
     href="/docs/packages"
-    description="When to use each package, how they compound, and how names map to roles."
+    description="When to use each package and how they stack."
   />
 </Cards>
 
-**Core:** [Overview](/docs/opendetail) · [Configuration](/docs/configuration) · [CLI](/docs/cli) · [Runtime](/docs/runtime)
-
-**Adapters:** [Next.js](/docs/next) · [React](/docs/react) · [opendetail-fumadocs](/docs/fumadocs)
+**CLI:** [Quickstart](/docs/cli/quickstart) · [Reference](/docs/cli/commands) · **Adapters:** [Next.js](/docs/next) · [React](/docs/react) · [opendetail-fumadocs](/docs/fumadocs)

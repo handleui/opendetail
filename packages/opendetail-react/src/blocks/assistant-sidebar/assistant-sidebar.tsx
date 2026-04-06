@@ -17,6 +17,8 @@ import {
   useSyncExternalStore,
 } from "react";
 
+import type { TrifoldColumn3 } from "trifold";
+
 import {
   AssistantInput,
   type AssistantInputRequest,
@@ -149,14 +151,15 @@ export type AssistantSidebarRequestState =
 
 type SubmitHandler = (request: AssistantInputRequest) => Promise<void> | void;
 
-export type AssistantSidebarTriptychPanelIndex = 0 | 1 | 2;
+/** Mobile horizontal shell column (geometry); matches `trifold`’s `TrifoldColumn3`. */
+export type AssistantSidebarMobileColumn = TrifoldColumn3;
 
 export interface AssistantSidebarMobileShellSlots {
   assistant: ReactNode;
+  column: TrifoldColumn3;
   main: ReactNode;
   navigation: ReactNode;
-  panelIndex: AssistantSidebarTriptychPanelIndex;
-  setPanelIndex: (index: AssistantSidebarTriptychPanelIndex) => void;
+  setColumn: (column: TrifoldColumn3) => void;
 }
 
 export interface AssistantSidebarProps {
@@ -243,8 +246,8 @@ function useAssistantSidebarKeyboard({
   isSidebarOpen,
   onOpenChange,
   setInternalOpen,
-  setTriptychPanel,
-  triptychPanel,
+  setMobileShellColumn,
+  mobileShellColumn,
 }: {
   hotkeyEnabled: boolean;
   isControlled: boolean;
@@ -252,10 +255,8 @@ function useAssistantSidebarKeyboard({
   isSidebarOpen: boolean;
   onOpenChange: AssistantSidebarProps["onOpenChange"];
   setInternalOpen: Dispatch<SetStateAction<boolean>>;
-  setTriptychPanel: Dispatch<
-    SetStateAction<AssistantSidebarTriptychPanelIndex>
-  >;
-  triptychPanel: AssistantSidebarTriptychPanelIndex;
+  setMobileShellColumn: Dispatch<SetStateAction<TrifoldColumn3>>;
+  mobileShellColumn: TrifoldColumn3;
 }) {
   useEffect(() => {
     if (!(hotkeyEnabled && typeof window !== "undefined")) {
@@ -271,9 +272,9 @@ function useAssistantSidebarKeyboard({
     };
 
     const handleEscape = (event: KeyboardEvent) => {
-      if (isMobileTriptychActive && triptychPanel !== 1) {
+      if (isMobileTriptychActive && mobileShellColumn !== "center") {
         event.preventDefault();
-        setTriptychPanel(1);
+        setMobileShellColumn("center");
         closeAssistant();
         return;
       }
@@ -288,15 +289,15 @@ function useAssistantSidebarKeyboard({
       event.preventDefault();
 
       if (isMobileTriptychActive) {
-        const nextPanel: AssistantSidebarTriptychPanelIndex =
-          triptychPanel === 2 ? 1 : 2;
-        setTriptychPanel(nextPanel);
+        const nextColumn: TrifoldColumn3 =
+          mobileShellColumn === "trailing" ? "center" : "trailing";
+        setMobileShellColumn(nextColumn);
 
         if (!isControlled) {
-          setInternalOpen(nextPanel === 2);
+          setInternalOpen(nextColumn === "trailing");
         }
 
-        onOpenChange?.(nextPanel === 2);
+        onOpenChange?.(nextColumn === "trailing");
         return;
       }
 
@@ -337,8 +338,8 @@ function useAssistantSidebarKeyboard({
     isSidebarOpen,
     onOpenChange,
     setInternalOpen,
-    setTriptychPanel,
-    triptychPanel,
+    setMobileShellColumn,
+    mobileShellColumn,
   ]);
 }
 
@@ -351,7 +352,7 @@ function useAssistantSidebarOpenOnActivity({
   previousRequestStateRef,
   requestState,
   setInternalOpen,
-  setTriptychPanel,
+  setMobileShellColumn,
 }: {
   isControlled: boolean;
   isMobileTriptychActive: boolean;
@@ -361,14 +362,12 @@ function useAssistantSidebarOpenOnActivity({
   previousRequestStateRef: MutableRefObject<AssistantSidebarRequestState>;
   requestState: AssistantSidebarRequestState;
   setInternalOpen: Dispatch<SetStateAction<boolean>>;
-  setTriptychPanel: Dispatch<
-    SetStateAction<AssistantSidebarTriptychPanelIndex>
-  >;
+  setMobileShellColumn: Dispatch<SetStateAction<TrifoldColumn3>>;
 }) {
   useEffect(() => {
     if (messages.length > previousMessageCountRef.current) {
       if (isMobileTriptychActive) {
-        setTriptychPanel(2);
+        setMobileShellColumn("trailing");
       }
 
       if (!isControlled) {
@@ -386,7 +385,7 @@ function useAssistantSidebarOpenOnActivity({
     onOpenChange,
     previousMessageCountRef,
     setInternalOpen,
-    setTriptychPanel,
+    setMobileShellColumn,
   ]);
 
   useEffect(() => {
@@ -397,7 +396,7 @@ function useAssistantSidebarOpenOnActivity({
       (requestState === "pending" || requestState === "streaming")
     ) {
       if (isMobileTriptychActive) {
-        setTriptychPanel(2);
+        setMobileShellColumn("trailing");
       }
 
       if (!isControlled) {
@@ -415,7 +414,7 @@ function useAssistantSidebarOpenOnActivity({
     previousRequestStateRef,
     requestState,
     setInternalOpen,
-    setTriptychPanel,
+    setMobileShellColumn,
   ]);
 }
 
@@ -665,8 +664,8 @@ function renderAssistantSidebarRoots({
   rootClassName,
   rootStyle,
   setInternalOpen,
-  setTriptychPanel,
-  triptychPanel,
+  setMobileShellColumn,
+  mobileShellColumn,
 }: {
   assistantAside: ReactNode;
   children: ReactNode;
@@ -679,27 +678,25 @@ function renderAssistantSidebarRoots({
   rootClassName: string;
   rootStyle: CSSProperties | undefined;
   setInternalOpen: Dispatch<SetStateAction<boolean>>;
-  setTriptychPanel: Dispatch<
-    SetStateAction<AssistantSidebarTriptychPanelIndex>
-  >;
-  triptychPanel: AssistantSidebarTriptychPanelIndex;
+  setMobileShellColumn: Dispatch<SetStateAction<TrifoldColumn3>>;
+  mobileShellColumn: TrifoldColumn3;
 }): ReactNode {
   if (isMobileTriptychLayout && !isMdUp && renderMobileShell && navigation) {
     return (
       <div className={rootClassName} style={rootStyle}>
         {renderMobileShell({
           assistant: assistantAside,
+          column: mobileShellColumn,
           main: children,
           navigation,
-          panelIndex: triptychPanel,
-          setPanelIndex: (index) => {
-            setTriptychPanel(index);
+          setColumn: (column) => {
+            setMobileShellColumn(column);
 
             if (!isControlled) {
-              setInternalOpen(index === 2);
+              setInternalOpen(column === "trailing");
             }
 
-            onOpenChange?.(index === 2);
+            onOpenChange?.(column === "trailing");
           },
         })}
       </div>
@@ -772,8 +769,8 @@ export const AssistantSidebar = (props: AssistantSidebarProps): ReactNode => {
   const previousRequestStateRef = useRef(requestState);
   const panelRef = useRef<HTMLElement | null>(null);
   const [isSidebarResizing, setIsSidebarResizing] = useState(false);
-  const [triptychPanel, setTriptychPanel] =
-    useState<AssistantSidebarTriptychPanelIndex>(1);
+  const [mobileShellColumn, setMobileShellColumn] =
+    useState<TrifoldColumn3>("center");
   const isMdUp = useSyncExternalStore(
     subscribeMdUp,
     getMdUpSnapshot,
@@ -782,7 +779,7 @@ export const AssistantSidebar = (props: AssistantSidebarProps): ReactNode => {
   const isMobileTriptychLayout = Boolean(navigation && renderMobileShell);
   const isMobileTriptychActive = isMobileTriptychLayout && !isMdUp;
   const isSidebarOpen = isMobileTriptychActive
-    ? triptychPanel === 2
+    ? mobileShellColumn === "trailing"
     : (open ?? internalOpen);
   const hasMessages = messages.length > 0;
   const resolvedHeaderTitle =
@@ -802,8 +799,8 @@ export const AssistantSidebar = (props: AssistantSidebarProps): ReactNode => {
     isSidebarOpen,
     onOpenChange,
     setInternalOpen,
-    setTriptychPanel,
-    triptychPanel,
+    setMobileShellColumn,
+    mobileShellColumn,
   });
 
   useAssistantSidebarOpenOnActivity({
@@ -815,7 +812,7 @@ export const AssistantSidebar = (props: AssistantSidebarProps): ReactNode => {
     previousRequestStateRef,
     requestState,
     setInternalOpen,
-    setTriptychPanel,
+    setMobileShellColumn,
   });
 
   useEffect(
@@ -829,7 +826,7 @@ export const AssistantSidebar = (props: AssistantSidebarProps): ReactNode => {
 
   const setSidebarOpen = (nextOpen: boolean) => {
     if (isMobileTriptychActive) {
-      setTriptychPanel(nextOpen ? 2 : 1);
+      setMobileShellColumn(nextOpen ? "trailing" : "center");
     }
 
     if (!isControlled) {
@@ -1039,7 +1036,7 @@ export const AssistantSidebar = (props: AssistantSidebarProps): ReactNode => {
     rootClassName,
     rootStyle,
     setInternalOpen,
-    setTriptychPanel,
-    triptychPanel,
+    setMobileShellColumn,
+    mobileShellColumn,
   });
 };

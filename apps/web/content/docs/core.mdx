@@ -1,0 +1,154 @@
+---
+title: Core package
+description: opendetail — index build, opendetail.toml, createOpenDetail in Node, defaults, and fallback behavior.
+---
+
+The **`opendetail`** package is the engine: it reads **`opendetail.toml`**, builds **`.opendetail/index.json`**, and exposes **`createOpenDetail`** for answering from that index. The CLI (`build`, `setup`, `doctor`) lives in the same package — see [CLI quickstart](/docs/cli/quickstart).
+
+## What ships in the package
+
+| Area | Role |
+| --- | --- |
+| **Build** | Parse matched Markdown/MDX, chunk by headings, write the index (CLI or `buildOpenDetailIndex`). |
+| **Runtime** | Load the index, lexical search, Responses API, stream NDJSON — [Create an assistant](#create-an-assistant). |
+| **CLI** | Setup, index builds, doctor — [CLI quickstart](/docs/cli/quickstart). |
+| **Config** | `opendetail.toml` — [Fields](#fields). |
+
+## When to use it directly
+
+Use **`opendetail`** without Next or React for Node integrations (custom server, scripts, tests). For Next.js App Router, use [**opendetail-next**](/docs/next); for browser UI, use [**opendetail-react**](/docs/react) and [UI integration](/docs/ui-integration).
+
+## Minimal config
+
+OpenDetail reads **`opendetail.toml`** at the project root.
+
+<CodeBlock lang="toml">{`version = 1
+include = ["content/**/*.{md,mdx}"]
+exclude = []
+base_path = "/docs"
+`}</CodeBlock>
+
+## Fields
+
+| Field | Required | Meaning |
+| --- | --- | --- |
+| `version` | yes | Must be `1` |
+| `include` | yes | Glob patterns for Markdown and MDX source files |
+| `exclude` | no | Ignore globs for files matched by `include` |
+| `base_path` | no | URL base used when source URLs are generated |
+| `media` | no | Rules for mapping local media references to public URLs |
+| `remote_resources` | no | OpenAI Responses API retrieval tools at answer time |
+
+## Base path
+
+`base_path` is normalized before URLs are generated. Match it to the public route where your docs are served, for example `/docs` or `/help`.
+
+## Media
+
+Use `[media]` when docs reference local images such as `./hero.png`.
+
+<CodeBlock lang="toml">{`[media]
+include = ["content/**/*.{png,jpg,jpeg,webp,avif,gif,svg}"]
+exclude = []
+base_path = "/content-media"
+`}</CodeBlock>
+
+When `media` is configured:
+
+- `http://` and `https://` URLs are returned as-is
+- root-relative `/...` URLs are returned as-is
+- local relative paths are mapped only if they match `[media].include`
+- unsupported absolute schemes and protocol-relative URLs are ignored
+
+If a doc references a local image that does not match the configured media globs, the build fails with a clear error.
+
+## Remote resources
+
+Optional Responses API tools:
+
+<CodeBlock lang="toml">{`[remote_resources.file_search]
+vector_store_ids = ["vs_123"]
+max_num_results = 8
+
+[remote_resources.web_search]
+allowed_domains = ["platform.openai.com", "docs.example.com"]
+search_context_size = "low"
+`}</CodeBlock>
+
+**`file_search`**
+
+| Field | Required | Meaning |
+| --- | --- | --- |
+| `vector_store_ids` | yes | OpenAI vector store IDs |
+| `max_num_results` | no | Limit from 1 to 50 |
+
+**`web_search`**
+
+| Field | Required | Meaning |
+| --- | --- | --- |
+| `allowed_domains` | no | Restrict search to listed domains |
+| `search_context_size` | no | `low`, `medium`, or `high` |
+
+Remote citations appear in `sources` with `kind: "remote"`.
+
+## Create an assistant
+
+Use **`opendetail`** core when calling from Node without Next.js helpers.
+
+<CodeBlock lang="ts">{`import { createOpenDetail } from "opendetail";
+
+const assistant = createOpenDetail();
+`}</CodeBlock>
+
+Then:
+
+<CodeBlock lang="ts">{`const result = await assistant.answer({
+  question: "How do I configure base_path?",
+});
+`}</CodeBlock>
+
+`answer()` returns `text`, `model`, `sources`, `images`, `fallback`. `stream()` adds a `ReadableStream<Uint8Array>`.
+
+## Assistant instructions
+
+Loaded in order:
+
+1. `assistantInstructions` option
+2. `assistantInstructionsPath` option
+3. `.opendetail/OPENDETAIL.md`
+4. `OPENDETAIL.md` at project root
+
+If none exist, only built-in grounding instructions apply.
+
+## Remote retrieval
+
+Configure via `remoteResources` in code or `remote_resources` in `opendetail.toml` (`file_search`, `web_search`).
+
+## Defaults
+
+| Setting | Default |
+| --- | --- |
+| `model` | `gpt-5.4-mini` |
+| `reasoningEffort` | `none` |
+| `verbosity` | `low` |
+| `store` | `false` |
+| `promptCacheRetention` | `in-memory` |
+
+## Important options
+
+| Option | Meaning |
+| --- | --- |
+| `cwd` | Working directory for config and instruction files |
+| `indexPath` | Custom path to the built index |
+| `indexData` | Preloaded index artifact |
+| `client` | Reuse an existing OpenAI client |
+| `assistantInstructions` | Inline project guidance |
+| `assistantInstructionsPath` | Custom instructions path |
+| `promptCacheKey` | Explicit cache key override |
+| `remoteResources` | Override remote retrieval config |
+
+## Fallback behavior
+
+If no local chunks match well, OpenDetail may still respond but sets **`fallback: true`**. If the model returns no usable text:
+
+<CodeBlock lang="txt">{`This isn't documented in the configured docs yet.`}</CodeBlock>

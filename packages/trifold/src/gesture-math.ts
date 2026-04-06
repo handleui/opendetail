@@ -2,7 +2,7 @@ export const clamp = (value: number, min: number, max: number): number =>
   Math.min(max, Math.max(min, value));
 
 /**
- * Track translateX in px: 0 = first panel; each step is `stepPx` (full viewport for one-up, half for split).
+ * Track translateX in px: 0 = first panel; each step is `stepPx` (typically full viewport width).
  */
 export const trackXForDragN = (
   originIndex: number,
@@ -43,18 +43,3 @@ export const panelIndexFromTrackXN = (
   }
   return panelCount - 1;
 };
-
-/** @deprecated Parameter is step width in px (usually viewport width). */
-export const trackXForDrag = (
-  originIndex: 0 | 1 | 2,
-  dx: number,
-  stepPx: number
-): number => trackXForDragN(originIndex, dx, stepPx, 3);
-
-/** @deprecated Parameter is step width in px (usually viewport width). */
-export const panelIndexFromTrackX = (
-  trackX: number,
-  stepPx: number,
-  snapBoundaryFraction: number
-): 0 | 1 | 2 =>
-  panelIndexFromTrackXN(trackX, stepPx, 3, snapBoundaryFraction) as 0 | 1 | 2;

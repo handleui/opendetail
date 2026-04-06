@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { SlideRow } from "trifold";
+import { ParallelTrack } from "trifold";
 
 export const SAMPLE_ITEMS = [
   { id: "1", title: "Quarterly review", meta: "Notes" },
@@ -77,19 +77,19 @@ export function DetailView({ itemId }: { itemId: string | null }) {
             <>
               <span className="text-foreground/80">{item.meta}</span> · Same
               motion model as the site shell (
-              <code className="text-xs">StackedPanels</code> /{" "}
+              <code className="text-xs">ScrollPanels</code> /{" "}
               <code className="text-xs">Trifold</code>): one panel visible;
               scroll independently; nest{" "}
-              <code className="text-xs">SlideRow</code> below for deeper local
-              stacks.
+              <code className="text-xs">ParallelTrack</code> below for deeper
+              local stacks.
             </>
           ) : (
             <>
               Same motion model as the site shell (
-              <code className="text-xs">StackedPanels</code> /{" "}
+              <code className="text-xs">ScrollPanels</code> /{" "}
               <code className="text-xs">Trifold</code>): scroll this column
               independently; add deeper stacks by nesting{" "}
-              <code className="text-xs">SlideRow</code> below.
+              <code className="text-xs">ParallelTrack</code> below.
             </>
           )}
         </p>
@@ -105,7 +105,7 @@ export function DetailView({ itemId }: { itemId: string | null }) {
           <li>
             Use{" "}
             <code className="rounded bg-foreground/10 px-1 py-0.5 text-xs">
-              data-slide-to
+              data-parallel-index
             </code>{" "}
             for in-row jumps without routing.
           </li>
@@ -117,14 +117,13 @@ export function DetailView({ itemId }: { itemId: string | null }) {
           Nested slide (deeper stack)
         </h3>
         <p className="text-foreground/70 text-sm">
-          Independent <code className="text-xs">SlideRow</code> — local index
-          only; does not change the route.
+          Independent <code className="text-xs">ParallelTrack</code> — local
+          index only; does not change the route.
         </p>
         <div className="overflow-hidden rounded-lg border border-foreground/20">
-          <SlideRow
+          <ParallelTrack
             activeIndex={nestedIndex}
             className="min-h-[140px]"
-            finePointerDragEnabled={false}
             horizontalDeltaSign={-1}
             onActiveIndexChange={setNestedIndex}
           >
@@ -132,33 +131,33 @@ export function DetailView({ itemId }: { itemId: string | null }) {
               <p className="text-foreground/80 text-sm">Nested panel 0</p>
               <button
                 className="w-fit rounded-md border border-foreground/20 bg-foreground/[0.04] px-3 py-1.5 font-medium text-sm"
-                data-slide-to="1"
+                data-parallel-index="1"
                 type="button"
               >
-                data-slide-to → 1
+                data-parallel-index → 1
               </button>
             </div>
             <div className="flex h-full min-h-[120px] flex-col justify-center gap-3 bg-foreground/[0.04] p-4">
               <p className="text-foreground/80 text-sm">Nested panel 1</p>
               <button
                 className="w-fit rounded-md border border-foreground/20 bg-foreground/[0.04] px-3 py-1.5 font-medium text-sm"
-                data-slide-to="0"
+                data-parallel-index="0"
                 type="button"
               >
-                data-slide-to → 0
+                data-parallel-index → 0
               </button>
             </div>
-          </SlideRow>
+          </ParallelTrack>
         </div>
       </section>
 
       <div className="flex flex-wrap gap-3 border-foreground/10 border-t pt-6">
         <button
           className="rounded-lg border border-foreground/20 bg-foreground/[0.04] px-4 py-2 font-medium text-sm"
-          data-slide-to="0"
+          data-parallel-index="0"
           type="button"
         >
-          data-slide-to=&quot;0&quot;
+          data-parallel-index=&quot;0&quot;
         </button>
         <Link
           className="rounded-lg border border-foreground/20 px-4 py-2 font-medium text-sm"

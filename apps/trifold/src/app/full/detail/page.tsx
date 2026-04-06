@@ -1,4 +1,4 @@
-import { DetailView } from "@/components/lateral/views";
+import { DetailView } from "@/components/trifold-demo/views";
 
 export default async function FullDetailPage({
   searchParams,
