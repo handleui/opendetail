@@ -6,16 +6,19 @@ import remarkMdx from "remark-mdx";
 import remarkParse from "remark-parse";
 import { unified } from "unified";
 import { EXIT, visit } from "unist-util-visit";
-import { DEFAULT_BASE_PATH, DEFAULT_CHUNK_CHARACTER_LIMIT } from "./constants";
+import {
+  DEFAULT_CHUNK_CHARACTER_LIMIT,
+  DEFAULT_PUBLIC_PATH,
+} from "./constants";
 import type {
   OpenDetailChunk,
   OpenDetailChunkImage,
-  OpenDetailConfig,
+  OpenDetailContentRoot,
 } from "./types";
 import {
   createChunkId,
   joinUrlPath,
-  normalizeBasePath,
+  normalizePublicPath,
   stripMarkdownExtension,
   stripTrailingIndex,
   toPosixPath,
@@ -145,16 +148,16 @@ const extractBlockText = (node: MarkdownNode): string => {
 
 const createBaseUrl = (
   relativePath: string,
-  config: Pick<OpenDetailConfig, "base_path">
+  config: Pick<OpenDetailContentRoot, "public_path">
 ): string => {
-  const normalizedBasePath = normalizeBasePath(
-    config.base_path || DEFAULT_BASE_PATH
+  const normalizedPublicPath = normalizePublicPath(
+    config.public_path || DEFAULT_PUBLIC_PATH
   );
   const relativeRoutePath = stripTrailingIndex(
     stripMarkdownExtension(toPosixPath(relativePath))
   );
 
-  return joinUrlPath(normalizedBasePath, relativeRoutePath);
+  return joinUrlPath(normalizedPublicPath, relativeRoutePath);
 };
 
 const createChunkUrl = (baseUrl: string, anchor: string | null): string =>
@@ -481,7 +484,7 @@ export const extractMarkdownChunks = ({
   resolveImage,
 }: {
   chunkIdPath?: string;
-  config: Pick<OpenDetailConfig, "base_path">;
+  config: Pick<OpenDetailContentRoot, "public_path">;
   fileContent: string;
   filePath: string;
   relativePath: string;

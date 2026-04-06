@@ -43,19 +43,14 @@ import {
   parseOpenDetailIndexArtifact,
   retrieveRelevantChunks,
 } from "./search";
-import {
-  createFetchedPageChunk,
-  fetchSitePageText,
-  filterChunkIdsBySitePaths,
-  listPathsNeedingFetch,
-} from "./site-pages";
+import { filterChunkIdsBySitePaths } from "./site-pages";
 import type {
   CreateOpenDetailOptions,
   OpenDetailAnswerResult,
   OpenDetailAssistant,
+  OpenDetailFetchConfig,
   OpenDetailImage,
   OpenDetailIndexArtifact,
-  OpenDetailRemoteResourcesConfig,
   OpenDetailRuntimeInput,
   OpenDetailSource,
   OpenDetailStreamEvent,
@@ -102,96 +97,49 @@ const mapSources = (
     url: chunk.url,
   }));
 
-const resolveRetrievedChunksForQuestion = async ({
-  abortSignal,
+const resolveRetrievedChunksForQuestion = ({
   artifact,
   miniSearch,
   question,
-  siteFetchOrigin,
   sitePaths,
 }: {
-  abortSignal?: AbortSignal;
   artifact: OpenDetailIndexArtifact;
   miniSearch: ReturnType<typeof createMiniSearchIndex>;
   question: string;
-  siteFetchOrigin?: string;
   sitePaths?: string[];
-}): Promise<OpenDetailIndexArtifact["chunks"]> => {
+}): OpenDetailIndexArtifact["chunks"] => {
   let allowedChunkIds: Set<string> | undefined;
 
   if (sitePaths !== undefined && sitePaths.length > 0) {
     allowedChunkIds = filterChunkIdsBySitePaths(artifact.chunks, sitePaths);
   }
 
-  let retrieved = retrieveRelevantChunks(miniSearch, question, {
+  return retrieveRelevantChunks(miniSearch, question, {
     allowedChunkIds,
   });
-
-  const fetchConfig = artifact.config.site_pages_fetch;
-  const origin = siteFetchOrigin;
-
-  if (
-    fetchConfig &&
-    origin &&
-    sitePaths !== undefined &&
-    sitePaths.length > 0
-  ) {
-    const missingPaths = listPathsNeedingFetch({
-      chunks: artifact.chunks,
-      fetchConfig,
-      origin,
-      sitePaths,
-    });
-    const fetchedChunks: OpenDetailIndexArtifact["chunks"] = [];
-
-    for (const path of missingPaths) {
-      try {
-        const extracted = await fetchSitePageText({
-          abortSignal,
-          fetchConfig,
-          origin,
-          pathname: path,
-        });
-        fetchedChunks.push(
-          createFetchedPageChunk({
-            origin,
-            pathname: path,
-            text: extracted.text,
-            title: extracted.title,
-          })
-        );
-      } catch {
-        // Omit failed fetches; retrieval still uses indexed chunks.
-      }
-    }
-
-    retrieved = [...retrieved, ...fetchedChunks];
-  }
-
-  return retrieved;
 };
 
-const createRemoteTools = (
-  remoteResources: OpenDetailRemoteResourcesConfig | undefined
+const createFetchTools = (
+  fetchConfig: OpenDetailFetchConfig | undefined
 ): Tool[] => {
   const tools: Tool[] = [];
 
-  if (remoteResources?.file_search) {
+  if (fetchConfig?.file_search) {
     tools.push({
-      max_num_results: remoteResources.file_search.max_num_results,
+      max_num_results: fetchConfig.file_search.max_num_results,
       type: "file_search",
-      vector_store_ids: remoteResources.file_search.vector_store_ids,
+      vector_store_ids: fetchConfig.file_search.vector_store_ids,
     });
   }
 
-  if (remoteResources?.web_search) {
+  if (fetchConfig?.web_search) {
     tools.push({
-      filters: remoteResources.web_search.allowed_domains
+      filters: fetchConfig.web_search.allowed_domains
         ? {
-            allowed_domains: remoteResources.web_search.allowed_domains,
+            allowed_domains: fetchConfig.web_search.allowed_domains,
           }
         : undefined,
-      search_context_size: remoteResources.web_search.search_context_size,
+      search_context_size: fetchConfig.web_search.search_context_size,
       type: "web_search",
     });
   }
@@ -335,6 +283,12 @@ const formatImageContext = (
       const details = [
         image.alt ? `alt: ${image.alt}` : null,
         image.title ? `title: ${image.title}` : null,
+        image.knowledgeTitle
+          ? `assistant_title: ${image.knowledgeTitle}`
+          : null,
+        image.knowledgeSummary
+          ? `assistant_summary: ${image.knowledgeSummary}`
+          : null,
       ].filter(Boolean);
 
       return details.length > 0
@@ -538,7 +492,7 @@ const createOpenAIRequest = ({
   promptCacheRetention,
   question,
   reasoningEffort,
-  remoteTools,
+  fetchTools,
   retrievedChunks,
   sitePaths,
   store,
@@ -554,14 +508,14 @@ const createOpenAIRequest = ({
   >;
   question: string;
   reasoningEffort: NonNullable<CreateOpenDetailOptions["reasoningEffort"]>;
-  remoteTools: Tool[];
+  fetchTools: Tool[];
   retrievedChunks: OpenDetailIndexArtifact["chunks"];
   sitePaths?: string[];
   store: boolean;
   systemInstructions: string;
   verbosity: NonNullable<CreateOpenDetailOptions["verbosity"]>;
 }): ResponseCreateParamsNonStreaming => ({
-  ...(remoteTools.length > 0
+  ...(fetchTools.length > 0
     ? {
         include: [
           "file_search_call.results",
@@ -592,7 +546,7 @@ const createOpenAIRequest = ({
     effort: reasoningEffort,
   },
   store,
-  ...(remoteTools.length > 0 ? { tools: remoteTools } : {}),
+  ...(fetchTools.length > 0 ? { tools: fetchTools } : {}),
   text: {
     format: {
       type: "text",
@@ -921,7 +875,7 @@ const streamOpenAIResponse = async ({
   promptCacheKey,
   promptCacheRetention,
   question,
-  remoteTools,
+  fetchTools,
   reasoningEffort,
   retrievedChunks,
   sitePaths,
@@ -940,7 +894,7 @@ const streamOpenAIResponse = async ({
     ResponseCreateParamsNonStreaming["prompt_cache_retention"]
   >;
   question: string;
-  remoteTools: Tool[];
+  fetchTools: Tool[];
   reasoningEffort: NonNullable<CreateOpenDetailOptions["reasoningEffort"]>;
   retrievedChunks: OpenDetailIndexArtifact["chunks"];
   sitePaths?: string[];
@@ -958,7 +912,7 @@ const streamOpenAIResponse = async ({
       promptCacheKey,
       promptCacheRetention,
       question,
-      remoteTools,
+      fetchTools,
       reasoningEffort,
       retrievedChunks,
       sitePaths,
@@ -1035,14 +989,13 @@ export const createOpenDetail = ({
   assistantInstructionsPath,
   client,
   cwd = ".",
+  fetch,
   indexData,
   indexPath,
   model = DEFAULT_MODEL,
   promptCacheKey,
   promptCacheRetention = DEFAULT_PROMPT_CACHE_RETENTION,
-  remoteResources,
   reasoningEffort = DEFAULT_REASONING_EFFORT,
-  siteFetchOrigin: defaultSiteFetchOrigin,
   store = DEFAULT_STORE,
   verbosity = DEFAULT_VERBOSITY,
 }: CreateOpenDetailOptions = {}): OpenDetailAssistant => {
@@ -1059,9 +1012,8 @@ export const createOpenDetail = ({
   });
   const instructionsHash = createInstructionsHash(systemInstructions);
   const miniSearch = createMiniSearchIndex(artifact.chunks);
-  const remoteTools = createRemoteTools(
-    remoteResources ?? artifact.config.remote_resources
-  );
+  const fetchConfig = fetch ?? artifact.config.fetch;
+  const fetchTools = createFetchTools(fetchConfig);
   const getClient = createOpenAIClientFactory(client);
 
   if (!client) {
@@ -1072,12 +1024,10 @@ export const createOpenDetail = ({
     rawInput: OpenDetailRuntimeInput
   ): Promise<OpenDetailAnswerResult> => {
     const { question, sitePaths } = parseOpenDetailAnswerInput(rawInput);
-    const siteFetchOrigin = rawInput.siteFetchOrigin ?? defaultSiteFetchOrigin;
-    const retrievedChunks = await resolveRetrievedChunksForQuestion({
+    const retrievedChunks = resolveRetrievedChunksForQuestion({
       artifact,
       miniSearch,
       question,
-      siteFetchOrigin,
       sitePaths,
     });
     const images = collectRelevantImages(retrievedChunks);
@@ -1092,7 +1042,7 @@ export const createOpenDetail = ({
       promptCacheKey,
       promptCacheRetention,
       question,
-      remoteTools,
+      fetchTools,
       reasoningEffort,
       retrievedChunks,
       sitePaths,
@@ -1115,7 +1065,7 @@ export const createOpenDetail = ({
     };
   };
 
-  const stream = async (
+  const stream = (
     rawInput: OpenDetailRuntimeInput
   ): Promise<OpenDetailStreamResult> => {
     const {
@@ -1123,14 +1073,11 @@ export const createOpenDetail = ({
       question,
       sitePaths,
     } = parseOpenDetailAnswerInput(rawInput);
-    const siteFetchOrigin = rawInput.siteFetchOrigin ?? defaultSiteFetchOrigin;
     const abortController = new AbortController();
-    const retrievedChunks = await resolveRetrievedChunksForQuestion({
-      abortSignal: abortController.signal,
+    const retrievedChunks = resolveRetrievedChunksForQuestion({
       artifact,
       miniSearch,
       question,
-      siteFetchOrigin,
       sitePaths,
     });
     const images = collectRelevantImages(retrievedChunks);
@@ -1175,7 +1122,7 @@ export const createOpenDetail = ({
               promptCacheKey,
               promptCacheRetention,
               question,
-              remoteTools,
+              fetchTools,
               reasoningEffort,
               retrievedChunks,
               sitePaths,
@@ -1216,13 +1163,13 @@ export const createOpenDetail = ({
       },
     });
 
-    return {
+    return Promise.resolve({
       fallback,
       images,
       model,
       sources,
       stream: responseStream,
-    };
+    });
   };
 
   return {

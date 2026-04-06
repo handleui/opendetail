@@ -1,8 +1,8 @@
 # Configuration
 
-## base_path
+## public_path
 
-Use `base_path` to prepend a route prefix to generated URLs.
+Use `public_path` to prepend a route prefix to generated URLs.
 
 ## include
 

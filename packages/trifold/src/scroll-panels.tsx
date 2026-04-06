@@ -25,7 +25,7 @@ function ScrollPanelBody({
   const pad = density === "compact" ? "p-3 sm:p-4" : "p-6 sm:p-8";
   return (
     <div
-      className={`flex h-full min-h-0 flex-col overflow-y-auto ${pad}`}
+      className={`flex h-full min-h-0 flex-col overflow-y-auto max-md:touch-pan-y ${pad}`}
       data-scroll-panel-body=""
     >
       {contentMaxWidthClassName ? (

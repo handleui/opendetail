@@ -226,10 +226,77 @@ export const ParallelTrack = forwardRef<
       }, 100);
     };
 
+    /** iOS/WebKit: keep the track pinned at column edges (no extra horizontal rubber-band). */
+    const clampScrollLeft = () => {
+      if (programmaticScrollRef.current) {
+        return;
+      }
+
+      const w = el.clientWidth;
+      if (w <= 0) {
+        return;
+      }
+
+      const maxScroll = (safeCount - 1) * w;
+      const { scrollLeft } = el;
+
+      if (scrollLeft < 0) {
+        programmaticScrollRef.current = true;
+        el.scrollTo({ behavior: "instant", left: 0 });
+        programmaticScrollRef.current = false;
+        return;
+      }
+
+      if (scrollLeft > maxScroll) {
+        programmaticScrollRef.current = true;
+        el.scrollTo({ behavior: "instant", left: maxScroll });
+        programmaticScrollRef.current = false;
+      }
+    };
+
+    /**
+     * After scroll settles (including momentum), snap to the nearest column if the track sits
+     * between snap points. Uses `scrollend` so we do not run mid-fling.
+     */
+    const snapToNearestColumn = () => {
+      if (programmaticScrollRef.current) {
+        return;
+      }
+
+      const w = el.clientWidth;
+      if (w <= 0) {
+        return;
+      }
+
+      const maxIdx = safeCount - 1;
+      const nearest = Math.min(
+        maxIdx,
+        Math.max(0, Math.round(el.scrollLeft / w))
+      );
+      const target = nearest * w;
+
+      if (Math.abs(el.scrollLeft - target) <= 1) {
+        return;
+      }
+
+      programmaticScrollRef.current = true;
+      el.scrollTo({ behavior: "instant", left: target });
+      window.requestAnimationFrame(() => {
+        programmaticScrollRef.current = false;
+        if (nearest !== activeIndexRef.current) {
+          onActiveIndexChange(nearest);
+        }
+      });
+    };
+
     el.addEventListener("scroll", onScrollDebounced, { passive: true });
+    el.addEventListener("scroll", clampScrollLeft, { passive: true });
+    el.addEventListener("scrollend", snapToNearestColumn, { passive: true });
 
     return () => {
       el.removeEventListener("scroll", onScrollDebounced);
+      el.removeEventListener("scroll", clampScrollLeft);
+      el.removeEventListener("scrollend", snapToNearestColumn);
 
       if (scrollFallbackTimerRef.current !== null) {
         window.clearTimeout(scrollFallbackTimerRef.current);
@@ -341,10 +408,11 @@ export const ParallelTrack = forwardRef<
           msOverflowStyle: "none",
           overflowX: horizontalEnabled ? "auto" : "hidden",
           overflowY: "hidden",
-          overscrollBehaviorX: "contain",
+          overscrollBehaviorX: "none",
           overscrollBehaviorY: "none",
           scrollbarWidth: "none",
           scrollSnapType: horizontalEnabled ? "x mandatory" : "none",
+          touchAction: horizontalEnabled ? "pan-x pinch-zoom" : "auto",
           width: "100%",
         }}
       >
@@ -368,7 +436,7 @@ export const ParallelTrack = forwardRef<
                 overflow: "hidden",
                 position: "relative",
                 scrollSnapAlign: horizontalEnabled ? "start" : "none",
-                scrollSnapStop: "always",
+                scrollSnapStop: "normal",
                 width: "100%",
               }}
             >

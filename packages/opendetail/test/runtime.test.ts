@@ -142,7 +142,7 @@ const createMockClient = () => {
       instructions: null,
       model: "gpt-5.4-mini",
       output: [],
-      output_text: "Use `base_path` to prepend a route prefix [1].",
+      output_text: "Use `public_path` to prepend a route prefix [1].",
       status: "completed",
     } as unknown as Response);
   });
@@ -197,10 +197,10 @@ describe("OpenDetail runtime", () => {
       const miniSearch = createMiniSearchIndex(artifact.chunks);
       const chunks = retrieveRelevantChunks(
         miniSearch,
-        "How do I set base_path for generated URLs?"
+        "How do I set public_path for generated URLs?"
       );
 
-      expect(chunks[0]?.url).toBe("/docs/configuration#base_path");
+      expect(chunks[0]?.url).toBe("/docs/configuration#public_path");
     } finally {
       await removeWorkspace(cwd);
     }
@@ -608,7 +608,7 @@ describe("OpenDetail runtime", () => {
           },
         } as unknown as OpenAI,
         indexData: artifact,
-        remoteResources: {
+        fetch: {
           web_search: {
             allowed_domains: ["platform.openai.com"],
             search_context_size: "low",
@@ -707,7 +707,7 @@ describe("OpenDetail runtime", () => {
     }
   });
 
-  test("loads older index artifacts that do not include chunk images", () => {
+  test("loads index artifacts that do not include chunk images", () => {
     const artifact = parseOpenDetailIndexArtifact({
       chunks: [
         {
@@ -722,9 +722,13 @@ describe("OpenDetail runtime", () => {
         },
       ],
       config: {
-        base_path: "/docs",
-        exclude: [],
-        include: ["content/**/*.md"],
+        content: [
+          {
+            exclude: [],
+            include: ["content/**/*.md"],
+            public_path: "/docs",
+          },
+        ],
         version: 1,
       },
       generatedAt: new Date().toISOString(),
@@ -756,7 +760,7 @@ describe("OpenDetail runtime", () => {
       });
 
       await assistant.answer({
-        question: "How do I set base_path?",
+        question: "How do I set public_path?",
       });
 
       expect(create.mock.calls[0]?.[0]).toMatchObject({

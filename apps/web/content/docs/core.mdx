@@ -23,9 +23,11 @@ Use **`opendetail`** without Next or React for Node integrations (custom server,
 OpenDetail reads **`opendetail.toml`** at the project root.
 
 <CodeBlock lang="toml">{`version = 1
+
+[[content]]
 include = ["content/**/*.{md,mdx}"]
 exclude = []
-base_path = "/docs"
+public_path = "/docs"
 `}</CodeBlock>
 
 ## Fields
@@ -33,15 +35,14 @@ base_path = "/docs"
 | Field | Required | Meaning |
 | --- | --- | --- |
 | `version` | yes | Must be `1` |
-| `include` | yes | Glob patterns for Markdown and MDX source files |
-| `exclude` | no | Ignore globs for files matched by `include` |
-| `base_path` | no | URL base used when source URLs are generated |
+| `[[content]]` | yes | One or more tables: each has `include`, `exclude`, and `public_path` for a Markdown/MDX root |
 | `media` | no | Rules for mapping local media references to public URLs |
-| `remote_resources` | no | OpenAI Responses API retrieval tools at answer time |
+| `fetch` | no | Optional OpenAI Responses API tools: `[fetch.file_search]` and/or `[fetch.web_search]` |
+| `knowledge` | no | Path to optional `.opendetail/knowledge.toml` sidecar with `[[asset]]` titles/summaries for images |
 
-## Base path
+## Content roots
 
-`base_path` is normalized before URLs are generated. Match it to the public route where your docs are served, for example `/docs` or `/help`.
+You can list **multiple** **`[[content]]`** blocks when docs, marketing, or other MDX trees live under different folders **and** are served at different URL prefixes. Each row is one indexed tree. Set **`public_path`** to the **public URL prefix** for that tree (where those pages appear in the browser), for example `/docs` for documentation and `/` for site-root marketing. OpenDetail joins each file’s route segments after that prefix to build citation URLs (and, beyond the first root, tags chunks as `sourceKind: "page"` for UI styling).
 
 ## Media
 
@@ -50,7 +51,7 @@ Use `[media]` when docs reference local images such as `./hero.png`.
 <CodeBlock lang="toml">{`[media]
 include = ["content/**/*.{png,jpg,jpeg,webp,avif,gif,svg}"]
 exclude = []
-base_path = "/content-media"
+public_path = "/content-media"
 `}</CodeBlock>
 
 When `media` is configured:
@@ -62,16 +63,16 @@ When `media` is configured:
 
 If a doc references a local image that does not match the configured media globs, the build fails with a clear error.
 
-## Remote resources
+## Fetch (OpenAI remote tools)
 
-Optional Responses API tools:
+Optional Responses API tools — configure as **`[fetch.file_search]`** and/or **`[fetch.web_search]`** (native remote retrieval; no same-origin HTML scraping).
 
-<CodeBlock lang="toml">{`[remote_resources.file_search]
+<CodeBlock lang="toml">{`[fetch.file_search]
 vector_store_ids = ["vs_123"]
 max_num_results = 8
 
-[remote_resources.web_search]
-allowed_domains = ["platform.openai.com", "docs.example.com"]
+[fetch.web_search]
+allowed_domains = ["opendetail.dev", "platform.openai.com"]
 search_context_size = "low"
 `}</CodeBlock>
 
@@ -91,6 +92,16 @@ search_context_size = "low"
 
 Remote citations appear in `sources` with `kind: "remote"`.
 
+## Knowledge sidecar
+
+Optional **`knowledge = ".opendetail/knowledge.toml"`** with entries such as:
+
+<CodeBlock lang="toml">{`[[asset]]
+url = "/content-media/diagram.png"
+title = "Pipeline overview"
+summary = "Use when explaining the build step."
+`}</CodeBlock>
+
 ## Create an assistant
 
 Use **`opendetail`** core when calling from Node without Next.js helpers.
@@ -103,7 +114,7 @@ const assistant = createOpenDetail();
 Then:
 
 <CodeBlock lang="ts">{`const result = await assistant.answer({
-  question: "How do I configure base_path?",
+  question: "How do I configure public_path?",
 });
 `}</CodeBlock>
 
@@ -129,7 +140,7 @@ If none exist, only built-in harness instructions apply.
 
 ## Remote retrieval
 
-Configure via `remoteResources` in code or `remote_resources` in `opendetail.toml` (`file_search`, `web_search`).
+Configure via **`fetch`** in `createOpenDetail` options or **`[fetch]`** in `opendetail.toml` (`fetch.file_search`, `fetch.web_search`). Runtime options override the artifact when provided.
 
 ## Defaults
 
@@ -152,10 +163,10 @@ Configure via `remoteResources` in code or `remote_resources` in `opendetail.tom
 | `assistantInstructions` | Inline project guidance |
 | `assistantInstructionsPath` | Custom instructions path |
 | `promptCacheKey` | Explicit cache key override |
-| `remoteResources` | Override remote retrieval config |
+| `fetch` | Override `fetch` from the index (OpenAI tools) |
 
 ## Fallback behavior
 
-If lexical retrieval matches **no indexed chunks**, OpenDetail sets **`fallback: true`**. The model may still answer using remote tools; the flag means “no index hit,” not “no answer.” If the model returns no usable text:
+If lexical retrieval matches **no indexed chunks**, OpenDetail sets **`fallback: true`**. The model may still answer using configured **`fetch`** tools; the flag means “no index hit,” not “no answer.” If the model returns no usable text:
 
 <CodeBlock lang="txt">{`That isn't covered in the available sources yet.`}</CodeBlock>

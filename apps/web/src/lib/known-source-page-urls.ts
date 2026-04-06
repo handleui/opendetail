@@ -1,11 +1,13 @@
 import { readdirSync } from "node:fs";
 import { join, resolve } from "node:path";
-import { docsRoute } from "./shared";
+import { docsRoute, uiRoute } from "./shared";
 
 const docsContentDirectory = resolve(process.cwd(), "content/docs");
+const uiContentDirectory = resolve(process.cwd(), "content/ui");
 
 const collectKnownSourcePageUrls = (
   directoryPath: string,
+  baseRoute: string,
   parentSegments: readonly string[] = []
 ): string[] => {
   const pageUrls: string[] = [];
@@ -18,7 +20,9 @@ const collectKnownSourcePageUrls = (
     const entryPath = join(directoryPath, entry.name);
 
     if (entry.isDirectory()) {
-      pageUrls.push(...collectKnownSourcePageUrls(entryPath, nextSegments));
+      pageUrls.push(
+        ...collectKnownSourcePageUrls(entryPath, baseRoute, nextSegments)
+      );
       continue;
     }
 
@@ -32,39 +36,16 @@ const collectKnownSourcePageUrls = (
 
     pageUrls.push(
       pathnameSegments.length === 0
-        ? docsRoute
-        : `${docsRoute}/${pathnameSegments.join("/")}`
+        ? baseRoute
+        : `${baseRoute}/${pathnameSegments.join("/")}`
     );
   }
 
   return pageUrls;
 };
 
-/** Canonical routes for Assistant UI showcase pages (`app/ui`). */
-const uiDocsShowcasePageUrls = [
-  "/ui",
-  "/ui/systems",
-  "/ui/themes",
-  "/ui/primitives",
-  "/ui/hooks",
-  "/ui/hooks/use-opendetail",
-  "/ui/hooks/create-open-detail-client",
-  "/ui/opendetail/conversation-title",
-  "/ui/opendetail/error",
-  "/ui/opendetail/composer",
-  "/ui/opendetail/pressable",
-  "/ui/opendetail/recommendations",
-  "/ui/opendetail/shell",
-  "/ui/opendetail/sidebar",
-  "/ui/opendetail/sources",
-  "/ui/opendetail/loader",
-  "/ui/opendetail/thread",
-  "/ui/opendetail/user-message",
-  "/ui/opendetail/assistant-message",
-] as const;
-
 export const knownSourcePageUrls = [
   "/changelog",
-  ...collectKnownSourcePageUrls(docsContentDirectory),
-  ...uiDocsShowcasePageUrls,
+  ...collectKnownSourcePageUrls(docsContentDirectory, docsRoute),
+  ...collectKnownSourcePageUrls(uiContentDirectory, uiRoute),
 ].sort();

@@ -332,16 +332,18 @@ const createConfigTemplate = ({
   withMedia: boolean;
 }): string =>
   `version = 1
+
+[[content]]
 include = ["${escapeTomlString(includePattern)}"]
 exclude = []
-base_path = "${escapeTomlString(basePath)}"
+public_path = "${escapeTomlString(basePath)}"
 ${
   withMedia
     ? `
 [media]
 include = ["${escapeTomlString(mediaIncludePattern)}"]
 exclude = []
-base_path = "/content-media"`
+public_path = "/content-media"`
     : ""
 }
 `;

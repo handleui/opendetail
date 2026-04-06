@@ -20,7 +20,7 @@ import { renderNextSourceLink } from "../src/link";
 function* createMockResponseEventStream(): Generator<OpenDetailResponseStreamEvent> {
   yield {
     content_index: 0,
-    delta: "Use `base_path` to prepend a route prefix [1].",
+    delta: "Use `public_path` to prepend a route prefix [1].",
     item_id: "msg_1",
     logprobs: [],
     output_index: 0,
@@ -33,7 +33,7 @@ function* createMockResponseEventStream(): Generator<OpenDetailResponseStreamEve
     logprobs: [],
     output_index: 0,
     sequence_number: 2,
-    text: "Use `base_path` to prepend a route prefix [1].",
+    text: "Use `public_path` to prepend a route prefix [1].",
     type: "response.output_text.done",
   } satisfies OpenDetailResponseStreamEvent;
   yield {
@@ -45,7 +45,7 @@ function* createMockResponseEventStream(): Generator<OpenDetailResponseStreamEve
       instructions: null,
       model: "gpt-5.4-mini",
       output: [],
-      output_text: "Use `base_path` to prepend a route prefix [1].",
+      output_text: "Use `public_path` to prepend a route prefix [1].",
       status: "completed",
     } as unknown as OpenDetailResponseObject,
     sequence_number: 3,
@@ -69,7 +69,7 @@ const createMockClient = (): NonNullable<CreateOpenDetailOptions["client"]> =>
           instructions: null,
           model: "gpt-5.4-mini",
           output: [],
-          output_text: "Use `base_path` to prepend a route prefix [1].",
+          output_text: "Use `public_path` to prepend a route prefix [1].",
           status: "completed",
         } as unknown as OpenDetailResponseObject);
       },
@@ -182,7 +182,7 @@ describe("createNextRouteHandler", () => {
       const response = await handler(
         new Request("http://localhost/api/opendetail", {
           body: JSON.stringify({
-            question: "What does base_path do?",
+            question: "What does public_path do?",
           }),
           headers: {
             "content-type": "application/json",
@@ -212,7 +212,7 @@ describe("createNextRouteHandler", () => {
         type: "images",
       });
       expect(events.at(-1)).toEqual({
-        text: "Use `base_path` to prepend a route prefix [1].",
+        text: "Use `public_path` to prepend a route prefix [1].",
         type: "done",
       });
     } finally {
@@ -229,7 +229,7 @@ describe("createNextRouteHandler", () => {
       const response = await handler(
         new Request("http://localhost/api/opendetail", {
           body: JSON.stringify({
-            question: "What does base_path do?",
+            question: "What does public_path do?",
           }),
           headers: {
             "content-type": "application/json",
@@ -270,7 +270,7 @@ describe("createNextRouteHandler", () => {
       const createRequest = () =>
         new Request("http://localhost/api/opendetail", {
           body: JSON.stringify({
-            question: "What does base_path do?",
+            question: "What does public_path do?",
           }),
           headers: {
             "content-type": "application/json",
@@ -303,7 +303,7 @@ describe("createNextRouteHandler", () => {
       const response = await handler(
         new Request("http://localhost/api/opendetail", {
           body: JSON.stringify({
-            question: "What does base_path do?",
+            question: "What does public_path do?",
           }),
           headers: {
             "content-type": "application/json",
@@ -344,7 +344,7 @@ describe("createNextRouteHandler", () => {
       const createRequest = () =>
         new Request("http://localhost/api/opendetail", {
           body: JSON.stringify({
-            question: "What does base_path do?",
+            question: "What does public_path do?",
           }),
           headers: {
             "content-type": "application/json",

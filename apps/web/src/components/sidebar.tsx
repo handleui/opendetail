@@ -26,10 +26,10 @@ import {
 import {
   isUnderSiteSecondaryNavPathname,
   isUnderUiDocsPathname,
-  SITE_DOCS_NAV_TREE,
+  SITE_DOCS_ROUTER,
   SITE_UI_DOCS_ROUTER,
-  SITE_UI_DOCS_SECTIONS,
   type SiteNavNode,
+  type SiteNavSection,
   UI_DOCS_PATH_PREFIX,
 } from "@/lib/site-nav";
 
@@ -230,6 +230,16 @@ function NestedNavItems({
   );
 }
 
+function nestedSectionKey(section: {
+  title: string;
+  items: readonly SiteNavNode[];
+}): string {
+  const itemPart = section.items
+    .map((n) => (n.kind === "page" ? n.href : n.id))
+    .join("|");
+  return `${section.title}::${itemPart}`;
+}
+
 function NestedNavSections({
   pathname,
   sections,
@@ -240,9 +250,11 @@ function NestedNavSections({
   return (
     <div className="flex flex-col gap-8">
       {sections.map((section) => (
-        <div key={section.title}>
-          <p className={SECTION_TITLE_CLASS}>{section.title}</p>
-          <div className="mt-2">
+        <div key={nestedSectionKey(section)}>
+          {section.title.trim() ? (
+            <p className={SECTION_TITLE_CLASS}>{section.title}</p>
+          ) : null}
+          <div className={section.title.trim() ? "mt-2" : undefined}>
             <NestedNavItems nodes={section.items} pathname={pathname} />
           </div>
         </div>
@@ -255,6 +267,8 @@ export interface SidebarProps {
   /** Whether the assistant panel is open (for pressed styling). */
   assistantOpen?: boolean;
   docsPathPrefix?: string;
+  /** Documentation nested panel — from `source.getPageTree()` (server). */
+  docsSidebarSections: readonly SiteNavSection[];
   githubHref: string;
   githubIcon: ReactNode;
   madeByHumanHref?: string;
@@ -266,6 +280,8 @@ export interface SidebarProps {
   productVersionLabel: string;
   /** Root row icons (site nav + Social) — default 14px. */
   rowIconSize?: number;
+  /** Assistant UI nested panel — from `uiSource.getPageTree()` (server). */
+  uiSidebarSections: readonly SiteNavSection[];
 }
 
 export function Sidebar({
@@ -280,6 +296,8 @@ export function Sidebar({
   assistantOpen = false,
   onAssistantToggle,
   rowIconSize = DEFAULT_ROW_ICON_SIZE,
+  docsSidebarSections,
+  uiSidebarSections,
 }: SidebarProps) {
   const pathname = usePathname();
   const { effectivePathname, setNavIntent } =
@@ -556,7 +574,7 @@ export function Sidebar({
                     </div>
                     <NestedNavSections
                       pathname={pathname}
-                      sections={SITE_UI_DOCS_SECTIONS}
+                      sections={uiSidebarSections}
                     />
                   </div>
                 </nav>
@@ -569,10 +587,22 @@ export function Sidebar({
                   <p className="sr-only" id={navId}>
                     Documentation
                   </p>
-                  <NestedNavSections
-                    pathname={pathname}
-                    sections={SITE_DOCS_NAV_TREE}
-                  />
+                  <div className="flex flex-col gap-4">
+                    <div>
+                      <Link
+                        className={navLinkClass(
+                          isPageActive(SITE_DOCS_ROUTER.href, pathname)
+                        )}
+                        href={SITE_DOCS_ROUTER.href}
+                      >
+                        {SITE_DOCS_ROUTER.label}
+                      </Link>
+                    </div>
+                    <NestedNavSections
+                      pathname={pathname}
+                      sections={docsSidebarSections}
+                    />
+                  </div>
                 </nav>
               )}
             </div>

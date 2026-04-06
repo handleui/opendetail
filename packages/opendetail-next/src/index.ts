@@ -111,39 +111,12 @@ const createOpenDetailLoader = (
   };
 };
 
-export type CreateNextRouteHandlerOptions = CreateOpenDetailOptions & {
-  /**
-   * Resolve the public origin for same-origin page fetch (e.g. `https://myapp.com`).
-   * Defaults to `siteFetchOrigin`, then `OPENDETAIL_SITE_FETCH_ORIGIN`, then request Host headers.
-   */
-  resolveSiteFetchOrigin?: (request: Request) => string | undefined;
-};
-
-const resolveSiteFetchOriginFromRequestHeaders = (
-  request: Request
-): string | undefined => {
-  const forwardedProto = request.headers.get("x-forwarded-proto");
-  const host =
-    request.headers.get("x-forwarded-host") ?? request.headers.get("host");
-
-  if (!host) {
-    return undefined;
-  }
-
-  const protocol = forwardedProto ?? "https";
-
-  try {
-    return new URL(`${protocol}://${host}`).origin;
-  } catch {
-    return undefined;
-  }
-};
+export type CreateNextRouteHandlerOptions = CreateOpenDetailOptions;
 
 export const createNextRouteHandler = (
   options: CreateNextRouteHandlerOptions = {}
 ): ((request: Request) => Promise<Response>) => {
-  const { resolveSiteFetchOrigin, ...createDetailOptions } = options;
-  const loadOpenDetail = createOpenDetailLoader(createDetailOptions);
+  const loadOpenDetail = createOpenDetailLoader(options);
 
   return async (request: Request): Promise<Response> => {
     if (request.method !== "POST") {
@@ -175,18 +148,7 @@ export const createNextRouteHandler = (
     }
 
     try {
-      const siteFetchOrigin =
-        resolveSiteFetchOrigin?.(request) ??
-        options.siteFetchOrigin ??
-        (typeof process === "undefined"
-          ? undefined
-          : process.env.OPENDETAIL_SITE_FETCH_ORIGIN) ??
-        resolveSiteFetchOriginFromRequestHeaders(request);
-
-      const streamInput: OpenDetailRuntimeInput = {
-        ...parsedBody.data,
-        ...(siteFetchOrigin ? { siteFetchOrigin } : {}),
-      };
+      const streamInput: OpenDetailRuntimeInput = parsedBody.data;
 
       const result = await assistant.stream(streamInput);
 

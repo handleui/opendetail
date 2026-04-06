@@ -1,4 +1,6 @@
 version = 1
+
+[[content]]
 include = ["content/**/*.md", "content/**/*.mdx"]
 exclude = []
-base_path = "/docs"
+public_path = "/docs"

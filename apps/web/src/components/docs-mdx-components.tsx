@@ -8,8 +8,10 @@ import { CodeBlock } from "@/components/code-block";
 import { CopyCommand } from "@/components/copy-command";
 import { DocsMdxPre } from "@/components/docs-mdx-pre";
 import type { source } from "@/lib/source";
+import type { uiSource } from "@/lib/ui-source";
 
 type DocsPage = InferPageType<typeof source>;
+type UiDocsPage = InferPageType<typeof uiSource>;
 
 function Cards({ children }: { children?: ReactNode }) {
   return (
@@ -71,6 +73,14 @@ function Card({
 export function getDocsMdxComponents(
   pageSource: typeof source,
   page: DocsPage
+): MDXComponents;
+export function getDocsMdxComponents(
+  pageSource: typeof uiSource,
+  page: UiDocsPage
+): MDXComponents;
+export function getDocsMdxComponents(
+  pageSource: typeof source | typeof uiSource,
+  page: DocsPage | UiDocsPage
 ): MDXComponents {
   const A = createRelativeLink(
     pageSource,

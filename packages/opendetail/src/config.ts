@@ -2,62 +2,53 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { parse as parseToml } from "smol-toml";
 import { z } from "zod";
-import {
-  DEFAULT_BASE_PATH,
-  OPENDETAIL_CONFIG_FILE,
-  OPENDETAIL_VERSION,
-} from "./constants";
+import { OPENDETAIL_CONFIG_FILE, OPENDETAIL_VERSION } from "./constants";
 import { OpenDetailConfigError } from "./errors";
 import type { OpenDetailConfig } from "./types";
-import { normalizeBasePath } from "./utils";
+import { normalizePublicPath } from "./utils";
+
+const ContentRootSchema = z
+  .object({
+    exclude: z.array(z.string()).default([]),
+    include: z.array(z.string()).min(1),
+    public_path: z.string(),
+  })
+  .strict();
+
+const FetchSchema = z
+  .object({
+    file_search: z
+      .object({
+        max_num_results: z.number().int().min(1).max(50).optional(),
+        vector_store_ids: z.array(z.string().min(1)).min(1),
+      })
+      .strict()
+      .optional(),
+    web_search: z
+      .object({
+        allowed_domains: z.array(z.string().min(1)).min(1).optional(),
+        search_context_size: z.enum(["low", "medium", "high"]).optional(),
+      })
+      .strict()
+      .optional(),
+  })
+  .strict()
+  .optional();
 
 const OpenDetailConfigSchema = z
   .object({
-    base_path: z.string().default(DEFAULT_BASE_PATH),
-    exclude: z.array(z.string()).default([]),
-    include: z.array(z.string()).min(1),
+    content: z.array(ContentRootSchema).min(1),
+    fetch: FetchSchema,
+    knowledge: z.string().min(1).optional(),
     media: z
       .object({
-        base_path: z.string(),
         exclude: z.array(z.string()).default([]),
         include: z.array(z.string()).min(1),
+        public_path: z.string(),
       })
       .strict()
       .optional(),
-    remote_resources: z
-      .object({
-        file_search: z
-          .object({
-            max_num_results: z.number().int().min(1).max(50).optional(),
-            vector_store_ids: z.array(z.string().min(1)).min(1),
-          })
-          .strict()
-          .optional(),
-        web_search: z
-          .object({
-            allowed_domains: z.array(z.string().min(1)).min(1).optional(),
-            search_context_size: z.enum(["low", "medium", "high"]).optional(),
-          })
-          .strict()
-          .optional(),
-      })
-      .strict()
-      .optional(),
-    site_pages: z
-      .object({
-        base_path: z.string(),
-        exclude: z.array(z.string()).default([]),
-        include: z.array(z.string()).min(1),
-      })
-      .strict()
-      .optional(),
-    site_pages_fetch: z
-      .object({
-        allowed_path_prefixes: z.array(z.string().min(1)).min(1),
-        max_bytes: z.number().int().min(1024).max(5_000_000).optional(),
-      })
-      .strict()
-      .optional(),
+    model: z.string().min(1).optional(),
     version: z.literal(OPENDETAIL_VERSION),
   })
   .strict();
@@ -109,22 +100,17 @@ export const readOpenDetailConfig = async ({
 
   return {
     ...config,
-    base_path: normalizeBasePath(config.base_path),
+    content: config.content.map((root) => ({
+      ...root,
+      public_path: normalizePublicPath(root.public_path),
+    })),
     ...(media
       ? {
           media: {
             ...media,
-            base_path: normalizeBasePath(media.base_path),
+            public_path: normalizePublicPath(media.public_path),
           },
         }
       : {}),
-    ...(config.site_pages
-      ? {
-          site_pages: {
-            ...config.site_pages,
-            base_path: normalizeBasePath(config.site_pages.base_path),
-          },
-        }
-      : {}),
-  };
+  } as OpenDetailConfig;
 };

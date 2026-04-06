@@ -19,7 +19,7 @@ describe("createOpenDetailClient", () => {
 
     await expect(
       client.submit({
-        question: "What does base_path do?",
+        question: "What does public_path do?",
       })
     ).rejects.toMatchObject({
       code: "missing_api_key",
@@ -45,7 +45,7 @@ describe("createOpenDetailClient", () => {
 
     await expect(
       client.submit({
-        question: "What does base_path do?",
+        question: "What does public_path do?",
       })
     ).rejects.toMatchObject({
       code: "request_failed",

@@ -1,21 +1,29 @@
 import { metaSchema, pageSchema } from "fumadocs-core/source/schema";
 import { defineConfig, defineDocs } from "fumadocs-mdx/config";
 
-// Single docs collection today; Assistant UI showcase routes live under `content/docs/ui/` → `/ui`.
-// is the Fumadocs-native way to split trees (see apps/web `site-nav.ts`).
-// You can customise Zod schemas for frontmatter and `meta.json` here
-// see https://fumadocs.dev/docs/mdx/collections
+const docsPageOptions = {
+  schema: pageSchema,
+  postprocess: {
+    includeProcessedMarkdown: true,
+  },
+} as const;
+
+const metaOptions = {
+  schema: metaSchema,
+} as const;
+
+/** Main documentation — `/docs`. */
 export const docs = defineDocs({
   dir: "content/docs",
-  docs: {
-    schema: pageSchema,
-    postprocess: {
-      includeProcessedMarkdown: true,
-    },
-  },
-  meta: {
-    schema: metaSchema,
-  },
+  docs: docsPageOptions,
+  meta: metaOptions,
+});
+
+/** Assistant UI — `/ui` (separate loader / page tree, Fumadocs-native split). */
+export const assistantUi = defineDocs({
+  dir: "content/ui",
+  docs: docsPageOptions,
+  meta: metaOptions,
 });
 
 export default defineConfig({

@@ -37,17 +37,19 @@ Add **`OPENAI_API_KEY`** to the environment your route runs in before you call t
 You should see something like:
 
 <CodeBlock lang="toml">{`version = 1
+
+[[content]]
 include = ["content/**/*.{md,mdx}"]
 exclude = []
-base_path = "/docs"
+public_path = "/docs"
 
 [media]
 include = ["content/**/*.{png,jpg,jpeg,webp,avif,gif,svg}"]
 exclude = []
-base_path = "/content-media"
+public_path = "/content-media"
 `}</CodeBlock>
 
-Tweak `include` / `base_path` to match where your docs actually live. Full field list is in [Core package](/docs/core#fields).
+Tweak **`[[content]]`** globs and **`public_path`** so each root matches where those files are served on the site. Add more **`[[content]]`** rows when you index multiple trees (for example `/docs` and `/`). Full field list is in [Core package](/docs/core#fields).
 
 ## Rebuild when content changes
 
@@ -84,7 +86,7 @@ The App Router integration lives in **`opendetail-next`**: **`createNextRoute`**
 
 **Request body** — intentionally tiny:
 
-<CodeBlock lang="json">{`{ "question": "How do I configure base_path?" }`}</CodeBlock>
+<CodeBlock lang="json">{`{ "question": "How do I configure public_path?" }`}</CodeBlock>
 
 Malformed bodies get a JSON error instead of a broken stream.
 

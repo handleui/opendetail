@@ -1,0 +1,28 @@
+{
+  "title": "Assistant UI",
+  "root": true,
+  "pages": [
+    "index",
+    "---Foundations---",
+    "systems",
+    "themes",
+    "primitives",
+    "hooks/index",
+    "---Hooks---",
+    "hooks/use-opendetail",
+    "hooks/create-open-detail-client",
+    "---Primitives---",
+    "opendetail/shell",
+    "opendetail/sidebar",
+    "opendetail/composer",
+    "opendetail/thread",
+    "opendetail/user-message",
+    "opendetail/assistant-message",
+    "opendetail/recommendations",
+    "opendetail/sources",
+    "opendetail/conversation-title",
+    "opendetail/pressable",
+    "opendetail/loader",
+    "opendetail/error"
+  ]
+}

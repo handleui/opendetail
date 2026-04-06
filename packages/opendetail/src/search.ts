@@ -18,6 +18,8 @@ interface SearchableChunk extends OpenDetailChunk {
 
 const OpenDetailChunkImageSchema = z.object({
   alt: z.string().nullable(),
+  knowledgeSummary: z.string().optional(),
+  knowledgeTitle: z.string().optional(),
   title: z.string().nullable(),
   url: z.string(),
 });
@@ -35,48 +37,49 @@ const OpenDetailChunkSchema = z.object({
   url: z.string(),
 });
 
-const OpenDetailConfigSchema = z.object({
-  base_path: z.string(),
-  exclude: z.array(z.string()),
-  include: z.array(z.string()),
-  media: z
-    .object({
-      base_path: z.string(),
-      exclude: z.array(z.string()),
-      include: z.array(z.string()),
-    })
-    .optional(),
-  site_pages: z
-    .object({
-      base_path: z.string(),
-      exclude: z.array(z.string()),
-      include: z.array(z.string()),
-    })
-    .optional(),
-  site_pages_fetch: z
-    .object({
-      allowed_path_prefixes: z.array(z.string()),
-      max_bytes: z.number().optional(),
-    })
-    .optional(),
-  remote_resources: z
-    .object({
-      file_search: z
-        .object({
-          max_num_results: z.number().int().min(1).max(50).optional(),
-          vector_store_ids: z.array(z.string()),
-        })
-        .optional(),
-      web_search: z
-        .object({
-          allowed_domains: z.array(z.string()).optional(),
-          search_context_size: z.enum(["low", "medium", "high"]).optional(),
-        })
-        .optional(),
-    })
-    .optional(),
-  version: z.literal(OPENDETAIL_VERSION),
-});
+const ContentRootSchema = z
+  .object({
+    exclude: z.array(z.string()),
+    include: z.array(z.string()),
+    public_path: z.string(),
+  })
+  .strict();
+
+const OpenDetailConfigSchema = z
+  .object({
+    content: z.array(ContentRootSchema).min(1),
+    fetch: z
+      .object({
+        file_search: z
+          .object({
+            max_num_results: z.number().int().min(1).max(50).optional(),
+            vector_store_ids: z.array(z.string()),
+          })
+          .strict()
+          .optional(),
+        web_search: z
+          .object({
+            allowed_domains: z.array(z.string()).optional(),
+            search_context_size: z.enum(["low", "medium", "high"]).optional(),
+          })
+          .strict()
+          .optional(),
+      })
+      .strict()
+      .optional(),
+    knowledge: z.string().optional(),
+    media: z
+      .object({
+        exclude: z.array(z.string()),
+        include: z.array(z.string()),
+        public_path: z.string(),
+      })
+      .strict()
+      .optional(),
+    model: z.string().optional(),
+    version: z.literal(OPENDETAIL_VERSION),
+  })
+  .strict();
 
 const OpenDetailIndexArtifactSchema = z.object({
   chunks: z.array(OpenDetailChunkSchema),
@@ -107,7 +110,12 @@ export const parseOpenDetailIndexArtifact = (
 
 const createSearchableImageText = (images: OpenDetailChunk["images"]): string =>
   (images ?? [])
-    .flatMap((image) => [image.alt ?? "", image.title ?? ""])
+    .flatMap((image) => [
+      image.alt ?? "",
+      image.title ?? "",
+      image.knowledgeTitle ?? "",
+      image.knowledgeSummary ?? "",
+    ])
     .filter((value) => value.length > 0)
     .join(" ");
 

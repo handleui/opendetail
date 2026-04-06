@@ -1,4 +1,6 @@
 version = 1
-include = ["content/**/*.md", "content/**/*.mdx"]
+
+[[content]]
+include = ["content/**/*.mdx"]
 exclude = []
-base_path = "/guides"
+public_path = "/guides"

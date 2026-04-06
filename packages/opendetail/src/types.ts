@@ -7,53 +7,61 @@ import type {
   ResponseStreamEvent,
 } from "openai/resources/responses/responses";
 
-export interface OpenDetailSitePagesConfig {
-  base_path: string;
+export interface OpenDetailContentRoot {
   exclude: string[];
   include: string[];
+  /** Public URL prefix where this root’s pages are served (e.g. `/docs`, `/`). */
+  public_path: string;
 }
 
-export interface OpenDetailSitePagesFetchConfig {
-  allowed_path_prefixes: string[];
-  max_bytes?: number;
+/** OpenAI `file_search` tool (vector stores). */
+export interface OpenDetailFetchFileSearchConfig {
+  max_num_results?: number;
+  vector_store_ids: string[];
+}
+
+/** OpenAI `web_search` tool. */
+export interface OpenDetailFetchWebSearchConfig {
+  allowed_domains?: string[];
+  search_context_size?: "low" | "medium" | "high";
+}
+
+/**
+ * Optional OpenAI Responses API remote tools (`file_search`, `web_search`).
+ * Configure in `opendetail.toml` as `[fetch.file_search]` / `[fetch.web_search]`.
+ */
+export interface OpenDetailFetchConfig {
+  file_search?: OpenDetailFetchFileSearchConfig;
+  web_search?: OpenDetailFetchWebSearchConfig;
 }
 
 export interface OpenDetailConfig {
-  base_path: string;
-  exclude: string[];
-  include: string[];
+  /** One or more MD/MDX roots; each has its own `public_path` for citation URLs. */
+  content: OpenDetailContentRoot[];
+  /** Optional OpenAI remote tools; same shape as `[fetch]` in `opendetail.toml`. */
+  fetch?: OpenDetailFetchConfig;
+  /** Optional path (relative to cwd) to a knowledge sidecar TOML with `[[asset]]` entries. */
+  knowledge?: string;
   media?: OpenDetailMediaConfig;
-  remote_resources?: OpenDetailRemoteResourcesConfig;
-  site_pages?: OpenDetailSitePagesConfig;
-  site_pages_fetch?: OpenDetailSitePagesFetchConfig;
+  /** Default model id for `createOpenDetail` when not overridden in code. */
+  model?: string;
   version: 1;
 }
 
 export type OpenDetailIntegrationMode = "hosted" | "self-hosted";
 
 export interface OpenDetailMediaConfig {
-  base_path: string;
   exclude: string[];
   include: string[];
-}
-
-export interface OpenDetailRemoteWebSearchConfig {
-  allowed_domains?: string[];
-  search_context_size?: "low" | "medium" | "high";
-}
-
-export interface OpenDetailRemoteFileSearchConfig {
-  max_num_results?: number;
-  vector_store_ids: string[];
-}
-
-export interface OpenDetailRemoteResourcesConfig {
-  file_search?: OpenDetailRemoteFileSearchConfig;
-  web_search?: OpenDetailRemoteWebSearchConfig;
+  public_path: string;
 }
 
 export interface OpenDetailChunkImage {
   alt: string | null;
+  /** Optional assistant-facing copy merged from `.opendetail/knowledge.toml` [[asset]] entries. */
+  knowledgeSummary?: string;
+  /** Optional assistant-facing title merged from the knowledge sidecar. */
+  knowledgeTitle?: string;
   title: string | null;
   url: string;
 }
@@ -65,7 +73,7 @@ export interface OpenDetailChunk {
   id: string;
   images?: OpenDetailChunkImage[];
   relativePath: string;
-  /** Indexed marketing or site-page chunks; omit for standard doc chunks (treated as local). */
+  /** First [[content]] root is treated as primary docs; additional roots as `page` for source styling. */
   sourceKind?: "local" | "page";
   text: string;
   title: string;
@@ -107,17 +115,13 @@ export interface OpenDetailAnswerInput {
   conversationTitle?: boolean;
   question: string;
   /**
-   * Restrict retrieval to chunks whose public URL path matches these prefixes,
-   * and optionally trigger same-origin page fetch for paths with no indexed chunk
-   * when `site_pages_fetch` is configured and `siteFetchOrigin` is set (server-side).
+   * Restrict retrieval to chunks whose public URL path matches these prefixes
+   * (e.g. current page scope in the UI).
    */
   sitePaths?: string[];
 }
 
-/** Server integrations may add `siteFetchOrigin`; it is not part of the public JSON schema. */
-export type OpenDetailRuntimeInput = OpenDetailAnswerInput & {
-  siteFetchOrigin?: string;
-};
+export type OpenDetailRuntimeInput = OpenDetailAnswerInput;
 
 export type OpenDetailErrorCode =
   | "invalid_request"
@@ -172,6 +176,8 @@ export interface CreateOpenDetailOptions {
   assistantInstructionsPath?: string;
   client?: OpenAI | null;
   cwd?: string;
+  /** Overrides `fetch` from the index artifact when set. */
+  fetch?: OpenDetailFetchConfig;
   indexData?: OpenDetailIndexArtifact;
   indexPath?: string;
   model?: string;
@@ -182,12 +188,6 @@ export interface CreateOpenDetailOptions {
   reasoningEffort?: NonNullable<
     NonNullable<ResponseCreateParamsBase["reasoning"]>["effort"]
   >;
-  remoteResources?: OpenDetailRemoteResourcesConfig;
-  /**
-   * Base URL for same-origin `site_pages_fetch` (e.g. `https://example.com`).
-   * Per-request overrides may be merged by integrations (e.g. Next.js route handler).
-   */
-  siteFetchOrigin?: string;
   store?: boolean;
   verbosity?: NonNullable<
     NonNullable<ResponseCreateParamsBase["text"]>["verbosity"]

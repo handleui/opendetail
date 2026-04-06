@@ -7,7 +7,7 @@ describe("extractMarkdownChunks", () => {
   test("keeps headings, paragraphs, lists, and code blocks", () => {
     const chunks = extractMarkdownChunks({
       config: {
-        base_path: "/docs",
+        public_path: "/docs",
       },
       fileContent: `# Guide
 
@@ -45,7 +45,7 @@ const answer = true;
     const fileContent = await readFile(fixturePath, "utf8");
     const chunks = extractMarkdownChunks({
       config: {
-        base_path: "/guides",
+        public_path: "/guides",
       },
       fileContent,
       filePath: fixturePath,
@@ -70,7 +70,7 @@ const answer = true;
     ).join("\n\n");
     const chunks = extractMarkdownChunks({
       config: {
-        base_path: "/docs",
+        public_path: "/docs",
       },
       fileContent: `# Big Guide
 
@@ -91,7 +91,7 @@ ${bigParagraphs}
   test("extracts markdown image metadata for a section", () => {
     const chunks = extractMarkdownChunks({
       config: {
-        base_path: "/docs",
+        public_path: "/docs",
       },
       fileContent: `# Visual Guide
 
@@ -117,7 +117,7 @@ ${bigParagraphs}
   test("resolves reference-style markdown images", () => {
     const chunks = extractMarkdownChunks({
       config: {
-        base_path: "/docs",
+        public_path: "/docs",
       },
       fileContent: `# Visual Guide
 
@@ -142,7 +142,7 @@ ${bigParagraphs}
   test("extracts simple MDX image elements with literal src values", () => {
     const chunks = extractMarkdownChunks({
       config: {
-        base_path: "/docs",
+        public_path: "/docs",
       },
       fileContent: `# Visual Guide
 

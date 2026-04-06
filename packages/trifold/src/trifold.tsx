@@ -41,6 +41,7 @@ function parseTrifoldColumnValue(
   return null;
 }
 
+/** Three full-viewport columns for phone shells; mount only below the `md` breakpoint (see `AssistantSidebar` `renderMobileShell`). */
 export function Trifold(props: TrifoldProps) {
   const {
     className,
@@ -126,6 +127,7 @@ export function Trifold(props: TrifoldProps) {
     <div
       className={className}
       data-trifold=""
+      data-trifold-phone=""
       style={{
         display: "flex",
         flex: 1,

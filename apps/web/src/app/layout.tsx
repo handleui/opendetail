@@ -3,7 +3,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 import type { ReactNode } from "react";
 import "./globals.css";
 import { WebRootShell } from "@/components/web-root-shell";
+import { getDocsSidebarSections } from "@/lib/docs-sidebar-sections";
 import { knownSourcePageUrls } from "@/lib/known-source-page-urls";
+import { getUiSidebarSections } from "@/lib/ui-sidebar-sections";
 
 const geistSans = Geist({
   subsets: ["latin"],
@@ -50,6 +52,9 @@ export default function RootLayout({
 }: Readonly<{
   children: ReactNode;
 }>) {
+  const docsSidebarSections = getDocsSidebarSections();
+  const uiSidebarSections = getUiSidebarSections();
+
   return (
     <html
       className={`${geistSans.variable} ${geistMono.variable}`}
@@ -59,7 +64,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.className} min-h-screen bg-white font-sans text-neutral-900 tracking-tight antialiased`}
       >
-        <WebRootShell knownSourcePageUrls={knownSourcePageUrls}>
+        <WebRootShell
+          docsSidebarSections={docsSidebarSections}
+          knownSourcePageUrls={knownSourcePageUrls}
+          uiSidebarSections={uiSidebarSections}
+        >
           {children}
         </WebRootShell>
       </body>

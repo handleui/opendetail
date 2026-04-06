@@ -1,5 +1,11 @@
 # opendetail-next
 
+## Unreleased
+
+### Breaking Changes
+
+- **`createNextRouteHandler` / `createNextRoute`**: Removed **`resolveSiteFetchOrigin`**, **`OPENDETAIL_SITE_FETCH_ORIGIN`**, and **`siteFetchOrigin`** forwarding. Aligns with current **`opendetail`** (no runtime same-origin HTML fetch).
+
 ## 0.6.1
 
 ### Patch Changes

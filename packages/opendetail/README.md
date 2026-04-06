@@ -48,28 +48,33 @@ If you prefer manual setup, create `opendetail.toml` in your app root:
 
 ```toml
 version = 1
+
+[[content]]
 include = ["content/**/*.{md,mdx}"]
 exclude = []
-base_path = "/docs"
+public_path = "/docs"
 
 [media]
 include = ["content/**/*.{png,jpg,jpeg,webp,avif,gif,svg}"]
 exclude = []
-base_path = "/content-media"
+public_path = "/content-media"
 ```
 
-To include remote documentation as a grounded resource at answer time, configure
-optional remote resources powered by the OpenAI Responses API tools:
+Use **multiple `[[content]]` rows** when you index more than one MDX tree (for example docs under `/docs` and marketing under `/`). Each row sets its own `public_path` — the URL prefix where those pages are served.
+
+To include OpenAI vector stores or live web search at answer time, configure optional Responses API tools under **`[fetch]`**:
 
 ```toml
-[remote_resources.file_search]
+[fetch.file_search]
 vector_store_ids = ["vs_123"]
 max_num_results = 8
 
-[remote_resources.web_search]
-allowed_domains = ["platform.openai.com", "docs.example.com"]
+[fetch.web_search]
+allowed_domains = ["opendetail.dev", "platform.openai.com"]
 search_context_size = "low"
 ```
+
+There is no built-in same-origin HTML scrape; scope **`web_search`** with **`allowed_domains`** (for example your production site) instead.
 
 Build the index:
 
@@ -163,7 +168,7 @@ import { createOpenDetail } from "opendetail";
 const assistant = createOpenDetail();
 
 const result = await assistant.answer({
-  question: "How do I configure base_path?",
+  question: "How do I configure public_path?",
 });
 ```
 
@@ -201,7 +206,7 @@ Supported image references:
 - local relative paths such as `./hero.png` are returned only when `[media]` is configured
 - unsupported absolute schemes and protocol-relative URLs are ignored
 
-When `remote_resources` is configured, `opendetail` adds Responses API tools to
+When `[fetch]` / `fetch` is configured, `opendetail` adds Responses API tools to
 retrieve external sources at runtime:
 
 - `file_search` for semantic retrieval from OpenAI vector stores

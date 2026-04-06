@@ -12,6 +12,7 @@ import {
   npmPackageUrl,
   productVersionLabel,
 } from "@/lib/shared";
+import type { SiteNavSection } from "@/lib/site-nav";
 
 const githubHref = `https://github.com/${gitConfig.user}/${gitConfig.repo}`;
 
@@ -20,15 +21,20 @@ const SITE_NAV_ROW_ICON_PX = 14;
 export const WebRootShell = ({
   children,
   knownSourcePageUrls,
+  docsSidebarSections,
+  uiSidebarSections,
 }: {
   children: ReactNode;
   knownSourcePageUrls: readonly string[];
+  docsSidebarSections: readonly SiteNavSection[];
+  uiSidebarSections: readonly SiteNavSection[];
 }) => {
   const [assistantOpen, setAssistantOpen] = useState(false);
 
   const navigation = (
     <Sidebar
       assistantOpen={assistantOpen}
+      docsSidebarSections={docsSidebarSections}
       githubHref={githubHref}
       githubIcon={
         <Image
@@ -57,6 +63,7 @@ export const WebRootShell = ({
       productTitle={appName}
       productVersionLabel={productVersionLabel}
       rowIconSize={SITE_NAV_ROW_ICON_PX}
+      uiSidebarSections={uiSidebarSections}
     />
   );
 

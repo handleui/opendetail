@@ -63,6 +63,24 @@ html > body[data-scroll-locked] {
   min-height: 0;
 }
 
+/*
+ * Phone-only (< md): triptych horizontal track uses touch-action: pan-x in ParallelTrack.
+ * Vertical scroll regions must use pan-y so one-finger scroll does not move the column strip.
+ * Desktop (768px+) never mounts this shell — rules are scoped for clarity and resize safety.
+ */
+@media (max-width: 767px) {
+  [data-trifold-phone] .opendetail-sidebar__body,
+  [data-trifold-phone] .opendetail-sidebar__body * {
+    touch-action: pan-y;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  [data-trifold-phone] [data-trifold-center] .docs-main-scroll,
+  [data-trifold-phone] [data-trifold-center] .docs-main-scroll * {
+    touch-action: pan-y;
+  }
+}
+
 /* Docs left nav: scroll inside rail only, no visible scrollbar */
 .docs-sidebar-scroll {
   -ms-overflow-style: none;

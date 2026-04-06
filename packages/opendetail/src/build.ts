@@ -4,6 +4,10 @@ import fg from "fast-glob";
 import { readOpenDetailConfig } from "./config";
 import { BUILD_FILE_READ_CONCURRENCY, OPENDETAIL_VERSION } from "./constants";
 import { OpenDetailConfigError } from "./errors";
+import {
+  applyKnowledgeSidecarToChunks,
+  loadKnowledgeSidecarLookup,
+} from "./knowledge-sidecar";
 import { createRelativeChunkPath, extractMarkdownChunks } from "./markdown";
 import { resolveIndexPath } from "./paths";
 import type {
@@ -150,7 +154,7 @@ const createMediaLookup = ({
       commonRoot,
       mediaFile.filePath
     );
-    const publicUrl = joinUrlPath(config.media.base_path, relativeMediaPath);
+    const publicUrl = joinUrlPath(config.media.public_path, relativeMediaPath);
 
     mediaLookup.set(mediaFile.realFilePath, publicUrl);
     mediaLookup.set(path.resolve(cwd, mediaFile.filePath), publicUrl);
@@ -248,14 +252,6 @@ export const buildOpenDetailIndex = async ({
 }: BuildOpenDetailIndexOptions = {}): Promise<BuildOpenDetailIndexResult> => {
   const config = await readOpenDetailConfig({ configPath, cwd });
   const resolvedCwd = await realpath(cwd);
-  const contentFiles = await resolveMatchedWorkspaceFiles({
-    cwd,
-    emptyMatchMessage:
-      "OpenDetail build matched no files. Check the include and exclude globs in opendetail.toml.",
-    exclude: config.exclude,
-    include: config.include,
-    resolvedCwd,
-  });
   const mediaFiles = config.media
     ? await resolveMatchedWorkspaceFiles({
         cwd,
@@ -269,20 +265,46 @@ export const buildOpenDetailIndex = async ({
     cwd,
     mediaFiles,
   });
-  const commonRoot = getCommonDirectory(
-    contentFiles.map((file) => file.filePath)
-  );
-  const chunkGroups = await mapWithConcurrencyLimit(
-    contentFiles,
-    BUILD_FILE_READ_CONCURRENCY,
-    async ({ filePath, realFilePath }) => {
-      const fileContent = await readFile(realFilePath, "utf8");
-      const relativePath = createRelativeChunkPath(commonRoot, filePath);
 
-      return {
-        chunks: extractMarkdownChunks({
+  const chunkGroups: Array<{
+    chunks: OpenDetailChunk[];
+    contentHash: string;
+    filePath: string;
+  }> = [];
+
+  for (const [rootIndex, root] of config.content.entries()) {
+    const contentFiles = await resolveMatchedWorkspaceFiles({
+      cwd,
+      emptyMatchMessage:
+        rootIndex === 0
+          ? "OpenDetail build matched no files. Check [[content]] include and exclude globs in opendetail.toml."
+          : undefined,
+      exclude: root.exclude,
+      include: root.include,
+      resolvedCwd,
+    });
+
+    if (contentFiles.length === 0) {
+      continue;
+    }
+
+    const commonRoot = getCommonDirectory(
+      contentFiles.map((file) => file.filePath)
+    );
+    const rootConfig = {
+      public_path: root.public_path,
+    };
+
+    const rootGroups = await mapWithConcurrencyLimit(
+      contentFiles,
+      BUILD_FILE_READ_CONCURRENCY,
+      async ({ filePath, realFilePath }) => {
+        const fileContent = await readFile(realFilePath, "utf8");
+        const relativePath = createRelativeChunkPath(commonRoot, filePath);
+
+        const rawChunks = extractMarkdownChunks({
           chunkIdPath: createRelativeChunkPath(resolvedCwd, realFilePath),
-          config,
+          config: rootConfig,
           fileContent,
           filePath: realFilePath,
           relativePath,
@@ -292,79 +314,34 @@ export const buildOpenDetailIndex = async ({
             relativePath,
             sourceFilePath: realFilePath,
           }),
-        }),
-        contentHash: createManifestHash(fileContent),
-        filePath,
-      };
-    }
-  );
-
-  const sitePageGroups = config.site_pages
-    ? await (async () => {
-        const sitePages = config.site_pages;
-
-        if (!sitePages) {
-          return [];
-        }
-
-        const siteFiles = await resolveMatchedWorkspaceFiles({
-          cwd,
-          emptyMatchMessage: undefined,
-          exclude: sitePages.exclude,
-          include: sitePages.include,
-          resolvedCwd,
         });
 
-        if (siteFiles.length === 0) {
-          return [];
-        }
-
-        const siteCommonRoot = getCommonDirectory(
-          siteFiles.map((file) => file.filePath)
-        );
-        const siteConfig = {
-          base_path: sitePages.base_path,
-        };
-
-        return mapWithConcurrencyLimit(
-          siteFiles,
-          BUILD_FILE_READ_CONCURRENCY,
-          async ({ filePath, realFilePath }) => {
-            const fileContent = await readFile(realFilePath, "utf8");
-            const relativePath = createRelativeChunkPath(
-              siteCommonRoot,
-              filePath
-            );
-
-            return {
-              chunks: extractMarkdownChunks({
-                chunkIdPath: createRelativeChunkPath(resolvedCwd, realFilePath),
-                config: siteConfig,
-                fileContent,
-                filePath: realFilePath,
-                relativePath,
-                resolveImage: createImageResolver({
-                  config,
-                  mediaLookup,
-                  relativePath,
-                  sourceFilePath: realFilePath,
-                }),
-              }).map((chunk) => ({
+        const chunks =
+          rootIndex === 0
+            ? rawChunks
+            : rawChunks.map((chunk) => ({
                 ...chunk,
                 sourceKind: "page" as const,
-              })),
-              contentHash: createManifestHash(fileContent),
-              filePath,
-            };
-          }
-        );
-      })()
-    : [];
+              }));
 
-  const chunks = [
-    ...chunkGroups.flatMap((group) => group.chunks),
-    ...sitePageGroups.flatMap((group) => group.chunks),
-  ];
+        return {
+          chunks,
+          contentHash: createManifestHash(fileContent),
+          filePath,
+        };
+      }
+    );
+
+    chunkGroups.push(...rootGroups);
+  }
+
+  let chunks = chunkGroups.flatMap((group) => group.chunks);
+
+  if (config.knowledge) {
+    const lookup = loadKnowledgeSidecarLookup(cwd, config.knowledge);
+    chunks = applyKnowledgeSidecarToChunks(chunks, lookup);
+  }
+
   const resolvedOutputPath = resolveIndexPath(cwd, outputPath);
   const artifact = {
     chunks,
@@ -373,29 +350,16 @@ export const buildOpenDetailIndex = async ({
     manifestHash: createManifestHash(
       JSON.stringify({
         config,
-        files: chunkGroups.map((group) => ({
-          chunks: group.chunks.map((chunk) => ({
-            id: chunk.id,
-            images: (chunk.images ?? []).map((image) => image.url),
-            url: chunk.url,
-          })),
-          contentHash: group.contentHash,
-          filePath: group.filePath,
+        chunks: chunks.map((chunk) => ({
+          id: chunk.id,
+          images: (chunk.images ?? []).map((image) => image.url),
+          url: chunk.url,
         })),
         media: createMediaManifestEntries({
           cwd,
           mediaFiles,
           mediaLookup,
         }),
-        sitePages: sitePageGroups.map((group) => ({
-          chunks: group.chunks.map((chunk) => ({
-            id: chunk.id,
-            images: (chunk.images ?? []).map((image) => image.url),
-            url: chunk.url,
-          })),
-          contentHash: group.contentHash,
-          filePath: group.filePath,
-        })),
       })
     ),
     version: OPENDETAIL_VERSION,

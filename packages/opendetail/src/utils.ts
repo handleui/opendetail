@@ -8,7 +8,7 @@ const TRAILING_INDEX_REGEX = /\/index$/iu;
 export const toPosixPath = (value: string): string =>
   value.split(path.sep).join(path.posix.sep);
 
-export const normalizeBasePath = (value: string): string => {
+export const normalizePublicPath = (value: string): string => {
   const trimmedValue = value.trim();
 
   if (trimmedValue.length === 0 || trimmedValue === "/") {

@@ -1,13 +1,22 @@
 version = 1
+
+[[content]]
 include = ["content/docs/**/*.md", "content/docs/**/*.mdx"]
 exclude = []
-base_path = "/docs"
+public_path = "/docs"
 
-[site_pages]
-base_path = "/"
+[[content]]
+public_path = "/"
 include = ["content/marketing/**/*.mdx"]
 exclude = []
 
-[site_pages_fetch]
-allowed_path_prefixes = ["/"]
-max_bytes = 500000
+[media]
+include = ["content/**/*.{png,jpg,jpeg,webp,avif,gif,svg}"]
+exclude = []
+public_path = "/content-media"
+
+# Remote resources: OpenAI web search limited to the live site (apex + www).
+# Add [fetch.file_search] with vector_store_ids for OpenAI vector stores.
+[fetch.web_search]
+allowed_domains = ["opendetail.dev", "www.opendetail.dev"]
+search_context_size = "medium"

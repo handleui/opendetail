@@ -105,7 +105,7 @@ describe("runCli", () => {
 
     await expect(
       readFile(path.join(cwd, "opendetail.toml"), "utf8")
-    ).resolves.toContain('base_path = "/docs/\\"quoted\\"\\nnext"');
+    ).resolves.toContain('public_path = "/docs/\\"quoted\\"\\nnext"');
     await expect(
       readFile(path.join(cwd, "opendetail.toml"), "utf8")
     ).resolves.toContain('include = ["content/**/*.{md,mdx}\\"tail"]');

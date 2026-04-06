@@ -16,12 +16,15 @@ import { DocsPageChrome } from "@/components/docs-page-chrome";
 import { getComponentPreviewPreset } from "@/lib/component-preview-viewport";
 import { knownSourcePageUrls } from "@/lib/known-source-page-urls";
 import { gitConfig } from "@/lib/shared";
-import { getPageImage, getPageMarkdownUrl, source } from "@/lib/source";
-import { UI_DOC_SLUG_PATHS } from "@/lib/ui-docs-static-paths";
 import {
   isUiOpendetailPreviewSlug,
   type UiOpendetailPreviewSlug,
 } from "@/lib/ui-opendetail-preview-slugs";
+import {
+  getUiPageImage,
+  getUiPageMarkdownUrl,
+  uiSource,
+} from "@/lib/ui-source";
 
 function UiOpendetailPreview({ slug }: { slug: UiOpendetailPreviewSlug }) {
   switch (slug) {
@@ -48,17 +51,17 @@ function UiOpendetailPreview({ slug }: { slug: UiOpendetailPreviewSlug }) {
   }
 }
 
-export default async function Page(props: PageProps<"/ui/[...slug]">) {
+export default async function Page(props: PageProps<"/ui/[[...slug]]">) {
   const params = await props.params;
-  const segments = params.slug;
-  const page = source.getPage(["ui", ...segments]);
+  const segments = params.slug ?? [];
+  const page = uiSource.getPage(segments);
   if (!page) {
     notFound();
   }
 
   const MDX = page.data.body;
-  const markdownUrl = getPageMarkdownUrl(page).url;
-  const githubUrl = `https://github.com/${gitConfig.user}/${gitConfig.repo}/blob/${gitConfig.branch}/content/docs/${page.path}`;
+  const markdownUrl = getUiPageMarkdownUrl(page).url;
+  const githubUrl = `https://github.com/${gitConfig.user}/${gitConfig.repo}/blob/${gitConfig.branch}/content/ui/${page.path}`;
   const toc = page.data.toc ?? [];
 
   const previewSlug =
@@ -87,27 +90,28 @@ export default async function Page(props: PageProps<"/ui/[...slug]">) {
         toc={toc}
         variant="theme"
       >
-        <MDX components={getDocsMdxComponents(source, page)} />
+        <MDX components={getDocsMdxComponents(uiSource, page)} />
       </DocsPageChrome>
     </article>
   );
 }
 
 export function generateStaticParams() {
-  return UI_DOC_SLUG_PATHS.map((slug) => ({ slug }));
+  return uiSource.generateParams();
 }
 
 export async function generateMetadata(
-  props: PageProps<"/ui/[...slug]">
+  props: PageProps<"/ui/[[...slug]]">
 ): Promise<Metadata> {
   const params = await props.params;
-  const segments = params.slug;
-  const page = source.getPage(["ui", ...segments]);
+  const segments = params.slug ?? [];
+  const page = uiSource.getPage(segments);
   if (!page) {
     notFound();
   }
 
-  const canonicalPath = `/ui/${segments.join("/")}`;
+  const canonicalPath =
+    segments.length > 0 ? `/ui/${segments.join("/")}` : "/ui";
 
   return {
     title: page.data.title,
@@ -117,7 +121,7 @@ export async function generateMetadata(
     },
     openGraph: {
       url: canonicalPath,
-      images: getPageImage(page).url,
+      images: getUiPageImage(page).url,
     },
   };
 }

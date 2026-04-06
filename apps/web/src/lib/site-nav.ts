@@ -1,6 +1,9 @@
 /**
- * Site shell sidebar: docs vs Assistant UI (`/ui`) URL helpers + nav data for `apps/web` only.
+ * Site shell sidebar: path helpers for the dual Fumadocs loaders (`/docs` + `/ui`).
+ * Nav trees come from `getPageTree()` — see `docs-sidebar-sections` / `ui-sidebar-sections`.
  */
+
+import { docsRoute } from "@/lib/shared";
 
 export type SiteNavNode =
   | { kind: "page"; label: string; href: string }
@@ -16,129 +19,20 @@ export interface SiteNavSection {
   title: string;
 }
 
-/** Grouped docs links — mirrors `content/docs`. */
-export const SITE_DOCS_NAV_TREE: readonly SiteNavSection[] = [
-  {
-    title: "Get started",
-    items: [
-      { kind: "page", label: "Documentation", href: "/docs" },
-      { kind: "page", label: "Get started", href: "/docs/quickstart" },
-      { kind: "page", label: "UI integration", href: "/docs/ui-integration" },
-    ],
-  },
-  {
-    title: "Core",
-    items: [{ kind: "page", label: "Package & runtime", href: "/docs/core" }],
-  },
-  {
-    title: "CLI",
-    items: [
-      { kind: "page", label: "Quickstart", href: "/docs/cli/quickstart" },
-      { kind: "page", label: "Reference", href: "/docs/cli/commands" },
-      { kind: "page", label: "$ build", href: "/docs/cli/build" },
-      { kind: "page", label: "$ setup", href: "/docs/cli/setup" },
-      { kind: "page", label: "$ doctor", href: "/docs/cli/doctor" },
-    ],
-  },
-  {
-    title: "Adapters",
-    items: [
-      { kind: "page", label: "Next.js", href: "/docs/next" },
-      { kind: "page", label: "React", href: "/docs/react" },
-      { kind: "page", label: "Fumadocs", href: "/docs/fumadocs" },
-      {
-        kind: "page",
-        label: "Systems and themes",
-        href: "/docs/design-system",
-      },
-    ],
-  },
-];
+/** Docs collection index — top link in the Documentation nested panel. */
+export const SITE_DOCS_ROUTER: { href: string; label: string } = {
+  href: docsRoute,
+  label: "Documentation",
+};
 
 /** Canonical path prefix for Assistant UI docs + previews. */
 export const UI_DOCS_PATH_PREFIX = "/ui";
 
-/** Router landing (`/ui`) — label for the top link in the Assistant UI secondary panel. */
+/** Assistant UI collection index — top link in the Assistant UI nested panel. */
 export const SITE_UI_DOCS_ROUTER: { href: string; label: string } = {
   href: "/ui",
   label: "Overview",
 };
-
-/** @deprecated Use `SITE_UI_DOCS_ROUTER` */
-export const SITE_UI_DOCS_OVERVIEW = SITE_UI_DOCS_ROUTER;
-
-/** Secondary panel — Foundations (concepts), Hooks (API pages), Primitives (component pages). */
-export const SITE_UI_DOCS_SECTIONS: readonly SiteNavSection[] = [
-  {
-    title: "Foundations",
-    items: [
-      { kind: "page", label: "Systems", href: "/ui/systems" },
-      { kind: "page", label: "Themes", href: "/ui/themes" },
-      { kind: "page", label: "Primitives", href: "/ui/primitives" },
-    ],
-  },
-  {
-    title: "Hooks",
-    items: [
-      {
-        kind: "page",
-        label: "useOpenDetail",
-        href: "/ui/hooks/use-opendetail",
-      },
-      {
-        kind: "page",
-        label: "createOpenDetailClient",
-        href: "/ui/hooks/create-open-detail-client",
-      },
-    ],
-  },
-  {
-    title: "Primitives",
-    items: [
-      { kind: "page", label: "Shell", href: "/ui/opendetail/shell" },
-      { kind: "page", label: "Sidebar", href: "/ui/opendetail/sidebar" },
-      { kind: "page", label: "Composer", href: "/ui/opendetail/composer" },
-      { kind: "page", label: "Thread", href: "/ui/opendetail/thread" },
-      {
-        kind: "page",
-        label: "User message",
-        href: "/ui/opendetail/user-message",
-      },
-      {
-        kind: "page",
-        label: "Assistant message",
-        href: "/ui/opendetail/assistant-message",
-      },
-      {
-        kind: "page",
-        label: "Recommendations",
-        href: "/ui/opendetail/recommendations",
-      },
-      { kind: "page", label: "Sources", href: "/ui/opendetail/sources" },
-      {
-        kind: "page",
-        label: "Conversation title",
-        href: "/ui/opendetail/conversation-title",
-      },
-      {
-        kind: "page",
-        label: "Pressable",
-        href: "/ui/opendetail/pressable",
-      },
-      { kind: "page", label: "Loader", href: "/ui/opendetail/loader" },
-      { kind: "page", label: "Error", href: "/ui/opendetail/error" },
-    ],
-  },
-];
-
-/** @deprecated Use `UI_DOCS_PATH_PREFIX` */
-export const THEME_OPENDETAIL_PATH_PREFIX = UI_DOCS_PATH_PREFIX;
-
-/** @deprecated Use `SITE_UI_DOCS_ROUTER` */
-export const SITE_THEME_OPENDETAIL_OVERVIEW = SITE_UI_DOCS_ROUTER;
-
-/** @deprecated Use `SITE_UI_DOCS_SECTIONS` */
-export const SITE_THEME_OPENDETAIL_SECTIONS = SITE_UI_DOCS_SECTIONS;
 
 function normalizePath(path: string): string {
   if (path.length > 1 && path.endsWith("/")) {
@@ -163,16 +57,6 @@ export function isUnderUiDocsPathname(pathname: string): boolean {
   }
   const base = normalizePath(UI_DOCS_PATH_PREFIX);
   return normalized === base || normalized.startsWith(`${base}/`);
-}
-
-/** @deprecated Use `isUnderUiDocsPathname` */
-export function isUnderThemeOpendetailPathname(pathname: string): boolean {
-  return isUnderUiDocsPathname(pathname);
-}
-
-/** @deprecated Use `isUnderUiDocsPathname` */
-export function isUnderComponentsPathname(pathname: string): boolean {
-  return isUnderUiDocsPathname(pathname);
 }
 
 export function getSiteSecondaryNest(pathname: string): "ui" | "docs" {

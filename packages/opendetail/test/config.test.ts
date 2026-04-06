@@ -10,9 +10,13 @@ describe("readOpenDetailConfig", () => {
     const cwd = path.resolve(import.meta.dirname, "fixtures", "basic");
 
     await expect(readOpenDetailConfig({ cwd })).resolves.toEqual({
-      base_path: "/docs",
-      exclude: [],
-      include: ["content/**/*.md", "content/**/*.mdx"],
+      content: [
+        {
+          exclude: [],
+          include: ["content/**/*.md", "content/**/*.mdx"],
+          public_path: "/docs",
+        },
+      ],
       version: 1,
     });
   });
@@ -21,13 +25,17 @@ describe("readOpenDetailConfig", () => {
     const cwd = path.resolve(import.meta.dirname, "fixtures", "media");
 
     await expect(readOpenDetailConfig({ cwd })).resolves.toEqual({
-      base_path: "/docs",
-      exclude: [],
-      include: ["content/**/*.md", "content/**/*.mdx"],
+      content: [
+        {
+          exclude: [],
+          include: ["content/**/*.md", "content/**/*.mdx"],
+          public_path: "/docs",
+        },
+      ],
       media: {
-        base_path: "/content-media",
         exclude: [],
         include: ["content/**/*.{png,webp,svg}"],
+        public_path: "/content-media",
       },
       version: 1,
     });
@@ -39,10 +47,11 @@ describe("readOpenDetailConfig", () => {
     try {
       await writeFile(
         path.join(cwd, "opendetail.toml"),
-        `version = 2
+        `version = 1
+[[content]]
 include = []
 exclude = []
-base_path = "docs"
+public_path = "docs"
 `
       );
 
@@ -54,32 +63,38 @@ base_path = "docs"
     }
   });
 
-  test("parses optional remote resource config", async () => {
+  test("parses optional [fetch] (OpenAI tools)", async () => {
     const cwd = await mkdtemp(path.join(os.tmpdir(), "opendetail-config-"));
 
     try {
       await writeFile(
         path.join(cwd, "opendetail.toml"),
         `version = 1
+
+[[content]]
 include = ["content/**/*.md"]
 exclude = []
-base_path = "/docs"
+public_path = "/docs"
 
-[remote_resources.file_search]
+[fetch.file_search]
 vector_store_ids = ["vs_docs_123"]
 max_num_results = 8
 
-[remote_resources.web_search]
+[fetch.web_search]
 allowed_domains = ["docs.example.com"]
 search_context_size = "low"
 `
       );
 
       await expect(readOpenDetailConfig({ cwd })).resolves.toEqual({
-        base_path: "/docs",
-        exclude: [],
-        include: ["content/**/*.md"],
-        remote_resources: {
+        content: [
+          {
+            exclude: [],
+            include: ["content/**/*.md"],
+            public_path: "/docs",
+          },
+        ],
+        fetch: {
           file_search: {
             max_num_results: 8,
             vector_store_ids: ["vs_docs_123"],
@@ -96,41 +111,39 @@ search_context_size = "low"
     }
   });
 
-  test("parses optional site_pages and site_pages_fetch", async () => {
+  test("parses optional second content root", async () => {
     const cwd = await mkdtemp(path.join(os.tmpdir(), "opendetail-config-"));
 
     try {
       await writeFile(
         path.join(cwd, "opendetail.toml"),
         `version = 1
+
+[[content]]
 include = ["content/**/*.md"]
 exclude = []
-base_path = "/docs"
+public_path = "/docs"
 
-[site_pages]
-base_path = "/"
+[[content]]
+public_path = "/"
 include = ["marketing/**/*.mdx"]
 exclude = ["**/draft/**"]
-
-[site_pages_fetch]
-allowed_path_prefixes = ["/", "/marketing"]
-max_bytes = 100000
 `
       );
 
       await expect(readOpenDetailConfig({ cwd })).resolves.toEqual({
-        base_path: "/docs",
-        exclude: [],
-        include: ["content/**/*.md"],
-        site_pages: {
-          base_path: "/",
-          exclude: ["**/draft/**"],
-          include: ["marketing/**/*.mdx"],
-        },
-        site_pages_fetch: {
-          allowed_path_prefixes: ["/", "/marketing"],
-          max_bytes: 100_000,
-        },
+        content: [
+          {
+            exclude: [],
+            include: ["content/**/*.md"],
+            public_path: "/docs",
+          },
+          {
+            exclude: ["**/draft/**"],
+            include: ["marketing/**/*.mdx"],
+            public_path: "/",
+          },
+        ],
         version: 1,
       });
     } finally {

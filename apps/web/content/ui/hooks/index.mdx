@@ -1,0 +1,17 @@
+---
+title: Hooks
+description: What React hooks are in this stack, how OpenDetail uses them for streaming, and how that differs from the headless client.
+---
+
+In React, a **hook** is a function that follows the `use*` naming convention and lets you **subscribe to React state and lifecycle** from function components—`useState`, `useEffect`, and composable “custom” hooks built from those primitives. Hooks are how you keep **UI and data flow declarative**: call them at the top level of a component, and React reconciles updates when inputs change.
+
+OpenDetail’s browser integration is built around that idea: **`useOpenDetail`** is a **custom hook** that owns **thread state**, **streaming NDJSON** from your assistant route, **persistence**, and **submit / stop** controls so your layout components stay mostly presentational. It is the usual path when you render the assistant inside React.
+
+When you **cannot** use a hook—vanilla JS, a non-React embed, or a store you manage yourself—you use **`createOpenDetailClient`**, a **factory** (not a hook) that exposes the same **`POST`** body and **`application/x-ndjson`** contract without React bindings.
+
+| API | Use when |
+| --- | --- |
+| [`useOpenDetail`](/ui/hooks/use-opendetail) | You want React state: thread, question, `submit` / `stop`, persistence, and streaming updates bound to UI. |
+| [`createOpenDetailClient`](/ui/hooks/create-open-detail-client) | You need the same stream **without** the hook (vanilla JS, custom state, or non-React surfaces). |
+
+Both talk to the same endpoint and event types. [**Primitives**](/ui/primitives) are the styled building blocks that usually sit *above* these clients—they are not a separate transport. The full **`opendetail-react`** reference (options, stream events, types) is in [**React**](/docs/react).
