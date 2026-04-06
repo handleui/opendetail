@@ -375,15 +375,20 @@ function useAssistantSidebarOpenOnActivity({
 }) {
   useEffect(() => {
     if (messages.length > previousMessageCountRef.current) {
-      if (isMobileTriptychActive) {
-        setMobileShellColumn("trailing");
-      }
+      const isLiveAssistantActivity =
+        requestState === "pending" || requestState === "streaming";
 
-      if (!isControlled) {
-        setInternalOpen(true);
-      }
+      if (isLiveAssistantActivity) {
+        if (isMobileTriptychActive) {
+          setMobileShellColumn("trailing");
+        }
 
-      onOpenChange?.(true);
+        if (!isControlled) {
+          setInternalOpen(true);
+        }
+
+        onOpenChange?.(true);
+      }
     }
 
     previousMessageCountRef.current = messages.length;
@@ -393,6 +398,7 @@ function useAssistantSidebarOpenOnActivity({
     messages.length,
     onOpenChange,
     previousMessageCountRef,
+    requestState,
     setInternalOpen,
     setMobileShellColumn,
   ]);

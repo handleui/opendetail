@@ -42,6 +42,11 @@ interface TrifoldSharedProps {
    */
   snapBoundaryFraction?: number;
   spring?: Partial<TrifoldSpringConfig>;
+  /**
+   * When false, touch users cannot horizontally drag between columns (jump buttons / `data-trifold-column` still work).
+   * Disable on mobile web when each column should scroll independently without gesture conflict. Default true.
+   */
+  touchSwipeBetweenColumns?: boolean;
   trackClassName?: string;
 }
 

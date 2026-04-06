@@ -400,6 +400,7 @@ export function Sidebar({
                       "justify-between",
                       docsRootActive ? "bg-neutral-100" : "",
                     ].join(" ")}
+                    data-trifold-stay=""
                     href={docsPathPrefix}
                     onClick={() => {
                       setNavIntent(docsPathPrefix);
@@ -430,6 +431,7 @@ export function Sidebar({
                       "justify-between",
                       componentsRootActive ? "bg-neutral-100" : "",
                     ].join(" ")}
+                    data-trifold-stay=""
                     href={COMPONENTS_PATH_PREFIX}
                     onClick={() => {
                       setNavIntent(COMPONENTS_PATH_PREFIX);

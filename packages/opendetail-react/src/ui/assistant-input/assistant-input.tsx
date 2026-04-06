@@ -308,6 +308,37 @@ export const AssistantInput = ({
     surfaceRef.current?.requestSubmit();
   };
 
+  const handleTextareaFocus = useCallback(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const vv = window.visualViewport;
+
+    if (!vv) {
+      return;
+    }
+
+    const isCoarsePointer = window.matchMedia(
+      "(hover: none) and (pointer: coarse)"
+    ).matches;
+
+    if (!isCoarsePointer) {
+      return;
+    }
+
+    const settle = () => {
+      if (vv.offsetTop > 0) {
+        window.scrollTo(0, window.scrollY + vv.offsetTop);
+      }
+    };
+
+    requestAnimationFrame(settle);
+    requestAnimationFrame(() => {
+      requestAnimationFrame(settle);
+    });
+  }, []);
+
   return (
     <div className={getRootClassName({ className, size })}>
       {size === "shell" && showShellUnderlay ? (
@@ -345,6 +376,7 @@ export const AssistantInput = ({
                 onChange={(event) => {
                   handleChange(event.target.value);
                 }}
+                onFocus={handleTextareaFocus}
                 onKeyDown={handleTextareaKeyDown}
                 onScroll={handleScroll}
                 placeholder={placeholder}

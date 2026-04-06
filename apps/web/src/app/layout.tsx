@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import type { ReactNode } from "react";
 import "./globals.css";
@@ -33,6 +33,13 @@ export const metadata: Metadata = {
   },
   description:
     "OpenDetail marketing site, documentation, and registry distribution in one app.",
+};
+
+/** Reduces iOS Safari shifting the layout when the keyboard opens (pairs with input font-size rules). */
+export const viewport: Viewport = {
+  initialScale: 1,
+  interactiveWidget: "overlays-content",
+  width: "device-width",
 };
 
 export default function RootLayout({

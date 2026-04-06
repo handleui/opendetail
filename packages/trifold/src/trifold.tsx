@@ -56,6 +56,7 @@ export function Trifold(props: TrifoldProps) {
     leadingClassName,
     leadingLinkOpensCenter = true,
     leadingLinkSelector = "a[href]",
+    touchSwipeBetweenColumns = true,
     snapBoundaryFraction,
     spring,
     trackClassName,
@@ -144,6 +145,7 @@ export function Trifold(props: TrifoldProps) {
       <ParallelTrack
         activeIndex={activeIndex}
         directionLockPx={directionLockPx}
+        dragEnabled={touchSwipeBetweenColumns}
         flickVelocityPxPerMs={flickVelocityPxPerMs}
         horizontalDominance={horizontalDominance}
         jumpAttribute={TRIFOLD_COLUMN_ATTRIBUTE}
