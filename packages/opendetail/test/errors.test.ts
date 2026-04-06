@@ -1,5 +1,6 @@
+import { APIConnectionError } from "openai";
 import { describe, expect, test } from "vitest";
-import { toOpenDetailPublicError } from "../src/errors";
+import { OPENAI_UNREACHABLE_MESSAGE, toOpenDetailPublicError } from "../src/errors";
 
 describe("toOpenDetailPublicError", () => {
   test("does not expose unknown runtime error messages", () => {
@@ -10,6 +11,18 @@ describe("toOpenDetailPublicError", () => {
     expect(publicError).toMatchObject({
       code: "request_failed",
       message: "OpenDetail could not complete the request.",
+    });
+  });
+
+  test("maps OpenAI connection errors to provider_unavailable", () => {
+    const publicError = toOpenDetailPublicError(
+      new APIConnectionError({ cause: undefined })
+    );
+
+    expect(publicError).toMatchObject({
+      code: "provider_unavailable",
+      message: OPENAI_UNREACHABLE_MESSAGE,
+      retryable: true,
     });
   });
 

@@ -261,7 +261,7 @@ export interface SidebarProps {
   onAssistantToggle?: () => void;
   productTitle: string;
   productVersionLabel: string;
-  /** Root row icons (Home, Resources, Social) — default 14px. */
+  /** Root row icons (site nav + Social) — default 14px. */
   rowIconSize?: number;
 }
 
@@ -394,72 +394,66 @@ export function Sidebar({
                     </RootRowIconSlot>
                     Changelog
                   </Link>
-                </div>
-
-                <div>
-                  <p className={SECTION_TITLE_CLASS}>Resources</p>
-                  <div className="mt-2 flex flex-col gap-0.5">
-                    <Link
-                      className={[
-                        NAV_ROW_CLASS,
-                        "justify-between",
-                        docsRootActive ? "bg-neutral-100" : "",
-                      ].join(" ")}
-                      href={docsPathPrefix}
-                      onClick={() => {
-                        setNavIntent(docsPathPrefix);
-                        openSecondary();
-                      }}
-                    >
-                      <span className="flex min-w-0 items-center gap-2">
-                        <RootRowIconSlot rowIconSize={rowIconSize}>
-                          <BookOpen
-                            aria-hidden="true"
-                            className="shrink-0 text-black"
-                            size={rowIconSize}
-                            strokeWidth={SIDEBAR_LUCIDE_STROKE_PX}
-                          />
-                        </RootRowIconSlot>
-                        <span>Docs</span>
-                      </span>
-                      <ArrowRight
-                        aria-hidden="true"
-                        className={ROW_TRAILING_ICON_CLASS}
-                        size={ROW_ICON_PX}
-                        strokeWidth={SIDEBAR_LUCIDE_STROKE_PX}
-                      />
-                    </Link>
-                    <Link
-                      className={[
-                        NAV_ROW_CLASS,
-                        "justify-between",
-                        componentsRootActive ? "bg-neutral-100" : "",
-                      ].join(" ")}
-                      href={COMPONENTS_PATH_PREFIX}
-                      onClick={() => {
-                        setNavIntent(COMPONENTS_PATH_PREFIX);
-                        openSecondary();
-                      }}
-                    >
-                      <span className="flex min-w-0 items-center gap-2">
-                        <RootRowIconSlot rowIconSize={rowIconSize}>
-                          <LayoutTemplate
-                            aria-hidden="true"
-                            className="shrink-0 text-black"
-                            size={rowIconSize}
-                            strokeWidth={SIDEBAR_LUCIDE_STROKE_PX}
-                          />
-                        </RootRowIconSlot>
-                        <span>Components</span>
-                      </span>
-                      <ArrowRight
-                        aria-hidden="true"
-                        className={ROW_TRAILING_ICON_CLASS}
-                        size={ROW_ICON_PX}
-                        strokeWidth={SIDEBAR_LUCIDE_STROKE_PX}
-                      />
-                    </Link>
-                  </div>
+                  <Link
+                    className={[
+                      NAV_ROW_CLASS,
+                      "justify-between",
+                      docsRootActive ? "bg-neutral-100" : "",
+                    ].join(" ")}
+                    href={docsPathPrefix}
+                    onClick={() => {
+                      setNavIntent(docsPathPrefix);
+                      openSecondary();
+                    }}
+                  >
+                    <span className="flex min-w-0 items-center gap-2">
+                      <RootRowIconSlot rowIconSize={rowIconSize}>
+                        <BookOpen
+                          aria-hidden="true"
+                          className="shrink-0 text-black"
+                          size={rowIconSize}
+                          strokeWidth={SIDEBAR_LUCIDE_STROKE_PX}
+                        />
+                      </RootRowIconSlot>
+                      <span>Docs</span>
+                    </span>
+                    <ArrowRight
+                      aria-hidden="true"
+                      className={ROW_TRAILING_ICON_CLASS}
+                      size={ROW_ICON_PX}
+                      strokeWidth={SIDEBAR_LUCIDE_STROKE_PX}
+                    />
+                  </Link>
+                  <Link
+                    className={[
+                      NAV_ROW_CLASS,
+                      "justify-between",
+                      componentsRootActive ? "bg-neutral-100" : "",
+                    ].join(" ")}
+                    href={COMPONENTS_PATH_PREFIX}
+                    onClick={() => {
+                      setNavIntent(COMPONENTS_PATH_PREFIX);
+                      openSecondary();
+                    }}
+                  >
+                    <span className="flex min-w-0 items-center gap-2">
+                      <RootRowIconSlot rowIconSize={rowIconSize}>
+                        <LayoutTemplate
+                          aria-hidden="true"
+                          className="shrink-0 text-black"
+                          size={rowIconSize}
+                          strokeWidth={SIDEBAR_LUCIDE_STROKE_PX}
+                        />
+                      </RootRowIconSlot>
+                      <span>Components</span>
+                    </span>
+                    <ArrowRight
+                      aria-hidden="true"
+                      className={ROW_TRAILING_ICON_CLASS}
+                      size={ROW_ICON_PX}
+                      strokeWidth={SIDEBAR_LUCIDE_STROKE_PX}
+                    />
+                  </Link>
                 </div>
 
                 <div>

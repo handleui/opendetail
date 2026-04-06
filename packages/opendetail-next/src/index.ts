@@ -47,8 +47,17 @@ const jsonError = (
     { headers: createResponseHeaders(headers), status }
   );
 
-const getInitializationErrorResponse = (error: unknown): Response =>
-  jsonError(toOpenDetailPublicError(error), 500);
+const logDevelopmentRouteError = (phase: string, error: unknown): void => {
+  if (process.env.NODE_ENV !== "production") {
+    console.error(`[opendetail] ${phase}`, error);
+  }
+};
+
+const getInitializationErrorResponse = (error: unknown): Response => {
+  logDevelopmentRouteError("createOpenDetail failed", error);
+
+  return jsonError(toOpenDetailPublicError(error), 500);
+};
 
 const isProductionEnvironment = (): boolean =>
   typeof process !== "undefined" && process.env.NODE_ENV === "production";
@@ -188,6 +197,8 @@ export const createNextRouteHandler = (
         status: 200,
       });
     } catch (error) {
+      logDevelopmentRouteError("assistant.stream failed", error);
+
       return jsonError(toOpenDetailPublicError(error), 500);
     }
   };

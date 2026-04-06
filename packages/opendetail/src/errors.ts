@@ -1,3 +1,4 @@
+import { APIConnectionError, APIConnectionTimeoutError } from "openai";
 import type { OpenDetailErrorCode, OpenDetailPublicError } from "./types";
 
 export const NODE_RUNTIME_REQUIRED_MESSAGE =
@@ -10,6 +11,8 @@ export const MAX_OUTPUT_TOKENS_RESPONSE_MESSAGE =
   "The model could not complete the answer before reaching the output token limit.";
 export const OPENDETAIL_RUNTIME_FAILURE_MESSAGE =
   "OpenDetail could not complete the request.";
+export const OPENAI_UNREACHABLE_MESSAGE =
+  "Could not reach OpenAI. Check your network connection and try again.";
 export const MISSING_API_KEY_MESSAGE = "OPENAI_API_KEY is required at runtime.";
 const OPENAI_PROVIDER_NAME = "openai";
 const OPENAI_PROVIDER_ERROR_FIELDS = [
@@ -368,6 +371,20 @@ export const toOpenDetailPublicError = (
   if (error instanceof OpenDetailModelIncompleteError) {
     return createOpenDetailPublicError("model_incomplete", {
       message: error.message,
+    });
+  }
+
+  if (error instanceof APIConnectionTimeoutError) {
+    return createOpenDetailPublicError("provider_unavailable", {
+      message: `${OPENAI_UNREACHABLE_MESSAGE} (timed out)`,
+      retryable: true,
+    });
+  }
+
+  if (error instanceof APIConnectionError) {
+    return createOpenDetailPublicError("provider_unavailable", {
+      message: OPENAI_UNREACHABLE_MESSAGE,
+      retryable: true,
     });
   }
 

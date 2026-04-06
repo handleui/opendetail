@@ -1,0 +1,66 @@
+"use client";
+
+import type { TOCItemType } from "fumadocs-core/toc";
+import { TOCItem } from "fumadocs-core/toc";
+
+import { DocsPageActions } from "@/components/docs-page-actions";
+
+function tocItemPadding(depth: number): number {
+  const base = Math.max(0, depth - 2);
+  return base * 10;
+}
+
+export function DocsToc({
+  toc,
+  markdownUrl,
+  githubUrl,
+  gridColumnStart = 3,
+}: {
+  toc: readonly TOCItemType[];
+  markdownUrl: string;
+  githubUrl: string;
+  /** Grid column for `xl` layout: `2` when there is no leading spacer column (components docs). */
+  gridColumnStart?: 2 | 3;
+}) {
+  const colStart = gridColumnStart === 2 ? "xl:col-start-2" : "xl:col-start-3";
+
+  return (
+    <aside
+      className={`hidden w-[min(100%,14rem)] shrink-0 xl:sticky xl:top-8 xl:row-start-1 xl:block xl:max-h-[calc(100vh-2rem)] xl:self-start xl:overflow-y-auto xl:overscroll-contain xl:[scrollbar-width:none] xl:[&::-webkit-scrollbar]:hidden ${colStart}`}
+    >
+      <div className="flex flex-col gap-6 pb-4">
+        {toc.length > 0 ? (
+          <nav aria-label="On this page">
+            <p className="mb-2 font-normal text-[#a4a4a4] text-[13px] tracking-tight">
+              On this page
+            </p>
+            <ul className="flex flex-col gap-1">
+              {toc.map((item) => (
+                <li key={item.url}>
+                  <TOCItem
+                    className="block text-[13px] text-neutral-600 leading-snug transition-colors hover:text-neutral-950 data-[active=true]:text-neutral-950"
+                    href={item.url}
+                    style={{ paddingInlineStart: tocItemPadding(item.depth) }}
+                  >
+                    {item.title}
+                  </TOCItem>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        ) : null}
+
+        <section aria-label="Page actions">
+          <p className="mb-2 font-normal text-[#a4a4a4] text-[13px] tracking-tight">
+            Actions
+          </p>
+          <DocsPageActions
+            githubUrl={githubUrl}
+            layout="column"
+            markdownUrl={markdownUrl}
+          />
+        </section>
+      </div>
+    </aside>
+  );
+}

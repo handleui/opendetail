@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { InputDemo } from "@/components/component-demos/input-demo";
@@ -7,7 +6,7 @@ import { ShellDemo } from "@/components/component-demos/shell-demo";
 import { SuggestionsDemo } from "@/components/component-demos/suggestions-demo";
 import { ComponentShowcaseLayout } from "@/components/component-showcase-layout";
 import { getDocsMdxComponents } from "@/components/docs-mdx-components";
-import { DocsPageHeader } from "@/components/docs-page-header";
+import { DocsPageChrome } from "@/components/docs-page-chrome";
 import { gitConfig } from "@/lib/shared";
 import { getPageImage, getPageMarkdownUrl, source } from "@/lib/source";
 
@@ -46,28 +45,21 @@ export default async function Page(props: PageProps<"/components/[slug]">) {
   const MDX = page.data.body;
   const markdownUrl = getPageMarkdownUrl(page).url;
   const githubUrl = `https://github.com/${gitConfig.user}/${gitConfig.repo}/blob/${gitConfig.branch}/content/docs/${page.path}`;
+  const toc = page.data.toc ?? [];
 
   return (
     <ComponentShowcaseLayout preview={<ComponentPreview slug={params.slug} />}>
       <article className="docs-article">
-        <DocsPageHeader title={page.data.title} />
-        <MDX components={getDocsMdxComponents(source, page)} />
-        <div className="mt-14 flex flex-wrap gap-x-4 gap-y-2 border-[var(--opendetail-color-sidebar-stroke)] border-t border-solid pt-8 text-[14px] text-neutral-500">
-          <Link
-            className="text-neutral-600 underline-offset-4 transition-colors hover:text-neutral-950 hover:underline"
-            href={markdownUrl}
-          >
-            Markdown
-          </Link>
-          <a
-            className="text-neutral-600 underline-offset-4 transition-colors hover:text-neutral-950 hover:underline"
-            href={githubUrl}
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            View on GitHub
-          </a>
-        </div>
+        <DocsPageChrome
+          feedbackPath={page.url}
+          githubUrl={githubUrl}
+          markdownUrl={markdownUrl}
+          pageTitle={page.data.title}
+          toc={toc}
+          variant="components"
+        >
+          <MDX components={getDocsMdxComponents(source, page)} />
+        </DocsPageChrome>
       </article>
     </ComponentShowcaseLayout>
   );
