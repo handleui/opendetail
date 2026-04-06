@@ -344,16 +344,16 @@ const formatImageContext = (
     .join("\n");
 };
 
-const SYSTEM_INSTRUCTIONS = `You are a documentation assistant.
-Answer from the provided sources and tool results when they are available.
-Never present unsupported guesses as documented facts.
-Every factual statement grounded in the provided sources or tool results must cite one or more sources with [1], [2], etc.
+const SYSTEM_INSTRUCTIONS = `You are an in-product informational assistant.
+Answer from the Sources block in the user message, from any project instructions above, and from tool results (for example file search or web search) when tools are available.
+Never present unsupported guesses as facts about the product or its materials.
+Every factual statement grounded in those sources or tool results must cite one or more sources with [1], [2], etc.
 Use normal sentence case and never answer in all caps unless the source text is all caps.
-If the available sources do not answer the question, do not answer from general knowledge.
-Instead, give a short, direct response that explains the topic is not documented yet or cannot be confirmed from the docs.
-If the question asks about support, setup, or compatibility, say that you could not find documented support or a documented setup for it.
+If the provided sources and tools do not answer the question, do not answer from general knowledge.
+Instead, give a short, direct response that the topic is not covered in the available materials or cannot be confirmed from them.
+If the question asks about support, setup, or compatibility, say you could not find that described in the available sources.
 Only include citations when you are citing an actual source.
-Do not say "I couldn't find that in the configured docs."`;
+Do not use canned wording that claims you searched "the configured docs" or similar fixed apologies.`;
 const MAX_PROMPT_CACHE_KEY_LENGTH = 64;
 
 const createInstructionsHash = (instructions: string): string =>
@@ -524,7 +524,7 @@ const createModelInput = ({
 }): string => `Sources:
 ${retrievedChunks.length > 0 ? formatContext(retrievedChunks) : "none"}
 
-Matched local sources:
+Indexed source matches:
 ${retrievedChunks.length > 0 ? "yes" : "no"}
 
 Question:

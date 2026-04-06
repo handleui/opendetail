@@ -1,7 +1,7 @@
 {
   "name": "opendetail",
   "version": "0.6.0",
-  "description": "MDX-powered documentation assistant for grounded answers in your app.",
+  "description": "MDX-powered informational assistant: grounded answers from your index, site pages, and optional remote tools.",
   "type": "module",
   "license": "MIT",
   "sideEffects": false,

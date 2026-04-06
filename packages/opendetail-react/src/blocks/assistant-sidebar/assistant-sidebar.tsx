@@ -538,7 +538,7 @@ function buildAssistantAsidePanel({
                     alt:
                       primaryImage.alt ??
                       primaryImage.title ??
-                      "Retrieved documentation reference",
+                      "Retrieved source image",
                     src: primaryImage.url,
                   }
                 : null

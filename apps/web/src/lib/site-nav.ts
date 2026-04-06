@@ -61,7 +61,7 @@ export const UI_DOCS_PATH_PREFIX = "/ui";
 /** Router landing (`/ui`) — label for the top link in the Assistant UI secondary panel. */
 export const SITE_UI_DOCS_ROUTER: { href: string; label: string } = {
   href: "/ui",
-  label: "Assistant UI",
+  label: "Overview",
 };
 
 /** @deprecated Use `SITE_UI_DOCS_ROUTER` */

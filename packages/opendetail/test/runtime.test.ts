@@ -223,14 +223,15 @@ describe("OpenDetail runtime", () => {
     }
   });
 
-  test("asks the model for a direct docs-status answer when nothing matches", async () => {
+  test("asks the model for a short answer when no indexed sources match", async () => {
     const cwd = await createFixtureWorkspace("basic");
-    const missingDocsText =
-      "I couldn't find a documented setup for that in the configured docs yet.";
+    const missingSourcesText =
+      "I couldn't find that described in the available sources yet.";
 
     try {
       const { artifact } = await buildOpenDetailIndex({ cwd });
-      const { client, create } = createMissingDocsMockClient(missingDocsText);
+      const { client, create } =
+        createMissingDocsMockClient(missingSourcesText);
       const assistant = createOpenDetail({
         client,
         cwd,
@@ -240,16 +241,16 @@ describe("OpenDetail runtime", () => {
         question: "abracadabra glorp zizzle",
       });
 
-      expect(result.text).toBe(missingDocsText);
+      expect(result.text).toBe(missingSourcesText);
       expect(result.fallback).toBe(true);
       expect(result.images).toEqual([]);
       expect(create).toHaveBeenCalledTimes(1);
       expect(create.mock.calls[0]?.[0]).toMatchObject({
-        input: expect.stringContaining("Matched local sources:\nno"),
+        input: expect.stringContaining("Indexed source matches:\nno"),
       });
       expect(create.mock.calls[0]?.[0]).toMatchObject({
         instructions: expect.stringContaining(
-          'Do not say "I couldn\'t find that in the configured docs."'
+          'Do not use canned wording that claims you searched "the configured docs"'
         ),
       });
     } finally {
@@ -427,14 +428,15 @@ describe("OpenDetail runtime", () => {
     }
   });
 
-  test("streams a direct docs-status answer when nothing matches", async () => {
+  test("streams a short answer when no indexed sources match", async () => {
     const cwd = await createFixtureWorkspace("basic");
-    const missingDocsText =
-      "I couldn't find a documented setup for that in the configured docs yet.";
+    const missingSourcesText =
+      "I couldn't find that described in the available sources yet.";
 
     try {
       const { artifact } = await buildOpenDetailIndex({ cwd });
-      const { client, create } = createMissingDocsMockClient(missingDocsText);
+      const { client, create } =
+        createMissingDocsMockClient(missingSourcesText);
       const assistant = createOpenDetail({
         client,
         cwd,
@@ -459,16 +461,16 @@ describe("OpenDetail runtime", () => {
         type: "images",
       });
       expect(events[3]).toEqual({
-        text: missingDocsText,
+        text: missingSourcesText,
         type: "delta",
       });
       expect(events[4]).toEqual({
-        text: missingDocsText,
+        text: missingSourcesText,
         type: "done",
       });
       expect(create).toHaveBeenCalledTimes(1);
       expect(create.mock.calls[0]?.[0]).toMatchObject({
-        input: expect.stringContaining("Matched local sources:\nno"),
+        input: expect.stringContaining("Indexed source matches:\nno"),
         stream: true,
       });
     } finally {

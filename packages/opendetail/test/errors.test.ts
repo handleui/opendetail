@@ -1,6 +1,9 @@
 import { APIConnectionError } from "openai";
 import { describe, expect, test } from "vitest";
-import { OPENAI_UNREACHABLE_MESSAGE, toOpenDetailPublicError } from "../src/errors";
+import {
+  OPENAI_UNREACHABLE_MESSAGE,
+  toOpenDetailPublicError,
+} from "../src/errors";
 
 describe("toOpenDetailPublicError", () => {
   test("does not expose unknown runtime error messages", () => {

@@ -144,6 +144,11 @@ export interface OpenDetailPublicError {
 }
 
 export interface OpenDetailAnswerResult {
+  /**
+   * `true` when lexical retrieval matched **no indexed chunks** for this request.
+   * The model may still answer using remote tools (`file_search`, `web_search`) or other context;
+   * this flag does not mean the final text is ungrounded.
+   */
   fallback: boolean;
   images: OpenDetailImage[];
   model: string;
@@ -152,6 +157,9 @@ export interface OpenDetailAnswerResult {
 }
 
 export interface OpenDetailStreamResult {
+  /**
+   * Same semantics as {@link OpenDetailAnswerResult.fallback} for the non-streaming result.
+   */
   fallback: boolean;
   images: OpenDetailImage[];
   model: string;

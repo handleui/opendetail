@@ -111,14 +111,21 @@ Then:
 
 ## Assistant instructions
 
-Loaded in order:
+The OpenAI Responses API separates **`instructions`** (how the model behaves)
+from **`input`** (sources + question). OpenDetail merges **harness** and **project**
+text into a single `instructions` string:
+
+- **Harness** (built-in): informational assistant behavior, grounding, citations, tools.
+- **Project** (your files below): tone, priorities, product vocabulary — keep it short.
+
+Loaded in order (project append):
 
 1. `assistantInstructions` option
 2. `assistantInstructionsPath` option
 3. `.opendetail/OPENDETAIL.md`
 4. `OPENDETAIL.md` at project root
 
-If none exist, only built-in grounding instructions apply.
+If none exist, only built-in harness instructions apply.
 
 ## Remote retrieval
 
@@ -149,6 +156,6 @@ Configure via `remoteResources` in code or `remote_resources` in `opendetail.tom
 
 ## Fallback behavior
 
-If no local chunks match well, OpenDetail may still respond but sets **`fallback: true`**. If the model returns no usable text:
+If lexical retrieval matches **no indexed chunks**, OpenDetail sets **`fallback: true`**. The model may still answer using remote tools; the flag means “no index hit,” not “no answer.” If the model returns no usable text:
 
-<CodeBlock lang="txt">{`This isn't documented in the configured docs yet.`}</CodeBlock>
+<CodeBlock lang="txt">{`That isn't covered in the available sources yet.`}</CodeBlock>

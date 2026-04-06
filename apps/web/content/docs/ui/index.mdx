@@ -1,32 +1,24 @@
 ---
-title: Assistant UI
-description: Entry point — systems, themes, primitives, and headless hooks for the in-browser assistant.
+title: Overview
+description: How Assistant UI docs are organized — three foundations, then hooks and components.
 ---
 
-Use this page to jump into the Assistant UI docs. **Foundations** explain *what* systems, themes, and primitives are; the **Hooks** and **Primitives** groups in the sidebar list every API and component page.
+Assistant UI documentation is split into **three foundations**—**systems**, **themes**, and **primitives**—so you can read concepts before diving into APIs. After that, the sidebar groups **hooks** (headless streaming) and **primitives** (each component page with a live preview).
 
 <Cards>
   <Card
     title="Systems"
-    description="UI identity, base CSS, systems vs themes, import order."
+    description="What a UI system is, base CSS, and how it differs from themes."
     href="/ui/systems"
   />
   <Card
     title="Themes"
-    description="Palette layers — Midnight, Signal, custom tokens."
+    description="Palette layers on the system—Midnight, Signal, imports."
     href="/ui/themes"
   />
   <Card
     title="Primitives"
-    description="React layout and conversation components vs headless hooks."
+    description="What we mean by primitives versus hooks, and what ships."
     href="/ui/primitives"
   />
 </Cards>
-
-## Headless streaming
-
-Same NDJSON pipeline, two surfaces: [**useOpenDetail**](/ui/hooks/use-opendetail) (React state) and [**createOpenDetailClient**](/ui/hooks/create-open-detail-client) (vanilla / custom stores). Full types and options: [**React**](/docs/react).
-
-## Component reference
-
-Interactive previews and props live under **Primitives** in the sidebar (e.g. [**Shell**](/ui/opendetail/shell), [**Composer**](/ui/opendetail/composer)). Custom styling without our components: [**UI integration**](/docs/ui-integration).

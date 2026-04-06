@@ -176,6 +176,20 @@ in one of these locations:
 You can also pass `assistantInstructions` or `assistantInstructionsPath` to
 `createOpenDetail` for explicit control.
 
+### Harness vs project instructions
+
+OpenAI’s Responses API uses a top-level **`instructions`** string (behavior) and
+**`input`** (the user prompt plus retrieved context). OpenDetail merges two layers
+into **`instructions`** before calling the API:
+
+| Layer | Where it lives | What to put there |
+| --- | --- | --- |
+| **Harness** | Built into the runtime | Stable rules: informational assistant identity, grounding, citations, tool usage. Same for every integration. |
+| **Project** | `OPENDETAIL.md` or `assistantInstructions*` | Product voice, priorities, vocabulary, support policy — short and specific; avoid copying the entire harness. |
+
+Per-request **`input`** contains the `Sources:` block, an indexed-match flag, and
+the user question — not your project file.
+
 The result includes grounded image metadata in `result.images` when the matched
 docs contain supported image references. `image.sourceIds` map back to the
 entries in `result.sources`.

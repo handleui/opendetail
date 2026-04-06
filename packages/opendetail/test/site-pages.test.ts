@@ -80,7 +80,7 @@ describe("site-pages path helpers", () => {
 describe("stripHtmlToText", () => {
   test("removes scripts and exposes body text", () => {
     const { text, title } = stripHtmlToText(
-      `<!DOCTYPE html><html><head><title>Hi</title><script>evil()</script></head><body><p>Hello</p></body></html>`
+      "<!DOCTYPE html><html><head><title>Hi</title><script>evil()</script></head><body><p>Hello</p></body></html>"
     );
 
     expect(title).toBe("Hi");
