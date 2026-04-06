@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { FumadocsAssistant } from "opendetail-fumadocs/assistant";
-import type { ReactNode } from "react";
+import { type ReactNode, useState } from "react";
 import { Trifold } from "trifold";
 import { Sidebar } from "@/components/sidebar";
 import { SiteShell } from "@/components/site-shell";
@@ -24,8 +24,11 @@ export const WebRootShell = ({
   children: ReactNode;
   knownSourcePageUrls: readonly string[];
 }) => {
+  const [assistantOpen, setAssistantOpen] = useState(false);
+
   const navigation = (
     <Sidebar
+      assistantOpen={assistantOpen}
       githubHref={githubHref}
       githubIcon={
         <Image
@@ -48,6 +51,9 @@ export const WebRootShell = ({
           width={SITE_NAV_ROW_ICON_PX}
         />
       }
+      onAssistantToggle={() => {
+        setAssistantOpen((open) => !open);
+      }}
       productTitle={appName}
       productVersionLabel={productVersionLabel}
       rowIconSize={SITE_NAV_ROW_ICON_PX}
@@ -59,6 +65,8 @@ export const WebRootShell = ({
       inputId="opendetail-site-question"
       knownSourcePageUrls={knownSourcePageUrls}
       navigation={navigation}
+      onOpenChange={setAssistantOpen}
+      open={assistantOpen}
       persistence={{
         key: "opendetail-site-sidebar",
       }}

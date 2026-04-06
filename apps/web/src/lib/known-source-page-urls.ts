@@ -49,6 +49,7 @@ const componentShowcasePageUrls = [
 ] as const;
 
 export const knownSourcePageUrls = [
+  "/changelog",
   ...collectKnownSourcePageUrls(docsContentDirectory),
   ...componentShowcasePageUrls,
 ].sort();

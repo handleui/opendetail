@@ -7,6 +7,8 @@ import {
   BookOpen,
   House,
   LayoutTemplate,
+  ScrollText,
+  Wand2,
 } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 import Link from "next/link";
@@ -247,12 +249,16 @@ function NestedNavSections({
 }
 
 export interface SidebarProps {
+  /** Whether the assistant panel is open (for pressed styling). */
+  assistantOpen?: boolean;
   docsPathPrefix?: string;
   githubHref: string;
   githubIcon: ReactNode;
   madeByHumanHref?: string;
   npmHref: string;
   npmIcon: ReactNode;
+  /** Toggles the site assistant (AI) sidebar open/closed. */
+  onAssistantToggle?: () => void;
   productTitle: string;
   productVersionLabel: string;
   /** Root row icons (Home, Resources, Social) — default 14px. */
@@ -268,6 +274,8 @@ export function Sidebar({
   npmIcon,
   docsPathPrefix = "/docs",
   madeByHumanHref = DEFAULT_MADE_BY_HUMAN_HREF,
+  assistantOpen = false,
+  onAssistantToggle,
   rowIconSize = DEFAULT_ROW_ICON_SIZE,
 }: SidebarProps) {
   const pathname = usePathname();
@@ -291,225 +299,273 @@ export function Sidebar({
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <div className="mb-5 shrink-0 px-5 pt-5">
-        <div className="flex flex-wrap items-baseline gap-1">
-          <span className="font-normal text-[14px] text-black tracking-[-0.56px]">
-            {productTitle}
-          </span>
-          <span className="font-normal text-[#a4a4a4] text-[13px] tabular-nums tracking-tight">
-            {productVersionLabel}
-          </span>
-        </div>
-      </div>
-
-      <div className="relative min-h-0 flex-1 overflow-hidden">
-        <motion.div
-          animate={{
-            x: showSecondaryPanel ? "-50%" : "0%",
-          }}
-          className="flex h-full min-h-0 w-[200%] touch-pan-x flex-row will-change-transform"
-          initial={false}
-          transition={innerTransition}
-        >
-          <div className="flex min-h-0 w-1/2 flex-col">
-            <nav
-              aria-label="Site"
-              className={`flex shrink-0 flex-col gap-5 ${SLIDE_PANEL_TOP_CLASS} pb-4`}
-            >
-              <Link
-                className={[
-                  navLinkClass(pathname === "/"),
-                  "flex items-center gap-2",
-                ].join(" ")}
-                href="/"
-                onClick={() => {
-                  setNavIntent("/");
-                  openHome();
-                }}
-              >
-                <RootRowIconSlot rowIconSize={rowIconSize}>
-                  <House
-                    aria-hidden="true"
-                    className="shrink-0 text-black"
-                    size={rowIconSize}
-                    strokeWidth={SIDEBAR_LUCIDE_STROKE_PX}
-                  />
-                </RootRowIconSlot>
-                Home
-              </Link>
-
-              <div>
-                <p className={SECTION_TITLE_CLASS}>Resources</p>
-                <div className="mt-2 flex flex-col gap-0.5">
-                  <Link
-                    className={[
-                      NAV_ROW_CLASS,
-                      "justify-between",
-                      docsRootActive ? "bg-neutral-100" : "",
-                    ].join(" ")}
-                    href={docsPathPrefix}
-                    onClick={() => {
-                      setNavIntent(docsPathPrefix);
-                      openSecondary();
-                    }}
-                  >
-                    <span className="flex min-w-0 items-center gap-2">
-                      <RootRowIconSlot rowIconSize={rowIconSize}>
-                        <BookOpen
-                          aria-hidden="true"
-                          className="shrink-0 text-black"
-                          size={rowIconSize}
-                          strokeWidth={SIDEBAR_LUCIDE_STROKE_PX}
-                        />
-                      </RootRowIconSlot>
-                      <span>Docs</span>
-                    </span>
-                    <ArrowRight
-                      aria-hidden="true"
-                      className={ROW_TRAILING_ICON_CLASS}
-                      size={ROW_ICON_PX}
-                      strokeWidth={SIDEBAR_LUCIDE_STROKE_PX}
-                    />
-                  </Link>
-                  <Link
-                    className={[
-                      NAV_ROW_CLASS,
-                      "justify-between",
-                      componentsRootActive ? "bg-neutral-100" : "",
-                    ].join(" ")}
-                    href={COMPONENTS_PATH_PREFIX}
-                    onClick={() => {
-                      setNavIntent(COMPONENTS_PATH_PREFIX);
-                      openSecondary();
-                    }}
-                  >
-                    <span className="flex min-w-0 items-center gap-2">
-                      <RootRowIconSlot rowIconSize={rowIconSize}>
-                        <LayoutTemplate
-                          aria-hidden="true"
-                          className="shrink-0 text-black"
-                          size={rowIconSize}
-                          strokeWidth={SIDEBAR_LUCIDE_STROKE_PX}
-                        />
-                      </RootRowIconSlot>
-                      <span>Components</span>
-                    </span>
-                    <ArrowRight
-                      aria-hidden="true"
-                      className={ROW_TRAILING_ICON_CLASS}
-                      size={ROW_ICON_PX}
-                      strokeWidth={SIDEBAR_LUCIDE_STROKE_PX}
-                    />
-                  </Link>
-                </div>
-              </div>
-
-              <div>
-                <p className={SECTION_TITLE_CLASS}>Social</p>
-                <div className="mt-2 flex flex-col gap-0.5">
-                  <a
-                    className={`${NAV_ROW_CLASS} justify-between`}
-                    href={githubHref}
-                    rel="noopener noreferrer"
-                    target="_blank"
-                  >
-                    <span className="flex min-w-0 items-center gap-2">
-                      <RootRowIconSlot rowIconSize={rowIconSize}>
-                        {githubIcon}
-                      </RootRowIconSlot>
-                      GitHub
-                    </span>
-                    <ArrowUpRight
-                      aria-hidden="true"
-                      className={ROW_TRAILING_ICON_CLASS}
-                      size={ROW_ICON_PX}
-                      strokeWidth={SIDEBAR_LUCIDE_STROKE_PX}
-                    />
-                  </a>
-                  <a
-                    className={`${NAV_ROW_CLASS} justify-between`}
-                    href={npmHref}
-                    rel="noopener noreferrer"
-                    target="_blank"
-                  >
-                    <span className="flex min-w-0 items-center gap-2">
-                      <RootRowIconSlot rowIconSize={rowIconSize}>
-                        {npmIcon}
-                      </RootRowIconSlot>
-                      npm
-                    </span>
-                    <ArrowUpRight
-                      aria-hidden="true"
-                      className={ROW_TRAILING_ICON_CLASS}
-                      size={ROW_ICON_PX}
-                      strokeWidth={SIDEBAR_LUCIDE_STROKE_PX}
-                    />
-                  </a>
-                </div>
-              </div>
-            </nav>
-            <div className="min-h-0 flex-1" />
+      <div className="flex min-h-0 flex-1 flex-col gap-5">
+        <div className="shrink-0 px-5 pt-5">
+          <div className="flex flex-wrap items-baseline gap-1">
+            <span className="font-normal text-[14px] text-black tracking-[-0.56px]">
+              {productTitle}
+            </span>
+            <span className="font-normal text-[#a4a4a4] text-[13px] tabular-nums tracking-tight">
+              {productVersionLabel}
+            </span>
           </div>
+        </div>
 
-          <div className="flex min-h-0 w-1/2 flex-col">
-            <div className={`shrink-0 ${SLIDE_PANEL_TOP_CLASS}`}>
-              <button
-                className={`${NAV_ROW_CLASS} gap-2`}
-                onClick={goBack}
-                type="button"
-              >
-                <ArrowLeft
-                  aria-hidden="true"
-                  className={ROW_TRAILING_ICON_CLASS}
-                  size={ROW_ICON_PX}
-                  strokeWidth={SIDEBAR_LUCIDE_STROKE_PX}
-                />
-                Back
-              </button>
-            </div>
-            {secondaryIsComponents ? (
+        <div className="relative min-h-0 flex-1 overflow-hidden">
+          <motion.div
+            animate={{
+              x: showSecondaryPanel ? "-50%" : "0%",
+            }}
+            className="flex h-full min-h-0 w-[200%] touch-pan-x flex-row will-change-transform"
+            initial={false}
+            transition={innerTransition}
+          >
+            <div className="flex min-h-0 w-1/2 flex-col">
               <nav
-                aria-labelledby={`${navId}-components`}
-                className={INNER_NAV_CLASS}
-                key="nest-components"
+                aria-label="Site"
+                className={`flex shrink-0 flex-col gap-5 ${SLIDE_PANEL_TOP_CLASS} pb-4`}
               >
-                <p className="sr-only" id={`${navId}-components`}>
-                  Component gallery
-                </p>
-                <div className="flex flex-col gap-4">
-                  <div>
-                    <Link
-                      className={navLinkClass(
-                        isPageActive(SITE_COMPONENTS_OVERVIEW.href, pathname)
-                      )}
-                      href={SITE_COMPONENTS_OVERVIEW.href}
+                <div className="flex flex-col gap-5">
+                  {onAssistantToggle ? (
+                    <button
+                      aria-pressed={assistantOpen}
+                      className={[
+                        "mx-2 flex min-w-0 cursor-pointer items-center justify-center gap-2 self-stretch rounded-md border-0 px-3 py-1.5 font-normal text-[14px] text-neutral-900 leading-snug transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-neutral-400 focus-visible:outline-offset-2",
+                        assistantOpen
+                          ? "bg-neutral-200/90 hover:bg-neutral-300/80"
+                          : "bg-neutral-100 hover:bg-neutral-200/90",
+                      ].join(" ")}
+                      onClick={onAssistantToggle}
+                      type="button"
                     >
-                      {SITE_COMPONENTS_OVERVIEW.label}
+                      <Wand2
+                        aria-hidden="true"
+                        className="shrink-0 text-black"
+                        size={rowIconSize}
+                        strokeWidth={SIDEBAR_LUCIDE_STROKE_PX}
+                      />
+                      Ask AI
+                    </button>
+                  ) : null}
+                  <div className="flex flex-col gap-0.5">
+                    <Link
+                      className={[
+                        navLinkClass(pathname === "/"),
+                        "flex items-center gap-2",
+                      ].join(" ")}
+                      href="/"
+                      onClick={() => {
+                        setNavIntent("/");
+                        openHome();
+                      }}
+                    >
+                      <RootRowIconSlot rowIconSize={rowIconSize}>
+                        <House
+                          aria-hidden="true"
+                          className="shrink-0 text-black"
+                          size={rowIconSize}
+                          strokeWidth={SIDEBAR_LUCIDE_STROKE_PX}
+                        />
+                      </RootRowIconSlot>
+                      Home
+                    </Link>
+                    <Link
+                      className={[
+                        navLinkClass(pathname === "/changelog"),
+                        "flex items-center gap-2",
+                      ].join(" ")}
+                      href="/changelog"
+                      onClick={() => {
+                        setNavIntent("/changelog");
+                        openHome();
+                      }}
+                    >
+                      <RootRowIconSlot rowIconSize={rowIconSize}>
+                        <ScrollText
+                          aria-hidden="true"
+                          className="shrink-0 text-black"
+                          size={rowIconSize}
+                          strokeWidth={SIDEBAR_LUCIDE_STROKE_PX}
+                        />
+                      </RootRowIconSlot>
+                      Changelog
                     </Link>
                   </div>
-                  <NestedNavSections
-                    pathname={pathname}
-                    sections={[SITE_COMPONENTS_GROUP_SECTION]}
-                  />
+                </div>
+
+                <div>
+                  <p className={SECTION_TITLE_CLASS}>Resources</p>
+                  <div className="mt-2 flex flex-col gap-0.5">
+                    <Link
+                      className={[
+                        NAV_ROW_CLASS,
+                        "justify-between",
+                        docsRootActive ? "bg-neutral-100" : "",
+                      ].join(" ")}
+                      href={docsPathPrefix}
+                      onClick={() => {
+                        setNavIntent(docsPathPrefix);
+                        openSecondary();
+                      }}
+                    >
+                      <span className="flex min-w-0 items-center gap-2">
+                        <RootRowIconSlot rowIconSize={rowIconSize}>
+                          <BookOpen
+                            aria-hidden="true"
+                            className="shrink-0 text-black"
+                            size={rowIconSize}
+                            strokeWidth={SIDEBAR_LUCIDE_STROKE_PX}
+                          />
+                        </RootRowIconSlot>
+                        <span>Docs</span>
+                      </span>
+                      <ArrowRight
+                        aria-hidden="true"
+                        className={ROW_TRAILING_ICON_CLASS}
+                        size={ROW_ICON_PX}
+                        strokeWidth={SIDEBAR_LUCIDE_STROKE_PX}
+                      />
+                    </Link>
+                    <Link
+                      className={[
+                        NAV_ROW_CLASS,
+                        "justify-between",
+                        componentsRootActive ? "bg-neutral-100" : "",
+                      ].join(" ")}
+                      href={COMPONENTS_PATH_PREFIX}
+                      onClick={() => {
+                        setNavIntent(COMPONENTS_PATH_PREFIX);
+                        openSecondary();
+                      }}
+                    >
+                      <span className="flex min-w-0 items-center gap-2">
+                        <RootRowIconSlot rowIconSize={rowIconSize}>
+                          <LayoutTemplate
+                            aria-hidden="true"
+                            className="shrink-0 text-black"
+                            size={rowIconSize}
+                            strokeWidth={SIDEBAR_LUCIDE_STROKE_PX}
+                          />
+                        </RootRowIconSlot>
+                        <span>Components</span>
+                      </span>
+                      <ArrowRight
+                        aria-hidden="true"
+                        className={ROW_TRAILING_ICON_CLASS}
+                        size={ROW_ICON_PX}
+                        strokeWidth={SIDEBAR_LUCIDE_STROKE_PX}
+                      />
+                    </Link>
+                  </div>
+                </div>
+
+                <div>
+                  <p className={SECTION_TITLE_CLASS}>Social</p>
+                  <div className="mt-2 flex flex-col gap-0.5">
+                    <a
+                      className={`${NAV_ROW_CLASS} justify-between`}
+                      href={githubHref}
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
+                      <span className="flex min-w-0 items-center gap-2">
+                        <RootRowIconSlot rowIconSize={rowIconSize}>
+                          {githubIcon}
+                        </RootRowIconSlot>
+                        GitHub
+                      </span>
+                      <ArrowUpRight
+                        aria-hidden="true"
+                        className={ROW_TRAILING_ICON_CLASS}
+                        size={ROW_ICON_PX}
+                        strokeWidth={SIDEBAR_LUCIDE_STROKE_PX}
+                      />
+                    </a>
+                    <a
+                      className={`${NAV_ROW_CLASS} justify-between`}
+                      href={npmHref}
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
+                      <span className="flex min-w-0 items-center gap-2">
+                        <RootRowIconSlot rowIconSize={rowIconSize}>
+                          {npmIcon}
+                        </RootRowIconSlot>
+                        npm
+                      </span>
+                      <ArrowUpRight
+                        aria-hidden="true"
+                        className={ROW_TRAILING_ICON_CLASS}
+                        size={ROW_ICON_PX}
+                        strokeWidth={SIDEBAR_LUCIDE_STROKE_PX}
+                      />
+                    </a>
+                  </div>
                 </div>
               </nav>
-            ) : (
-              <nav
-                aria-labelledby={navId}
-                className={INNER_NAV_CLASS}
-                key="nest-docs"
-              >
-                <p className="sr-only" id={navId}>
-                  Documentation
-                </p>
-                <NestedNavSections
-                  pathname={pathname}
-                  sections={SITE_DOCS_NAV_TREE}
-                />
-              </nav>
-            )}
-          </div>
-        </motion.div>
+              <div className="min-h-0 flex-1" />
+            </div>
+
+            <div className="flex min-h-0 w-1/2 flex-col">
+              <div className={`shrink-0 ${SLIDE_PANEL_TOP_CLASS}`}>
+                <button
+                  className={`${NAV_ROW_CLASS} gap-2`}
+                  onClick={goBack}
+                  type="button"
+                >
+                  <ArrowLeft
+                    aria-hidden="true"
+                    className={ROW_TRAILING_ICON_CLASS}
+                    size={ROW_ICON_PX}
+                    strokeWidth={SIDEBAR_LUCIDE_STROKE_PX}
+                  />
+                  Back
+                </button>
+              </div>
+              {secondaryIsComponents ? (
+                <nav
+                  aria-labelledby={`${navId}-components`}
+                  className={INNER_NAV_CLASS}
+                  key="nest-components"
+                >
+                  <p className="sr-only" id={`${navId}-components`}>
+                    Component gallery
+                  </p>
+                  <div className="flex flex-col gap-4">
+                    <div>
+                      <Link
+                        className={navLinkClass(
+                          isPageActive(SITE_COMPONENTS_OVERVIEW.href, pathname)
+                        )}
+                        href={SITE_COMPONENTS_OVERVIEW.href}
+                      >
+                        {SITE_COMPONENTS_OVERVIEW.label}
+                      </Link>
+                    </div>
+                    <NestedNavSections
+                      pathname={pathname}
+                      sections={[SITE_COMPONENTS_GROUP_SECTION]}
+                    />
+                  </div>
+                </nav>
+              ) : (
+                <nav
+                  aria-labelledby={navId}
+                  className={INNER_NAV_CLASS}
+                  key="nest-docs"
+                >
+                  <p className="sr-only" id={navId}>
+                    Documentation
+                  </p>
+                  <NestedNavSections
+                    pathname={pathname}
+                    sections={SITE_DOCS_NAV_TREE}
+                  />
+                </nav>
+              )}
+            </div>
+          </motion.div>
+        </div>
       </div>
 
       <div className="shrink-0 px-5 py-4">

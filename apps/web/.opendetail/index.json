@@ -594,7 +594,7 @@
       "id": "fumadocs.mdx",
       "images": [],
       "relativePath": "fumadocs.mdx",
-      "text": "opendetail-fumadocs is optional glue when your docs site already uses Fumadocs (or the same URL patterns): it turns assistant source items into safe href values for the UI — local pages your app knows about, or external HTTPS links.",
+      "text": "opendetail-fumadocs is optional glue for apps that already serve docs under predictable URLs (often Fumadocs-style /docs/... routes). It does not add a different assistant runtime: it supplies resolveSourceTarget helpers and a thin FumadocsAssistant wrapper around AssistantSidebarShell from opendetail-react, wired with renderNextSourceLink from opendetail-next.\n\nFor when to use this vs hand-wiring, see Packages & composition.",
       "title": "opendetail-fumadocs",
       "url": "/docs/fumadocs"
     },
@@ -607,22 +607,35 @@
       "id": "fumadocs.mdx#api",
       "images": [],
       "relativePath": "fumadocs.mdx",
-      "text": "API\n\nresolveFumadocsSourceTarget — Given knownPageUrls and a source (kind: \"local\" or \"remote\"), returns { external, href } or null for unknown local paths.createFumadocsSourceTargetResolver(knownPageUrls) — Returns a ResolveAssistantSourceTarget you pass to opendetail-react assistant components (e.g. AssistantSidebarShell resolveSourceTarget).getFumadocsPageUrls(source) — Maps a Fumadocs-style source with getPages() to a flat list of URLs for the allowlist.\n\nLocal URLs must match a known pathname (no hash required for the allowlist match; hashes are preserved on output). Unknown paths like /docs/old-page resolve to null so the UI does not invent links.",
+      "text": "API\n\nresolveFumadocsSourceTarget — Given knownPageUrls and a source (kind: \"local\" or \"remote\"), returns { external, href } or null for unknown local paths.createFumadocsSourceTargetResolver(knownPageUrls) — Returns a ResolveAssistantSourceTarget you pass to AssistantSidebarShell as resolveSourceTarget.getFumadocsPageUrls(source) — Maps a Fumadocs-style source with getPages() to a flat list of URLs for the allowlist.",
       "title": "opendetail-fumadocs",
       "url": "/docs/fumadocs#api"
     },
     {
-      "anchor": "wiring",
+      "anchor": "convenience-wrapper",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/fumadocs.mdx",
       "headings": [
-        "Wiring"
+        "Convenience wrapper"
       ],
-      "id": "fumadocs.mdx#wiring",
+      "id": "fumadocs.mdx#convenience-wrapper",
       "images": [],
       "relativePath": "fumadocs.mdx",
-      "text": "Wiring\n\nCollect the doc page URLs your site actually serves (same slugs as your MDX routes), then pass them as knownPageUrls:\n\n`import { createFumadocsSourceTargetResolver } from \"opendetail-fumadocs\";\n\nconst resolveSourceTarget = createFumadocsSourceTargetResolver([\n\"/docs\",\n\"/docs/quickstart\",\n// …\n]);\n`\n\nPair with renderNextSourceLink from opendetail-next in a Next app so resolved targets render as next/link where appropriate.",
+      "text": "Convenience wrapper\n\nFumadocsAssistant (import from opendetail-fumadocs/assistant) bundles:\n\nAssistantSidebarShellrenderNextSourceLink from opendetail-nextcreateFumadocsSourceTargetResolver(knownSourcePageUrls)\n\nPass the same props you would to the shell, plus knownSourcePageUrls. Site navigation chrome stays in your app (for example the demo’s Sidebar in apps/web), not in this package.\n\n`import { FumadocsAssistant } from \"opendetail-fumadocs/assistant\";\n\n<FumadocsAssistant\nknownSourcePageUrls={[\"/docs\", \"/docs/quickstart\", /* … */]}\nnavigation={<YourNav />}\n/* …AssistantSidebarShell props */\n/>;\n`",
       "title": "opendetail-fumadocs",
-      "url": "/docs/fumadocs#wiring"
+      "url": "/docs/fumadocs#convenience-wrapper"
+    },
+    {
+      "anchor": "wiring-without-the-wrapper",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/fumadocs.mdx",
+      "headings": [
+        "Wiring without the wrapper"
+      ],
+      "id": "fumadocs.mdx#wiring-without-the-wrapper",
+      "images": [],
+      "relativePath": "fumadocs.mdx",
+      "text": "Wiring without the wrapper\n\nCollect the doc page URLs your site actually serves (same slugs as your MDX routes), then pass them as knownPageUrls:\n\n`import { createFumadocsSourceTargetResolver } from \"opendetail-fumadocs\";\n\nconst resolveSourceTarget = createFumadocsSourceTargetResolver([\n\"/docs\",\n\"/docs/quickstart\",\n// …\n]);\n`\n\nPair with renderNextSourceLink from opendetail-next so resolved targets render as next/link where appropriate.\n\nLocal URLs must match a known pathname (no hash required for the allowlist match; hashes are preserved on output). Unknown paths like /docs/old-page resolve to null so the UI does not invent links.",
+      "title": "opendetail-fumadocs",
+      "url": "/docs/fumadocs#wiring-without-the-wrapper"
     },
     {
       "anchor": null,
@@ -672,7 +685,7 @@
       "id": "index.mdx#packages-at-a-glance",
       "images": [],
       "relativePath": "index.mdx",
-      "text": "Packages (at a glance)\n\n| Package | Role |\n| --- | --- |\n| opendetail | Build, core runtime, CLI (opendetail binary). |\n| opendetail-next | Next.js route helpers for self-hosted mode. |\n| opendetail-react | useOpenDetail and streaming client for browser UI. |\n| opendetail-fumadocs | Optional helpers when you already use Fumadocs-style docs. |",
+      "text": "Packages (at a glance)\n\n| Package | Role |\n| --- | --- |\n| opendetail | Build, core runtime, CLI (opendetail binary). |\n| opendetail-next | Next.js App Router route, NDJSON streaming, renderNextSourceLink. |\n| opendetail-react | useOpenDetail, AssistantSidebarShell, streaming client. |\n| opendetail-fumadocs | Optional: known-page resolver + FumadocsAssistant preset (works with any /docs/... allowlist). |\n| trifold | Optional: horizontal nav · main · assistant panel layout (e.g. mobile shell). |\n\nFor which to install, how they stack, and naming, see Packages & composition.",
       "title": "Documentation",
       "url": "/docs#packages-at-a-glance"
     },
@@ -685,7 +698,7 @@
       "id": "index.mdx#where-to-go-next",
       "images": [],
       "relativePath": "index.mdx",
-      "text": "Where to go next\n\nCore: Overview · Configuration · CLI · Runtime\n\nAdapters: Next.js · React · Fumadocs",
+      "text": "Where to go next\n\nCore: Overview · Configuration · CLI · Runtime\n\nAdapters: Next.js · React · opendetail-fumadocs",
       "title": "Documentation",
       "url": "/docs#where-to-go-next"
     },
@@ -698,7 +711,20 @@
       "id": "integration.mdx#self-hosted-default-full-path-today",
       "images": [],
       "relativePath": "integration.mdx",
-      "text": "Self-hosted (default, full path today)\n\nSelf-hosted means: your Next.js route, your Node runtime, your API key, your rebuilt index on deploy.\n\nThe App Router integration lives in opendetail-next: createNextRoute, createNextRouteHandler, and renderNextSourceLink for MDX. See opendetail-next for exports, options, and requirements.\n\nRequirements (summary)\n\nNode.js 18+Route handler on the Node.js runtime (not Edge) for the default adapterOPENAI_API_KEY set.opendetail/index.json present after build\n\nRequest body — intentionally tiny:\n\n`{ \"question\": \"How do I configure base_path?\" }`\n\nMalformed bodies get a JSON error instead of a broken stream.\n\nResponse — application/x-ndjson; charset=utf-8, events in this order:\n\nmeta — model metadatasources — matched chunks (and remote citations when configured)images — grounded image references from matched docsdelta — streamed answer textdone — final texterror — safe public error payload\n\nIf initialization fails before streaming starts, you get JSON error instead of NDJSON. In production, repeated init failures are cached so you do not pay the same failure cost on every request.",
+      "text": "Self-hosted (default, full path today)\n\nSelf-hosted means: your Next.js route, your Node runtime, your API key, your rebuilt index on deploy.\n\nThe App Router integration lives in opendetail-next: createNextRoute, createNextRouteHandler, and renderNextSourceLink for MDX. See opendetail-next for exports, options, and requirements. For which packages to install and how they compound with opendetail-react and optional opendetail-fumadocs, see Packages & composition.\n\nRequirements (summary)\n\nNode.js 18+Route handler on the Node.js runtime (not Edge) for the default adapterOPENAI_API_KEY set.opendetail/index.json present after build\n\nRequest body — intentionally tiny:\n\n`{ \"question\": \"How do I configure base_path?\" }`\n\nMalformed bodies get a JSON error instead of a broken stream.\n\nResponse — application/x-ndjson; charset=utf-8, events in this order:\n\nmeta — model metadatasources — matched chunks (and remote citations when configured)images — grounded image references from matched docsdelta — streamed answer textdone — final texterror — safe public error payload",
+      "title": "Integration",
+      "url": "/docs/integration#self-hosted-default-full-path-today"
+    },
+    {
+      "anchor": "self-hosted-default-full-path-today",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/integration.mdx",
+      "headings": [
+        "Self-hosted (default, full path today)"
+      ],
+      "id": "integration.mdx#self-hosted-default-full-path-today::part-2",
+      "images": [],
+      "relativePath": "integration.mdx",
+      "text": "If initialization fails before streaming starts, you get JSON error instead of NDJSON. In production, repeated init failures are cached so you do not pay the same failure cost on every request.",
       "title": "Integration",
       "url": "/docs/integration#self-hosted-default-full-path-today"
     },
@@ -813,7 +839,7 @@
       "id": "next.mdx#source-links-in-mdx",
       "images": [],
       "relativePath": "next.mdx",
-      "text": "Source links in MDX\n\nFor Fumadocs-style docs, pass renderNextSourceLink from opendetail-next into your assistant UI so local /docs/... citations use Next Link and external URLs stay safe:\n\n`import { renderNextSourceLink } from \"opendetail-next\";\n`\n\nUse with resolveSourceTarget from opendetail-fumadocs when you need known-page URL allowlists.",
+      "text": "Source links in MDX\n\nFor Fumadocs-style docs, pass renderNextSourceLink from opendetail-next into your assistant UI so local /docs/... citations use Next Link and external URLs stay safe:\n\n`import { renderNextSourceLink } from \"opendetail-next\";\n`\n\nUse with resolveSourceTarget from opendetail-fumadocs when you need known-page URL allowlists, or see Packages & composition for how the stack fits together.",
       "title": "opendetail-next",
       "url": "/docs/next#source-links-in-mdx"
     },
@@ -855,6 +881,84 @@
       "text": "When to use it directly\n\nUse opendetail without Next or React when you integrate from Node (custom server, scripts, tests). For a Next.js App Router route, use opendetail-next; for browser UI, use opendetail-react.",
       "title": "opendetail (core)",
       "url": "/docs/opendetail#when-to-use-it-directly"
+    },
+    {
+      "anchor": null,
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/packages.mdx",
+      "headings": [
+        "Packages & composition"
+      ],
+      "id": "packages.mdx",
+      "images": [],
+      "relativePath": "packages.mdx",
+      "text": "OpenDetail is intentionally layered: core runtime and build, then framework adapters, then UI. You pick the layers your app needs; they compose in one codebase.",
+      "title": "Packages & composition",
+      "url": "/docs/packages"
+    },
+    {
+      "anchor": "layers-bottom-to-top",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/packages.mdx",
+      "headings": [
+        "Layers (bottom to top)"
+      ],
+      "id": "packages.mdx#layers-bottom-to-top",
+      "images": [],
+      "relativePath": "packages.mdx",
+      "text": "Layers (bottom to top)\n\nopendetail — CLI, config, opendetail build, .opendetail/index.json, and the core runtime that loads the index and talks to the model. Start here for any integration.opendetail-next — Next.js App Router: createNextRoute / createNextRouteHandler, NDJSON streaming, and renderNextSourceLink so assistant citations can render as next/link where appropriate.opendetail-react — Browser UI: useOpenDetail, createOpenDetailClient, AssistantSidebarShell, and related assistant UI. Framework-agnostic (works with Vite, etc.) as long as you point the client at your HTTP endpoint.opendetail-fumadocs (optional) — A small preset on top of opendetail-react + opendetail-next: createFumadocsSourceTargetResolver, FumadocsAssistant, and helpers for known doc URLs. The name reflects common Fumadocs-style /docs/... routes; the code does not import Fumadocs packages — it is an allowlisted pathname resolver you can use for any Next docs site that lists its routes.\n\ntrifold (optional, separate package) — Horizontal panel layout (e.g. nav · main · assistant on small viewports). The OpenDetail web demo uses it inside renderMobileShell; it is not required for retrieval or streaming.",
+      "title": "Packages & composition",
+      "url": "/docs/packages#layers-bottom-to-top"
+    },
+    {
+      "anchor": "when-to-use-which-package",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/packages.mdx",
+      "headings": [
+        "When to use which package"
+      ],
+      "id": "packages.mdx#when-to-use-which-package",
+      "images": [],
+      "relativePath": "packages.mdx",
+      "text": "When to use which package\n\n| Package | Use when |\n| --- | --- |\n| opendetail | You need the build, CLI, runtime, or self-hosted index file. |\n| opendetail-next | You deploy on Next.js App Router and want the official route handler + renderNextSourceLink. |\n| opendetail-react | You build the in-browser assistant (hook, shell, streaming client). |\n| opendetail-fumadocs | You want a known-page allowlist for citation URLs and/or the FumadocsAssistant wrapper instead of wiring resolveSourceTarget by hand. Skip it if you implement your own resolver (e.g. internal tools, multiple origins). |\n| trifold | You want the 3-panel horizontal shell UX; purely presentational. |",
+      "title": "Packages & composition",
+      "url": "/docs/packages#when-to-use-which-package"
+    },
+    {
+      "anchor": "how-they-compound",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/packages.mdx",
+      "headings": [
+        "How they compound"
+      ],
+      "id": "packages.mdx#how-they-compound",
+      "images": [],
+      "relativePath": "packages.mdx",
+      "text": "How they compound\n\nTypical Next.js + self-hosted app:\n\nopendetail (build + runtime) +opendetail-next (route + renderNextSourceLink) +opendetail-react (useOpenDetail + AssistantSidebarShell).\n\nOptional additions:\n\nopendetail-fumadocs — same stack, plus createFumadocsSourceTargetResolver([...]) passed into the shell (or use FumadocsAssistant, which bundles resolver + link renderer + shell — see opendetail-fumadocs).trifold — only the mobile shell layout; compose via renderMobileShell on the assistant shell, not inside core packages.\n\nThere is one assistant pipeline (question → NDJSON → UI). FumadocsAssistant is not a second product — it is AssistantSidebarShell with Next-aware source links and a preset resolver.",
+      "title": "Packages & composition",
+      "url": "/docs/packages#how-they-compound"
+    },
+    {
+      "anchor": "naming-in-this-monorepo",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/packages.mdx",
+      "headings": [
+        "Naming in this monorepo"
+      ],
+      "id": "packages.mdx#naming-in-this-monorepo",
+      "images": [],
+      "relativePath": "packages.mdx",
+      "text": "Naming in this monorepo\n\n| Name | Role |\n| --- | --- |\n| AssistantSidebarShell | opendetail-react — slots for navigation, main content, and the assistant column. |\n| FumadocsAssistant | opendetail-fumadocs/assistant — convenience wrapper: shell + renderNextSourceLink + allowlist resolver. |\n| Sidebar | apps/web only — marketing site nav (not published as a package). |\n\nIf you outgrow the allowlist (e.g. dynamic internal URLs), keep opendetail-react + opendetail-next and supply your own resolveSourceTarget; you do not need opendetail-fumadocs.",
+      "title": "Packages & composition",
+      "url": "/docs/packages#naming-in-this-monorepo"
+    },
+    {
+      "anchor": "see-also",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/packages.mdx",
+      "headings": [
+        "See also"
+      ],
+      "id": "packages.mdx#see-also",
+      "images": [],
+      "relativePath": "packages.mdx",
+      "text": "See also\n\nIntegration — self-hosted vs hosted-shaped, stream shape, grounding.opendetail-next — route handler and renderNextSourceLink.React — useOpenDetail and client API.opendetail-fumadocs — resolver API and FumadocsAssistant.",
+      "title": "Packages & composition",
+      "url": "/docs/packages#see-also"
     },
     {
       "anchor": null,
@@ -944,7 +1048,7 @@
       "id": "react.mdx",
       "images": [],
       "relativePath": "react.mdx",
-      "text": "Package: opendetail-react. For a Next.js route that serves the same NDJSON stream, see opendetail-next.",
+      "text": "Package: opendetail-react. For a Next.js route that serves the same NDJSON stream, see opendetail-next. For AssistantSidebarShell, optional opendetail-fumadocs, and how packages compound, see Packages & composition.",
       "title": "React",
       "url": "/docs/react"
     },
@@ -1256,7 +1360,7 @@
     },
     "version": 1
   },
-  "generatedAt": "2026-04-05T23:31:24.156Z",
-  "manifestHash": "b5ee1822f417e3a8bf682f13251ab984860556555d805ec5c31748c74d0791e1",
+  "generatedAt": "2026-04-05T23:49:34.914Z",
+  "manifestHash": "d98892d6cbe7245cf6e4623201452dd384994da8fed16593a6fdd0d75f09af64",
   "version": 1
 }

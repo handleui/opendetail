@@ -1,6 +1,10 @@
 @import "tailwindcss";
 @import "opendetail-react/styles/opendetail-base.css";
 
+@theme {
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+}
+
 @source "../../../../registry";
 /* App + workspace packages: utilities must appear in scanned files (Tailwind cannot infer imported className strings). */
 @source "../../**/*.{tsx,ts,mdx}";
