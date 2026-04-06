@@ -1,0 +1,25 @@
+---
+title: Systems
+description: What a UI system is in OpenDetail — structure, CSS, and how it differs from themes.
+---
+
+A **system** is a full **UI identity** for the assistant: semantic class contract, layout and density, motion, and component anatomy (thread, composer, messages, sources). The default **OpenDetail** system ships in `opendetail-react` under `src/styles/systems/opendetail/` (aggregated by **`opendetail-base.css`**).
+
+Add a new system when you need **different chrome or structure**—not just different colors—while keeping the same headless transport (`useOpenDetail`, `createOpenDetailClient`) and message shapes.
+
+## Systems vs themes
+
+- **Themes** are palette layers **inside** one system: same layout and components, different tokens. See [**Themes**](/ui/themes).
+- **Systems** stay isolated when a product line needs different chrome but the same streaming protocol.
+- In the repo: new colors → `themes/`; new chrome → `systems/`.
+
+## Import order (system CSS)
+
+1. Import the **base** system stylesheet (`opendetail-base.css` or `systems/opendetail/index.css`).
+2. Optionally layer a [**theme**](/ui/themes) after base (`opendetail-midnight.css`, `opendetail-signal.css`, or a custom palette file).
+
+Root elements use **`data-od-system="opendetail"`** where layout marks the design system for theming.
+
+## See also
+
+[**Primitives**](/ui/primitives) — React building blocks that implement this system. [**Themes**](/ui/themes) — shipped palettes. [**React API**](/docs/react) · [**UI integration**](/docs/ui-integration) · [style README](https://github.com/handleui/opendetail/blob/main/packages/opendetail-react/src/styles/README.md).

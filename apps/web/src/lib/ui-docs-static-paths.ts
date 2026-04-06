@@ -3,13 +3,12 @@
  * The `/ui` index uses `app/ui/page.tsx` (`content/docs/ui/index.mdx`).
  */
 export const UI_DOC_SLUG_PATHS: readonly string[][] = [
-  ["systems-and-themes"],
+  ["systems"],
+  ["themes"],
+  ["primitives"],
   ["hooks"],
   ["hooks", "use-opendetail"],
   ["hooks", "create-open-detail-client"],
-  ["opendetail"],
-  ["opendetail", "themes", "midnight"],
-  ["opendetail", "themes", "signal"],
   ["opendetail", "shell"],
   ["opendetail", "sidebar"],
   ["opendetail", "composer"],

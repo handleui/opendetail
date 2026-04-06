@@ -43,13 +43,12 @@ const collectKnownSourcePageUrls = (
 /** Canonical routes for Assistant UI showcase pages (`app/ui`). */
 const uiDocsShowcasePageUrls = [
   "/ui",
-  "/ui/systems-and-themes",
+  "/ui/systems",
+  "/ui/themes",
+  "/ui/primitives",
   "/ui/hooks",
   "/ui/hooks/use-opendetail",
   "/ui/hooks/create-open-detail-client",
-  "/ui/opendetail",
-  "/ui/opendetail/themes/midnight",
-  "/ui/opendetail/themes/signal",
   "/ui/opendetail/conversation-title",
   "/ui/opendetail/error",
   "/ui/opendetail/composer",

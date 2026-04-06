@@ -1,0 +1,18 @@
+---
+title: Primitives
+description: What “primitives” means in opendetail-react — layout, conversation UI, and optional recipes.
+---
+
+**Primitives** are the **documented React exports** that implement the OpenDetail **system**: layout regions, the thread and composer, messages, sources, and status—styled by **`opendetail-base.css`** and optional [**themes**](/ui/themes). They are **not** the headless streaming layer; that lives in **`useOpenDetail`** and **`createOpenDetailClient`** ([**useOpenDetail**](/ui/hooks/use-opendetail), [**createOpenDetailClient**](/ui/hooks/create-open-detail-client), full reference [**React**](/docs/react)).
+
+## What ships
+
+1. **Layout** — **`ConversationLayout`** (thread + composer regions); **`AssistantSidebar`** and **`AssistantModal`** compose it for a full column or modal assistant.
+2. **Conversation UI** — **`Thread`**, **`Composer`**, **`UserMessage`**, **`AssistantMessage`**, **`AssistantSources`**, suggestions, **`AssistantStatus`**, and source link helpers.
+3. **Styles** — Structural tokens and component classes from the [**system**](/ui/systems) stylesheet; palette from themes.
+
+**Recipes** (`AssistantSidebar`, `AssistantModal`) bundle primitives for a drop-in experience; you can also compose primitives inside your own shell.
+
+## Where to go next
+
+Browse **Primitives** in the sidebar for live previews and props—[**Shell**](/ui/opendetail/shell) is a compact entry point. Concepts: [**Systems**](/ui/systems), [**Themes**](/ui/themes).

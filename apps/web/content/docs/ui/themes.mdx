@@ -1,0 +1,36 @@
+---
+title: Themes
+description: What a theme is in OpenDetail — palette layers on the system — plus Midnight, Signal, and imports.
+---
+
+A **theme** is a **palette** (and optional minor token tweaks) **inside** one [**system**](/ui/systems): background, foreground, accent, borders. Layout and React [**primitives**](/ui/primitives) stay the same; only paint changes.
+
+Themes are **palette layers** on top of **`opendetail-base.css`**: same layout classes and components; only tokens change. Import **base first**, then **one theme file**.
+
+## Midnight
+
+**Midnight** uses a **cooler dark** palette: semantic color tokens (background, foreground, accent) shift while structure stays the same.
+
+```css
+@import "opendetail-base.css";
+@import "opendetail-midnight.css";
+```
+
+Package paths follow your bundler’s resolution for `opendetail-react` styles (see the [style README](https://github.com/handleui/opendetail/blob/main/packages/opendetail-react/src/styles/README.md)).
+
+## Signal
+
+**Signal** is a **warmer** accent / palette variant on the same base contract—layout and components are unchanged.
+
+```css
+@import "opendetail-base.css";
+@import "opendetail-signal.css";
+```
+
+## Adding your own
+
+Custom themes belong next to the base import: override semantic CSS variables scoped to **`data-od-system="opendetail"`** (or your system) without forking React primitives.
+
+## See also
+
+[**Systems**](/ui/systems) · [**Primitives**](/ui/primitives) · [**React API**](/docs/react)

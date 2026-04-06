@@ -36,7 +36,12 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/themes/opendetail/systems-and-themes",
-        destination: "/ui/systems-and-themes",
+        destination: "/ui/systems",
+        permanent: true,
+      },
+      {
+        source: "/ui/systems-and-themes",
+        destination: "/ui/systems",
         permanent: true,
       },
       {
@@ -51,7 +56,17 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/themes/opendetail",
-        destination: "/ui/opendetail",
+        destination: "/ui",
+        permanent: true,
+      },
+      {
+        source: "/themes/opendetail/themes/midnight",
+        destination: "/ui/themes",
+        permanent: true,
+      },
+      {
+        source: "/themes/opendetail/themes/signal",
+        destination: "/ui/themes",
         permanent: true,
       },
       {
@@ -60,8 +75,23 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
+        source: "/ui/opendetail",
+        destination: "/ui",
+        permanent: true,
+      },
+      {
+        source: "/ui/opendetail/themes/midnight",
+        destination: "/ui/themes",
+        permanent: true,
+      },
+      {
+        source: "/ui/opendetail/themes/signal",
+        destination: "/ui/themes",
+        permanent: true,
+      },
+      {
         source: "/components/systems-and-themes",
-        destination: "/ui/systems-and-themes",
+        destination: "/ui/systems",
         permanent: true,
       },
       {
@@ -86,7 +116,7 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/docs/components/systems-and-themes",
-        destination: "/ui/systems-and-themes",
+        destination: "/ui/systems",
         permanent: true,
       },
       {

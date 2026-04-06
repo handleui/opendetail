@@ -27,7 +27,7 @@ import {
   isUnderSiteSecondaryNavPathname,
   isUnderUiDocsPathname,
   SITE_DOCS_NAV_TREE,
-  SITE_UI_DOCS_OVERVIEW,
+  SITE_UI_DOCS_ROUTER,
   SITE_UI_DOCS_SECTIONS,
   type SiteNavNode,
   UI_DOCS_PATH_PREFIX,
@@ -547,11 +547,11 @@ export function Sidebar({
                     <div>
                       <Link
                         className={navLinkClass(
-                          isPageActive(SITE_UI_DOCS_OVERVIEW.href, pathname)
+                          isPageActive(SITE_UI_DOCS_ROUTER.href, pathname)
                         )}
-                        href={SITE_UI_DOCS_OVERVIEW.href}
+                        href={SITE_UI_DOCS_ROUTER.href}
                       >
-                        {SITE_UI_DOCS_OVERVIEW.label}
+                        {SITE_UI_DOCS_ROUTER.label}
                       </Link>
                     </div>
                     <NestedNavSections

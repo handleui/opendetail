@@ -58,27 +58,28 @@ export const SITE_DOCS_NAV_TREE: readonly SiteNavSection[] = [
 /** Canonical path prefix for Assistant UI docs + previews. */
 export const UI_DOCS_PATH_PREFIX = "/ui";
 
-export const SITE_UI_DOCS_OVERVIEW: { href: string; label: string } = {
+/** Router landing (`/ui`) — label for the top link in the Assistant UI secondary panel. */
+export const SITE_UI_DOCS_ROUTER: { href: string; label: string } = {
   href: "/ui",
-  label: "Overview",
+  label: "Assistant UI",
 };
 
-/** Secondary panel under Assistant UI — foundations, hooks, then OpenDetail (system → themes → components). */
+/** @deprecated Use `SITE_UI_DOCS_ROUTER` */
+export const SITE_UI_DOCS_OVERVIEW = SITE_UI_DOCS_ROUTER;
+
+/** Secondary panel — Foundations (concepts), Hooks (API pages), Primitives (component pages). */
 export const SITE_UI_DOCS_SECTIONS: readonly SiteNavSection[] = [
   {
     title: "Foundations",
     items: [
-      {
-        kind: "page",
-        label: "Systems and themes",
-        href: "/ui/systems-and-themes",
-      },
+      { kind: "page", label: "Systems", href: "/ui/systems" },
+      { kind: "page", label: "Themes", href: "/ui/themes" },
+      { kind: "page", label: "Primitives", href: "/ui/primitives" },
     ],
   },
   {
     title: "Hooks",
     items: [
-      { kind: "page", label: "Overview", href: "/ui/hooks" },
       {
         kind: "page",
         label: "useOpenDetail",
@@ -92,19 +93,8 @@ export const SITE_UI_DOCS_SECTIONS: readonly SiteNavSection[] = [
     ],
   },
   {
-    title: "OpenDetail",
+    title: "Primitives",
     items: [
-      { kind: "page", label: "OpenDetail", href: "/ui/opendetail" },
-      {
-        kind: "page",
-        label: "Midnight",
-        href: "/ui/opendetail/themes/midnight",
-      },
-      {
-        kind: "page",
-        label: "Signal",
-        href: "/ui/opendetail/themes/signal",
-      },
       { kind: "page", label: "Shell", href: "/ui/opendetail/shell" },
       { kind: "page", label: "Sidebar", href: "/ui/opendetail/sidebar" },
       { kind: "page", label: "Composer", href: "/ui/opendetail/composer" },
@@ -144,8 +134,8 @@ export const SITE_UI_DOCS_SECTIONS: readonly SiteNavSection[] = [
 /** @deprecated Use `UI_DOCS_PATH_PREFIX` */
 export const THEME_OPENDETAIL_PATH_PREFIX = UI_DOCS_PATH_PREFIX;
 
-/** @deprecated Use `SITE_UI_DOCS_OVERVIEW` */
-export const SITE_THEME_OPENDETAIL_OVERVIEW = SITE_UI_DOCS_OVERVIEW;
+/** @deprecated Use `SITE_UI_DOCS_ROUTER` */
+export const SITE_THEME_OPENDETAIL_OVERVIEW = SITE_UI_DOCS_ROUTER;
 
 /** @deprecated Use `SITE_UI_DOCS_SECTIONS` */
 export const SITE_THEME_OPENDETAIL_SECTIONS = SITE_UI_DOCS_SECTIONS;
