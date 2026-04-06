@@ -62,12 +62,22 @@ export const SITE_COMPONENTS_GROUP_SECTION: SiteNavSection = {
   title: "Components",
   items: [
     { kind: "page", label: "Shell", href: "/components/shell" },
+    { kind: "page", label: "Sidebar", href: "/components/sidebar" },
     { kind: "page", label: "Input", href: "/components/input" },
     {
       kind: "page",
       label: "Recommendations",
       href: "/components/recommendations",
     },
+    { kind: "page", label: "Sources", href: "/components/sources" },
+    {
+      kind: "page",
+      label: "Conversation title",
+      href: "/components/conversation-title",
+    },
+    { kind: "page", label: "Pressable", href: "/components/pressable" },
+    { kind: "page", label: "Status", href: "/components/status" },
+    { kind: "page", label: "Error", href: "/components/error" },
   ],
 };
 

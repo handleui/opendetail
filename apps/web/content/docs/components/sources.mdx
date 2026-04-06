@@ -1,0 +1,31 @@
+---
+title: Sources
+description: AssistantSources renders collapsible source pills; citations in AssistantResponse tie markdown to source metadata.
+---
+
+**Retrieval sources** are passed as structured items (`AssistantSourceItem`). **`AssistantResponse`** scans markdown for `[n]` citations and shows matching pills in the footer; use **`getSourcesCitedInContent`** if you need the same ordering outside the response.
+
+For link resolution (in-app routes vs external URLs), wire **`renderSourceLink`** and **`resolveSourceTarget`** — the Next.js docs app uses **`renderNextSourceLink`** from **`opendetail-next`** and a Fumadocs-style resolver (see [**opendetail-fumadocs**](/docs/fumadocs)).
+
+## Props (`AssistantSources`)
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `items` | `AssistantSourceItem[]` | — | Source rows (id, title, url, kind). |
+| `open` / `defaultOpen` | `boolean` | — | Controlled or initial collapsed state. |
+| `onOpenChange` | `(open: boolean) => void` | — | Collapsible toggle callback. |
+| `count` / `countLabel` | `number` / `string` | — | Optional header count override. |
+| `renderSourceLink` | `RenderAssistantSourceLink` | — | Renders each pill link (e.g. Next `Link`). |
+| `resolveSourceTarget` | `ResolveAssistantSourceTarget` | — | Maps a source to `{ href, external }`. |
+| `className` | `string` | — | Root class. |
+
+### `AssistantSourceItem` (shape)
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `id` | `string` | Matches `[n]` citations in markdown. |
+| `title` | `string` | Pill label. |
+| `url` | `string` | Target URL or path. |
+| `kind` | `"local" \| "page" \| "remote"` | Affects icon / link treatment. |
+
+Also exported: **`renderAssistantSourceLink`**, **`resolveAssistantSourceTarget`**, **`isSafeAssistantSourceHref`**.

@@ -1,8 +1,13 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { ConversationTitleDemo } from "@/components/component-demos/conversation-title-demo";
+import { ErrorDemo } from "@/components/component-demos/error-demo";
 import { InputDemo } from "@/components/component-demos/input-demo";
+import { PressableDemo } from "@/components/component-demos/pressable-demo";
 import { ShellDemo } from "@/components/component-demos/shell-demo";
+import { SourcesDemo } from "@/components/component-demos/sources-demo";
+import { StatusDemo } from "@/components/component-demos/status-demo";
 import { SuggestionsDemo } from "@/components/component-demos/suggestions-demo";
 import { ComponentPreviewSurface } from "@/components/component-preview-surface";
 import { getDocsMdxComponents } from "@/components/docs-mdx-components";
@@ -11,7 +16,17 @@ import { knownSourcePageUrls } from "@/lib/known-source-page-urls";
 import { gitConfig } from "@/lib/shared";
 import { getPageImage, getPageMarkdownUrl, source } from "@/lib/source";
 
-const COMPONENT_SLUGS = ["shell", "input", "recommendations"] as const;
+const COMPONENT_SLUGS = [
+  "shell",
+  "sidebar",
+  "input",
+  "recommendations",
+  "sources",
+  "conversation-title",
+  "pressable",
+  "status",
+  "error",
+] as const;
 
 type ComponentSlug = (typeof COMPONENT_SLUGS)[number];
 
@@ -19,18 +34,25 @@ function isComponentSlug(value: string): value is ComponentSlug {
   return (COMPONENT_SLUGS as readonly string[]).includes(value);
 }
 
-function ComponentPreview({
-  slug,
-}: {
-  slug: ComponentSlug;
-}) {
+function ComponentPreview({ slug }: { slug: ComponentSlug }) {
   switch (slug) {
+    case "conversation-title":
+      return <ConversationTitleDemo />;
+    case "error":
+      return <ErrorDemo />;
     case "input":
       return <InputDemo />;
+    case "pressable":
+      return <PressableDemo />;
     case "recommendations":
       return <SuggestionsDemo />;
     case "shell":
+    case "sidebar":
       return <ShellDemo knownSourcePageUrls={knownSourcePageUrls} />;
+    case "sources":
+      return <SourcesDemo />;
+    case "status":
+      return <StatusDemo />;
     default:
       return null;
   }

@@ -402,12 +402,25 @@
 
 /* Bounded preview (e.g. docs /components/shell): one column, no main slot, same sidebar UI. */
 .opendetail-sidebar.opendetail-sidebar--embed {
+  width: 100%;
+  max-width: 400px;
   height: min(75vh, 40rem);
   min-height: min(70vh, 28rem);
   max-height: min(75vh, 40rem);
+  margin-inline: auto;
   border: 1px solid var(--opendetail-color-sidebar-stroke);
   border-radius: 0.75rem;
   background: var(--opendetail-color-background);
+  --opendetail-sidebar-width: min(100%, 400px);
+}
+
+.opendetail-sidebar.opendetail-sidebar--embed .opendetail-sidebar__input {
+  justify-content: stretch;
+}
+
+.opendetail-sidebar.opendetail-sidebar--embed .opendetail-input-root--shell {
+  --opendetail-input-current-width: 100%;
+  max-width: 100%;
 }
 
 .opendetail-sidebar.opendetail-sidebar--embed .opendetail-sidebar__panel {

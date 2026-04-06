@@ -13,7 +13,9 @@ type DocsPage = InferPageType<typeof source>;
 
 function Cards({ children }: { children?: ReactNode }) {
   return (
-    <div className="my-8 grid grid-cols-1 gap-3 sm:grid-cols-2">{children}</div>
+    <div className="my-8 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      {children}
+    </div>
   );
 }
 

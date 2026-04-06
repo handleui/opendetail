@@ -1,0 +1,16 @@
+---
+title: Conversation title
+description: Chat session titles come from NDJSON title events consumed by useOpenDetail and shown in the assistant sidebar header.
+---
+
+The **sidebar header title** is not a separate React component: **`useOpenDetail`** listens for stream events of type **`title`** and exposes **`conversationTitle`**. **`AssistantSidebarShell`** passes that string to **`AssistantSidebar`** as **`headerTitle`**.
+
+Titles are **persisted** when you pass **`persistence`** (same storage as messages and the draft question).
+
+## `useOpenDetail`
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `conversationTitle` | `string \| null` | Latest title from the stream, or restored from persistence. |
+
+The client sets the title when it receives a **`{ type: "title", title: string }`** event from **`createOpenDetailClient`** (see [**opendetail-next**](/docs/next) route handler). Requesting a title on submit is opt-in via the client request shape (e.g. **`conversationTitle: true`** where supported).

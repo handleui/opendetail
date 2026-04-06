@@ -17,7 +17,13 @@
     "fumadocs",
     "components",
     "components/shell",
+    "components/sidebar",
     "components/input",
-    "components/recommendations"
+    "components/recommendations",
+    "components/sources",
+    "components/conversation-title",
+    "components/pressable",
+    "components/status",
+    "components/error"
   ]
 }

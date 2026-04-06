@@ -3,15 +3,20 @@ title: Components
 description: Interactive previews and documentation for OpenDetail React building blocks.
 ---
 
-Browse UI primitives from `opendetail-react`: layout shell, the prompt field, and suggestion chips. Each page includes a live preview and API notes.
+Browse UI primitives from **`opendetail-react`**: shell, sidebar, input, sources, suggestions, status, and styling hooks. Each page includes a live preview where it makes sense, plus API notes.
 
 Custom integrations: [**UI integration**](/docs/ui-integration). Same examples on the public site: [opendetail.dev/components](https://opendetail.dev/components).
 
 <Cards>
   <Card
     title="Shell"
-    description="Thread + input layout (AssistantShell)."
+    description="Minimal thread + input (AssistantShell)."
     href="/components/shell"
+  />
+  <Card
+    title="Sidebar"
+    description="Full assistant column: actions, thread, resize (AssistantSidebar)."
+    href="/components/sidebar"
   />
   <Card
     title="Input"
@@ -22,6 +27,31 @@ Custom integrations: [**UI integration**](/docs/ui-integration). Same examples o
     title="Recommendations"
     description="Follow-up chips (AssistantSuggestions)."
     href="/components/recommendations"
+  />
+  <Card
+    title="Sources"
+    description="Source pills and citations (AssistantSources)."
+    href="/components/sources"
+  />
+  <Card
+    title="Conversation title"
+    description="Session title from the stream (useOpenDetail)."
+    href="/components/conversation-title"
+  />
+  <Card
+    title="Pressable"
+    description="Tactile CSS hook (opendetail-pressable)."
+    href="/components/pressable"
+  />
+  <Card
+    title="Status"
+    description="Thinking / error line (AssistantStatus)."
+    href="/components/status"
+  />
+  <Card
+    title="Error"
+    description="Error line helper (AssistantError)."
+    href="/components/error"
   />
 </Cards>
 

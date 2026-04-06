@@ -43,9 +43,15 @@ const collectKnownSourcePageUrls = (
 /** Canonical routes for component showcase pages (`app/components/[slug]`). */
 const componentShowcasePageUrls = [
   "/components",
+  "/components/conversation-title",
+  "/components/error",
   "/components/input",
+  "/components/pressable",
   "/components/recommendations",
   "/components/shell",
+  "/components/sidebar",
+  "/components/sources",
+  "/components/status",
 ] as const;
 
 export const knownSourcePageUrls = [
