@@ -1,0 +1,13 @@
+---
+title: Hooks overview
+description: Headless browser APIs in opendetail-react — when to use the hook vs the HTTP client.
+---
+
+`opendetail-react` exposes two main ways to drive the same NDJSON pipeline in the browser:
+
+| API | Use when |
+| --- | --- |
+| [`useOpenDetail`](/ui/hooks/use-opendetail) | You want React state: thread, question, `submit` / `stop`, persistence, and streaming updates bound to UI. |
+| [`createOpenDetailClient`](/ui/hooks/create-open-detail-client) | You need streaming without the hook (vanilla JS, custom state, or non-React embeds). |
+
+Both talk to the same **`POST`** endpoint and event types. For the full option tables, stream events, and types, see the canonical reference: [**React**](/docs/react).

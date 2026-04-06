@@ -13,23 +13,23 @@ import { SuggestionsDemo } from "@/components/component-demos/suggestions-demo";
 import { ComponentPreviewSurface } from "@/components/component-preview-surface";
 import { getDocsMdxComponents } from "@/components/docs-mdx-components";
 import { DocsPageChrome } from "@/components/docs-page-chrome";
-import {
-  COMPONENT_DOCS_SLUGS,
-  type ComponentDocsSlug,
-  isComponentDocsSlug,
-} from "@/lib/component-docs-slugs";
 import { getComponentPreviewPreset } from "@/lib/component-preview-viewport";
 import { knownSourcePageUrls } from "@/lib/known-source-page-urls";
 import { gitConfig } from "@/lib/shared";
 import { getPageImage, getPageMarkdownUrl, source } from "@/lib/source";
+import { UI_DOC_SLUG_PATHS } from "@/lib/ui-docs-static-paths";
+import {
+  isUiOpendetailPreviewSlug,
+  type UiOpendetailPreviewSlug,
+} from "@/lib/ui-opendetail-preview-slugs";
 
-function ComponentPreview({ slug }: { slug: ComponentDocsSlug }) {
+function UiOpendetailPreview({ slug }: { slug: UiOpendetailPreviewSlug }) {
   switch (slug) {
     case "conversation-title":
       return <ConversationTitleDemo />;
     case "error":
       return <ErrorDemo />;
-    case "input":
+    case "composer":
       return <InputDemo />;
     case "loader":
       return <LoaderDemo />;
@@ -48,13 +48,10 @@ function ComponentPreview({ slug }: { slug: ComponentDocsSlug }) {
   }
 }
 
-export default async function Page(props: PageProps<"/components/[slug]">) {
+export default async function Page(props: PageProps<"/ui/[...slug]">) {
   const params = await props.params;
-  if (!isComponentDocsSlug(params.slug)) {
-    notFound();
-  }
-
-  const page = source.getPage(["components", params.slug]);
+  const segments = params.slug;
+  const page = source.getPage(["ui", ...segments]);
   if (!page) {
     notFound();
   }
@@ -64,6 +61,13 @@ export default async function Page(props: PageProps<"/components/[slug]">) {
   const githubUrl = `https://github.com/${gitConfig.user}/${gitConfig.repo}/blob/${gitConfig.branch}/content/docs/${page.path}`;
   const toc = page.data.toc ?? [];
 
+  const previewSlug =
+    segments[0] === "opendetail" && segments.length === 2
+      ? segments[1]
+      : undefined;
+  const showPreview =
+    previewSlug !== undefined && isUiOpendetailPreviewSlug(previewSlug);
+
   return (
     <article className="docs-article pb-16">
       <DocsPageChrome
@@ -72,12 +76,16 @@ export default async function Page(props: PageProps<"/components/[slug]">) {
         markdownUrl={markdownUrl}
         pageTitle={page.data.title}
         preview={
-          <ComponentPreviewSurface preset={getComponentPreviewPreset(params.slug)}>
-            <ComponentPreview slug={params.slug} />
-          </ComponentPreviewSurface>
+          showPreview ? (
+            <ComponentPreviewSurface
+              preset={getComponentPreviewPreset(previewSlug)}
+            >
+              <UiOpendetailPreview slug={previewSlug} />
+            </ComponentPreviewSurface>
+          ) : undefined
         }
         toc={toc}
-        variant="components"
+        variant="theme"
       >
         <MDX components={getDocsMdxComponents(source, page)} />
       </DocsPageChrome>
@@ -86,23 +94,20 @@ export default async function Page(props: PageProps<"/components/[slug]">) {
 }
 
 export function generateStaticParams() {
-  return COMPONENT_DOCS_SLUGS.map((slug) => ({ slug }));
+  return UI_DOC_SLUG_PATHS.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata(
-  props: PageProps<"/components/[slug]">
+  props: PageProps<"/ui/[...slug]">
 ): Promise<Metadata> {
   const params = await props.params;
-  if (!isComponentDocsSlug(params.slug)) {
-    notFound();
-  }
-
-  const page = source.getPage(["components", params.slug]);
+  const segments = params.slug;
+  const page = source.getPage(["ui", ...segments]);
   if (!page) {
     notFound();
   }
 
-  const canonicalPath = `/components/${params.slug}`;
+  const canonicalPath = `/ui/${segments.join("/")}`;
 
   return {
     title: page.data.title,

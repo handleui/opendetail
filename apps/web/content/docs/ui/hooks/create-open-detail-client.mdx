@@ -1,0 +1,33 @@
+---
+title: createOpenDetailClient
+description: Headless NDJSON streaming client without React — same endpoint contract as useOpenDetail.
+---
+
+Use **`createOpenDetailClient`** when you do not want the **`useOpenDetail`** hook: vanilla JS, a custom store, or non-React surfaces. It speaks the same **`POST`** body and **`application/x-ndjson`** stream as the hook.
+
+## Basic usage
+
+<CodeBlock lang="ts">{`import { createOpenDetailClient } from "opendetail-react";
+
+const client = createOpenDetailClient({
+  endpoint: "/api/opendetail",
+});
+
+await client.submit(
+  { question: "How do I install this?" },
+  {
+    onEvent(event) {
+      console.log(event);
+    },
+    onStatusChange(status) {
+      console.log(status);
+    },
+  }
+);
+`}</CodeBlock>
+
+## Status and events
+
+Request status follows **`idle` → `pending` → `streaming` → `idle` or `error`**. Stream events include **`meta`**, **`sources`**, **`images`**, **`delta`**, **`done`**, **`error`**. Call **`stop()`** on the client to abort the active request.
+
+**Full API:** client options, headers, credentials, and error handling — [**React**](/docs/react).

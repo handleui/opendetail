@@ -35,13 +35,78 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
+        source: "/themes/opendetail/systems-and-themes",
+        destination: "/ui/systems-and-themes",
+        permanent: true,
+      },
+      {
+        source: "/themes/opendetail/hooks/:path*",
+        destination: "/ui/hooks/:path*",
+        permanent: true,
+      },
+      {
+        source: "/themes/opendetail/hooks",
+        destination: "/ui/hooks",
+        permanent: true,
+      },
+      {
+        source: "/themes/opendetail",
+        destination: "/ui/opendetail",
+        permanent: true,
+      },
+      {
+        source: "/themes/opendetail/:path*",
+        destination: "/ui/opendetail/:path*",
+        permanent: true,
+      },
+      {
+        source: "/components/systems-and-themes",
+        destination: "/ui/systems-and-themes",
+        permanent: true,
+      },
+      {
+        source: "/components/hooks/:path*",
+        destination: "/ui/hooks/:path*",
+        permanent: true,
+      },
+      {
+        source: "/components/hooks",
+        destination: "/ui/hooks",
+        permanent: true,
+      },
+      {
+        source: "/components",
+        destination: "/ui",
+        permanent: true,
+      },
+      {
+        source: "/components/:path*",
+        destination: "/ui/opendetail/:path*",
+        permanent: true,
+      },
+      {
+        source: "/docs/components/systems-and-themes",
+        destination: "/ui/systems-and-themes",
+        permanent: true,
+      },
+      {
+        source: "/docs/components/hooks/:path*",
+        destination: "/ui/hooks/:path*",
+        permanent: true,
+      },
+      {
+        source: "/docs/components/hooks",
+        destination: "/ui/hooks",
+        permanent: true,
+      },
+      {
         source: "/docs/components",
-        destination: "/components",
+        destination: "/ui",
         permanent: true,
       },
       {
         source: "/docs/components/:path*",
-        destination: "/components/:path*",
+        destination: "/ui/opendetail/:path*",
         permanent: true,
       },
       {

@@ -4,7 +4,7 @@ React transport, hooks, components, and styles for OpenDetail.
 
 ## Systems and themes
 
-**Systems** are full UI identities (layout, anatomy, default palette). **Themes** are palette layers on top of one system. See `apps/web/content/docs/design-system.mdx` in the repo (published under **Documentation → Systems and themes**) and [`src/styles/README.md`](./src/styles/README.md) for structure, import order, and how to add a theme or a new system.
+**Systems** are full UI identities (layout, anatomy, default palette). **Themes** are palette layers on top of one system. On the docs site, see **Assistant UI** (`/ui`), the short **Systems and themes** page under `/docs/design-system`, and [`src/styles/README.md`](./src/styles/README.md) for structure and import order.
 
 ## Exports
 

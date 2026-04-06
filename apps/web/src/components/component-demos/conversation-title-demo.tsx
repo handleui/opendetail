@@ -19,7 +19,7 @@ export const ConversationTitleDemo = () => {
         key: "opendetail-web-docs-conversation-title-demo",
         storage: "session",
       },
-      sitePaths: ["/docs", "/components"],
+      sitePaths: ["/docs", "/ui"],
     });
 
   const displayTitle = conversationTitle ?? "New chat";

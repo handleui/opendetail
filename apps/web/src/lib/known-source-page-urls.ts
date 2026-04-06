@@ -40,22 +40,32 @@ const collectKnownSourcePageUrls = (
   return pageUrls;
 };
 
-/** Canonical routes for component showcase pages (`app/components/[slug]`). */
-const componentShowcasePageUrls = [
-  "/components",
-  "/components/conversation-title",
-  "/components/error",
-  "/components/input",
-  "/components/pressable",
-  "/components/recommendations",
-  "/components/shell",
-  "/components/sidebar",
-  "/components/sources",
-  "/components/loader",
+/** Canonical routes for Assistant UI showcase pages (`app/ui`). */
+const uiDocsShowcasePageUrls = [
+  "/ui",
+  "/ui/systems-and-themes",
+  "/ui/hooks",
+  "/ui/hooks/use-opendetail",
+  "/ui/hooks/create-open-detail-client",
+  "/ui/opendetail",
+  "/ui/opendetail/themes/midnight",
+  "/ui/opendetail/themes/signal",
+  "/ui/opendetail/conversation-title",
+  "/ui/opendetail/error",
+  "/ui/opendetail/composer",
+  "/ui/opendetail/pressable",
+  "/ui/opendetail/recommendations",
+  "/ui/opendetail/shell",
+  "/ui/opendetail/sidebar",
+  "/ui/opendetail/sources",
+  "/ui/opendetail/loader",
+  "/ui/opendetail/thread",
+  "/ui/opendetail/user-message",
+  "/ui/opendetail/assistant-message",
 ] as const;
 
 export const knownSourcePageUrls = [
   "/changelog",
   ...collectKnownSourcePageUrls(docsContentDirectory),
-  ...componentShowcasePageUrls,
+  ...uiDocsShowcasePageUrls,
 ].sort();

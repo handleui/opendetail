@@ -24,13 +24,13 @@ import {
 } from "react";
 
 import {
-  COMPONENTS_PATH_PREFIX,
-  isUnderComponentsPathname,
   isUnderSiteSecondaryNavPathname,
-  SITE_COMPONENTS_GROUP_SECTION,
-  SITE_COMPONENTS_OVERVIEW,
+  isUnderUiDocsPathname,
   SITE_DOCS_NAV_TREE,
+  SITE_UI_DOCS_OVERVIEW,
+  SITE_UI_DOCS_SECTIONS,
   type SiteNavNode,
+  UI_DOCS_PATH_PREFIX,
 } from "@/lib/site-nav";
 
 type SidebarDepth = 0 | 1;
@@ -51,7 +51,7 @@ function pathMatchesIntent(pathname: string, intent: string): boolean {
   return normalized.startsWith(`${intentNorm}/`);
 }
 
-/** Until `usePathname()` catches up after a top-level Docs/Components click — avoids wrong nest flash. */
+/** Until `usePathname()` catches up after a top-level Docs / Assistant UI click — avoids wrong nest flash. */
 function useSiteNavEffectivePathname(pathname: string): {
   effectivePathname: string;
   setNavIntent: (href: string) => void;
@@ -293,12 +293,12 @@ export function Sidebar({
     ? { duration: 0 }
     : PANEL_SLIDE_TRANSITION;
 
-  const secondaryIsComponents = isUnderComponentsPathname(effectivePathname);
+  const secondaryIsUiDocs = isUnderUiDocsPathname(effectivePathname);
   const docsRootActive =
     pathname === docsPathPrefix || pathname.startsWith(`${docsPathPrefix}/`);
-  const componentsRootActive =
-    pathname === COMPONENTS_PATH_PREFIX ||
-    pathname.startsWith(`${COMPONENTS_PATH_PREFIX}/`);
+  const uiDocsRootActive =
+    pathname === UI_DOCS_PATH_PREFIX ||
+    pathname.startsWith(`${UI_DOCS_PATH_PREFIX}/`);
 
   return (
     <div className="flex h-full min-h-0 flex-col">
@@ -442,12 +442,12 @@ export function Sidebar({
                     className={[
                       NAV_ROW_CLASS,
                       "justify-between",
-                      componentsRootActive ? "bg-neutral-100" : "",
+                      uiDocsRootActive ? "bg-neutral-100" : "",
                     ].join(" ")}
                     data-trifold-stay=""
-                    href={COMPONENTS_PATH_PREFIX}
+                    href={UI_DOCS_PATH_PREFIX}
                     onClick={() => {
-                      setNavIntent(COMPONENTS_PATH_PREFIX);
+                      setNavIntent(UI_DOCS_PATH_PREFIX);
                       openSecondary();
                     }}
                   >
@@ -460,7 +460,7 @@ export function Sidebar({
                           strokeWidth={SIDEBAR_LUCIDE_STROKE_PX}
                         />
                       </RootRowIconSlot>
-                      <span>Components</span>
+                      <span>Assistant UI</span>
                     </span>
                     <ArrowRight
                       aria-hidden="true"
@@ -534,29 +534,29 @@ export function Sidebar({
                   Back
                 </button>
               </div>
-              {secondaryIsComponents ? (
+              {secondaryIsUiDocs ? (
                 <nav
-                  aria-labelledby={`${navId}-components`}
+                  aria-labelledby={`${navId}-ui-docs`}
                   className={INNER_NAV_CLASS}
-                  key="nest-components"
+                  key="nest-ui-docs"
                 >
-                  <p className="sr-only" id={`${navId}-components`}>
-                    Component gallery
+                  <p className="sr-only" id={`${navId}-ui-docs`}>
+                    Assistant UI
                   </p>
                   <div className="flex flex-col gap-4">
                     <div>
                       <Link
                         className={navLinkClass(
-                          isPageActive(SITE_COMPONENTS_OVERVIEW.href, pathname)
+                          isPageActive(SITE_UI_DOCS_OVERVIEW.href, pathname)
                         )}
-                        href={SITE_COMPONENTS_OVERVIEW.href}
+                        href={SITE_UI_DOCS_OVERVIEW.href}
                       >
-                        {SITE_COMPONENTS_OVERVIEW.label}
+                        {SITE_UI_DOCS_OVERVIEW.label}
                       </Link>
                     </div>
                     <NestedNavSections
                       pathname={pathname}
-                      sections={[SITE_COMPONENTS_GROUP_SECTION]}
+                      sections={SITE_UI_DOCS_SECTIONS}
                     />
                   </div>
                 </nav>

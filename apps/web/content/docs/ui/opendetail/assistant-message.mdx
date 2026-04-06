@@ -1,0 +1,16 @@
+---
+title: AssistantMessage
+description: Markdown answer, citations, sources, images, and pending/error/complete states.
+---
+
+**`AssistantMessage`** renders the assistant reply: Streamdown markdown, optional **`sources`**, **`lead`**, **`error`**, and **`status`** (`pending` | `streaming` | `complete` | `error`). Use with **`renderSourceLink`** / **`resolveSourceTarget`** for safe citation links.
+
+## Props (high level)
+
+| Area | Notes |
+| --- | --- |
+| Content | `children`, `lead`, or structured error copy. |
+| Sources | `sources` + citation markers `[n]` in markdown. |
+| Status | `status`, `error`, `meta`, optional `image`. |
+
+Import **`AssistantMessage`**, **`AssistantMessageProps`**, and **`getSourcesCitedInContent`** from **`opendetail-react`**. Source helpers: [**AssistantSources**](/ui/opendetail/sources).

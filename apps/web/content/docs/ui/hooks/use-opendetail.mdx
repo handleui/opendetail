@@ -1,0 +1,34 @@
+---
+title: useOpenDetail
+description: React hook for thread state, streaming NDJSON, persistence, and submit/stop controls.
+---
+
+`useOpenDetail` is the primary browser integration for OpenDetail: it manages **`messages`**, **`question`**, **`submit`**, **`stop`**, **`clearThread`**, request **`status`**, and error fields, while streaming assistant text, sources, and images from your **`POST /api/opendetail`** (or equivalent) route.
+
+## Basic usage
+
+<CodeBlock lang="ts">{`import { useOpenDetail } from "opendetail-react";
+
+const {
+  messages,
+  question,
+  setQuestion,
+  submit,
+  stop,
+  status,
+} = useOpenDetail({
+  transport: { endpoint: "/api/opendetail" },
+});
+`}</CodeBlock>
+
+## Common options
+
+| Option | Meaning |
+| --- | --- |
+| `endpoint` | Shortcut for `transport.endpoint` (default `/api/opendetail`). |
+| `transport.headers` | Static or function for per-request headers. |
+| `persistence.key` / `persistence.storage` | Restore thread + draft after refresh (`local` or `session`). |
+
+Wire UI with **`Composer`** (`requestState={status}`), **`AssistantSidebar`** (`connection={{ endpoint, persistence, … }}`), or your own layout.
+
+**Full API:** tables for every option, persistence behavior, message shapes, and stream lifecycle — [**React**](/docs/react).

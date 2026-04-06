@@ -11,7 +11,7 @@ Regions use semantic hooks (`opendetail-shell`, `opendetail-shell__thread`, `ope
 
 ### Composition
 
-The `thread` slot usually contains **`Thread`**, **`UserMessage`** / **`AssistantMessage`**, and optionally **`AssistantSuggestions`** (see [Input](/components/input) and [Recommendations](/components/recommendations)).
+The `thread` slot usually contains **`Thread`**, **`UserMessage`** / **`AssistantMessage`**, and optionally **`AssistantSuggestions`** (see [Composer](/ui/opendetail/composer) and [Recommendations](/ui/opendetail/recommendations)).
 
 ### Props (`ConversationLayout`, shell)
 
@@ -50,14 +50,14 @@ What you see in the **live preview** below is the same stack as this docs app: *
 
 This **Shell** preview uses **`embedded` + `embeddedLayout="compact"`** (rounded **400px** column), **`embeddedHideCollapse`** (no collapse control—focus stays on thread + input), plus **copy**, **new session**, resize, suggestions, and **`Composer`** filling the column width.
 
-On the [**Sidebar**](/components/sidebar) page, the preview uses **`embeddedLayout="dock"`** instead: the panel sits flush on the **left** of the white preview with a **left stroke only** (no outer rounded chrome), and **collapse** + **Open assistant** behave like the full app.
+On the [**Sidebar**](/ui/opendetail/sidebar) page, the preview uses **`embeddedLayout="dock"`** instead: the panel sits flush on the **left** of the white preview with a **left stroke only** (no outer rounded chrome), and **collapse** + **Open assistant** behave like the full app.
 
 ### `AssistantSidebar` — `embedded`
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `embedded` | `boolean` | `false` | Single-column preview: same sidebar UI without a main content sibling. |
-| `embeddedLayout` | `"compact" \| "dock"` | `"compact"` | **`compact`** — 400px rounded box; **`dock`** — left-aligned column, left border only (see [Sidebar](/components/sidebar)). |
+| `embeddedLayout` | `"compact" \| "dock"` | `"compact"` | **`compact`** — 400px rounded box; **`dock`** — left-aligned column, left border only (see [Sidebar](/ui/opendetail/sidebar)). |
 | `embeddedHideCollapse` | `boolean` | `false` | Hide the collapse icon (used on this page’s preview). |
 
 Other sidebar props (`headerTitle`, `messages`, `onSubmitQuestion`, `promptSuggestions`, `sidebarResizeEnabled`, etc.) are unchanged—see **`AssistantSidebar`** in the main [React](/docs/react) docs and [Packages & composition](/docs/packages).

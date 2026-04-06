@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+
 import { getDocsMdxComponents } from "@/components/docs-mdx-components";
 import { DocsPageChrome } from "@/components/docs-page-chrome";
 import { gitConfig } from "@/lib/shared";
 import { getPageImage, getPageMarkdownUrl, source } from "@/lib/source";
 
 export default function Page() {
-  const page = source.getPage(["components"]);
+  const page = source.getPage(["ui"]);
   if (!page) {
     notFound();
   }
@@ -24,7 +25,7 @@ export default function Page() {
         markdownUrl={markdownUrl}
         pageTitle={page.data.title}
         toc={toc}
-        variant="components"
+        variant="theme"
       >
         <MDX components={getDocsMdxComponents(source, page)} />
       </DocsPageChrome>
@@ -33,12 +34,12 @@ export default function Page() {
 }
 
 export function generateMetadata(): Metadata {
-  const page = source.getPage(["components"]);
+  const page = source.getPage(["ui"]);
   if (!page) {
     notFound();
   }
 
-  const canonicalPath = "/components";
+  const canonicalPath = "/ui";
 
   return {
     title: page.data.title,

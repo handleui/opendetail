@@ -1,0 +1,40 @@
+---
+title: Systems and themes
+description: CSS layering for the OpenDetail system — structural tokens vs palette themes, import order, and where to extend.
+---
+
+## Systems
+
+A **system** is a full **UI identity** for the assistant: semantic class contract, layout and density, motion, and component anatomy (thread, composer, messages, sources). The default **OpenDetail** system ships in `opendetail-react` under `src/styles/systems/opendetail/` (aggregated by `opendetail-base.css`).
+
+Add a new system when you need **different chrome or structure**—not just different colors—while keeping the same headless transport (`useOpenDetail`, `createOpenDetailClient`) and message shapes.
+
+## Themes
+
+A **theme** is a **palette** (and optional minor token tweaks) **inside** one system: background, foreground, accent, borders. Layout and React components stay the same; only paint changes. Shipped examples: **Midnight** and **Signal** (`opendetail-midnight.css`, `opendetail-signal.css`), implemented under `src/styles/themes/opendetail/`.
+
+## Why we split them
+
+- **Themes** can be swapped or extended without forking React components or duplicating layout CSS.
+- **Systems** stay isolated when a second product line or white-label needs different chrome but the same streaming protocol.
+- Contributors know where to look: new colors → `themes/`; new chrome → `systems/`.
+
+## Minimum primitives
+
+To build a **custom system** compatible with citations, sources, and NDJSON streaming:
+
+1. **Headless** — `createOpenDetailClient`, `useOpenDetail`, and shared thread message types.
+2. **Layout** — `ConversationLayout` (thread/body + composer regions); `AssistantSidebar` and `AssistantModal` compose it internally.
+3. **Conversation UI** — `Thread`, `Composer`, `UserMessage`, `AssistantMessage`, `AssistantSources`, and source link helpers.
+4. **Styles** — A system entry stylesheet (structural tokens + default palette) plus optional theme files under `themes/<system>/`.
+
+**Recipes** (`AssistantSidebar`, `AssistantModal`) are optional: use them for a drop-in experience, or compose primitives inside your own shell.
+
+## Import order
+
+1. Import **base** system CSS (`opendetail-base.css` or `systems/opendetail/index.css`).
+2. Optionally layer a **theme** after base (`opendetail-midnight.css`, `opendetail-signal.css`, or a custom palette file).
+
+Root elements use **`data-od-system="opendetail"`** where the layout marks the design system for theming.
+
+See also: [Hooks overview](/ui/hooks), [React API reference](/docs/react), [UI integration](/docs/ui-integration), and the [style README](https://github.com/handleui/opendetail/blob/main/packages/opendetail-react/src/styles/README.md) in the package.

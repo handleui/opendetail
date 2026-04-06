@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 
-const COMPONENTS_PATH = "/components";
+const UI_DOCS_PATH = "/ui";
 const CHANGELOG_PATH = "/changelog";
 const DOCS_PATH = "/docs";
 
@@ -11,10 +11,8 @@ function isDocsPathname(pathname: string): boolean {
   return pathname === DOCS_PATH || pathname.startsWith(`${DOCS_PATH}/`);
 }
 
-function isComponentsPathname(pathname: string): boolean {
-  return (
-    pathname === COMPONENTS_PATH || pathname.startsWith(`${COMPONENTS_PATH}/`)
-  );
+function isUiDocsPathname(pathname: string): boolean {
+  return pathname === UI_DOCS_PATH || pathname.startsWith(`${UI_DOCS_PATH}/`);
 }
 
 function isChangelogPathname(pathname: string): boolean {
@@ -23,11 +21,11 @@ function isChangelogPathname(pathname: string): boolean {
 
 export const SiteMainWidth = ({ children }: { children: ReactNode }) => {
   const pathname = usePathname();
-  const fullWidthMain = isComponentsPathname(pathname);
+  const fullWidthMain = isUiDocsPathname(pathname);
   const changelogMain = isChangelogPathname(pathname);
   const docsMain = isDocsPathname(pathname);
 
-  /** Matches `DocsPageChrome` `components` grid at `min-[1350px]`: article (650) + gap + TOC (≤14rem). */
+  /** Matches `DocsPageChrome` theme grid at `min-[1350px]`: article (650) + gap + TOC (≤14rem). */
   const componentsDocsMax = "max-w-[min(100%,calc(650px+4rem+14rem))]";
 
   let widthClass = "mx-auto w-full max-w-[650px]";

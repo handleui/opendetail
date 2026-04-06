@@ -27,17 +27,17 @@ export function DocsPageChrome({
   lead?: ReactNode;
   /** When set, rendered in the article column so the title aligns with body copy. */
   pageTitle?: string;
-  /** Full-width live demo above the article, same width as article + TOC (`components` only). */
+  /** Full-width live demo above the article, same width as article + TOC (theme pages only). */
   preview?: ReactNode;
   children: ReactNode;
   /**
    * `docs` — leading `1fr` column for asymmetric page balance (routes under `/docs`).
-   * `components` — article + TOC only so `/components` isn’t shoved right on wide viewports.
+   * `theme` — article + TOC only for Assistant UI pages (`/ui`).
    */
-  variant?: "docs" | "components";
+  variant?: "docs" | "theme" | "components";
 }) {
-  const isComponents = variant === "components";
-  const hasPreview = Boolean(preview) && isComponents;
+  const isThemeLayout = variant === "theme" || variant === "components";
+  const hasPreview = Boolean(preview) && isThemeLayout;
   /** Slightly above `xl` (1280px): show TOC + grid only when the main column has enough room. */
   const contentRowClass = hasPreview
     ? "min-[1350px]:row-start-2"
@@ -47,12 +47,12 @@ export function DocsPageChrome({
     <AnchorProvider toc={[...toc]}>
       <div
         className={
-          isComponents
+          isThemeLayout
             ? "flex w-full min-w-0 flex-col gap-8 min-[1350px]:grid min-[1350px]:grid-cols-[minmax(0,650px)_minmax(11rem,14rem)] min-[1350px]:items-start min-[1350px]:gap-x-16"
             : "flex flex-col gap-8 min-[1350px]:grid min-[1350px]:grid-cols-[minmax(0,1fr)_minmax(0,650px)_minmax(11rem,14rem)] min-[1350px]:items-start min-[1350px]:gap-x-16"
         }
       >
-        {isComponents ? null : (
+        {isThemeLayout ? null : (
           <div
             aria-hidden
             className="hidden min-h-px min-w-0 min-[1350px]:col-start-1 min-[1350px]:row-start-1 min-[1350px]:block"
@@ -67,7 +67,7 @@ export function DocsPageChrome({
 
         <div
           className={
-            isComponents
+            isThemeLayout
               ? `mx-auto w-full min-w-0 max-w-[650px] min-[1350px]:col-start-1 ${contentRowClass} min-[1350px]:w-full`
               : "mx-auto w-full min-w-0 max-w-[650px] min-[1350px]:col-start-2 min-[1350px]:row-start-1 min-[1350px]:w-full"
           }
@@ -89,7 +89,7 @@ export function DocsPageChrome({
 
         <DocsToc
           githubUrl={githubUrl}
-          gridColumnStart={isComponents ? 2 : 3}
+          gridColumnStart={isThemeLayout ? 2 : 3}
           gridRowStart={hasPreview ? 2 : 1}
           markdownUrl={markdownUrl}
           toc={toc}

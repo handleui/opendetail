@@ -1,38 +1,10 @@
 ---
 title: Systems and themes
-description: How OpenDetail splits full UI identity (systems) from palette layers (themes), and the minimum primitives we recommend to build a custom system.
+description: Short overview — full styling guide lives under Assistant UI.
 ---
 
-## Systems
+OpenDetail splits **systems** (full UI identity: structure, semantics, layout) from **themes** (palette layers on top of one system). The default **OpenDetail** system and **Midnight** / **Signal** themes ship with `opendetail-react` styles.
 
-A **system** is a full **UI identity** for the assistant: semantic class contract, layout and density, motion, and component anatomy (thread, composer, messages, sources). The default **OpenDetail** system ships in `opendetail-react` styles under `systems/opendetail/` (imported via `opendetail-base.css`).
+**Full guide (import paths, primitives, tokens):** [**Systems and themes**](/ui/systems-and-themes) in **Assistant UI**.
 
-Add a new system when you need **different chrome or structure**—not just different colors—while keeping the same headless transport (`useOpenDetail`, `createOpenDetailClient`) and message shapes.
-
-## Themes
-
-A **theme** is a **palette** (and optional minor token tweaks) **inside** one system: background, foreground, accent, borders. Components and layout stay the same; only paint changes. Shipped examples: **Midnight** and **Signal** (`opendetail-midnight.css`, `opendetail-signal.css`), implemented as files under `themes/opendetail/`.
-
-## Why we split them
-
-- **Themes** can be swapped or extended without forking React components or duplicating layout CSS.
-- **Systems** stay isolated when a second product line or white-label needs different chrome but the same streaming protocol.
-- Contributors know where to look: new colors → `themes/`; new chrome → `systems/`.
-
-## Minimum primitives (OpenDetail team recommendation)
-
-To build a **custom system** that stays compatible with citations, sources, and NDJSON streaming:
-
-1. **Headless** — `createOpenDetailClient`, `useOpenDetail`, and shared thread message types.
-2. **Layout** — `ConversationLayout` (thread/body + composer regions); Sidebar and Modal compose it internally.
-3. **Conversation UI** — `Thread`, `Composer`, `UserMessage`, `AssistantMessage`, `AssistantSources`, and source link helpers.
-4. **Styles** — A system entry stylesheet (structural tokens + default palette) plus optional theme files under `themes/<system>/`.
-
-**Recipes** (`AssistantSidebar`, `AssistantModal`) are optional: use them for a drop-in experience, or compose primitives inside your own shell.
-
-## Import order
-
-1. Import **base** system CSS (`opendetail-base.css` or `systems/opendetail/index.css`).
-2. Optionally layer a **theme** after base (`opendetail-midnight.css`, `opendetail-signal.css`, or a custom palette file).
-
-See also: [React](/docs/react), [UI integration](/docs/ui-integration), and the [style README](https://github.com/handleui/opendetail/blob/main/packages/opendetail-react/src/styles/README.md) in the package.
+**Headless API (same for every system):** [**React**](/docs/react) — `useOpenDetail`, `createOpenDetailClient`.

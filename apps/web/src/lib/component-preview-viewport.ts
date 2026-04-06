@@ -1,8 +1,8 @@
-import type { ComponentDocsSlug } from "@/lib/component-docs-slugs";
+import type { UiOpendetailPreviewSlug } from "@/lib/ui-opendetail-preview-slugs";
 
 /**
- * Live demo frame for `/components/[slug]` — one preset bundles height, inset, and alignment.
- * Customize per component: edit `PRESET_BY_SLUG` or add a preset in `PRESET_CLASS_NAMES`.
+ * Live demo frame for `/ui/opendetail/*` — one preset bundles height, inset, and alignment.
+ * Customize per slug: edit `PRESET_BY_SLUG` or add a preset in `PRESET_CLASS_NAMES`.
  */
 export type ComponentPreviewPreset =
   | "default"
@@ -44,7 +44,7 @@ export const PRESET_CLASS_NAMES: Record<
 };
 
 const PRESET_BY_SLUG: Partial<
-  Record<ComponentDocsSlug, ComponentPreviewPreset>
+  Record<UiOpendetailPreviewSlug, ComponentPreviewPreset>
 > = {
   shell: "tall-fill",
   sidebar: "flush-tall",
@@ -52,7 +52,7 @@ const PRESET_BY_SLUG: Partial<
 };
 
 export function getComponentPreviewPreset(
-  slug: ComponentDocsSlug
+  slug: UiOpendetailPreviewSlug
 ): ComponentPreviewPreset {
   return PRESET_BY_SLUG[slug] ?? "default";
 }

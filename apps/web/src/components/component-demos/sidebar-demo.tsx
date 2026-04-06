@@ -33,7 +33,7 @@ export const SidebarDemo = ({
         key: "opendetail-web-docs-sidebar-demo",
         storage: "session" as const,
       },
-      sitePaths: ["/docs", "/components"],
+      sitePaths: ["/docs", "/ui"],
     }),
     []
   );

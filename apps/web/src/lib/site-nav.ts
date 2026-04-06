@@ -1,6 +1,5 @@
 /**
- * Site shell sidebar: docs vs `/components` URL helpers + nav tree data for `apps/web` only.
- * (`FumadocsAssistant` in `opendetail-fumadocs` is assistant/source wiring — not this.)
+ * Site shell sidebar: docs vs Assistant UI (`/ui`) URL helpers + nav data for `apps/web` only.
  */
 
 export type SiteNavNode =
@@ -47,39 +46,109 @@ export const SITE_DOCS_NAV_TREE: readonly SiteNavSection[] = [
       { kind: "page", label: "Next.js", href: "/docs/next" },
       { kind: "page", label: "React", href: "/docs/react" },
       { kind: "page", label: "Fumadocs", href: "/docs/fumadocs" },
+      {
+        kind: "page",
+        label: "Systems and themes",
+        href: "/docs/design-system",
+      },
     ],
   },
 ];
 
-export const COMPONENTS_PATH_PREFIX = "/components";
+/** Canonical path prefix for Assistant UI docs + previews. */
+export const UI_DOCS_PATH_PREFIX = "/ui";
 
-export const SITE_COMPONENTS_OVERVIEW: { href: string; label: string } = {
-  href: "/components",
+export const SITE_UI_DOCS_OVERVIEW: { href: string; label: string } = {
+  href: "/ui",
   label: "Overview",
 };
 
-export const SITE_COMPONENTS_GROUP_SECTION: SiteNavSection = {
-  title: "Components",
-  items: [
-    { kind: "page", label: "Shell", href: "/components/shell" },
-    { kind: "page", label: "Sidebar", href: "/components/sidebar" },
-    { kind: "page", label: "Input", href: "/components/input" },
-    {
-      kind: "page",
-      label: "Recommendations",
-      href: "/components/recommendations",
-    },
-    { kind: "page", label: "Sources", href: "/components/sources" },
-    {
-      kind: "page",
-      label: "Conversation title",
-      href: "/components/conversation-title",
-    },
-    { kind: "page", label: "Pressable", href: "/components/pressable" },
-    { kind: "page", label: "Loader", href: "/components/loader" },
-    { kind: "page", label: "Error", href: "/components/error" },
-  ],
-};
+/** Secondary panel under Assistant UI — foundations, hooks, then OpenDetail (system → themes → components). */
+export const SITE_UI_DOCS_SECTIONS: readonly SiteNavSection[] = [
+  {
+    title: "Foundations",
+    items: [
+      {
+        kind: "page",
+        label: "Systems and themes",
+        href: "/ui/systems-and-themes",
+      },
+    ],
+  },
+  {
+    title: "Hooks",
+    items: [
+      { kind: "page", label: "Overview", href: "/ui/hooks" },
+      {
+        kind: "page",
+        label: "useOpenDetail",
+        href: "/ui/hooks/use-opendetail",
+      },
+      {
+        kind: "page",
+        label: "createOpenDetailClient",
+        href: "/ui/hooks/create-open-detail-client",
+      },
+    ],
+  },
+  {
+    title: "OpenDetail",
+    items: [
+      { kind: "page", label: "OpenDetail", href: "/ui/opendetail" },
+      {
+        kind: "page",
+        label: "Midnight",
+        href: "/ui/opendetail/themes/midnight",
+      },
+      {
+        kind: "page",
+        label: "Signal",
+        href: "/ui/opendetail/themes/signal",
+      },
+      { kind: "page", label: "Shell", href: "/ui/opendetail/shell" },
+      { kind: "page", label: "Sidebar", href: "/ui/opendetail/sidebar" },
+      { kind: "page", label: "Composer", href: "/ui/opendetail/composer" },
+      { kind: "page", label: "Thread", href: "/ui/opendetail/thread" },
+      {
+        kind: "page",
+        label: "User message",
+        href: "/ui/opendetail/user-message",
+      },
+      {
+        kind: "page",
+        label: "Assistant message",
+        href: "/ui/opendetail/assistant-message",
+      },
+      {
+        kind: "page",
+        label: "Recommendations",
+        href: "/ui/opendetail/recommendations",
+      },
+      { kind: "page", label: "Sources", href: "/ui/opendetail/sources" },
+      {
+        kind: "page",
+        label: "Conversation title",
+        href: "/ui/opendetail/conversation-title",
+      },
+      {
+        kind: "page",
+        label: "Pressable",
+        href: "/ui/opendetail/pressable",
+      },
+      { kind: "page", label: "Loader", href: "/ui/opendetail/loader" },
+      { kind: "page", label: "Error", href: "/ui/opendetail/error" },
+    ],
+  },
+];
+
+/** @deprecated Use `UI_DOCS_PATH_PREFIX` */
+export const THEME_OPENDETAIL_PATH_PREFIX = UI_DOCS_PATH_PREFIX;
+
+/** @deprecated Use `SITE_UI_DOCS_OVERVIEW` */
+export const SITE_THEME_OPENDETAIL_OVERVIEW = SITE_UI_DOCS_OVERVIEW;
+
+/** @deprecated Use `SITE_UI_DOCS_SECTIONS` */
+export const SITE_THEME_OPENDETAIL_SECTIONS = SITE_UI_DOCS_SECTIONS;
 
 function normalizePath(path: string): string {
   if (path.length > 1 && path.endsWith("/")) {
@@ -97,17 +166,27 @@ export function isUnderDocsPathname(
   return normalized === base || normalized.startsWith(`${base}/`);
 }
 
-export function isUnderComponentsPathname(pathname: string): boolean {
+export function isUnderUiDocsPathname(pathname: string): boolean {
   const normalized = normalizePath(pathname);
   if (normalized === "/docs" || normalized.startsWith("/docs/")) {
     return false;
   }
-  const base = normalizePath(COMPONENTS_PATH_PREFIX);
+  const base = normalizePath(UI_DOCS_PATH_PREFIX);
   return normalized === base || normalized.startsWith(`${base}/`);
 }
 
-export function getSiteSecondaryNest(pathname: string): "components" | "docs" {
-  return isUnderComponentsPathname(pathname) ? "components" : "docs";
+/** @deprecated Use `isUnderUiDocsPathname` */
+export function isUnderThemeOpendetailPathname(pathname: string): boolean {
+  return isUnderUiDocsPathname(pathname);
+}
+
+/** @deprecated Use `isUnderUiDocsPathname` */
+export function isUnderComponentsPathname(pathname: string): boolean {
+  return isUnderUiDocsPathname(pathname);
+}
+
+export function getSiteSecondaryNest(pathname: string): "ui" | "docs" {
+  return isUnderUiDocsPathname(pathname) ? "ui" : "docs";
 }
 
 export function isUnderSiteSecondaryNavPathname(
@@ -116,6 +195,6 @@ export function isUnderSiteSecondaryNavPathname(
 ): boolean {
   return (
     isUnderDocsPathname(pathname, docsPathPrefix) ||
-    isUnderComponentsPathname(pathname)
+    isUnderUiDocsPathname(pathname)
   );
 }
