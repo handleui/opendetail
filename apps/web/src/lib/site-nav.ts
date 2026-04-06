@@ -76,7 +76,7 @@ export const SITE_COMPONENTS_GROUP_SECTION: SiteNavSection = {
       href: "/components/conversation-title",
     },
     { kind: "page", label: "Pressable", href: "/components/pressable" },
-    { kind: "page", label: "Status", href: "/components/status" },
+    { kind: "page", label: "Loader", href: "/components/loader" },
     { kind: "page", label: "Error", href: "/components/error" },
   ],
 };

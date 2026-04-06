@@ -4,10 +4,11 @@ import { notFound } from "next/navigation";
 import { ConversationTitleDemo } from "@/components/component-demos/conversation-title-demo";
 import { ErrorDemo } from "@/components/component-demos/error-demo";
 import { InputDemo } from "@/components/component-demos/input-demo";
+import { LoaderDemo } from "@/components/component-demos/loader-demo";
 import { PressableDemo } from "@/components/component-demos/pressable-demo";
 import { ShellDemo } from "@/components/component-demos/shell-demo";
+import { SidebarDemo } from "@/components/component-demos/sidebar-demo";
 import { SourcesDemo } from "@/components/component-demos/sources-demo";
-import { StatusDemo } from "@/components/component-demos/status-demo";
 import { SuggestionsDemo } from "@/components/component-demos/suggestions-demo";
 import { ComponentPreviewSurface } from "@/components/component-preview-surface";
 import { getDocsMdxComponents } from "@/components/docs-mdx-components";
@@ -24,7 +25,7 @@ const COMPONENT_SLUGS = [
   "sources",
   "conversation-title",
   "pressable",
-  "status",
+  "loader",
   "error",
 ] as const;
 
@@ -42,17 +43,18 @@ function ComponentPreview({ slug }: { slug: ComponentSlug }) {
       return <ErrorDemo />;
     case "input":
       return <InputDemo />;
+    case "loader":
+      return <LoaderDemo />;
     case "pressable":
       return <PressableDemo />;
     case "recommendations":
       return <SuggestionsDemo />;
     case "shell":
-    case "sidebar":
       return <ShellDemo knownSourcePageUrls={knownSourcePageUrls} />;
+    case "sidebar":
+      return <SidebarDemo knownSourcePageUrls={knownSourcePageUrls} />;
     case "sources":
       return <SourcesDemo />;
-    case "status":
-      return <StatusDemo />;
     default:
       return null;
   }

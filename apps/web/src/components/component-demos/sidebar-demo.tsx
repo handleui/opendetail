@@ -11,12 +11,8 @@ const PROMPT_SUGGESTIONS = [
   "What is NDJSON streaming?",
 ] as const;
 
-/**
- * Same assistant surface as the site: `AssistantSidebarShell` + live `/api/opendetail`.
- * `knownSourcePageUrls` must be passed from a Server Component (see `known-source-page-urls.ts`)
- * so this file stays client-safe (no `node:fs` in the bundle).
- */
-export const ShellDemo = ({
+/** Full `AssistantSidebar` docked to the left of the preview: left stroke only, collapse + reopen. */
+export const SidebarDemo = ({
   knownSourcePageUrls,
 }: {
   knownSourcePageUrls: readonly string[];
@@ -31,12 +27,11 @@ export const ShellDemo = ({
       <AssistantSidebarShell
         defaultOpen
         embedded
-        embeddedHideCollapse
-        embeddedLayout="compact"
+        embeddedLayout="dock"
         endpoint="/api/opendetail"
         hotkeyEnabled={false}
         persistence={{
-          key: "opendetail-web-docs-shell-demo",
+          key: "opendetail-web-docs-sidebar-demo",
           storage: "session",
         }}
         promptSuggestions={PROMPT_SUGGESTIONS}

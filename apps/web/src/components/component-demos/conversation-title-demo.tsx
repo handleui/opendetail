@@ -1,17 +1,43 @@
+"use client";
+
+import { AssistantInput, type AssistantInputRequest } from "opendetail-react";
+import { type FormEvent, useState } from "react";
+
+const truncate = (value: string, max: number): string =>
+  value.length <= max ? value : `${value.slice(0, Math.max(0, max - 1))}…`;
+
 /**
- * Static stand-in: the real title comes from `useOpenDetail` → NDJSON `title` events
- * and shows in `AssistantSidebar`’s header when using `AssistantSidebarShell`.
+ * Minimal title demo: submitting sets the header string from the question (no streaming).
  */
-export const ConversationTitleDemo = () => (
-  <div
-    className="w-full max-w-[400px] rounded-xl border border-solid bg-white px-4 py-3"
-    style={{ borderColor: "var(--opendetail-color-sidebar-stroke)" }}
-  >
-    <p className="mb-1 font-normal text-[#a4a4a4] text-[11px] uppercase tracking-wide">
-      Sidebar header (live)
-    </p>
-    <p className="font-normal text-[14px] text-neutral-950">
-      OpenDetail CLI — build and doctor
-    </p>
-  </div>
-);
+export const ConversationTitleDemo = () => {
+  const [title, setTitle] = useState("New chat");
+
+  const handleSubmit = (
+    request: AssistantInputRequest,
+    event: FormEvent<HTMLFormElement>
+  ) => {
+    event.preventDefault();
+    const q = request.question.trim();
+    if (!q) {
+      return;
+    }
+    setTitle(truncate(q, 48));
+  };
+
+  return (
+    <div className="flex min-h-[min(70vh,22rem)] w-full max-w-[400px] flex-col items-center justify-center gap-6">
+      <p className="px-2 text-center font-medium text-[15px] text-neutral-950">
+        {title}
+      </p>
+      <div className="w-full">
+        <AssistantInput
+          name="conversation-title-demo"
+          onSubmit={handleSubmit}
+          placeholder="Send a message — the title follows your query"
+          showShellUnderlay={true}
+          size="shell"
+        />
+      </div>
+    </div>
+  );
+};

@@ -89,7 +89,9 @@ export {
 } from "./ui/assistant-sources/source-links";
 export {
   AssistantStatus,
+  AssistantStatus as AssistantLoader,
   type AssistantStatusProps,
+  type AssistantStatusProps as AssistantLoaderProps,
 } from "./ui/assistant-status/assistant-status";
 export {
   AssistantSuggestion,

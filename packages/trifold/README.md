@@ -1,20 +1,8 @@
-# Trifold
+# trifold
 
-Phone-first **parallel columns** for React (DOM) with [Motion](https://motion.dev/): swipe between full-width columns; taps still move the track via declarative attributes and `ref.goTo`.
+**Swipe between columns on phones** (and desktop): a small React layout layer on top of [Motion](https://motion.dev/). Each column is full viewport width; users drag horizontally to move between them. Taps can still jump columns with `data-*` attributes.
 
-**Primitives**
-
-- **`Trifold`** — two or three **positional** columns: `leading` · `center` · optional `trailing`. State is **`column: 'leading' | 'center' | 'trailing'`** (or the two-column subset). Roles (nav, article, tools, etc.) are **your** mapping — the API stays geometric.
-- **`ParallelTrack`** — **N** panels, 0-based **`activeIndex`**. Use for wizards, 4+ steps, or nested horizontal stacks. Declarative jumps: **`data-parallel-index="0"`** … (export **`PARALLEL_INDEX_ATTRIBUTE`**).
-- **`ScrollPanels`** — `ParallelTrack` plus per-panel vertical scroll, optional max-width, and density.
-
-**Interaction:** horizontal **touch** drag on the track; **`prefers-reduced-motion`** disables animated settle.
-
-**React Native:** not in this package — same column idea can be mirrored with Reanimated / gesture-handler later.
-
-### Mapping columns to your app
-
-Example: `leading` = site nav, `center` = page, `trailing` = assistant. Those names live in **your** copy and layout; `Trifold` only knows **order** in the horizontal track.
+**Typical use:** nav · main content · optional third column (e.g. tools), without turning your whole app into a carousel library.
 
 ## Install
 
@@ -22,50 +10,54 @@ Example: `leading` = site nav, `center` = page, `trailing` = assistant. Those na
 npm install trifold motion react react-dom
 ```
 
-## `Trifold` (2 or 3 columns)
+Peer dependencies: **React 18+**, **Motion 12+**.
+
+## Minimal `Trifold` (controlled column)
+
+Track which column is visible with React state (`leading` | `center`, or add `trailing` for three columns):
 
 ```tsx
-import { Trifold } from "trifold";
+"use client";
 
-<Trifold
-  center={<Page />}
-  column={column}
-  leading={<Nav />}
-  onColumnChange={setColumn}
-  trailing={<Tools />}
-/>;
+import { useState } from "react";
+import { Trifold, type TrifoldColumn2 } from "trifold";
+
+export function Shell() {
+  const [column, setColumn] = useState<TrifoldColumn2>("center");
+
+  return (
+    <Trifold
+      center={<main>Page</main>}
+      column={column}
+      leading={<nav>Nav</nav>}
+      onColumnChange={setColumn}
+    />
+  );
+}
 ```
 
-Declarative jump inside the shell:
+**Declarative jump** (anywhere inside the shell):
 
 ```html
-<button data-trifold-column="center" type="button">Main</button>
-```
-
-Two columns: omit **`trailing`**; **`column`** is **`'leading' | 'center'`**.
-
-## `ParallelTrack` (indexed strip)
-
-```tsx
-import { ParallelTrack } from "trifold";
-
-<ParallelTrack activeIndex={index} onActiveIndexChange={setIndex}>
-  <section>First</section>
-  <section>Second</section>
-</ParallelTrack>
-
-<button data-parallel-index="0" type="button">
-  Back
+<button data-trifold-column="center" type="button">
+  Open main
 </button>
 ```
 
-## `ScrollPanels` (routed stacks)
+Two columns: omit `trailing`. Three columns: pass `trailing={...}` and use `'leading' | 'center' | 'trailing'` in state.
 
-Same as **`ParallelTrack`**, with **`panels={[...]}`**, **`contentMaxWidthClassName`**, **`density`**. Demo app: **`apps/trifold`**.
+**Accessibility:** animated settle respects `prefers-reduced-motion`.
 
-## Low-level helpers
+## More building blocks
 
-`trackXForDragN`, `panelIndexFromTrackXN`, and `clamp` take **step width in px** (full viewport width per column).
+- **ParallelTrack** — N horizontal panels by index (`0`, `1`, …). Declarative jumps: `data-parallel-index="0"` (see export `PARALLEL_INDEX_ATTRIBUTE`).
+- **ScrollPanels** — `ParallelTrack` plus per-panel vertical scroll and optional max width.
+
+**Gesture helpers** (for custom UIs): `trackXForDragN`, `panelIndexFromTrackXN`, `clamp`.
+
+## Demo
+
+Reference implementation: Next.js app in **`apps/trifold`** (workspace package **`trifold-demo`**) in the [opendetail](https://github.com/handleui/opendetail) repo.
 
 ## License
 

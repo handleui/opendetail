@@ -460,6 +460,55 @@
   background: var(--opendetail-color-hover);
 }
 
+/* Embed docked to preview (docs /components/sidebar): flush left, left edge stroke only, no outer chrome. */
+.opendetail-sidebar.opendetail-sidebar--embed-dock {
+  width: 100%;
+  max-width: none;
+  height: min(75vh, 40rem);
+  min-height: min(70vh, 28rem);
+  max-height: min(75vh, 40rem);
+  margin-inline: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  --opendetail-sidebar-width: min(100%, 25rem);
+}
+
+.opendetail-sidebar.opendetail-sidebar--embed-dock .opendetail-sidebar__embed-reopen {
+  min-height: min(64vh, 26rem);
+  background: white;
+}
+
+.opendetail-sidebar.opendetail-sidebar--embed-dock .opendetail-sidebar__panel {
+  height: 100%;
+  min-height: 0;
+}
+
+.opendetail-sidebar.opendetail-sidebar--embed-dock .opendetail-sidebar__shell {
+  border-radius: 0;
+}
+
+.opendetail-sidebar.opendetail-sidebar--embed-dock.opendetail-sidebar--open
+  .opendetail-sidebar__panel {
+  flex: none;
+  width: min(100vw, var(--opendetail-sidebar-width));
+  max-width: min(100%, var(--opendetail-sidebar-width));
+  border-left: 1px solid var(--opendetail-color-sidebar-stroke);
+  border-top: none;
+  border-right: none;
+  border-bottom: none;
+  border-radius: 0;
+}
+
+.opendetail-sidebar.opendetail-sidebar--embed-dock .opendetail-sidebar__input {
+  justify-content: stretch;
+}
+
+.opendetail-sidebar.opendetail-sidebar--embed-dock .opendetail-input-root--shell {
+  --opendetail-input-current-width: 100%;
+  max-width: 100%;
+}
+
 .opendetail-sidebar__content {
   display: flex;
   flex: 1 1 auto;

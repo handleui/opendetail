@@ -51,7 +51,7 @@ const componentShowcasePageUrls = [
   "/components/shell",
   "/components/sidebar",
   "/components/sources",
-  "/components/status",
+  "/components/loader",
 ] as const;
 
 export const knownSourcePageUrls = [

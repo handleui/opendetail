@@ -15,6 +15,8 @@ type AssistantSidebarShellBaseProps = Pick<
   | "className"
   | "defaultOpen"
   | "embedded"
+  | "embeddedHideCollapse"
+  | "embeddedLayout"
   | "emptyState"
   | "hotkeyEnabled"
   | "input"

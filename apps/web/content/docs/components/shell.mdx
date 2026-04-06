@@ -46,14 +46,16 @@ import {
 
 What you see in the **live preview** below is the same stack as this docs app: **`AssistantSidebarShell`** → **`useOpenDetail`** → **`POST /api/opendetail`**, with **`renderNextSourceLink`** and a Fumadocs-style **`resolveSourceTarget`** so citations resolve safely.
 
-That layer adds the **header** (title, **copy thread**, **new chat**, **collapse**), the **resizable** panel, default **prompt suggestions** when the thread is empty, and the wired **`AssistantInput`** / thread rendering—you do not reimplement those for a standard app shell.
+This **Shell** preview uses **`embedded` + `embeddedLayout="compact"`** (rounded **400px** column), **`embeddedHideCollapse`** (no collapse control—focus stays on thread + input), plus **copy**, **new session**, resize, suggestions, and **`AssistantInput`** filling the column width.
+
+On the [**Sidebar**](/components/sidebar) page, the preview uses **`embeddedLayout="dock"`** instead: the panel sits flush on the **left** of the white preview with a **left stroke only** (no outer rounded chrome), and **collapse** + **Open assistant** behave like the full app.
 
 ### `AssistantSidebar` — `embedded`
-
-For bounded in-page demos (like this page), pass **`embedded`** on **`AssistantSidebar`** (or through **`AssistantSidebarShell`**): one assistant column, no separate main `children` slot, fixed height, an **Open assistant** control if the user collapses the panel, and a **400px** max width so the prompt matches the column.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `embedded` | `boolean` | `false` | Single-column preview: same sidebar UI without a main content sibling. |
+| `embeddedLayout` | `"compact" \| "dock"` | `"compact"` | **`compact`** — 400px rounded box; **`dock`** — left-aligned column, left border only (see [Sidebar](/components/sidebar)). |
+| `embeddedHideCollapse` | `boolean` | `false` | Hide the collapse icon (used on this page’s preview). |
 
 Other sidebar props (`headerTitle`, `messages`, `onSubmitQuestion`, `promptSuggestions`, `sidebarResizeEnabled`, etc.) are unchanged—see **`AssistantSidebar`** / **`AssistantSidebarShell`** in the main [React](/docs/react) docs and [Packages & composition](/docs/packages).

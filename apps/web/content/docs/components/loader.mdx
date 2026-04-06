@@ -1,0 +1,16 @@
+---
+title: Loader
+description: AssistantLoader (alias of AssistantStatus) shows the thinking spinner line—used under the input or inline while a request is in flight.
+---
+
+Import **`AssistantLoader`** from **`opendetail-react`** (same implementation as **`AssistantStatus`**; the **`Loader`** name matches the spinner affordance).
+
+## Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `variant` | `"thinking" \| "error"` | — | Use **`thinking`** for the spinner; **`error`** shows error text (see [**Error**](/components/error) for a dedicated error helper). |
+| `label` | `string` | variant default | Screen-reader label; thinking keeps a visible **`Loader`** icon. |
+| `id` | `string` | — | Optional DOM id. |
+
+Thinking variant maps to **`opendetail-status`**; error uses **`opendetail-status--error`**.

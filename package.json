@@ -33,7 +33,7 @@
     "trifold:test": "cd packages/trifold && bun run test",
     "trifold:publint": "cd packages/trifold && bun run publint",
     "release:check": "npm run opendetail:check-types && npm run opendetail:test && npm run opendetail:publint && npm run opendetail-react:check-types && npm run opendetail-react:test && npm run opendetail-react:publint && npm run opendetail-next:check-types && npm run opendetail-next:test && npm run opendetail-next:publint && npm run opendetail-fumadocs:check-types && npm run opendetail-fumadocs:test && npm run opendetail-fumadocs:publint && npm run trifold:check-types && npm run trifold:test && npm run trifold:publint",
-    "release:pack": "cd packages/opendetail && npm pack && cd ../opendetail-react && npm pack && cd ../opendetail-next && npm pack && cd ../opendetail-fumadocs && npm pack",
+    "release:pack": "cd packages/opendetail && npm pack && cd ../opendetail-react && npm pack && cd ../opendetail-next && npm pack && cd ../opendetail-fumadocs && npm pack && cd ../trifold && npm pack",
     "lint": "ultracite check .",
     "format": "ultracite fix .",
     "check": "ultracite check",

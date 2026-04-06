@@ -1,15 +1,34 @@
 {
   "name": "trifold",
   "version": "0.1.0",
-  "description": "Parallel columns for React (Trifold, ParallelTrack, ScrollPanels) with touch swipe and declarative column/index jumps.",
+  "description": "Swipe between full-width columns on phones (and larger screens): React layout primitives with touch drag, snap, and declarative jumps.",
   "type": "module",
   "license": "MIT",
   "sideEffects": false,
+  "keywords": [
+    "react",
+    "mobile",
+    "touch",
+    "swipe",
+    "columns",
+    "carousel",
+    "panels",
+    "motion",
+    "gesture",
+    "layout"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/handleui/opendetail.git",
     "directory": "packages/trifold"
   },
+  "bugs": {
+    "url": "https://github.com/handleui/opendetail/issues"
+  },
+  "homepage": "https://github.com/handleui/opendetail/tree/main/packages/trifold#readme",
   "files": [
     "dist",
     "README.md",
@@ -29,12 +48,13 @@
     "test": "vitest run",
     "publint": "publint",
     "prepack": "npm run build",
-    "prepublishOnly": "npm run check-types && npm run test && npm run publint"
+    "prepublishOnly": "npm run check-types && npm run test && npm run publint",
+    "publish:dry-run": "npm publish --dry-run"
   },
   "peerDependencies": {
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "motion": "^12.0.0"
+    "motion": "^12.0.0",
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
   },
   "devDependencies": {
     "@types/node": "^25.5.0",

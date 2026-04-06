@@ -5,6 +5,8 @@ description: Chat session titles come from NDJSON title events consumed by useOp
 
 The **sidebar header title** is not a separate React component: **`useOpenDetail`** listens for stream events of type **`title`** and exposes **`conversationTitle`**. **`AssistantSidebarShell`** passes that string to **`AssistantSidebar`** as **`headerTitle`**.
 
+The **preview** below is a minimal interaction: submitting the prompt updates a **standalone title string** from your query (no stream) so you can see how the header label tracks user input. In production, titles usually come from NDJSON **`title`** events instead.
+
 Titles are **persisted** when you pass **`persistence`** (same storage as messages and the draft question).
 
 ## `useOpenDetail`

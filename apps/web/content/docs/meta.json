@@ -23,7 +23,7 @@
     "components/sources",
     "components/conversation-title",
     "components/pressable",
-    "components/status",
+    "components/loader",
     "components/error"
   ]
 }

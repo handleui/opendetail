@@ -171,6 +171,10 @@ export interface AssistantSidebarProps {
    * affordance when collapsed — matches the real sidebar chrome (header actions, thread, input).
    */
   embedded?: boolean;
+  /** When `embedded`, omit the collapse control (e.g. shell primitive demo). */
+  embeddedHideCollapse?: boolean;
+  /** When `embedded` is set: `compact` = rounded 400px column; `dock` = flush left in the preview, left border only. */
+  embeddedLayout?: "compact" | "dock";
   emptyState?: ReactNode;
   headerTitle?: string | null;
   hotkeyEnabled?: boolean;
@@ -452,6 +456,7 @@ function buildAssistantAsidePanel({
   requestState,
   resolvedHeaderTitle,
   resolveSourceTarget,
+  showCollapseButton,
   sidebarResizeEnabled,
   thread,
   userInitial,
@@ -488,6 +493,7 @@ function buildAssistantAsidePanel({
   requestState: AssistantSidebarRequestState;
   resolvedHeaderTitle: string;
   resolveSourceTarget?: AssistantResponseProps["resolveSourceTarget"];
+  showCollapseButton: boolean;
   sidebarResizeEnabled: boolean;
   thread?: ReactNode;
   userInitial: string;
@@ -626,18 +632,20 @@ function buildAssistantAsidePanel({
             >
               <Plus aria-hidden="true" size={16} strokeWidth={1.9} />
             </motion.button>
-            <motion.button
-              aria-label="Collapse assistant sidebar"
-              className="opendetail-sidebar__icon-button opendetail-pressable"
-              onClick={handleCollapse}
-              type="button"
-            >
-              <ArrowRightToLine
-                aria-hidden="true"
-                size={16}
-                strokeWidth={1.9}
-              />
-            </motion.button>
+            {showCollapseButton ? (
+              <motion.button
+                aria-label="Collapse assistant sidebar"
+                className="opendetail-sidebar__icon-button opendetail-pressable"
+                onClick={handleCollapse}
+                type="button"
+              >
+                <ArrowRightToLine
+                  aria-hidden="true"
+                  size={16}
+                  strokeWidth={1.9}
+                />
+              </motion.button>
+            ) : null}
           </div>
         </header>
 
@@ -768,6 +776,8 @@ export const AssistantSidebar = (props: AssistantSidebarProps): ReactNode => {
     className,
     defaultOpen = false,
     embedded = false,
+    embeddedHideCollapse = false,
+    embeddedLayout = "compact",
     emptyState = "Ask the docs",
     headerTitle,
     hotkeyEnabled = true,
@@ -811,6 +821,8 @@ export const AssistantSidebar = (props: AssistantSidebarProps): ReactNode => {
   );
   const isMobileTriptychLayout = Boolean(navigation && renderMobileShell);
   const isMobileTriptychActive = isMobileTriptychLayout && !isMdUp;
+  const embeddedLayoutResolved = embedded ? embeddedLayout : undefined;
+  const showCollapseButton = !(embedded && embeddedHideCollapse);
   const isSidebarOpen = isMobileTriptychActive
     ? mobileShellColumn === "trailing"
     : (open ?? internalOpen);
@@ -1004,7 +1016,12 @@ export const AssistantSidebar = (props: AssistantSidebarProps): ReactNode => {
 
   const rootClassName = [
     getClassName({ className, open: isSidebarOpen }),
-    embedded ? "opendetail-sidebar--embed" : "",
+    embedded && embeddedLayoutResolved === "compact"
+      ? "opendetail-sidebar--embed"
+      : "",
+    embedded && embeddedLayoutResolved === "dock"
+      ? "opendetail-sidebar--embed-dock"
+      : "",
     isSidebarResizing ? "opendetail-sidebar--resizing" : "",
   ]
     .filter(Boolean)
@@ -1053,6 +1070,7 @@ export const AssistantSidebar = (props: AssistantSidebarProps): ReactNode => {
     requestState,
     resolvedHeaderTitle,
     resolveSourceTarget,
+    showCollapseButton,
     sidebarResizeEnabled,
     thread,
     userInitial,
