@@ -1,6 +1,6 @@
 {
   "name": "opendetail-fumadocs",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Fumadocs source integration helpers for OpenDetail.",
   "type": "module",
   "license": "MIT",
