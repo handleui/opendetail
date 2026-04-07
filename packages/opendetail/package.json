@@ -1,6 +1,6 @@
 {
   "name": "opendetail",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "MDX-powered informational assistant: grounded answers from your index, site pages, and optional remote tools.",
   "type": "module",
   "license": "MIT",
