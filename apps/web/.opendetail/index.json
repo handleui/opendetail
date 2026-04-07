@@ -264,13 +264,13 @@
       "anchor": null,
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/core.mdx",
       "headings": [
-        "Core package"
+        "Core"
       ],
       "id": "content/docs/core.mdx",
       "images": [],
       "relativePath": "core.mdx",
       "text": "The opendetail package is the engine: it reads opendetail.toml, builds .opendetail/index.json, and exposes createOpenDetail for answering from that index. The CLI (build, setup, doctor) lives in the same package — see CLI.",
-      "title": "Core package",
+      "title": "Core",
       "url": "/docs/core"
     },
     {
@@ -283,7 +283,7 @@
       "images": [],
       "relativePath": "core.mdx",
       "text": "What ships in the package\n\n| Area | Role |\n| --- | --- |\n| Build | Parse matched Markdown/MDX, chunk by headings, write the index (CLI or buildOpenDetailIndex). |\n| Runtime | Load the index, lexical search, Responses API, stream NDJSON — Create an assistant. |\n| CLI | Setup, index builds, doctor — CLI. |\n| Config | opendetail.toml — Fields. |",
-      "title": "Core package",
+      "title": "Core",
       "url": "/docs/core#what-ships-in-the-package"
     },
     {
@@ -296,7 +296,7 @@
       "images": [],
       "relativePath": "core.mdx",
       "text": "When to use it directly\n\nUse opendetail without Next or React for Node integrations (custom server, scripts, tests). For Next.js App Router, use opendetail-next; for browser UI, use opendetail-react.",
-      "title": "Core package",
+      "title": "Core",
       "url": "/docs/core#when-to-use-it-directly"
     },
     {
@@ -309,7 +309,7 @@
       "images": [],
       "relativePath": "core.mdx",
       "text": "Minimal config\n\nOpenDetail reads opendetail.toml at the project root.\n\n`version = 1\n\n[[content]]\ninclude = [\"content/**/*.{md,mdx}\"]\nexclude = []\npublic_path = \"/docs\"\n`",
-      "title": "Core package",
+      "title": "Core",
       "url": "/docs/core#minimal-config"
     },
     {
@@ -322,7 +322,7 @@
       "images": [],
       "relativePath": "core.mdx",
       "text": "Fields\n\n| Field | Required | Meaning |\n| --- | --- | --- |\n| version | yes | Must be 1 |\n| [[content]] | yes | One or more tables: each has include, exclude, and public_path for a Markdown/MDX root |\n| media | no | Rules for mapping local media references to public URLs |\n| fetch | no | Optional OpenAI Responses API tools: [fetch.file_search] and/or [fetch.web_search] |\n| knowledge | no | Path to optional .opendetail/knowledge.toml sidecar with [[asset]] titles/summaries for images |",
-      "title": "Core package",
+      "title": "Core",
       "url": "/docs/core#fields"
     },
     {
@@ -335,7 +335,7 @@
       "images": [],
       "relativePath": "core.mdx",
       "text": "Content roots\n\nYou can list multiple [[content]] blocks when docs, marketing, or other MDX trees live under different folders and are served at different URL prefixes. Each row is one indexed tree. Set public_path to the public URL prefix for that tree (where those pages appear in the browser), for example /docs for documentation and / for site-root marketing. OpenDetail joins each file’s route segments after that prefix to build citation URLs (and, beyond the first root, tags chunks as sourceKind: \"page\" for UI styling).",
-      "title": "Core package",
+      "title": "Core",
       "url": "/docs/core#content-roots"
     },
     {
@@ -348,7 +348,7 @@
       "images": [],
       "relativePath": "core.mdx",
       "text": "Media\n\nUse [media] when docs reference local images such as ./hero.png.\n\n`[media]\ninclude = [\"content/**/*.{png,jpg,jpeg,webp,avif,gif,svg}\"]\nexclude = []\npublic_path = \"/content-media\"\n`\n\nWhen media is configured:\n\nhttp:// and https:// URLs are returned as-isroot-relative /... URLs are returned as-islocal relative paths are mapped only if they match [media].includeunsupported absolute schemes and protocol-relative URLs are ignored\n\nIf a doc references a local image that does not match the configured media globs, the build fails with a clear error.",
-      "title": "Core package",
+      "title": "Core",
       "url": "/docs/core#media"
     },
     {
@@ -361,7 +361,7 @@
       "images": [],
       "relativePath": "core.mdx",
       "text": "Fetch (OpenAI remote tools)\n\nOptional Responses API tools — configure as [fetch.file_search] and/or [fetch.web_search] (native remote retrieval; no same-origin HTML scraping).\n\n`[fetch.file_search]\nvector_store_ids = [\"vs_123\"]\nmax_num_results = 8\n\n[fetch.web_search]\nallowed_domains = [\"opendetail.dev\", \"platform.openai.com\"]\nsearch_context_size = \"low\"\n`\n\nfile_search\n\n| Field | Required | Meaning |\n| --- | --- | --- |\n| vector_store_ids | yes | OpenAI vector store IDs |\n| max_num_results | no | Limit from 1 to 50 |\n\nweb_search\n\n| Field | Required | Meaning |\n| --- | --- | --- |\n| allowed_domains | no | Restrict search to listed domains |\n| search_context_size | no | low, medium, or high |\n\nRemote citations appear in sources with kind: \"remote\".",
-      "title": "Core package",
+      "title": "Core",
       "url": "/docs/core#fetch-openai-remote-tools"
     },
     {
@@ -374,7 +374,7 @@
       "images": [],
       "relativePath": "core.mdx",
       "text": "Knowledge sidecar\n\nOptional knowledge = \".opendetail/knowledge.toml\" with entries such as:\n\n`[[asset]]\nurl = \"/content-media/diagram.png\"\ntitle = \"Pipeline overview\"\nsummary = \"Use when explaining the build step.\"\n`",
-      "title": "Core package",
+      "title": "Core",
       "url": "/docs/core#knowledge-sidecar"
     },
     {
@@ -387,7 +387,7 @@
       "images": [],
       "relativePath": "core.mdx",
       "text": "Create an assistant\n\nUse opendetail core when calling from Node without Next.js helpers.\n\n`import { createOpenDetail } from \"opendetail\";\n\nconst assistant = createOpenDetail();\n`\n\nThen:\n\n`const result = await assistant.answer({\nquestion: \"How do I configure public_path?\",\n});\n`\n\nanswer() returns text, model, sources, images, fallback. stream() adds a ReadableStream<Uint8Array>.",
-      "title": "Core package",
+      "title": "Core",
       "url": "/docs/core#create-an-assistant"
     },
     {
@@ -400,7 +400,7 @@
       "images": [],
       "relativePath": "core.mdx",
       "text": "Assistant instructions\n\nThe OpenAI Responses API separates instructions (how the model behaves)\nfrom input (sources + question). OpenDetail merges harness and project\ntext into a single instructions string:\n\nHarness (built-in): informational assistant behavior, grounding, citations, tools.Project (your files below): tone, priorities, product vocabulary — keep it short.\n\nLoaded in order (project append):\n\nassistantInstructions optionassistantInstructionsPath option.opendetail/OPENDETAIL.mdOPENDETAIL.md at project root\n\nIf none exist, only built-in harness instructions apply.",
-      "title": "Core package",
+      "title": "Core",
       "url": "/docs/core#assistant-instructions"
     },
     {
@@ -413,7 +413,7 @@
       "images": [],
       "relativePath": "core.mdx",
       "text": "Remote retrieval\n\nConfigure via fetch in createOpenDetail options or [fetch] in opendetail.toml (fetch.file_search, fetch.web_search). Runtime options override the artifact when provided.",
-      "title": "Core package",
+      "title": "Core",
       "url": "/docs/core#remote-retrieval"
     },
     {
@@ -426,7 +426,7 @@
       "images": [],
       "relativePath": "core.mdx",
       "text": "Defaults\n\n| Setting | Default |\n| --- | --- |\n| model | gpt-5.4-mini |\n| reasoningEffort | none |\n| verbosity | low |\n| store | false |\n| promptCacheRetention | in-memory |",
-      "title": "Core package",
+      "title": "Core",
       "url": "/docs/core#defaults"
     },
     {
@@ -439,7 +439,7 @@
       "images": [],
       "relativePath": "core.mdx",
       "text": "Important options\n\n| Option | Meaning |\n| --- | --- |\n| cwd | Working directory for config and instruction files |\n| indexPath | Custom path to the built index |\n| indexData | Preloaded index artifact |\n| client | Reuse an existing OpenAI client |\n| assistantInstructions | Inline project guidance |\n| assistantInstructionsPath | Custom instructions path |\n| promptCacheKey | Explicit cache key override |\n| fetch | Override fetch from the index (OpenAI tools) |",
-      "title": "Core package",
+      "title": "Core",
       "url": "/docs/core#important-options"
     },
     {
@@ -452,7 +452,7 @@
       "images": [],
       "relativePath": "core.mdx",
       "text": "Fallback behavior\n\nIf lexical retrieval matches no indexed chunks, OpenDetail sets fallback: true. The model may still answer using configured fetch tools; the flag means “no index hit,” not “no answer.” If the model returns no usable text:\n\n`That isn't covered in the available sources yet.`",
-      "title": "Core package",
+      "title": "Core",
       "url": "/docs/core#fallback-behavior"
     },
     {
@@ -506,6 +506,58 @@
       "text": "Wiring without the wrapper\n\nCollect the doc page URLs your site actually serves (same slugs as your MDX routes), then pass them as knownPageUrls:\n\n`import { createFumadocsSourceTargetResolver } from \"opendetail-fumadocs\";\n\nconst resolveSourceTarget = createFumadocsSourceTargetResolver([\n\"/docs\",\n\"/docs/quickstart\",\n\"/docs/core\",\n// …\n]);\n`\n\nPair with renderNextSourceLink from opendetail-next so resolved targets render as next/link where appropriate.\n\nLocal URLs must match a known pathname (no hash required for the allowlist match; hashes are preserved on output). Unknown paths like /docs/old-page resolve to null so the UI does not invent links.",
       "title": "Fumadocs",
       "url": "/docs/fumadocs#wiring-without-the-wrapper"
+    },
+    {
+      "anchor": null,
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/index.mdx",
+      "headings": [
+        "Introduction"
+      ],
+      "id": "content/docs/index.mdx",
+      "images": [],
+      "relativePath": "index.mdx",
+      "text": "OpenDetail turns the Markdown and MDX you already ship into grounded answers inside your product: same content your team edits, retrieved with citations instead of vibes. It is intentionally small — a build step, a local index file, a narrow HTTP contract, and thin adapters. Not a second CMS, not a generic chat platform.",
+      "title": "Introduction",
+      "url": "/docs"
+    },
+    {
+      "anchor": "how-it-fits-together",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/index.mdx",
+      "headings": [
+        "How it fits together"
+      ],
+      "id": "content/docs/index.mdx#how-it-fits-together",
+      "images": [],
+      "relativePath": "index.mdx",
+      "text": "How it fits together\n\n| Stage | What happens |\n| --- | --- |\n| Build | Matched docs become .opendetail/index.json. |\n| Request | Your route loads the index, runs lexical search, calls the Responses API with that context. |\n| UI | Streamed NDJSON (text, sources, images) — render with your components or opendetail-react. |\n\nDocs stay human-readable on the web; machine-readable routes (for example /llms.mdx/docs) remain available for tooling.",
+      "title": "Introduction",
+      "url": "/docs#how-it-fits-together"
+    },
+    {
+      "anchor": "who-it-is-for",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/index.mdx",
+      "headings": [
+        "Who it is for"
+      ],
+      "id": "content/docs/index.mdx#who-it-is-for",
+      "images": [],
+      "relativePath": "index.mdx",
+      "text": "Who it is for\n\n| Audience | Why |\n| --- | --- |\n| Product & devrel | In-app help without a separate knowledge base. |\n| Engineering | Testable pipeline: artifact in git, predictable API, clear errors. |\n| Agents | Stable URLs and structured retrieval from the same index. |",
+      "title": "Introduction",
+      "url": "/docs#who-it-is-for"
+    },
+    {
+      "anchor": "packages",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/index.mdx",
+      "headings": [
+        "Packages"
+      ],
+      "id": "content/docs/index.mdx#packages",
+      "images": [],
+      "relativePath": "index.mdx",
+      "text": "Packages\n\n| Package | Role |\n| --- | --- |\n| opendetail | Build, core runtime, CLI. Start here for any integration. |\n| opendetail-next | Next.js App Router route handler, NDJSON streaming, renderNextSourceLink. |\n| opendetail-react | Browser UI — hook, streaming client, shell components, styling. |\n| opendetail-fumadocs | Optional: known-page citation allowlist + FumadocsAssistant wrapper. |\n\nTypical Next.js stack: opendetail + opendetail-next + opendetail-react.",
+      "title": "Introduction",
+      "url": "/docs#packages"
     },
     {
       "anchor": null,
@@ -563,27 +615,14 @@
       "anchor": null,
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/quickstart.mdx",
       "headings": [
-        "Get started"
+        "Quickstart"
       ],
       "id": "content/docs/quickstart.mdx",
       "images": [],
       "relativePath": "quickstart.mdx",
-      "text": "OpenDetail turns the Markdown and MDX you already ship into grounded answers inside your product: same content your team edits, retrieved with citations instead of vibes. It is intentionally small — a build step, a local index file, a narrow HTTP contract, and thin adapters. Not a second CMS, not a generic chat platform.\n\n| Stage | What happens |\n| --- | --- |\n| Build | Matched docs become .opendetail/index.json. |\n| Request | Your route loads the index, runs lexical search, calls the Responses API with that context. |\n| UI | Streamed NDJSON (text, sources, images) — render with your components or opendetail-react. |",
-      "title": "Get started",
+      "text": "Follow this page in order once. After that, rebuild whenever docs change.",
+      "title": "Quickstart",
       "url": "/docs/quickstart"
-    },
-    {
-      "anchor": "packages",
-      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/quickstart.mdx",
-      "headings": [
-        "Packages"
-      ],
-      "id": "content/docs/quickstart.mdx#packages",
-      "images": [],
-      "relativePath": "quickstart.mdx",
-      "text": "Packages\n\n| Package | Use when |\n| --- | --- |\n| opendetail | You need the build, CLI, runtime, or self-hosted index. Start here for any integration. |\n| opendetail-next | You deploy on Next.js App Router and want the official route handler + renderNextSourceLink. |\n| opendetail-react | You build the in-browser assistant — hook, shell, streaming client, styling. |\n| opendetail-fumadocs | You want a known-page allowlist for citation URLs and/or the FumadocsAssistant wrapper. |\n\nTypical Next.js app: opendetail (build + runtime) + opendetail-next (route) + opendetail-react (UI).",
-      "title": "Get started",
-      "url": "/docs/quickstart#packages"
     },
     {
       "anchor": "install",
@@ -595,7 +634,7 @@
       "images": [],
       "relativePath": "quickstart.mdx",
       "text": "Install\n\nCheck the CLI resolves without a global install:",
-      "title": "Get started",
+      "title": "Quickstart",
       "url": "/docs/quickstart#install"
     },
     {
@@ -608,7 +647,7 @@
       "images": [],
       "relativePath": "quickstart.mdx",
       "text": "Scaffold\n\nGenerate opendetail.toml, the default API route, and an initial index:\n\nWhat that writes:\n\nopendetail.toml — content globs and public path mappingsrc/app/api/opendetail/route.ts — the self-hosted route handler.opendetail/index.json — the built index (unless you pass --skip-build)\n\nAdd OPENAI_API_KEY to the environment your route runs in.",
-      "title": "Get started",
+      "title": "Quickstart",
       "url": "/docs/quickstart#scaffold"
     },
     {
@@ -622,7 +661,7 @@
       "images": [],
       "relativePath": "quickstart.mdx",
       "text": "Config shape\n\n`version = 1\n\n[[content]]\ninclude = [\"content/**/*.{md,mdx}\"]\nexclude = []\npublic_path = \"/docs\"\n\n[media]\ninclude = [\"content/**/*.{png,jpg,jpeg,webp,avif,gif,svg}\"]\nexclude = []\npublic_path = \"/content-media\"\n`\n\nTweak [[content]] globs and public_path so each root matches where those files are served. Add more [[content]] blocks when you index multiple trees (for example /docs and /). Full field reference: Core.",
-      "title": "Get started",
+      "title": "Quickstart",
       "url": "/docs/quickstart#config-shape"
     },
     {
@@ -635,21 +674,49 @@
       "images": [],
       "relativePath": "quickstart.mdx",
       "text": "Rebuild when content changes\n\nRun this in CI before deploy, or as a postbuild step. When something looks wrong:\n\nFull command and flag reference: CLI.",
-      "title": "Get started",
+      "title": "Quickstart",
       "url": "/docs/quickstart#rebuild-when-content-changes"
     },
     {
-      "anchor": "integration",
+      "anchor": "integration-modes",
       "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/quickstart.mdx",
       "headings": [
-        "Integration"
+        "Integration modes"
       ],
-      "id": "content/docs/quickstart.mdx#integration",
+      "id": "content/docs/quickstart.mdx#integration-modes",
       "images": [],
       "relativePath": "quickstart.mdx",
-      "text": "Integration\n\nYour Next.js route, your Node runtime, your API key, your rebuilt index on deploy.\n\n| Requirement | Notes |\n| --- | --- |\n| Node.js | 18+ |\n| Runtime | Node.js (not Edge) for the default adapter |\n| Secrets | OPENAI_API_KEY where the handler runs |\n| Artifact | .opendetail/index.json after opendetail build |\n\nRequest body:\n\n`{ \"question\": \"How do I configure public_path?\" }`\n\nResponse — application/x-ndjson; charset=utf-8, events in order:\n\n| Event | Role |\n| --- | --- |\n| meta | Model metadata |\n| sources | Matched chunks (and remote citations when configured) |\n| images | Grounded image references from matched docs |\n| delta | Streamed answer text |\n| done | Final text |\n| error | Safe public error payload |\n\nMalformed bodies return a JSON error. Initialization failures before streaming starts return JSON instead of NDJSON. In production, repeated init failures are cached.",
-      "title": "Get started",
-      "url": "/docs/quickstart#integration"
+      "text": "Integration modes",
+      "title": "Quickstart",
+      "url": "/docs/quickstart#integration-modes"
+    },
+    {
+      "anchor": "self-hosted-default",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/quickstart.mdx",
+      "headings": [
+        "Integration modes",
+        "Self-hosted (default)"
+      ],
+      "id": "content/docs/quickstart.mdx#self-hosted-default",
+      "images": [],
+      "relativePath": "quickstart.mdx",
+      "text": "Self-hosted (default)\n\nYour Next.js route, your Node runtime, your API key, your rebuilt index on deploy.\n\n| Requirement | Notes |\n| --- | --- |\n| Node.js | 18+ |\n| Runtime | Node.js (not Edge) for the default adapter |\n| Secrets | OPENAI_API_KEY where the handler runs |\n| Artifact | .opendetail/index.json after opendetail build |\n\nRequest body:\n\n`{ \"question\": \"How do I configure public_path?\" }`\n\nResponse — application/x-ndjson; charset=utf-8, events in order:\n\n| Event | Role |\n| --- | --- |\n| meta | Model metadata |\n| sources | Matched chunks (and remote citations when configured) |\n| images | Grounded image references from matched docs |\n| delta | Streamed answer text |\n| done | Final text |\n| error | Safe public error payload |\n\nMalformed bodies return a JSON error. Initialization failures before streaming starts return JSON instead of NDJSON. In production, repeated init failures are cached.",
+      "title": "Quickstart",
+      "url": "/docs/quickstart#self-hosted-default"
+    },
+    {
+      "anchor": "hosted-shaped-scaffold-only",
+      "filePath": "/Users/rodrigo/Documents/code/@handleui/opendetail/core/apps/web/content/docs/quickstart.mdx",
+      "headings": [
+        "Integration modes",
+        "Hosted-shaped (scaffold only)"
+      ],
+      "id": "content/docs/quickstart.mdx#hosted-shaped-scaffold-only",
+      "images": [],
+      "relativePath": "quickstart.mdx",
+      "text": "Hosted-shaped (scaffold only)\n\n--integration hosted does not generate a route. It writes config and builds the index, but your app calls a remote endpoint you configure. The OpenDetail-managed cloud backend is not shipped yet.\n\nPoint the client at your endpoint:\n\nRequest and stream events are identical to self-hosted — no breaking migration later.",
+      "title": "Quickstart",
+      "url": "/docs/quickstart#hosted-shaped-scaffold-only"
     },
     {
       "anchor": "how-grounding-works",
@@ -661,7 +728,7 @@
       "images": [],
       "relativePath": "quickstart.mdx",
       "text": "How grounding works\n\nBuild time — Matched files are parsed, split into heading-based chunks, written to .opendetail/index.json. No vector database required.Request time — The runtime runs lexical search, sends the best chunks to the Responses API, optionally attaches remote tools from config.Instructions — The model answers from those sources, cites factual statements, avoids inventing coverage, and says so when a topic is not in the docs.\n\nIf nothing matches, fallback: true is set on the response. The model may still answer using configured fetch tools; if it returns no usable text, the user sees a clear \"not documented yet\" message. See fallback behavior.",
-      "title": "Get started",
+      "title": "Quickstart",
       "url": "/docs/quickstart#how-grounding-works"
     },
     {
@@ -674,7 +741,7 @@
       "images": [],
       "relativePath": "quickstart.mdx",
       "text": "First request\n\nWith the default route running:\n\n`{ \"question\": \"How do I install this?\" }`\n\nUse useOpenDetail or createOpenDetailClient from opendetail-react when building UI — see React.",
-      "title": "Get started",
+      "title": "Quickstart",
       "url": "/docs/quickstart#first-request"
     },
     {
@@ -686,8 +753,8 @@
       "id": "content/docs/quickstart.mdx#faq",
       "images": [],
       "relativePath": "quickstart.mdx",
-      "text": "FAQ\n\n| Topic | Answer |\n| --- | --- |\n| No vector DB? | Correct — the default path uses lexical search against a local index file. |\n| MDX with components? | Text and headings are the retrieval unit; runtime component rendering is not. |",
-      "title": "Get started",
+      "text": "FAQ\n\n| Topic | Answer |\n| --- | --- |\n| No vector DB? | Correct — the default path uses lexical search against a local index file. |\n| MDX with components? | Text and headings are the retrieval unit; runtime component rendering is not. |\n| Hosted backend? | Client scaffolding exists; managed backend is not shipped in this phase. |",
+      "title": "Quickstart",
       "url": "/docs/quickstart#faq"
     },
     {
@@ -1143,7 +1210,7 @@
       "public_path": "/content-media"
     }
   },
-  "generatedAt": "2026-04-07T04:39:54.246Z",
-  "manifestHash": "2220d3d594184abd75ba320fba70dd37c4246c7e9988b525fc3005340c41493f",
+  "generatedAt": "2026-04-07T05:12:56.719Z",
+  "manifestHash": "513110bbd363cb9305fe0e8ee32250e143bf89085b398df8943e91c839d06d97",
   "version": 1
 }

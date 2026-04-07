@@ -40,7 +40,6 @@ export type {
   OpenDetailImage,
   OpenDetailImagesEvent,
   OpenDetailIndexArtifact,
-  OpenDetailIntegrationMode,
   OpenDetailMediaConfig,
   OpenDetailMetaEvent,
   OpenDetailPublicError,
