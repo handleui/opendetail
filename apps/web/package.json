@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "portless opendetail next dev --webpack",
-    "build": "bunx opendetail build --cwd . && next build",
+    "build": "bun ../../packages/opendetail/dist/cli.js build --cwd . && next build",
     "check-types": "fumadocs-mdx && next typegen && tsc --noEmit",
     "start": "next start",
     "postinstall": "fumadocs-mdx"
