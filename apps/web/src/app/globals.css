@@ -70,8 +70,24 @@ html > body[data-scroll-locked] {
  * Desktop (768px+) never mounts this shell — rules are scoped for clarity and resize safety.
  */
 @media (max-width: 767px) {
+  [data-trifold-phone] [data-parallel-track] {
+    touch-action: pan-y;
+  }
+
   [data-trifold-phone] [data-parallel-track-track] {
-    touch-action: pan-y pinch-zoom;
+    touch-action: pan-y;
+  }
+
+  [data-trifold-phone] [data-parallel-track-panel] {
+    min-height: 0;
+    overscroll-behavior-y: contain;
+    touch-action: pan-y;
+  }
+
+  [data-trifold-phone] .opendetail-sidebar__content,
+  [data-trifold-phone] .opendetail-sidebar__panel,
+  [data-trifold-phone] .site-shell__main {
+    min-height: 0;
   }
 
   [data-trifold-phone] .opendetail-sidebar__body,

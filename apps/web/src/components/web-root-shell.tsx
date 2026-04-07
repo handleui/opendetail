@@ -20,6 +20,7 @@ const githubHref = `https://github.com/${gitConfig.user}/${gitConfig.repo}`;
 const SITE_NAV_ROW_ICON_PX = 14;
 const MOBILE_TOPBAR_BUTTON_CLASS =
   "inline-flex cursor-pointer items-center gap-1 rounded-md border border-neutral-200 bg-white px-2.5 py-1.5 text-[13px] text-neutral-800 leading-none transition-colors hover:bg-neutral-100";
+const MOBILE_TOPBAR_PLACEHOLDER_CLASS = "inline-flex h-8 w-8";
 
 function MobileShellTopbar({
   leftAction,
@@ -39,14 +40,20 @@ function MobileShellTopbar({
 function MobileColumnLayout({
   topbar,
   content,
+  contentClassName,
 }: {
   topbar: ReactNode;
   content: ReactNode;
+  contentClassName?: string;
 }) {
   return (
     <div className="flex h-full min-h-0 w-full flex-col overflow-hidden">
       {topbar}
-      <div className="min-h-0 flex-1 overflow-hidden">{content}</div>
+      <div
+        className={contentClassName ?? "min-h-0 flex-1 overflow-hidden touch-pan-y"}
+      >
+        {content}
+      </div>
     </div>
   );
 }
@@ -113,6 +120,7 @@ export const WebRootShell = ({
           center={
             <MobileColumnLayout
               content={slots.main}
+              contentClassName="min-h-0 flex-1 overflow-y-auto overscroll-contain touch-pan-y"
               topbar={
                 <MobileShellTopbar
                   leftAction={
@@ -145,6 +153,7 @@ export const WebRootShell = ({
           leading={
             <MobileColumnLayout
               content={slots.navigation}
+              contentClassName="min-h-0 flex-1 overflow-y-auto overscroll-contain touch-pan-y"
               topbar={
                 <MobileShellTopbar
                   leftAction={
@@ -158,14 +167,10 @@ export const WebRootShell = ({
                     </button>
                   }
                   rightAction={
-                    <button
-                      className={MOBILE_TOPBAR_BUTTON_CLASS}
-                      onClick={() => slots.setColumn("trailing")}
-                      type="button"
-                    >
-                      <MessageSquareText aria-hidden="true" size={14} />
-                      Ask AI
-                    </button>
+                    <span
+                      aria-hidden="true"
+                      className={MOBILE_TOPBAR_PLACEHOLDER_CLASS}
+                    />
                   }
                 />
               }
@@ -176,20 +181,17 @@ export const WebRootShell = ({
           onColumnChange={slots.setColumn}
           swipeDistanceThresholdPx={72}
           swipeVelocityThresholdPxPerSec={700}
+          touchSwipeBetweenColumns={false}
           trailing={
             <MobileColumnLayout
               content={slots.assistant}
               topbar={
                 <MobileShellTopbar
                   leftAction={
-                    <button
-                      className={MOBILE_TOPBAR_BUTTON_CLASS}
-                      onClick={() => slots.setColumn("leading")}
-                      type="button"
-                    >
-                      <Menu aria-hidden="true" size={14} />
-                      Menu
-                    </button>
+                    <span
+                      aria-hidden="true"
+                      className={MOBILE_TOPBAR_PLACEHOLDER_CLASS}
+                    />
                   }
                   rightAction={
                     <button
