@@ -1,0 +1,37 @@
+---
+title: Introduction
+description: What OpenDetail is, how the pipeline fits together, and which packages you need.
+---
+
+OpenDetail turns the Markdown and MDX you already ship into **grounded answers inside your product**: same content your team edits, retrieved with citations instead of vibes. It is intentionally small — a build step, a local index file, a narrow HTTP contract, and thin adapters. Not a second CMS, not a generic chat platform.
+
+## How it fits together
+
+| Stage | What happens |
+| --- | --- |
+| **Build** | Matched docs become **`.opendetail/index.json`**. |
+| **Request** | Your route loads the index, runs lexical search, calls the Responses API with that context. |
+| **UI** | Streamed NDJSON (text, sources, images) — render with your components or `opendetail-react`. |
+
+Docs stay human-readable on the web; machine-readable routes (for example `/llms.mdx/docs`) remain available for tooling.
+
+## Who it is for
+
+| Audience | Why |
+| --- | --- |
+| **Product & devrel** | In-app help without a separate knowledge base. |
+| **Engineering** | Testable pipeline: artifact in git, predictable API, clear errors. |
+| **Agents** | Stable URLs and structured retrieval from the same index. |
+
+## Packages
+
+| Package | Role |
+| --- | --- |
+| [`opendetail`](/docs/core) | Build, core runtime, CLI. Start here for any integration. |
+| [`opendetail-next`](/docs/next) | Next.js App Router route handler, NDJSON streaming, `renderNextSourceLink`. |
+| [`opendetail-react`](/docs/react) | Browser UI — hook, streaming client, shell components, styling. |
+| [`opendetail-fumadocs`](/docs/fumadocs) | Optional: known-page citation allowlist + `FumadocsAssistant` wrapper. |
+
+Typical Next.js stack: `opendetail` + `opendetail-next` + `opendetail-react`.
+
+<CopyCommand bun="bunx opendetail setup" npm="npx opendetail setup" />
