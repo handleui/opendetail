@@ -32,8 +32,8 @@ Running the CLI without a subcommand prints supported commands and example invoc
 ### One-liner usage
 
 <CodeBlock lang="bash">{`opendetail build [--config <path>] [--output <path>] [--cwd <path>]
-opendetail setup [--integration <self-hosted|hosted>] [--config <path>] [--route <path>] [--base-path <url>] [--include <glob>] [--media-include <glob>] [--with-media] [--skip-build] [--force] [--interactive] [--no-interactive] [--cwd <path>]
-opendetail doctor [--integration <self-hosted|hosted>] [--config <path>] [--route <path>] [--cwd <path>]
+opendetail setup [--config <path>] [--route <path>] [--base-path <url>] [--include <glob>] [--media-include <glob>] [--with-media] [--skip-build] [--force] [--interactive] [--no-interactive] [--cwd <path>]
+opendetail doctor [--config <path>] [--route <path>] [--cwd <path>]
 `}</CodeBlock>
 
 ### Suggested order
@@ -67,11 +67,11 @@ opendetail doctor [--integration <self-hosted|hosted>] [--config <path>] [--rout
 
 ## setup
 
-`opendetail setup` writes the **standard project shape** for either **self-hosted** (local Next route + OpenAI) or **hosted** (client talks to your deployed endpoint).
+`opendetail setup` writes the **standard project shape**: config, Next.js route, and initial index build.
 
 ### Usage
 
-<CodeBlock lang="bash">{`opendetail setup [--integration <self-hosted|hosted>] [--config <path>] [--route <path>] [--base-path <url>] [--include <glob>] [--media-include <glob>] [--with-media] [--skip-build] [--force] [--interactive] [--no-interactive] [--cwd <path>]
+<CodeBlock lang="bash">{`opendetail setup [--config <path>] [--route <path>] [--base-path <url>] [--include <glob>] [--media-include <glob>] [--with-media] [--skip-build] [--force] [--interactive] [--no-interactive] [--cwd <path>]
 `}</CodeBlock>
 
 ### What it can write
@@ -84,7 +84,6 @@ opendetail doctor [--integration <self-hosted|hosted>] [--config <path>] [--rout
 
 | Flag | Meaning |
 | --- | --- |
-| `--integration` | `self-hosted` or `hosted`. |
 | `--config` | Custom config path. |
 | `--route` | Custom route file path (self-hosted). |
 | `--base-path` | Public source URL base (default `/docs`). |
@@ -100,31 +99,22 @@ opendetail doctor [--integration <self-hosted|hosted>] [--config <path>] [--rout
 
 <CopyCommand bun="bunx opendetail setup --with-media" npm="npx opendetail setup --with-media" />
 
-<CopyCommand bun="bunx opendetail setup --integration hosted" npm="npx opendetail setup --integration hosted" />
-
 ## doctor
 
 `opendetail doctor` runs a **checklist** and prints ✓ or ✗ for each item. It exits with an error if anything required is missing.
 
 ### Usage
 
-<CodeBlock lang="bash">{`opendetail doctor [--integration <self-hosted|hosted>] [--config <path>] [--route <path>] [--cwd <path>]
+<CodeBlock lang="bash">{`opendetail doctor [--config <path>] [--route <path>] [--cwd <path>]
 `}</CodeBlock>
 
-### Self-hosted expectations
+### Expectations
 
 - **Config:** `opendetail.toml` (or `--config`) exists.
 - **Index:** `.opendetail/index.json` (or configured output) exists.
 - **Route:** the API route file exists at the configured path.
 - **Env:** `OPENAI_API_KEY` is set where the route runs.
 
-### Hosted expectations
-
-- **Config** and **index** as above.
-- **Env:** `OPENDETAIL_ENDPOINT` points at your hosted OpenDetail HTTP API.
-
 ### Examples
 
 <CopyCommand bun="bunx opendetail doctor" npm="npx opendetail doctor" />
-
-<CopyCommand bun="bunx opendetail doctor --integration hosted" npm="npx opendetail doctor --integration hosted" />

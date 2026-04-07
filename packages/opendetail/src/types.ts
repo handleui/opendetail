@@ -48,8 +48,6 @@ export interface OpenDetailConfig {
   version: 1;
 }
 
-export type OpenDetailIntegrationMode = "hosted" | "self-hosted";
-
 export interface OpenDetailMediaConfig {
   exclude: string[];
   include: string[];

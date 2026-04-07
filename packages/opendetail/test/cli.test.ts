@@ -1,5 +1,4 @@
 import {
-  access,
   mkdir,
   mkdtemp,
   readFile,
@@ -111,59 +110,4 @@ describe("runCli", () => {
     ).resolves.toContain('include = ["content/**/*.{md,mdx}\\"tail"]');
   });
 
-  test("scaffolds hosted integration without generating a route", async () => {
-    const cwd = await createWorkspace();
-    const logger = createLogger();
-    temporaryWorkspaces.push(cwd);
-
-    await runCli(
-      ["setup", "--cwd", cwd, "--integration", "hosted", "--no-interactive"],
-      { logger }
-    );
-
-    await expect(
-      readFile(path.join(cwd, ".opendetail/index.json"), "utf8")
-    ).resolves.toContain('"chunks"');
-    await expect(
-      access(path.join(cwd, "src/app/api/opendetail/route.ts"))
-    ).rejects.toBeDefined();
-    expect(logger.logMock).toHaveBeenCalledWith(
-      "Skipped route scaffolding for hosted integration."
-    );
-    expect(logger.logMock).toHaveBeenCalledWith(
-      "Hosted scaffolding complete. Next set OPENDETAIL_ENDPOINT in your app environment and configure transport headers if your hosted endpoint requires auth."
-    );
-  });
-
-  test("validates hosted diagnostics without requiring a route or OPENAI_API_KEY", async () => {
-    const cwd = await createWorkspace();
-    const logger = createLogger();
-    temporaryWorkspaces.push(cwd);
-    vi.stubEnv("OPENDETAIL_ENDPOINT", "https://api.example.com/opendetail");
-
-    await runCli(
-      ["setup", "--cwd", cwd, "--integration", "hosted", "--no-interactive"],
-      { logger }
-    );
-
-    await expect(
-      runCli(["doctor", "--cwd", cwd, "--integration", "hosted"], { logger })
-    ).resolves.toBeUndefined();
-  });
-
-  test("fails hosted diagnostics when OPENDETAIL_ENDPOINT is blank", async () => {
-    const cwd = await createWorkspace();
-    const logger = createLogger();
-    temporaryWorkspaces.push(cwd);
-    vi.stubEnv("OPENDETAIL_ENDPOINT", "   ");
-
-    await runCli(
-      ["setup", "--cwd", cwd, "--integration", "hosted", "--no-interactive"],
-      { logger }
-    );
-
-    await expect(
-      runCli(["doctor", "--cwd", cwd, "--integration", "hosted"], { logger })
-    ).rejects.toThrow("OpenDetail doctor found setup issues.");
-  });
 });

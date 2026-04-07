@@ -227,7 +227,7 @@ describe("createOpenDetailClient", () => {
       fetch: fetchImplementation,
       headers: {
         authorization: "Bearer test-token",
-        "x-opendetail-mode": "hosted",
+        "x-custom-header": "custom-value",
       },
     });
 
@@ -251,7 +251,7 @@ describe("createOpenDetailClient", () => {
     );
     expect(headers.get("authorization")).toBe("Bearer test-token");
     expect(headers.get("content-type")).toBe("application/json");
-    expect(headers.get("x-opendetail-mode")).toBe("hosted");
+    expect(headers.get("x-custom-header")).toBe("custom-value");
   });
 
   test("supports dynamic transport headers", async () => {

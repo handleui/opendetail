@@ -7,16 +7,12 @@ import readline from "node:readline/promises";
 import { buildOpenDetailIndex } from "./build";
 import { isPrimaryModuleInvocation } from "./cli-invocation";
 import { OPENDETAIL_CONFIG_FILE, OPENDETAIL_INDEX_FILE } from "./constants";
-import type { OpenDetailIntegrationMode } from "./types";
 import { getErrorMessage } from "./utils";
 
 const DEFAULT_ROUTE_PATH = "src/app/api/opendetail/route.ts";
 const DEFAULT_DOCS_INCLUDE_PATTERN = "content/**/*.{md,mdx}";
 const DEFAULT_MEDIA_INCLUDE_PATTERN =
   "content/**/*.{png,jpg,jpeg,webp,avif,gif,svg}";
-const DEFAULT_INTEGRATION_MODE =
-  "self-hosted" satisfies OpenDetailIntegrationMode;
-const HOSTED_ENDPOINT_ENV_VAR = "OPENDETAIL_ENDPOINT";
 
 type CliLogger = Pick<typeof console, "error" | "log">;
 
@@ -27,7 +23,6 @@ interface CliContext {
 interface SetupAnswers {
   basePath: string;
   includePattern: string;
-  integrationMode: OpenDetailIntegrationMode;
   mediaIncludePattern: string;
   routePath: string;
   shouldBuild: boolean;
@@ -127,33 +122,15 @@ const resolveStringFlag = (
 const printUsage = (): void => {
   console.log(`Usage:
   opendetail build [--config <path>] [--output <path>] [--cwd <path>]
-  opendetail setup [--integration <self-hosted|hosted>] [--config <path>] [--route <path>] [--base-path <url>] [--include <glob>] [--media-include <glob>] [--with-media] [--skip-build] [--force] [--interactive] [--no-interactive] [--cwd <path>]
-  opendetail doctor [--integration <self-hosted|hosted>] [--config <path>] [--route <path>] [--cwd <path>]
+  opendetail setup [--config <path>] [--route <path>] [--base-path <url>] [--include <glob>] [--media-include <glob>] [--with-media] [--skip-build] [--force] [--interactive] [--no-interactive] [--cwd <path>]
+  opendetail doctor [--config <path>] [--route <path>] [--cwd <path>]
 
 Examples:
   bunx opendetail setup
-  bunx opendetail setup --integration hosted
   bunx opendetail setup --with-media
   bunx opendetail setup --route src/app/api/assistant/route.ts --base-path /help
-  bunx opendetail doctor --integration hosted
   bunx opendetail doctor
   opendetail build`);
-};
-
-const parseIntegrationMode = (
-  value: string | null
-): OpenDetailIntegrationMode => {
-  if (!value) {
-    return DEFAULT_INTEGRATION_MODE;
-  }
-
-  if (value === "hosted" || value === "self-hosted") {
-    return value;
-  }
-
-  throw new Error(
-    `Invalid integration mode: ${value}. Use "self-hosted" or "hosted".`
-  );
 };
 
 const askQuestion = async ({
@@ -191,23 +168,6 @@ const askYesNoQuestion = async ({
   return normalizedAnswer === "y" || normalizedAnswer === "yes";
 };
 
-const askIntegrationModeQuestion = async ({
-  defaultValue,
-  rl,
-}: {
-  defaultValue: OpenDetailIntegrationMode;
-  rl: readline.Interface;
-}): Promise<OpenDetailIntegrationMode> => {
-  const answer = await rl.question(
-    `Integration mode (${defaultValue}, options: self-hosted/hosted): `
-  );
-  const trimmedAnswer = answer.trim();
-
-  return parseIntegrationMode(
-    trimmedAnswer.length > 0 ? trimmedAnswer : defaultValue
-  );
-};
-
 const escapeTomlString = (value: string): string =>
   value
     .replaceAll("\\", "\\\\")
@@ -234,7 +194,6 @@ const promptSetupAnswers = async ({
   basePath,
   defaultShouldBuild,
   includePattern,
-  integrationMode,
   logger,
   mediaIncludePattern,
   routePath,
@@ -243,7 +202,6 @@ const promptSetupAnswers = async ({
   basePath: string;
   defaultShouldBuild: boolean;
   includePattern: string;
-  integrationMode: OpenDetailIntegrationMode;
   logger: CliLogger;
   mediaIncludePattern: string;
   routePath: string;
@@ -256,13 +214,7 @@ const promptSetupAnswers = async ({
   });
 
   try {
-    logger.log("Step 1/6 · Integration");
-    const resolvedIntegrationMode = await askIntegrationModeQuestion({
-      defaultValue: integrationMode,
-      rl,
-    });
-
-    logger.log("\nStep 2/6 · Content");
+    logger.log("Step 1/5 · Content");
     const resolvedIncludePattern = await askQuestion({
       defaultValue: includePattern,
       prompt: "Docs include glob",
@@ -274,7 +226,7 @@ const promptSetupAnswers = async ({
       rl,
     });
 
-    logger.log("\nStep 3/6 · Media");
+    logger.log("\nStep 2/5 · Media");
     const resolvedWithMedia = await askYesNoQuestion({
       defaultValue: withMedia,
       prompt: "Enable local media mapping",
@@ -288,28 +240,24 @@ const promptSetupAnswers = async ({
         })
       : mediaIncludePattern;
 
-    logger.log("\nStep 4/6 · Route");
-    const resolvedRoutePath =
-      resolvedIntegrationMode === "self-hosted"
-        ? await askQuestion({
-            defaultValue: routePath,
-            prompt: "Next.js route file path",
-            rl,
-          })
-        : routePath;
+    logger.log("\nStep 3/5 · Route");
+    const resolvedRoutePath = await askQuestion({
+      defaultValue: routePath,
+      prompt: "Next.js route file path",
+      rl,
+    });
 
-    logger.log("\nStep 5/6 · Build");
+    logger.log("\nStep 4/5 · Build");
     const resolvedShouldBuild = await askYesNoQuestion({
       defaultValue: defaultShouldBuild,
       prompt: "Build index after scaffolding",
       rl,
     });
 
-    logger.log("\nStep 6/6 · Confirmed");
+    logger.log("\nStep 5/5 · Confirmed");
     return {
       basePath: resolvedBasePath,
       includePattern: resolvedIncludePattern,
-      integrationMode: resolvedIntegrationMode,
       mediaIncludePattern: resolvedMediaIncludePattern,
       routePath: resolvedRoutePath,
       shouldBuild: resolvedShouldBuild,
@@ -422,16 +370,12 @@ const handleSetupCommand = async ({
   const basePath = resolveStringFlag(flags, "base-path") ?? "/docs";
   const routePathValue =
     resolveStringFlag(flags, "route") ?? DEFAULT_ROUTE_PATH;
-  const integrationMode = parseIntegrationMode(
-    resolveStringFlag(flags, "integration")
-  );
 
   const setupAnswers = shouldRunInteractiveSetup(flags)
     ? await promptSetupAnswers({
         basePath,
         defaultShouldBuild: !skipBuild,
         includePattern,
-        integrationMode,
         logger,
         mediaIncludePattern,
         routePath: routePathValue,
@@ -440,7 +384,6 @@ const handleSetupCommand = async ({
     : {
         basePath,
         includePattern,
-        integrationMode,
         mediaIncludePattern,
         routePath: routePathValue,
         shouldBuild: !skipBuild,
@@ -462,19 +405,15 @@ const handleSetupCommand = async ({
     `${configResult === "skipped" ? "Skipped" : "Wrote"} ${path.relative(cwd, configPath)}`
   );
 
-  if (setupAnswers.integrationMode === "self-hosted") {
-    const routeResult = await writeIfMissing({
-      content: createNextRouteTemplate(),
-      filePath: path.resolve(cwd, setupAnswers.routePath),
-      force,
-    });
+  const routeResult = await writeIfMissing({
+    content: createNextRouteTemplate(),
+    filePath: path.resolve(cwd, setupAnswers.routePath),
+    force,
+  });
 
-    logger.log(
-      `${routeResult === "skipped" ? "Skipped" : "Wrote"} ${path.relative(cwd, path.resolve(cwd, setupAnswers.routePath))}`
-    );
-  } else {
-    logger.log("Skipped route scaffolding for hosted integration.");
-  }
+  logger.log(
+    `${routeResult === "skipped" ? "Skipped" : "Wrote"} ${path.relative(cwd, path.resolve(cwd, setupAnswers.routePath))}`
+  );
 
   if (setupAnswers.shouldBuild) {
     await handleBuildCommand({ cwd, flags, logger });
@@ -483,9 +422,7 @@ const handleSetupCommand = async ({
   }
 
   logger.log(
-    setupAnswers.integrationMode === "self-hosted"
-      ? "Setup complete. Make sure opendetail-next is installed and set OPENAI_API_KEY in your runtime environment."
-      : `Hosted scaffolding complete. Next set ${HOSTED_ENDPOINT_ENV_VAR} in your app environment and configure transport headers if your hosted endpoint requires auth.`
+    "Setup complete. Make sure opendetail-next is installed and set OPENAI_API_KEY in your runtime environment."
   );
 };
 
@@ -507,9 +444,6 @@ const handleDoctorCommand = async ({
     resolveStringFlag(flags, "route") ?? DEFAULT_ROUTE_PATH
   );
   const indexPath = path.resolve(cwd, OPENDETAIL_INDEX_FILE);
-  const integrationMode = parseIntegrationMode(
-    resolveStringFlag(flags, "integration")
-  );
   const checks = [
     {
       exists: await pathExists(configPath),
@@ -521,28 +455,17 @@ const handleDoctorCommand = async ({
       label: "Index",
       message: path.relative(cwd, indexPath),
     },
-  ];
-
-  if (integrationMode === "self-hosted") {
-    checks.push(
-      {
-        exists: await pathExists(routePath),
-        label: "Route",
-        message: path.relative(cwd, routePath),
-      },
-      {
-        exists: hasNonEmptyEnvValue(process.env.OPENAI_API_KEY),
-        label: "Env",
-        message: "OPENAI_API_KEY",
-      }
-    );
-  } else {
-    checks.push({
-      exists: hasNonEmptyEnvValue(process.env[HOSTED_ENDPOINT_ENV_VAR]),
+    {
+      exists: await pathExists(routePath),
+      label: "Route",
+      message: path.relative(cwd, routePath),
+    },
+    {
+      exists: hasNonEmptyEnvValue(process.env.OPENAI_API_KEY),
       label: "Env",
-      message: HOSTED_ENDPOINT_ENV_VAR,
-    });
-  }
+      message: "OPENAI_API_KEY",
+    },
+  ];
   let hasFailure = false;
 
   for (const check of checks) {

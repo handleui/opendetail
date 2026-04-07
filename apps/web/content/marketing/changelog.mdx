@@ -15,10 +15,10 @@ The CLI writes a single machine-readable **index.json** under `.opendetail`, so 
 
 The sidebar assistant accepts streamed NDJSON (text, sources, images) so the UI can render incrementally. Known doc URLs are passed through for safe **source links** in Fumadocs-style layouts.
 
-**Changes:** Stricter validation for remote tool definitions in hosted mode; clearer errors when the index file is missing or out of date; minor CSS fixes for the input surface on small viewports.
+**Changes:** Stricter validation for remote tool definitions; clearer errors when the index file is missing or out of date; minor CSS fixes for the input surface on small viewports.
 
 ## v0.4.0 — CLI quickstart and configuration
 
-**opendetail setup** can scaffold self-hosted and hosted-shaped configs, with flags for base path, include globs, and optional media. **opendetail doctor** checks binary, config, and route wiring before you ship.
+**opendetail setup** scaffolds config, route, and initial index, with flags for base path, include globs, and optional media. **opendetail doctor** checks binary, config, and route wiring before you ship.
 
 **Changes:** Configuration fields documented; improved progress output during **opendetail build**.

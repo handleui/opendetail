@@ -24,7 +24,6 @@ import {
 
 import {
   isUnderSiteSecondaryNavPathname,
-  SITE_DOCS_ROUTER,
   type SiteNavNode,
   type SiteNavSection,
 } from "@/lib/site-nav";
@@ -517,22 +516,10 @@ export function Sidebar({
                 <p className="sr-only" id={navId}>
                   Documentation
                 </p>
-                <div className="flex flex-col gap-4">
-                  <div>
-                    <Link
-                      className={navLinkClass(
-                        isPageActive(SITE_DOCS_ROUTER.href, pathname)
-                      )}
-                      href={SITE_DOCS_ROUTER.href}
-                    >
-                      {SITE_DOCS_ROUTER.label}
-                    </Link>
-                  </div>
-                  <NestedNavSections
-                    pathname={pathname}
-                    sections={docsSidebarSections}
-                  />
-                </div>
+                <NestedNavSections
+                  pathname={pathname}
+                  sections={docsSidebarSections}
+                />
               </nav>
             </div>
           </motion.div>

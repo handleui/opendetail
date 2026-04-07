@@ -111,7 +111,7 @@ export default function ChangelogPage() {
         </ChangelogParagraph>
         <ChangelogChanges>
           <ChangelogListItem>
-            Stricter validation for remote tool definitions in hosted mode.
+            Stricter validation for remote tool definitions.
           </ChangelogListItem>
           <ChangelogListItem>
             Clearer errors when the index file is missing or out of date.
@@ -125,9 +125,9 @@ export default function ChangelogPage() {
       <ChangelogEntry date="12 Mar 2026" version="v0.4.0">
         <ChangelogTitle>CLI quickstart and configuration</ChangelogTitle>
         <ChangelogParagraph>
-          <strong>opendetail setup</strong> can scaffold self-hosted and
-          hosted-shaped configs, with flags for base path, include globs, and
-          optional media. <strong>opendetail doctor</strong> checks binary,
+          <strong>opendetail setup</strong> scaffolds config, route, and
+          initial index, with flags for base path, include globs, and optional
+          media. <strong>opendetail doctor</strong> checks binary,
           config, and route wiring before you ship.
         </ChangelogParagraph>
         <ChangelogChanges title="Changes">

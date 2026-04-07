@@ -9,15 +9,7 @@ Under the hood, it uses the OpenAI Responses API. The product value is not a new
 - Keep answers tied to your own documentation
 - Use your existing `.md` and `.mdx` files
 - Start with one build command and one setup flow
-- Choose between self-hosted and hosted integration scaffolding
 - Ship a server-only route without building the retrieval layer yourself
-
-## Integration modes
-
-| Mode | What you manage | Best for | Current status |
-| --- | --- | --- | --- |
-| `self-hosted` | Your route, your `OPENAI_API_KEY`, your runtime | Private docs, server-owned deployments, full control | Fully implemented |
-| `hosted` | Your docs index and client transport config | Fast setup and future OpenDetail-managed delivery | Documented and scaffolded in this phase |
 
 ## Quick start
 
@@ -35,14 +27,6 @@ bunx opendetail setup --with-media
 
 That command can generate `opendetail.toml`, scaffold a Next.js route at
 `src/app/api/opendetail/route.ts`, and build `.opendetail/index.json`.
-
-To scaffold the hosted integration shape without generating a route:
-
-```bash
-bunx opendetail setup --integration hosted
-```
-
-That flow still writes `opendetail.toml` and builds `.opendetail/index.json`, but it skips route generation and points you at the transport env contract instead.
 
 If you prefer manual setup, create `opendetail.toml` in your app root:
 
@@ -126,38 +110,6 @@ When a stream fails after it starts, the `error` event includes:
 - `code`
 - `retryable`
 
-## Hosted integration
-
-Hosted mode is intentionally small in this phase.
-
-- It does not create an app route.
-- It keeps the same request shape: `{ "question": "..." }`
-- It keeps the same NDJSON stream events: `meta`, `sources`, `images`, `delta`, `done`, `error`
-- It expects your app to read `OPENDETAIL_ENDPOINT` and pass it into the client or hook transport
-- It can optionally send `OPENDETAIL_AUTH_TOKEN` through `transport.headers` if your hosted endpoint requires auth
-
-This phase documents and scaffolds the hosted path. It does not yet ship the OpenDetail-managed proxy backend itself.
-
-With `opendetail-react`, the intended hosted setup shape is:
-
-```ts
-import { useOpenDetail } from "opendetail-react";
-
-const endpoint = process.env.NEXT_PUBLIC_OPENDETAIL_ENDPOINT;
-const authToken = process.env.NEXT_PUBLIC_OPENDETAIL_AUTH_TOKEN;
-
-const assistant = useOpenDetail({
-  transport: {
-    endpoint,
-    headers: authToken
-      ? {
-          authorization: `Bearer ${authToken}`,
-        }
-      : undefined,
-  },
-});
-```
-
 ## Core API
 
 If you want to use the runtime directly:
@@ -225,22 +177,15 @@ The package ships with a setup-focused CLI:
 # scaffold config + route + index
 bunx opendetail setup --with-media
 
-# scaffold config + index for hosted integration
-bunx opendetail setup --integration hosted
-
 # rebuild index when content changes
 bunx opendetail build
 
 # run setup diagnostics
 bunx opendetail doctor
-
-# run hosted diagnostics
-bunx opendetail doctor --integration hosted
 ```
 
 Useful setup flags:
 
-- `--integration <self-hosted|hosted>`: choose the integration scaffolding mode
 - `--cwd <path>`: advanced use for monorepos; most apps run this from project root
 - `--route <path>`: choose a custom Next.js route file
 - `--base-path <url>`: set generated source URL base path
@@ -283,9 +228,8 @@ This keeps the runtime simple and avoids external search infrastructure in the d
 ## Requirements
 
 - Node.js 18 or newer
-- `OPENAI_API_KEY` set at runtime for `self-hosted`
-- `OPENDETAIL_ENDPOINT` set in your app environment for `hosted`
-- Node runtime for Next.js route handlers in `self-hosted`
+- `OPENAI_API_KEY` set at runtime
+- Node runtime for Next.js route handlers
 
 ## Publishing
 

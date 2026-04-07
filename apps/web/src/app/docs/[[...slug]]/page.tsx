@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { DocsLandingHeader } from "@/components/docs-landing-header";
 import { getDocsMdxComponents } from "@/components/docs-mdx-components";
 import { DocsPageChrome } from "@/components/docs-page-chrome";
 import { gitConfig } from "@/lib/shared";
@@ -15,10 +14,7 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
 
   const MDX = page.data.body;
   const markdownUrl = getPageMarkdownUrl(page).url;
-
   const githubUrl = `https://github.com/${gitConfig.user}/${gitConfig.repo}/blob/${gitConfig.branch}/content/docs/${page.path}`;
-
-  const isDocsIndex = page.slugs.length === 0;
   const toc = page.data.toc ?? [];
 
   return (
@@ -26,9 +22,8 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
       <DocsPageChrome
         feedbackPath={page.url}
         githubUrl={githubUrl}
-        lead={isDocsIndex ? <DocsLandingHeader /> : undefined}
         markdownUrl={markdownUrl}
-        pageTitle={isDocsIndex ? undefined : page.data.title}
+        pageTitle={page.data.title}
         toc={toc}
       >
         <MDX components={getDocsMdxComponents(source, page)} />

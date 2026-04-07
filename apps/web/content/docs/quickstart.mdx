@@ -76,9 +76,7 @@ Full command and flag reference: [CLI](/docs/cli).
 
 ---
 
-## Integration modes
-
-### Self-hosted (default)
+## Integration
 
 Your Next.js route, your Node runtime, your API key, your rebuilt index on deploy.
 
@@ -105,30 +103,6 @@ Your Next.js route, your Node runtime, your API key, your rebuilt index on deplo
 | `error` | Safe public error payload |
 
 Malformed bodies return a JSON error. Initialization failures before streaming starts return JSON instead of NDJSON. In production, repeated init failures are cached.
-
-### Hosted-shaped (scaffold only)
-
-`--integration hosted` does not generate a route. It writes config and builds the index, but your app calls a remote endpoint you configure. The OpenDetail-managed cloud backend is not shipped yet.
-
-<CopyCommand bun="bunx opendetail setup --integration hosted" npm="npx opendetail setup --integration hosted" />
-
-Point the client at your endpoint:
-
-<CodeBlock
-  lang="ts"
-  code={`import { useOpenDetail } from "opendetail-react";
-
-const assistant = useOpenDetail({
-  transport: {
-    endpoint: process.env.NEXT_PUBLIC_OPENDETAIL_ENDPOINT,
-    headers: process.env.NEXT_PUBLIC_OPENDETAIL_AUTH_TOKEN
-      ? { authorization: \`Bearer \${process.env.NEXT_PUBLIC_OPENDETAIL_AUTH_TOKEN}\` }
-      : undefined,
-  },
-});`}
-/>
-
-Request and stream events are identical to self-hosted — no breaking migration later.
 
 ---
 
@@ -158,4 +132,3 @@ Use `useOpenDetail` or `createOpenDetailClient` from **`opendetail-react`** when
 | --- | --- |
 | **No vector DB?** | Correct — the default path uses lexical search against a local index file. |
 | **MDX with components?** | Text and headings are the retrieval unit; runtime component rendering is not. |
-| **Hosted backend?** | Client scaffolding exists; managed backend is not shipped in this phase. |
