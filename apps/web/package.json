@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "portless opendetail next dev --webpack",
-    "build": "bun ../../packages/opendetail/dist/cli.js build --cwd . && next build",
-    "check-types": "fumadocs-mdx && next typegen && tsc --noEmit",
-    "start": "next start",
-    "postinstall": "fumadocs-mdx"
+    "dev": "portless opendetail ./node_modules/.bin/next dev --webpack",
+    "build": "bun ../../packages/opendetail/dist/cli.js build --cwd . && ./node_modules/.bin/next build --webpack",
+    "check-types": "./node_modules/.bin/fumadocs-mdx && ./node_modules/.bin/next typegen && tsc --noEmit",
+    "start": "./node_modules/.bin/next start",
+    "postinstall": "./node_modules/.bin/fumadocs-mdx"
   },
   "dependencies": {
     "@takumi-rs/image-response": "^0.73.1",

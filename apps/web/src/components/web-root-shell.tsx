@@ -1,10 +1,9 @@
 "use client";
 
+import { Menu, Wand2 } from "lucide-react";
 import Image from "next/image";
-import { Menu, MessageSquareText, PanelLeftClose, PanelRightClose } from "lucide-react";
 import { FumadocsAssistant } from "opendetail-fumadocs/assistant";
-import { type ReactNode, useState } from "react";
-import { Trifold } from "trifold";
+import { type MouseEvent, type ReactNode, useState } from "react";
 import { Sidebar } from "@/components/sidebar";
 import { SiteShell } from "@/components/site-shell";
 import {
@@ -18,44 +17,70 @@ import type { SiteNavSection } from "@/lib/site-nav";
 const githubHref = `https://github.com/${gitConfig.user}/${gitConfig.repo}`;
 
 const SITE_NAV_ROW_ICON_PX = 14;
-const MOBILE_TOPBAR_BUTTON_CLASS =
-  "inline-flex cursor-pointer items-center gap-1 rounded-md border border-neutral-200 bg-white px-2.5 py-1.5 text-[13px] text-neutral-800 leading-none transition-colors hover:bg-neutral-100";
-const MOBILE_TOPBAR_PLACEHOLDER_CLASS = "inline-flex h-8 w-8";
+const MOBILE_ASK_AI_BUTTON_CLASS =
+  "inline-flex cursor-pointer items-center gap-2 rounded-md bg-neutral-100 px-3 py-1.5 text-[14px] text-neutral-900 leading-snug transition-colors hover:bg-neutral-200/90";
+const MOBILE_MENU_BUTTON_CLASS =
+  "inline-flex cursor-pointer items-center gap-2 rounded-md text-[14px] text-neutral-900 leading-snug transition-colors hover:bg-neutral-100/80 px-0.5 py-0.5";
 
-function MobileShellTopbar({
-  leftAction,
-  rightAction,
+function MobileCenterTopbar({
+  onAssistantOpen,
+  onOpenMenu,
 }: {
-  leftAction: ReactNode;
-  rightAction: ReactNode;
+  onAssistantOpen: () => void;
+  onOpenMenu: () => void;
 }) {
   return (
-    <div className="flex h-12 shrink-0 items-center justify-between border-b border-neutral-200 bg-white px-3">
-      {leftAction}
-      {rightAction}
+    <div className="flex shrink-0 items-center justify-between border-neutral-200 border-b bg-white px-5 py-3">
+      <button
+        className={MOBILE_MENU_BUTTON_CLASS}
+        onClick={onOpenMenu}
+        type="button"
+      >
+        <Menu aria-hidden="true" size={16} />
+        <span className="font-normal tracking-[-0.56px]">
+          {appName} {productVersionLabel}
+        </span>
+      </button>
+      <button
+        className={MOBILE_ASK_AI_BUTTON_CLASS}
+        onClick={onAssistantOpen}
+        type="button"
+      >
+        <Wand2 aria-hidden="true" size={14} />
+        Ask AI
+      </button>
     </div>
   );
 }
 
 function MobileColumnLayout({
-  topbar,
   content,
   contentClassName,
 }: {
-  topbar: ReactNode;
   content: ReactNode;
   contentClassName?: string;
 }) {
   return (
     <div className="flex h-full min-h-0 w-full flex-col overflow-hidden">
-      {topbar}
       <div
-        className={contentClassName ?? "min-h-0 flex-1 overflow-hidden touch-pan-y"}
+        className={
+          contentClassName ?? "min-h-0 flex-1 touch-pan-y overflow-hidden"
+        }
       >
         {content}
       </div>
     </div>
   );
+}
+
+function onLeadingLinkClickCapture(
+  event: MouseEvent<HTMLElement>,
+  setColumn: (column: "center" | "leading" | "trailing") => void
+) {
+  const target = event.target as HTMLElement | null;
+  if (target?.closest("a[href]:not([data-trifold-stay])")) {
+    setColumn("center");
+  }
 }
 
 export const WebRootShell = ({
@@ -116,99 +141,44 @@ export const WebRootShell = ({
       }}
       placeholder="Ask AI anything..."
       renderMobileShell={(slots) => (
-        <Trifold
-          center={
+        <div
+          className="flex h-full min-h-0 w-full flex-1 flex-col overflow-hidden overscroll-none bg-white"
+          data-trifold-phone=""
+        >
+          {slots.column === "center" ? (
+            <MobileCenterTopbar
+              onAssistantOpen={() => slots.setColumn("trailing")}
+              onOpenMenu={() => slots.setColumn("leading")}
+            />
+          ) : null}
+          {slots.column === "leading" ? (
+            <MobileColumnLayout
+              content={
+                <div
+                  className="h-full min-h-0"
+                  onClickCapture={(event) =>
+                    onLeadingLinkClickCapture(event, slots.setColumn)
+                  }
+                >
+                  {slots.navigation}
+                </div>
+              }
+              contentClassName="min-h-0 flex-1 overflow-y-auto overscroll-contain touch-pan-y border-[var(--opendetail-color-sidebar-stroke)] border-e border-solid bg-white"
+            />
+          ) : null}
+          {slots.column === "center" ? (
             <MobileColumnLayout
               content={slots.main}
               contentClassName="min-h-0 flex-1 overflow-y-auto overscroll-contain touch-pan-y"
-              topbar={
-                <MobileShellTopbar
-                  leftAction={
-                    <button
-                      className={MOBILE_TOPBAR_BUTTON_CLASS}
-                      onClick={() => slots.setColumn("leading")}
-                      type="button"
-                    >
-                      <Menu aria-hidden="true" size={14} />
-                      Menu
-                    </button>
-                  }
-                  rightAction={
-                    <button
-                      className={MOBILE_TOPBAR_BUTTON_CLASS}
-                      onClick={() => slots.setColumn("trailing")}
-                      type="button"
-                    >
-                      <MessageSquareText aria-hidden="true" size={14} />
-                      Ask AI
-                    </button>
-                  }
-                />
-              }
             />
-          }
-          centerClassName="bg-white"
-          className="flex h-full min-h-0 w-full flex-1 flex-col overflow-hidden overscroll-none"
-          column={slots.column}
-          leading={
-            <MobileColumnLayout
-              content={slots.navigation}
-              contentClassName="min-h-0 flex-1 overflow-y-auto overscroll-contain touch-pan-y"
-              topbar={
-                <MobileShellTopbar
-                  leftAction={
-                    <button
-                      className={MOBILE_TOPBAR_BUTTON_CLASS}
-                      onClick={() => slots.setColumn("center")}
-                      type="button"
-                    >
-                      <PanelLeftClose aria-hidden="true" size={14} />
-                      Content
-                    </button>
-                  }
-                  rightAction={
-                    <span
-                      aria-hidden="true"
-                      className={MOBILE_TOPBAR_PLACEHOLDER_CLASS}
-                    />
-                  }
-                />
-              }
-            />
-          }
-          leadingClassName="border-[var(--opendetail-color-sidebar-stroke)] border-e border-solid bg-white"
-          leadingLinkSelector="a[href]:not([data-trifold-stay])"
-          onColumnChange={slots.setColumn}
-          swipeDistanceThresholdPx={72}
-          swipeVelocityThresholdPxPerSec={700}
-          touchSwipeBetweenColumns={false}
-          trailing={
+          ) : null}
+          {slots.column === "trailing" ? (
             <MobileColumnLayout
               content={slots.assistant}
-              topbar={
-                <MobileShellTopbar
-                  leftAction={
-                    <span
-                      aria-hidden="true"
-                      className={MOBILE_TOPBAR_PLACEHOLDER_CLASS}
-                    />
-                  }
-                  rightAction={
-                    <button
-                      className={MOBILE_TOPBAR_BUTTON_CLASS}
-                      onClick={() => slots.setColumn("center")}
-                      type="button"
-                    >
-                      <PanelRightClose aria-hidden="true" size={14} />
-                      Content
-                    </button>
-                  }
-                />
-              }
+              contentClassName="min-h-0 flex-1 overflow-y-auto overscroll-contain touch-pan-y bg-[var(--opendetail-color-background)]"
             />
-          }
-          trailingClassName="bg-[var(--opendetail-color-background)]"
-        />
+          ) : null}
+        </div>
       )}
     >
       <SiteShell>{children}</SiteShell>
