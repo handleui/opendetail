@@ -43,3 +43,44 @@ export const panelIndexFromTrackXN = (
   }
   return panelCount - 1;
 };
+
+export const panelIndexFromSwipeIntent = ({
+  currentIndex,
+  distancePx,
+  panelCount,
+  swipeDistanceThresholdPx,
+  swipeVelocityPxPerSec,
+  swipeVelocityThresholdPxPerSec,
+}: {
+  currentIndex: number;
+  distancePx: number;
+  panelCount: number;
+  swipeDistanceThresholdPx: number;
+  swipeVelocityPxPerSec: number;
+  swipeVelocityThresholdPxPerSec: number;
+}): number => {
+  if (panelCount <= 1) {
+    return 0;
+  }
+
+  const maxIndex = panelCount - 1;
+  const safeIndex = clamp(currentIndex, 0, maxIndex);
+  const distancePassed = Math.abs(distancePx) >= swipeDistanceThresholdPx;
+  const velocityPassed =
+    Math.abs(swipeVelocityPxPerSec) >= swipeVelocityThresholdPxPerSec;
+
+  if (!distancePassed && !velocityPassed) {
+    return safeIndex;
+  }
+
+  const direction =
+    distancePx === 0
+      ? swipeVelocityPxPerSec < 0
+        ? 1
+        : -1
+      : distancePx < 0
+        ? 1
+        : -1;
+
+  return clamp(safeIndex + direction, 0, maxIndex);
+};

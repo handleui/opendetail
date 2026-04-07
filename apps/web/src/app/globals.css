@@ -70,15 +70,15 @@ html > body[data-scroll-locked] {
  * Desktop (768px+) never mounts this shell — rules are scoped for clarity and resize safety.
  */
 @media (max-width: 767px) {
-  [data-trifold-phone] .opendetail-sidebar__body,
-  [data-trifold-phone] .opendetail-sidebar__body * {
-    touch-action: pan-y;
-    -webkit-overflow-scrolling: touch;
+  [data-trifold-phone] [data-parallel-track-track] {
+    touch-action: pan-y pinch-zoom;
   }
 
-  [data-trifold-phone] [data-trifold-center] .docs-main-scroll,
-  [data-trifold-phone] [data-trifold-center] .docs-main-scroll * {
+  [data-trifold-phone] .opendetail-sidebar__body,
+  [data-trifold-phone] .docs-main-scroll,
+  [data-trifold-phone] .docs-sidebar-scroll {
     touch-action: pan-y;
+    -webkit-overflow-scrolling: touch;
   }
 }
 

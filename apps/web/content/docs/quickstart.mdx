@@ -1,26 +1,9 @@
 ---
-title: Get started
-description: What OpenDetail is, how the pipeline works, and how to install, configure, and make your first request.
+title: Quickstart
+description: Install OpenDetail, scaffold config and route, rebuild, and make your first request.
 ---
 
-OpenDetail turns the Markdown and MDX you already ship into **grounded answers inside your product**: same content your team edits, retrieved with citations instead of vibes. It is intentionally small — a build step, a local index file, a narrow HTTP contract, and thin adapters. Not a second CMS, not a generic chat platform.
-
-| Stage | What happens |
-| --- | --- |
-| **Build** | Matched docs become **`.opendetail/index.json`**. |
-| **Request** | Your route loads the index, runs lexical search, calls the Responses API with that context. |
-| **UI** | Streamed NDJSON (text, sources, images) — render with your components or `opendetail-react`. |
-
-## Packages
-
-| Package | Use when |
-| --- | --- |
-| [`opendetail`](/docs/core) | You need the build, CLI, runtime, or self-hosted index. Start here for any integration. |
-| [`opendetail-next`](/docs/next) | You deploy on Next.js App Router and want the official route handler + `renderNextSourceLink`. |
-| [`opendetail-react`](/docs/react) | You build the in-browser assistant — hook, shell, streaming client, styling. |
-| [`opendetail-fumadocs`](/docs/fumadocs) | You want a known-page allowlist for citation URLs and/or the `FumadocsAssistant` wrapper. |
-
-Typical Next.js app: `opendetail` (build + runtime) + `opendetail-next` (route) + `opendetail-react` (UI).
+Follow this page in order once. After that, rebuild whenever docs change.
 
 ## Install
 
@@ -76,7 +59,9 @@ Full command and flag reference: [CLI](/docs/cli).
 
 ---
 
-## Integration
+## Integration modes
+
+### Self-hosted (default)
 
 Your Next.js route, your Node runtime, your API key, your rebuilt index on deploy.
 
@@ -103,6 +88,30 @@ Your Next.js route, your Node runtime, your API key, your rebuilt index on deplo
 | `error` | Safe public error payload |
 
 Malformed bodies return a JSON error. Initialization failures before streaming starts return JSON instead of NDJSON. In production, repeated init failures are cached.
+
+### Hosted-shaped (scaffold only)
+
+`--integration hosted` does not generate a route. It writes config and builds the index, but your app calls a remote endpoint you configure. The OpenDetail-managed cloud backend is not shipped yet.
+
+<CopyCommand bun="bunx opendetail setup --integration hosted" npm="npx opendetail setup --integration hosted" />
+
+Point the client at your endpoint:
+
+<CodeBlock
+  lang="ts"
+  code={`import { useOpenDetail } from "opendetail-react";
+
+const assistant = useOpenDetail({
+  transport: {
+    endpoint: process.env.NEXT_PUBLIC_OPENDETAIL_ENDPOINT,
+    headers: process.env.NEXT_PUBLIC_OPENDETAIL_AUTH_TOKEN
+      ? { authorization: \`Bearer \${process.env.NEXT_PUBLIC_OPENDETAIL_AUTH_TOKEN}\` }
+      : undefined,
+  },
+});`}
+/>
+
+Request and stream events are identical to self-hosted — no breaking migration later.
 
 ---
 
@@ -132,3 +141,4 @@ Use `useOpenDetail` or `createOpenDetailClient` from **`opendetail-react`** when
 | --- | --- |
 | **No vector DB?** | Correct — the default path uses lexical search against a local index file. |
 | **MDX with components?** | Text and headings are the retrieval unit; runtime component rendering is not. |
+| **Hosted backend?** | Client scaffolding exists; managed backend is not shipped in this phase. |

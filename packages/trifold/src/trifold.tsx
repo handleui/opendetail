@@ -53,6 +53,8 @@ export function Trifold(props: TrifoldProps) {
     leadingClassName,
     leadingLinkOpensCenter = true,
     leadingLinkSelector = "a[href]",
+    swipeDistanceThresholdPx,
+    swipeVelocityThresholdPxPerSec,
     touchSwipeBetweenColumns = true,
     trackClassName,
   } = props;
@@ -154,6 +156,8 @@ export function Trifold(props: TrifoldProps) {
           return trailingClassName;
         }}
         parseJumpIndex={parseJumpIndex}
+        swipeDistanceThresholdPx={swipeDistanceThresholdPx}
+        swipeVelocityThresholdPxPerSec={swipeVelocityThresholdPxPerSec}
         trackClassName={trackClassName}
       >
         {leading}

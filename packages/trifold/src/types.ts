@@ -28,13 +28,17 @@ interface TrifoldSharedProps {
   leadingLinkSelector?: string;
   /**
    * When true (default), a **one-finger horizontal swipe** on the track moves between columns
-   * (native `overflow-x: scroll` + `scroll-snap`). When false, horizontal swiping is disabled;
+   * (controlled drag pager). When false, horizontal swiping is disabled;
    * use `data-trifold-column`, buttons, or `ParallelTrack`’s `goTo()` instead.
    *
    * **Phone layout:** give each column a nested vertical scroller (`min-h-0`, `overflow-y-auto`);
    * do not rely on the window/body to scroll the main content.
    */
   touchSwipeBetweenColumns?: boolean;
+  /** Minimum horizontal drag distance in px required to switch columns. */
+  swipeDistanceThresholdPx?: number;
+  /** Minimum horizontal release velocity in px/s required to switch columns. */
+  swipeVelocityThresholdPxPerSec?: number;
   trackClassName?: string;
 }
 

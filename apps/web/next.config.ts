@@ -26,11 +26,6 @@ const nextConfig: NextConfig = {
     return [
       // Deleted pages — redirect to their new homes
       {
-        source: "/docs",
-        destination: "/docs/quickstart",
-        permanent: true,
-      },
-      {
         source: "/docs/packages",
         destination: "/docs/quickstart",
         permanent: true,

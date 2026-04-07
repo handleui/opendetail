@@ -11,11 +11,21 @@ export interface ParallelTrackProps {
   children: ReactNode;
   className?: string;
   /**
-   * When false, horizontal swiping between panels is off (`overflow-x: hidden`); `goTo()` and
-   * declarative jumps still work. When true (default), uses native horizontal scroll +
-   * `scroll-snap` (no transform). Pair with a vertical `overflow-y: auto` scroller inside each panel.
+   * When false, horizontal swiping between panels is off; `goTo()` and declarative jumps still
+   * work. When true (default), dragging the track horizontally can change panels.
+   * Pair with a vertical `overflow-y: auto` scroller inside each panel.
    */
   dragEnabled?: boolean;
+  /**
+   * Minimum horizontal drag distance (px) required to change panels on release.
+   * Used together with `swipeVelocityThresholdPxPerSec`.
+   */
+  swipeDistanceThresholdPx?: number;
+  /**
+   * Minimum horizontal release velocity (px/s) required to change panels on release.
+   * Used together with `swipeDistanceThresholdPx`.
+   */
+  swipeVelocityThresholdPxPerSec?: number;
   /** Declarative jumps: attribute name (default {@link PARALLEL_INDEX_ATTRIBUTE}). */
   jumpAttribute?: string;
   jumpClickEnabled?: boolean;

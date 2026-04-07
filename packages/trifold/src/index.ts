@@ -1,6 +1,7 @@
 // biome-ignore-all lint/performance/noBarrelFile: package entrypoint defines the public API surface.
 export {
   clamp,
+  panelIndexFromSwipeIntent,
   panelIndexFromTrackXN,
   trackXForDragN,
 } from "./gesture-math.js";
