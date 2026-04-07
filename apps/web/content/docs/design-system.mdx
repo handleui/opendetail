@@ -5,7 +5,7 @@ description: Systems, themes, and React primitives — CSS import order, Midnigh
 
 OpenDetail splits **systems** (full UI identity: structure, semantics, layout) from **themes** (palette layers on top of one system). **Primitives** are the documented React components that implement the system. The default **OpenDetail** system and **Midnight** / **Signal** themes ship with `opendetail-react` styles.
 
-**Headless API (same for every system):** [**React**](/docs/react) — `useOpenDetail`, `createOpenDetailClient`. **Live component reference** (props and previews): [**UI sandbox**](/ui).
+**Headless API (same for every system):** [**React**](/docs/react) — `useOpenDetail`, `createOpenDetailClient`, primitives, and hooks.
 
 ## Systems
 
@@ -68,7 +68,7 @@ Custom themes belong next to the base import: override semantic CSS variables sc
 
 **Recipes** (`AssistantSidebar`, `AssistantModal`) bundle primitives for a drop-in experience; you can also compose primitives inside your own shell.
 
-Browse **Primitives** in the [UI sandbox](/ui) for live previews and props—[**Shell**](/ui?primitive=shell) is a compact entry point.
+See [**React**](/docs/react) for primitive exports and composition; [**UI integration**](/docs/ui-integration) shows how to wire your own shell.
 
 ## See also
 

@@ -417,7 +417,7 @@
   overscroll-behavior: none;
 }
 
-/* Bounded preview (e.g. docs /ui/preview — shell): one column, no main slot, same sidebar UI. */
+/* Bounded preview (e.g. isolated docs demo — shell): one column, no main slot, same sidebar UI. */
 .opendetail-sidebar.opendetail-sidebar--embed {
   --opendetail-sidebar-width: min(100%, 400px);
   width: 100%;
@@ -478,7 +478,7 @@
   background: var(--opendetail-color-hover);
 }
 
-/* Embed docked to preview (docs /ui/preview — sidebar): flush to the right edge, full preview height, left stroke only. */
+/* Embed docked to preview (isolated docs demo — sidebar): flush to the right edge, full preview height, left stroke only. */
 .opendetail-sidebar.opendetail-sidebar--embed-dock {
   --opendetail-sidebar-width: min(100%, 25rem);
   align-items: stretch;

@@ -65,7 +65,7 @@ function nodeToPageNodes(node: Node): SiteNavNode[] {
 }
 
 export interface PageTreeToSectionsOptions {
-  /** Collection index URL (e.g. `/docs`, `/ui`) — omitted from the list; show separately as “Documentation” / “Overview”. */
+  /** Collection index URL (e.g. `/docs`) — omitted from the list; show separately as “Documentation”. */
   skipIndexHref: string;
 }
 

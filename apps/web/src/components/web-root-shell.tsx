@@ -22,12 +22,10 @@ export const WebRootShell = ({
   children,
   knownSourcePageUrls,
   docsSidebarSections,
-  uiSidebarSections,
 }: {
   children: ReactNode;
   knownSourcePageUrls: readonly string[];
   docsSidebarSections: readonly SiteNavSection[];
-  uiSidebarSections: readonly SiteNavSection[];
 }) => {
   const [assistantOpen, setAssistantOpen] = useState(false);
 
@@ -63,7 +61,6 @@ export const WebRootShell = ({
       productTitle={appName}
       productVersionLabel={productVersionLabel}
       rowIconSize={SITE_NAV_ROW_ICON_PX}
-      uiSidebarSections={uiSidebarSections}
     />
   );
 

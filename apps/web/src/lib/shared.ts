@@ -5,8 +5,6 @@ export const docsRoute = "/docs";
 export const docsImageRoute = "/og/docs";
 export const docsContentRoute = "/llms.mdx/docs";
 
-export const uiRoute = "/ui";
-
 export const gitConfig = {
   user: "handleui",
   repo: "opendetail",

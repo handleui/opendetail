@@ -32,7 +32,7 @@ export function DocsPageChrome({
   children: ReactNode;
   /**
    * `docs` — leading `1fr` column for asymmetric page balance (routes under `/docs`).
-   * `theme` — article + TOC only for UI sandbox pages (`/ui`).
+   * `theme` / `components` — article + TOC grid for pages with an optional full-width preview.
    */
   variant?: "docs" | "theme" | "components";
 }) {

@@ -6,7 +6,6 @@ import {
   ArrowUpRight,
   BookOpen,
   House,
-  LayoutTemplate,
   ScrollText,
   Wand2,
 } from "lucide-react";
@@ -25,12 +24,9 @@ import {
 
 import {
   isUnderSiteSecondaryNavPathname,
-  isUnderUiDocsPathname,
   SITE_DOCS_ROUTER,
-  SITE_UI_DOCS_ROUTER,
   type SiteNavNode,
   type SiteNavSection,
-  UI_DOCS_PATH_PREFIX,
 } from "@/lib/site-nav";
 
 type SidebarDepth = 0 | 1;
@@ -51,7 +47,7 @@ function pathMatchesIntent(pathname: string, intent: string): boolean {
   return normalized.startsWith(`${intentNorm}/`);
 }
 
-/** Until `usePathname()` catches up after a top-level Docs / Assistant UI click — avoids wrong nest flash. */
+/** Until `usePathname()` catches up after a top-level Docs click — avoids wrong nest flash. */
 function useSiteNavEffectivePathname(pathname: string): {
   effectivePathname: string;
   setNavIntent: (href: string) => void;
@@ -280,8 +276,6 @@ export interface SidebarProps {
   productVersionLabel: string;
   /** Root row icons (site nav + Social) — default 14px. */
   rowIconSize?: number;
-  /** Assistant UI nested panel — static link to the UI sandbox. */
-  uiSidebarSections: readonly SiteNavSection[];
 }
 
 export function Sidebar({
@@ -297,11 +291,9 @@ export function Sidebar({
   onAssistantToggle,
   rowIconSize = DEFAULT_ROW_ICON_SIZE,
   docsSidebarSections,
-  uiSidebarSections,
 }: SidebarProps) {
   const pathname = usePathname();
-  const { effectivePathname, setNavIntent } =
-    useSiteNavEffectivePathname(pathname);
+  const { setNavIntent } = useSiteNavEffectivePathname(pathname);
   const navId = useId();
   const prefersReducedMotion = useReducedMotion();
   const { showSecondaryPanel, goBack, openSecondary, openHome } =
@@ -311,12 +303,8 @@ export function Sidebar({
     ? { duration: 0 }
     : PANEL_SLIDE_TRANSITION;
 
-  const secondaryIsUiDocs = isUnderUiDocsPathname(effectivePathname);
   const docsRootActive =
     pathname === docsPathPrefix || pathname.startsWith(`${docsPathPrefix}/`);
-  const uiDocsRootActive =
-    pathname === UI_DOCS_PATH_PREFIX ||
-    pathname.startsWith(`${UI_DOCS_PATH_PREFIX}/`);
 
   return (
     <div className="flex h-full min-h-0 flex-col">
@@ -456,37 +444,6 @@ export function Sidebar({
                       strokeWidth={SIDEBAR_LUCIDE_STROKE_PX}
                     />
                   </Link>
-                  <Link
-                    className={[
-                      NAV_ROW_CLASS,
-                      "justify-between",
-                      uiDocsRootActive ? "bg-neutral-100" : "",
-                    ].join(" ")}
-                    data-trifold-stay=""
-                    href={UI_DOCS_PATH_PREFIX}
-                    onClick={() => {
-                      setNavIntent(UI_DOCS_PATH_PREFIX);
-                      openSecondary();
-                    }}
-                  >
-                    <span className="flex min-w-0 items-center gap-2">
-                      <RootRowIconSlot rowIconSize={rowIconSize}>
-                        <LayoutTemplate
-                          aria-hidden="true"
-                          className="shrink-0 text-black"
-                          size={rowIconSize}
-                          strokeWidth={SIDEBAR_LUCIDE_STROKE_PX}
-                        />
-                      </RootRowIconSlot>
-                      <span>UI sandbox</span>
-                    </span>
-                    <ArrowRight
-                      aria-hidden="true"
-                      className={ROW_TRAILING_ICON_CLASS}
-                      size={ROW_ICON_PX}
-                      strokeWidth={SIDEBAR_LUCIDE_STROKE_PX}
-                    />
-                  </Link>
                 </div>
 
                 <div>
@@ -552,59 +509,31 @@ export function Sidebar({
                   Back
                 </button>
               </div>
-              {secondaryIsUiDocs ? (
-                <nav
-                  aria-labelledby={`${navId}-ui-docs`}
-                  className={INNER_NAV_CLASS}
-                  key="nest-ui-docs"
-                >
-                  <p className="sr-only" id={`${navId}-ui-docs`}>
-                    UI sandbox
-                  </p>
-                  <div className="flex flex-col gap-4">
-                    <div>
-                      <Link
-                        className={navLinkClass(
-                          isPageActive(SITE_UI_DOCS_ROUTER.href, pathname)
-                        )}
-                        href={SITE_UI_DOCS_ROUTER.href}
-                      >
-                        {SITE_UI_DOCS_ROUTER.label}
-                      </Link>
-                    </div>
-                    <NestedNavSections
-                      pathname={pathname}
-                      sections={uiSidebarSections}
-                    />
+              <nav
+                aria-labelledby={navId}
+                className={INNER_NAV_CLASS}
+                key="nest-docs"
+              >
+                <p className="sr-only" id={navId}>
+                  Documentation
+                </p>
+                <div className="flex flex-col gap-4">
+                  <div>
+                    <Link
+                      className={navLinkClass(
+                        isPageActive(SITE_DOCS_ROUTER.href, pathname)
+                      )}
+                      href={SITE_DOCS_ROUTER.href}
+                    >
+                      {SITE_DOCS_ROUTER.label}
+                    </Link>
                   </div>
-                </nav>
-              ) : (
-                <nav
-                  aria-labelledby={navId}
-                  className={INNER_NAV_CLASS}
-                  key="nest-docs"
-                >
-                  <p className="sr-only" id={navId}>
-                    Documentation
-                  </p>
-                  <div className="flex flex-col gap-4">
-                    <div>
-                      <Link
-                        className={navLinkClass(
-                          isPageActive(SITE_DOCS_ROUTER.href, pathname)
-                        )}
-                        href={SITE_DOCS_ROUTER.href}
-                      >
-                        {SITE_DOCS_ROUTER.label}
-                      </Link>
-                    </div>
-                    <NestedNavSections
-                      pathname={pathname}
-                      sections={docsSidebarSections}
-                    />
-                  </div>
-                </nav>
-              )}
+                  <NestedNavSections
+                    pathname={pathname}
+                    sections={docsSidebarSections}
+                  />
+                </div>
+              </nav>
             </div>
           </motion.div>
         </div>

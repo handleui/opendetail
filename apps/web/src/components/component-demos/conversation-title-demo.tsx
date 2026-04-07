@@ -21,7 +21,6 @@ export const ConversationTitleDemo = () => {
       },
       sitePaths: [
         "/docs",
-        "/ui",
         "/docs/hooks/use-opendetail",
         "/docs/hooks/create-open-detail-client",
       ],

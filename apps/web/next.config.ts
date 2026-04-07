@@ -81,12 +81,12 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/themes/opendetail/:path*",
-        destination: "/ui",
+        destination: "/docs/design-system",
         permanent: true,
       },
       {
         source: "/themes/opendetail",
-        destination: "/ui",
+        destination: "/docs/design-system",
         permanent: true,
       },
       {
@@ -106,12 +106,12 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/components/:path*",
-        destination: "/ui",
+        destination: "/docs/design-system",
         permanent: true,
       },
       {
         source: "/components",
-        destination: "/ui",
+        destination: "/docs/design-system",
         permanent: true,
       },
       {
@@ -131,12 +131,12 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/docs/components/:path*",
-        destination: "/ui",
+        destination: "/docs/design-system",
         permanent: true,
       },
       {
         source: "/docs/components",
-        destination: "/ui",
+        destination: "/docs/design-system",
         permanent: true,
       },
       {

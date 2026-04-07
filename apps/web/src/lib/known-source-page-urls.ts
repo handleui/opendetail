@@ -1,6 +1,6 @@
 import { readdirSync } from "node:fs";
 import { join, resolve } from "node:path";
-import { docsRoute, uiRoute } from "./shared";
+import { docsRoute } from "./shared";
 
 const docsContentDirectory = resolve(process.cwd(), "content/docs");
 
@@ -45,6 +45,5 @@ const collectKnownSourcePageUrls = (
 
 export const knownSourcePageUrls = [
   "/changelog",
-  uiRoute,
   ...collectKnownSourcePageUrls(docsContentDirectory, docsRoute),
 ].sort();
