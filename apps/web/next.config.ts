@@ -24,8 +24,45 @@ const nextConfig: NextConfig = {
   },
   redirects() {
     return [
+      // Deleted pages — redirect to their new homes
+      {
+        source: "/docs",
+        destination: "/docs/quickstart",
+        permanent: true,
+      },
+      {
+        source: "/docs/packages",
+        destination: "/docs/quickstart",
+        permanent: true,
+      },
+      {
+        source: "/docs/ui-integration",
+        destination: "/docs/react",
+        permanent: true,
+      },
+      {
+        source: "/docs/design-system",
+        destination: "/docs/react",
+        permanent: true,
+      },
+      {
+        source: "/docs/hooks",
+        destination: "/docs/react",
+        permanent: true,
+      },
+      {
+        source: "/docs/hooks/:path*",
+        destination: "/docs/react",
+        permanent: true,
+      },
+      // Legacy doc URLs
       {
         source: "/docs/guide",
+        destination: "/docs/quickstart",
+        permanent: true,
+      },
+      {
+        source: "/docs/integration",
         destination: "/docs/quickstart",
         permanent: true,
       },
@@ -35,108 +72,18 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
-        source: "/themes/opendetail/systems-and-themes",
-        destination: "/docs/design-system",
+        source: "/docs/opendetail",
+        destination: "/docs/core",
         permanent: true,
       },
       {
-        source: "/ui/systems-and-themes",
-        destination: "/docs/design-system",
+        source: "/docs/configuration",
+        destination: "/docs/core",
         permanent: true,
       },
       {
-        source: "/ui/systems",
-        destination: "/docs/design-system",
-        permanent: true,
-      },
-      {
-        source: "/ui/themes",
-        destination: "/docs/design-system",
-        permanent: true,
-      },
-      {
-        source: "/ui/primitives",
-        destination: "/docs/design-system",
-        permanent: true,
-      },
-      {
-        source: "/themes/opendetail/hooks/:path*",
-        destination: "/docs/hooks/:path*",
-        permanent: true,
-      },
-      {
-        source: "/themes/opendetail/hooks",
-        destination: "/docs/hooks/use-opendetail",
-        permanent: true,
-      },
-      {
-        source: "/themes/opendetail/themes/midnight",
-        destination: "/docs/design-system",
-        permanent: true,
-      },
-      {
-        source: "/themes/opendetail/themes/signal",
-        destination: "/docs/design-system",
-        permanent: true,
-      },
-      {
-        source: "/themes/opendetail/:path*",
-        destination: "/docs/design-system",
-        permanent: true,
-      },
-      {
-        source: "/themes/opendetail",
-        destination: "/docs/design-system",
-        permanent: true,
-      },
-      {
-        source: "/components/systems-and-themes",
-        destination: "/docs/design-system",
-        permanent: true,
-      },
-      {
-        source: "/components/hooks/:path*",
-        destination: "/docs/hooks/:path*",
-        permanent: true,
-      },
-      {
-        source: "/components/hooks",
-        destination: "/docs/hooks/use-opendetail",
-        permanent: true,
-      },
-      {
-        source: "/components/:path*",
-        destination: "/docs/design-system",
-        permanent: true,
-      },
-      {
-        source: "/components",
-        destination: "/docs/design-system",
-        permanent: true,
-      },
-      {
-        source: "/docs/components/systems-and-themes",
-        destination: "/docs/design-system",
-        permanent: true,
-      },
-      {
-        source: "/docs/components/hooks/:path*",
-        destination: "/docs/hooks/:path*",
-        permanent: true,
-      },
-      {
-        source: "/docs/components/hooks",
-        destination: "/docs/hooks/use-opendetail",
-        permanent: true,
-      },
-      {
-        source: "/docs/components/:path*",
-        destination: "/docs/design-system",
-        permanent: true,
-      },
-      {
-        source: "/docs/components",
-        destination: "/docs/design-system",
+        source: "/docs/runtime",
+        destination: "/docs/core",
         permanent: true,
       },
       {
@@ -164,24 +111,110 @@ const nextConfig: NextConfig = {
         destination: "/docs/cli",
         permanent: true,
       },
+      // Old /themes/* and /ui/* and /components/* paths — all styling content now lives at /docs/react
       {
-        source: "/docs/integration",
-        destination: "/docs/quickstart",
+        source: "/themes/opendetail/systems-and-themes",
+        destination: "/docs/react",
         permanent: true,
       },
       {
-        source: "/docs/opendetail",
-        destination: "/docs/core",
+        source: "/themes/opendetail/themes/midnight",
+        destination: "/docs/react",
         permanent: true,
       },
       {
-        source: "/docs/configuration",
-        destination: "/docs/core",
+        source: "/themes/opendetail/themes/signal",
+        destination: "/docs/react",
         permanent: true,
       },
       {
-        source: "/docs/runtime",
-        destination: "/docs/core",
+        source: "/themes/opendetail/hooks/:path*",
+        destination: "/docs/react",
+        permanent: true,
+      },
+      {
+        source: "/themes/opendetail/hooks",
+        destination: "/docs/react",
+        permanent: true,
+      },
+      {
+        source: "/themes/opendetail/:path*",
+        destination: "/docs/react",
+        permanent: true,
+      },
+      {
+        source: "/themes/opendetail",
+        destination: "/docs/react",
+        permanent: true,
+      },
+      {
+        source: "/ui/systems-and-themes",
+        destination: "/docs/react",
+        permanent: true,
+      },
+      {
+        source: "/ui/systems",
+        destination: "/docs/react",
+        permanent: true,
+      },
+      {
+        source: "/ui/themes",
+        destination: "/docs/react",
+        permanent: true,
+      },
+      {
+        source: "/ui/primitives",
+        destination: "/docs/react",
+        permanent: true,
+      },
+      {
+        source: "/components/systems-and-themes",
+        destination: "/docs/react",
+        permanent: true,
+      },
+      {
+        source: "/components/hooks/:path*",
+        destination: "/docs/react",
+        permanent: true,
+      },
+      {
+        source: "/components/hooks",
+        destination: "/docs/react",
+        permanent: true,
+      },
+      {
+        source: "/components/:path*",
+        destination: "/docs/react",
+        permanent: true,
+      },
+      {
+        source: "/components",
+        destination: "/docs/react",
+        permanent: true,
+      },
+      {
+        source: "/docs/components/systems-and-themes",
+        destination: "/docs/react",
+        permanent: true,
+      },
+      {
+        source: "/docs/components/hooks/:path*",
+        destination: "/docs/react",
+        permanent: true,
+      },
+      {
+        source: "/docs/components/hooks",
+        destination: "/docs/react",
+        permanent: true,
+      },
+      {
+        source: "/docs/components/:path*",
+        destination: "/docs/react",
+        permanent: true,
+      },
+      {
+        source: "/docs/components",
+        destination: "/docs/react",
         permanent: true,
       },
     ];

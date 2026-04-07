@@ -2,22 +2,13 @@
   "title": "OpenDetail",
   "root": true,
   "pages": [
-    "index",
     "---Get started---",
     "quickstart",
-    "ui-integration",
-    "packages",
-    "---Core---",
+    "---Reference---",
     "core",
-    "---CLI---",
     "cli",
-    "---Integrations---",
-    "next",
     "react",
-    "design-system",
-    "---Hooks---",
-    "hooks/use-opendetail",
-    "hooks/create-open-detail-client",
+    "next",
     "fumadocs"
   ]
 }
