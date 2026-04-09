@@ -1,5 +1,13 @@
 # opendetail-fumadocs
 
+## 1.0.2
+
+### Patch Changes
+
+- Updated dependencies [8ee06da]
+  - opendetail-next@0.8.0
+  - opendetail-react@2.0.0
+
 ## 1.0.1
 
 ### Patch Changes
