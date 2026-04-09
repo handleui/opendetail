@@ -19,6 +19,7 @@ import { renderNextSourceLink as renderNextSourceLinkImplementation } from "./li
 const NO_STORE_HEADER = "no-store";
 const NO_SNIFF_HEADER = "nosniff";
 const POST_METHOD = "POST";
+const MAX_REQUEST_BODY_BYTES = 64 * 1024;
 
 const createResponseHeaders = (headers?: HeadersInit): Headers => {
   const responseHeaders = new Headers(headers);
@@ -71,6 +72,20 @@ const getInvalidRequestResponse = (): Response =>
     }),
     400
   );
+
+const hasOversizedRequestBody = (request: Request): boolean => {
+  const contentLengthHeader = request.headers.get("content-length");
+
+  if (!contentLengthHeader) {
+    return false;
+  }
+
+  const contentLength = Number(contentLengthHeader);
+
+  return (
+    Number.isFinite(contentLength) && contentLength > MAX_REQUEST_BODY_BYTES
+  );
+};
 
 const createOpenDetailLoader = (
   options: CreateOpenDetailOptions
@@ -125,6 +140,10 @@ export const createNextRouteHandler = (
       });
     }
 
+    if (hasOversizedRequestBody(request)) {
+      return getInvalidRequestResponse();
+    }
+
     let body: unknown;
 
     try {
@@ -177,7 +196,3 @@ export const createNextRoute = (
 });
 
 export const renderNextSourceLink = renderNextSourceLinkImplementation;
-export type {
-  RenderAssistantSourceLink,
-  RenderAssistantSourceLinkProps,
-} from "opendetail-react";

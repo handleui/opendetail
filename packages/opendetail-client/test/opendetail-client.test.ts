@@ -291,24 +291,25 @@ describe("createOpenDetailClient", () => {
     const secondFetchStarted = new Promise<void>((resolve) => {
       resolveSecondFetchStart = resolve;
     });
-    const fetchImplementation = vi
-      .fn<typeof fetch>()
-      .mockImplementationOnce(
-        async (_input, init) =>
-          await new Promise<Response>((_resolve, reject) => {
-            init?.signal?.addEventListener("abort", () => {
-              reject(new Error("Aborted"));
-            });
-          })
-      )
-      .mockImplementationOnce(async (_input, init) => {
+    const fetchImplementation = vi.fn<typeof fetch>();
+    fetchImplementation.mockImplementationOnce(
+      async (_input: RequestInfo | URL, init?: RequestInit) =>
+        await new Promise<Response>((_resolve, reject) => {
+          init?.signal?.addEventListener("abort", () => {
+            reject(new Error("Aborted"));
+          });
+        })
+    );
+    fetchImplementation.mockImplementationOnce(
+      async (_input: RequestInfo | URL, init?: RequestInit) => {
         resolveSecondFetchStart?.();
         return await new Promise<Response>((_resolve, reject) => {
           init?.signal?.addEventListener("abort", () => {
             reject(new Error("Aborted"));
           });
         });
-      });
+      }
+    );
     const client = createOpenDetailClient({
       fetch: fetchImplementation,
     });
@@ -327,5 +328,44 @@ describe("createOpenDetailClient", () => {
 
     client.stop();
     await secondRequest;
+  });
+
+  test("reports idle when stop aborts an in-flight request", async () => {
+    let resolveFetchStart: (() => void) | null = null;
+    const fetchStarted = new Promise<void>((resolve) => {
+      resolveFetchStart = resolve;
+    });
+    const onStatusChange = vi.fn();
+    const fetchImplementation = vi.fn<typeof fetch>(
+      async (_input: RequestInfo | URL, init?: RequestInit) => {
+        resolveFetchStart?.();
+
+        return await new Promise<Response>((_resolve, reject) => {
+          init?.signal?.addEventListener("abort", () => {
+            reject(new Error("Aborted"));
+          });
+        });
+      }
+    );
+    const client = createOpenDetailClient({
+      fetch: fetchImplementation,
+    });
+
+    const request = client.submit(
+      {
+        question: "How do I install opendetail?",
+      },
+      {
+        onStatusChange,
+      }
+    );
+
+    await fetchStarted;
+    client.stop();
+    await request;
+
+    expect(onStatusChange).toHaveBeenNthCalledWith(1, "pending");
+    expect(onStatusChange).toHaveBeenLastCalledWith("idle");
+    expect(client.status).toBe("idle");
   });
 });

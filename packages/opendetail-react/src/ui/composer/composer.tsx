@@ -1,10 +1,9 @@
 "use client";
 
 import { ArrowRight } from "lucide-react";
+import type { OpenDetailClientStatus } from "opendetail-client";
 import type { FormEvent, KeyboardEvent, MouseEvent } from "react";
 import { useCallback, useLayoutEffect, useRef, useState } from "react";
-
-import type { OpenDetailClientStatus } from "../../lib/opendetail-client/opendetail-client";
 
 const DEFAULT_PLACEHOLDER = "What has Rodrigo worked on?";
 const DEFAULT_NAME = "question";

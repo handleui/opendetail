@@ -1,37 +1,51 @@
 ---
 title: Introduction
-description: What OpenDetail is, how the pipeline fits together, and which packages you need.
+description: What OpenDetail is, the three adoption paths, and how the pieces fit together.
 ---
 
-OpenDetail turns the Markdown and MDX you already ship into **grounded answers inside your product**: same content your team edits, retrieved with citations instead of vibes. It is intentionally small — a build step, a local index file, a narrow HTTP contract, and thin adapters. Not a second CMS, not a generic chat platform.
+OpenDetail turns the Markdown and MDX you already ship into grounded answers inside your product. It is intentionally small: build an index, expose a narrow backend contract, and choose the UI layer you want on top.
+
+The easiest way to think about it is by adoption path:
+
+**Fastest** is the drop-in path. You use the standard build and route adapter, then connect the ready-made React assistant.
+
+**Branded** is for a custom product surface. You keep the backend and build your own UI, but still use OpenDetail for indexing, retrieval, citations, and streaming.
+
+**Headless** is the engine-only path. You use OpenDetail as the backend primitive and wire it into your own app, service, or agent with no opinionated UI at all.
 
 ## How it fits together
 
-| Stage | What happens |
-| --- | --- |
-| **Build** | Matched docs become **`.opendetail/index.json`**. |
-| **Request** | Your route loads the index, runs lexical search, calls the Responses API with that context. |
-| **UI** | Streamed NDJSON (text, sources, images) — render with your components or `opendetail-react`. |
+OpenDetail follows a simple build/request/render loop:
 
-Docs stay human-readable on the web; machine-readable routes (for example `/llms.mdx/docs`) remain available for tooling.
+1. Your docs are indexed into `.opendetail/index.json`.
+2. Your backend receives a `question`.
+3. OpenDetail searches the index, calls the model with the retrieved context, and streams structured events back.
+4. Your UI renders text, sources, images, and errors from that stream.
 
-## Who it is for
+That means the custom-UI contract stays narrow. Your frontend does not need to understand indexing or retrieval internals; it only needs to submit a question and render the response stream.
 
-| Audience | Why |
-| --- | --- |
-| **Product & devrel** | In-app help without a separate knowledge base. |
-| **Engineering** | Testable pipeline: artifact in git, predictable API, clear errors. |
-| **Agents** | Stable URLs and structured retrieval from the same index. |
+## Which path should I use?
+
+If you want something working quickly, start with **Fastest**.
+
+If you want your own layout, own brand, or a different interaction model, choose **Branded**.
+
+If you are integrating OpenDetail into another service, automation, or custom backend, choose **Headless**.
 
 ## Packages
 
 | Package | Role |
 | --- | --- |
-| [`opendetail`](/docs/core) | Build, core runtime, CLI. Start here for any integration. |
-| [`opendetail-next`](/docs/next) | Next.js App Router route handler, NDJSON streaming, `renderNextSourceLink`. |
-| [`opendetail-react`](/docs/react) | Browser UI — hook, streaming client, shell components, styling. |
-| [`opendetail-fumadocs`](/docs/fumadocs) | Optional: known-page citation allowlist + `FumadocsAssistant` wrapper. |
+| [`opendetail`](/docs/core) | Engine, index build, config, and Node runtime. Use this for Headless or as the backend layer for the other paths. |
+| [`opendetail-next`](/docs/next) | Next.js route adapter and safe source-link helper. Use this when your app backend is Next.js. |
+| [`opendetail-react`](/docs/react) | React hook, assistant components, and browser-facing helpers. Use this for Fastest or Branded React apps. |
+| [`opendetail-fumadocs`](/docs/fumadocs) | Optional citation-link helpers for docs sites with predictable page URLs. |
 
-Typical Next.js stack: `opendetail` + `opendetail-next` + `opendetail-react`.
+The package split is deliberate:
+
+- `opendetail` owns the engine.
+- `opendetail-next` owns the Next.js transport surface.
+- `opendetail-react` owns React state and components.
+- `opendetail-fumadocs` only helps with known docs URLs.
 
 <CopyCommand bun="bunx opendetail setup" npm="npx opendetail setup" />

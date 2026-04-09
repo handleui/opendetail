@@ -1,34 +1,47 @@
 ---
 title: Quickstart
-description: Install OpenDetail, scaffold config and route, rebuild, and make your first request.
+description: Install OpenDetail, pick Fastest, Branded, or Headless, and get the CLI flow working.
 ---
 
-Follow this page in order once. After that, rebuild whenever docs change.
+Use this page to get to a working setup quickly. The three adoption paths are:
+
+- **Fastest**: OpenDetail sets up the route, config, and first build.
+- **Branded**: you keep the backend contract and build your own UI.
+- **Headless**: you use OpenDetail as the docs backend and connect your own client later.
 
 ## Install
 
-<CopyCommand
-  bun="bun add opendetail opendetail-next opendetail-react"
-  npm="npm i opendetail opendetail-next opendetail-react"
-/>
+**Fastest**
 
-Check the CLI resolves without a global install:
+<CopyCommand bun="bun add opendetail opendetail-next opendetail-react" npm="npm i opendetail opendetail-next opendetail-react" />
+
+**Branded**
+
+<CopyCommand bun="bun add opendetail opendetail-next opendetail-client" npm="npm i opendetail opendetail-next opendetail-client" />
+
+**Headless**
+
+<CopyCommand bun="bun add opendetail" npm="npm i opendetail" />
+
+Check that the CLI resolves without a global install:
 
 <CopyCommand bun="bunx opendetail --version" npm="npx opendetail --version" />
 
-## Scaffold
+## Setup
 
-Generate `opendetail.toml`, the default API route, and an initial index:
+Use the mode that matches your integration style:
 
-<CopyCommand bun="bunx opendetail setup --with-media" npm="npx opendetail setup --with-media" />
+<CopyCommand bun="bunx opendetail setup --mode fastest" npm="npx opendetail setup --mode fastest" />
+<CopyCommand bun="bunx opendetail setup --mode branded" npm="npx opendetail setup --mode branded" />
+<CopyCommand bun="bunx opendetail setup --mode headless" npm="npx opendetail setup --mode headless" />
 
-What that writes:
+What setup writes depends on the mode:
 
-- **`opendetail.toml`** — content globs and public path mapping
-- **`src/app/api/opendetail/route.ts`** — the self-hosted route handler
-- **`.opendetail/index.json`** — the built index (unless you pass `--skip-build`)
+- **Fastest** writes `opendetail.toml`, the default route, and the first index build.
+- **Branded** writes the same backend pieces, but you are expected to own the UI.
+- **Headless** writes the config and index, without assuming a local UI route.
 
-Add **`OPENAI_API_KEY`** to the environment your route runs in.
+Add `OPENAI_API_KEY` to the environment where the route runs.
 
 ### Config shape
 
@@ -45,81 +58,68 @@ exclude = []
 public_path = "/content-media"
 `}</CodeBlock>
 
-Tweak **`[[content]]`** globs and **`public_path`** so each root matches where those files are served. Add more **`[[content]]`** blocks when you index multiple trees (for example `/docs` and `/`). Full field reference: [Core](/docs/core#fields).
+Match each `[[content]]` block to where those files are served. Add more blocks when you index more than one tree, such as `/docs` and `/`. See [Core](/docs/core#fields) for the full field reference.
 
-## Rebuild when content changes
+## Build, doctor, verify
 
 <CopyCommand bun="bunx opendetail build" npm="npx opendetail build" />
 
-Run this in CI before deploy, or as a `postbuild` step. When something looks wrong:
+Run `build` whenever docs change or before deploy.
 
 <CopyCommand bun="bunx opendetail doctor" npm="npx opendetail doctor" />
+
+Use `doctor` when the setup looks wrong or a required file is missing.
+
+<CopyCommand bun="bunx opendetail verify" npm="npx opendetail verify" />
+
+Use `verify` when you want a semantic setup check. Add `--endpoint` to exercise a live NDJSON stream end to end.
 
 Full command and flag reference: [CLI](/docs/cli).
 
 ---
 
-## Integration modes
+## How the paths differ
 
-### Self-hosted (default)
+### Fastest
 
-Your Next.js route, your Node runtime, your API key, your rebuilt index on deploy.
+OpenDetail owns the docs route and the stream contract. You use the generated route and the built index.
 
-| Requirement | Notes |
-| --- | --- |
-| Node.js | 18+ |
-| Runtime | **Node.js** (not Edge) for the default adapter |
-| Secrets | **`OPENAI_API_KEY`** where the handler runs |
-| Artifact | **`.opendetail/index.json`** after `opendetail build` |
+### Branded
 
-**Request body:**
+You keep the same backend contract, but the UI is yours. The easiest custom UI path is to use `opendetail-client` for transport and wire the stream into your own React state.
+
+### Headless
+
+You only want the docs backend and the build artifact. Another app or service can call the stream later.
+
+---
+
+## Request and response
+
+The request body is simple:
 
 <CodeBlock lang="json">{`{ "question": "How do I configure public_path?" }`}</CodeBlock>
 
-**Response** — `application/x-ndjson; charset=utf-8`, events in order:
+The response is `application/x-ndjson; charset=utf-8` and the events arrive in this order:
 
 | Event | Role |
 | --- | --- |
 | `meta` | Model metadata |
-| `sources` | Matched chunks (and remote citations when configured) |
+| `sources` | Matched chunks and remote citations when configured |
 | `images` | Grounded image references from matched docs |
 | `delta` | Streamed answer text |
 | `done` | Final text |
 | `error` | Safe public error payload |
 
-Malformed bodies return a JSON error. Initialization failures before streaming starts return JSON instead of NDJSON. In production, repeated init failures are cached.
-
-### Hosted-shaped (scaffold only)
-
-`--integration hosted` does not generate a route. It writes config and builds the index, but your app calls a remote endpoint you configure. The OpenDetail-managed cloud backend is not shipped yet.
-
-<CopyCommand bun="bunx opendetail setup --integration hosted" npm="npx opendetail setup --integration hosted" />
-
-Point the client at your endpoint:
-
-<CodeBlock
-  lang="ts"
-  code={`import { useOpenDetail } from "opendetail-react";
-
-const assistant = useOpenDetail({
-  transport: {
-    endpoint: process.env.NEXT_PUBLIC_OPENDETAIL_ENDPOINT,
-    headers: process.env.NEXT_PUBLIC_OPENDETAIL_AUTH_TOKEN
-      ? { authorization: \`Bearer \${process.env.NEXT_PUBLIC_OPENDETAIL_AUTH_TOKEN}\` }
-      : undefined,
-  },
-});`}
-/>
-
-Request and stream events are identical to self-hosted — no breaking migration later.
+Malformed bodies return JSON errors. Initialization failures before streaming starts also return JSON instead of NDJSON. Repeated init failures are cached in production.
 
 ---
 
 ## How grounding works
 
-1. **Build time** — Matched files are parsed, split into heading-based chunks, written to `.opendetail/index.json`. No vector database required.
-2. **Request time** — The runtime runs **lexical search**, sends the best chunks to the **Responses API**, optionally attaches **remote tools** from config.
-3. **Instructions** — The model answers from those sources, cites factual statements, avoids inventing coverage, and says so when a topic is not in the docs.
+1. Build time parses matched files, splits them into heading-based chunks, and writes `.opendetail/index.json`. No vector database is required.
+2. Request time runs lexical search, sends the best chunks to the Responses API, and can attach remote tools from config.
+3. Answer time uses those sources, cites factual statements, and says when a topic is not in the docs.
 
 If nothing matches, `fallback: true` is set on the response. The model may still answer using configured `fetch` tools; if it returns no usable text, the user sees a clear "not documented yet" message. See [fallback behavior](/docs/core#fallback-behavior).
 
@@ -131,14 +131,4 @@ With the default route running:
 
 <CodeBlock lang="json">{`{ "question": "How do I install this?" }`}</CodeBlock>
 
-Use `useOpenDetail` or `createOpenDetailClient` from **`opendetail-react`** when building UI — see [React](/docs/react).
-
----
-
-## FAQ
-
-| Topic | Answer |
-| --- | --- |
-| **No vector DB?** | Correct — the default path uses lexical search against a local index file. |
-| **MDX with components?** | Text and headings are the retrieval unit; runtime component rendering is not. |
-| **Hosted backend?** | Client scaffolding exists; managed backend is not shipped in this phase. |
+Use `useOpenDetail` for the Fastest path, or build your own client against the stream contract for Branded and Headless setups. See [React](/docs/react).

@@ -1,22 +1,22 @@
 ---
 title: Core
-description: opendetail — index build, opendetail.toml, createOpenDetail in Node, defaults, and fallback behavior.
+description: The OpenDetail engine, config, index build, and backend contract for Headless and server-side use.
 ---
 
-The **`opendetail`** package is the engine: it reads **`opendetail.toml`**, builds **`.opendetail/index.json`**, and exposes **`createOpenDetail`** for answering from that index. The CLI (`build`, `setup`, `doctor`) lives in the same package — see [**CLI**](/docs/cli).
+Use **`opendetail`** when you want the engine only. It reads **`opendetail.toml`**, builds **`.opendetail/index.json`**, and gives you the Node runtime that answers questions from that index. This is the **Headless** path, and it is also the backend layer behind the other paths.
 
 ## What ships in the package
 
 | Area | Role |
 | --- | --- |
-| **Build** | Parse matched Markdown/MDX, chunk by headings, write the index (CLI or `buildOpenDetailIndex`). |
-| **Runtime** | Load the index, lexical search, Responses API, stream NDJSON — [Create an assistant](#create-an-assistant). |
-| **CLI** | Setup, index builds, doctor — [**CLI**](/docs/cli). |
-| **Config** | `opendetail.toml` — [Fields](#fields). |
+| **Build** | Parse Markdown and MDX, chunk by headings, and write the index. |
+| **Runtime** | Load the index, search it, call the model with grounded context, and return an answer. |
+| **CLI** | Setup, build, doctor, and verification commands. |
+| **Config** | `opendetail.toml` and related sidecar files. |
 
 ## When to use it directly
 
-Use **`opendetail`** without Next or React for Node integrations (custom server, scripts, tests). For Next.js App Router, use [**opendetail-next**](/docs/next); for browser UI, use [**opendetail-react**](/docs/react).
+Choose `opendetail` when you want a custom server, a background job, a test harness, or an agent integration that does not need React or Next.js. If your app is already on Next.js, `opendetail-next` is the thinner route adapter. If you are only building a browser experience, `opendetail-react` handles the UI state on top of the same backend contract.
 
 ## Minimal config
 
@@ -30,6 +30,20 @@ exclude = []
 public_path = "/docs"
 `}</CodeBlock>
 
+## How the backend contract works
+
+The runtime is intentionally narrow.
+
+Your app sends a question:
+
+```json
+{ "question": "How do I configure public_path?" }
+```
+
+The engine uses the built index to find the most relevant content, builds grounded context, and asks the model to answer from that context. It then returns the answer along with sources, images, and fallback metadata.
+
+When you stream, the response is NDJSON with events such as `meta`, `sources`, `images`, `delta`, `done`, and `error`. That is the contract your UI or agent should consume. You do not need to know how the index was built in order to use it.
+
 ## Fields
 
 | Field | Required | Meaning |
@@ -37,12 +51,12 @@ public_path = "/docs"
 | `version` | yes | Must be `1` |
 | `[[content]]` | yes | One or more tables: each has `include`, `exclude`, and `public_path` for a Markdown/MDX root |
 | `media` | no | Rules for mapping local media references to public URLs |
-| `fetch` | no | Optional OpenAI Responses API tools: `[fetch.file_search]` and/or `[fetch.web_search]` |
-| `knowledge` | no | Path to optional `.opendetail/knowledge.toml` sidecar with `[[asset]]` titles/summaries for images |
+| `fetch` | no | Optional model tools such as file search or web search |
+| `knowledge` | no | Optional image metadata sidecar |
 
 ## Content roots
 
-You can list **multiple** **`[[content]]`** blocks when docs, marketing, or other MDX trees live under different folders **and** are served at different URL prefixes. Each row is one indexed tree. Set **`public_path`** to the **public URL prefix** for that tree (where those pages appear in the browser), for example `/docs` for documentation and `/` for site-root marketing. OpenDetail joins each file’s route segments after that prefix to build citation URLs (and, beyond the first root, tags chunks as `sourceKind: "page"` for UI styling).
+You can list multiple `[[content]]` blocks when different parts of the site live in different folders or under different URL prefixes. Set `public_path` to the public prefix for that tree, then OpenDetail will map each indexed file to the right citation URL.
 
 ## Media
 
@@ -58,14 +72,12 @@ When `media` is configured:
 
 - `http://` and `https://` URLs are returned as-is
 - root-relative `/...` URLs are returned as-is
-- local relative paths are mapped only if they match `[media].include`
+- local relative paths are mapped only if they match the media glob
 - unsupported absolute schemes and protocol-relative URLs are ignored
 
-If a doc references a local image that does not match the configured media globs, the build fails with a clear error.
+## Fetch
 
-## Fetch (OpenAI remote tools)
-
-Optional Responses API tools — configure as **`[fetch.file_search]`** and/or **`[fetch.web_search]`** (native remote retrieval; no same-origin HTML scraping).
+Optional retrieval tools can be configured in `opendetail.toml` or passed at runtime. Use this when you want the model to reach beyond the indexed docs.
 
 <CodeBlock lang="toml">{`[fetch.file_search]
 vector_store_ids = ["vs_123"]
@@ -76,71 +88,19 @@ allowed_domains = ["opendetail.dev", "platform.openai.com"]
 search_context_size = "low"
 `}</CodeBlock>
 
-**`file_search`**
-
-| Field | Required | Meaning |
-| --- | --- | --- |
-| `vector_store_ids` | yes | OpenAI vector store IDs |
-| `max_num_results` | no | Limit from 1 to 50 |
-
-**`web_search`**
-
-| Field | Required | Meaning |
-| --- | --- | --- |
-| `allowed_domains` | no | Restrict search to listed domains |
-| `search_context_size` | no | `low`, `medium`, or `high` |
-
-Remote citations appear in `sources` with `kind: "remote"`.
-
-## Knowledge sidecar
-
-Optional **`knowledge = ".opendetail/knowledge.toml"`** with entries such as:
-
-<CodeBlock lang="toml">{`[[asset]]
-url = "/content-media/diagram.png"
-title = "Pipeline overview"
-summary = "Use when explaining the build step."
-`}</CodeBlock>
-
 ## Create an assistant
 
-Use **`opendetail`** core when calling from Node without Next.js helpers.
+Use `createOpenDetail` from Node when you want direct access to the engine.
 
 <CodeBlock lang="ts">{`import { createOpenDetail } from "opendetail";
 
 const assistant = createOpenDetail();
-`}</CodeBlock>
 
-Then:
-
-<CodeBlock lang="ts">{`const result = await assistant.answer({
+const result = await assistant.answer({
   question: "How do I configure public_path?",
-});
-`}</CodeBlock>
+});`}</CodeBlock>
 
-`answer()` returns `text`, `model`, `sources`, `images`, `fallback`. `stream()` adds a `ReadableStream<Uint8Array>`.
-
-## Assistant instructions
-
-The OpenAI Responses API separates **`instructions`** (how the model behaves)
-from **`input`** (sources + question). OpenDetail merges **harness** and **project**
-text into a single `instructions` string:
-
-- **Harness** (built-in): informational assistant behavior, grounding, citations, tools.
-- **Project** (your files below): tone, priorities, product vocabulary — keep it short.
-
-Loaded in order (project append):
-
-1. `assistantInstructions` option
-2. `assistantInstructionsPath` option
-3. `.opendetail/OPENDETAIL.md`
-4. `OPENDETAIL.md` at project root
-
-If none exist, only built-in harness instructions apply.
-
-## Remote retrieval
-
-Configure via **`fetch`** in `createOpenDetail` options or **`[fetch]`** in `opendetail.toml` (`fetch.file_search`, `fetch.web_search`). Runtime options override the artifact when provided.
+`answer()` returns the final text plus sources, images, and fallback state. `stream()` gives you the same result as a stream if you want to forward events to your own UI.
 
 ## Defaults
 
@@ -152,21 +112,8 @@ Configure via **`fetch`** in `createOpenDetail` options or **`[fetch]`** in `ope
 | `store` | `false` |
 | `promptCacheRetention` | `in-memory` |
 
-## Important options
-
-| Option | Meaning |
-| --- | --- |
-| `cwd` | Working directory for config and instruction files |
-| `indexPath` | Custom path to the built index |
-| `indexData` | Preloaded index artifact |
-| `client` | Reuse an existing OpenAI client |
-| `assistantInstructions` | Inline project guidance |
-| `assistantInstructionsPath` | Custom instructions path |
-| `promptCacheKey` | Explicit cache key override |
-| `fetch` | Override `fetch` from the index (OpenAI tools) |
-
 ## Fallback behavior
 
-If lexical retrieval matches **no indexed chunks**, OpenDetail sets **`fallback: true`**. The model may still answer using configured **`fetch`** tools; the flag means “no index hit,” not “no answer.” If the model returns no usable text:
+If lexical retrieval finds no indexed chunks, OpenDetail marks the result as fallback. That means the answer is still allowed to come from the model or configured tools, but the index did not supply a direct hit.
 
-<CodeBlock lang="txt">{`That isn't covered in the available sources yet.`}</CodeBlock>
+If nothing usable comes back, the safe product response is still a short, honest fallback message rather than a guessed answer.

@@ -1,7 +1,7 @@
 {
   "name": "opendetail-react",
   "version": "1.0.0",
-  "description": "React transport, hooks, components, and styles for OpenDetail.",
+  "description": "React hooks, components, and styles for OpenDetail.",
   "type": "module",
   "license": "MIT",
   "sideEffects": [
@@ -48,9 +48,10 @@
     "react-dom": "^19.0.0"
   },
   "dependencies": {
-    "trifold": "workspace:*",
     "lucide-react": "^1.7.0",
     "motion": "^12.38.0",
+    "opendetail-client": "workspace:*",
+    "trifold": "workspace:*",
     "streamdown": "^2.5.0"
   },
   "devDependencies": {

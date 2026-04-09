@@ -7,7 +7,8 @@ The private hosted dashboard and API live in the sibling [`cloud`](../cloud) mon
 ## Workspace
 
 - `packages/opendetail`: core runtime, indexing, errors, and setup CLI
-- `packages/opendetail-react`: transport, hook, components, blocks, and styles
+- `packages/opendetail-client`: framework-agnostic NDJSON transport client
+- `packages/opendetail-react`: hook, components, blocks, and styles
 - `packages/opendetail-next`: Next.js route and link integration
 - `packages/opendetail-fumadocs`: Fumadocs source validation helpers and wrappers
 - `apps/web`: the public Next.js app for marketing, docs, and hosted registry JSON
@@ -24,9 +25,15 @@ The private hosted dashboard and API live in the sibling [`cloud`](../cloud) mon
 - local retrieval and grounding
 - setup scaffolding for app integration
 - a stable NDJSON transport contract
-- first-class React, Next, and Fumadocs integrations
+- first-class client, React, Next, and Fumadocs integrations
 
 The result is a faster path to a narrow, cited assistant without standing up a broader agent platform.
+
+## Adoption Paths
+
+- `Fastest`: `opendetail` + `opendetail-next` + `opendetail-react`
+- `Branded`: `opendetail` + `opendetail-next` + `opendetail-client`
+- `Headless`: `opendetail`
 
 ## Commands
 

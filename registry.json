@@ -11,7 +11,7 @@
       "categories": ["opendetail", "lib"],
       "files": [
         {
-          "path": "packages/opendetail-react/src/lib/opendetail-client/opendetail-client.ts",
+          "path": "packages/opendetail-client/src/lib/opendetail-client/opendetail-client.ts",
           "type": "registry:lib"
         }
       ]

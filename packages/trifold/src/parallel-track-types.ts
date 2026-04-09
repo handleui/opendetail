@@ -16,16 +16,6 @@ export interface ParallelTrackProps {
    * Pair with a vertical `overflow-y: auto` scroller inside each panel.
    */
   dragEnabled?: boolean;
-  /**
-   * Minimum horizontal drag distance (px) required to change panels on release.
-   * Used together with `swipeVelocityThresholdPxPerSec`.
-   */
-  swipeDistanceThresholdPx?: number;
-  /**
-   * Minimum horizontal release velocity (px/s) required to change panels on release.
-   * Used together with `swipeDistanceThresholdPx`.
-   */
-  swipeVelocityThresholdPxPerSec?: number;
   /** Declarative jumps: attribute name (default {@link PARALLEL_INDEX_ATTRIBUTE}). */
   jumpAttribute?: string;
   jumpClickEnabled?: boolean;
@@ -42,6 +32,16 @@ export interface ParallelTrackProps {
    * has not requested reduced motion. Maps to `ScrollBehavior` on `scrollTo`.
    */
   settleTransitionEnabled?: boolean;
+  /**
+   * Minimum horizontal drag distance (px) required to change panels on release.
+   * Used together with `swipeVelocityThresholdPxPerSec`.
+   */
+  swipeDistanceThresholdPx?: number;
+  /**
+   * Minimum horizontal release velocity (px/s) required to change panels on release.
+   * Used together with `swipeDistanceThresholdPx`.
+   */
+  swipeVelocityThresholdPxPerSec?: number;
   trackClassName?: string;
 }
 

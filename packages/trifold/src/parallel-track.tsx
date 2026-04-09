@@ -5,7 +5,7 @@ import {
   Children,
   forwardRef,
   type MouseEvent,
-  type MutableRefObject,
+  type RefObject,
   useEffect,
   useImperativeHandle,
   useLayoutEffect,
@@ -13,13 +13,12 @@ import {
   useState,
   useSyncExternalStore,
 } from "react";
-
+import { panelIndexFromSwipeIntent } from "./gesture-math.js";
 import {
   PARALLEL_INDEX_ATTRIBUTE,
   type ParallelTrackHandle,
   type ParallelTrackProps,
 } from "./parallel-track-types.js";
-import { panelIndexFromSwipeIntent } from "./gesture-math.js";
 
 function defaultParseJumpIndex(raw: string): number | null {
   const next = Number.parseInt(raw, 10);
@@ -74,7 +73,7 @@ function toTargetX(panelIndex: number, panelWidth: number): number {
 }
 
 function stopAnimation(
-  animationRef: MutableRefObject<ReturnType<typeof animate> | null>
+  animationRef: RefObject<ReturnType<typeof animate> | null>
 ): void {
   animationRef.current?.stop();
   animationRef.current = null;
@@ -89,7 +88,7 @@ function settleToIndex({
   settleTransitionEnabled,
   x,
 }: {
-  animationRef: MutableRefObject<ReturnType<typeof animate> | null>;
+  animationRef: RefObject<ReturnType<typeof animate> | null>;
   index: number;
   immediate: boolean;
   panelWidth: number;
@@ -148,18 +147,8 @@ export const ParallelTrack = forwardRef<
   const rootRef = useRef<HTMLDivElement>(null);
   const didInitialPositionRef = useRef(false);
   const animationRef = useRef<ReturnType<typeof animate> | null>(null);
-  const panelWidthRef = useRef(0);
-  const [panelWidthVersion, setPanelWidthVersion] = useState(0);
+  const [panelWidth, setPanelWidth] = useState(0);
   const x = useMotionValue(0);
-
-  const setPanelWidth = (nextWidth: number) => {
-    if (nextWidth === panelWidthRef.current) {
-      return;
-    }
-
-    panelWidthRef.current = nextWidth;
-    setPanelWidthVersion((version) => version + 1);
-  };
 
   useLayoutEffect(() => {
     const rootEl = rootRef.current;
@@ -172,7 +161,9 @@ export const ParallelTrack = forwardRef<
       if (width <= 0) {
         return;
       }
-      setPanelWidth(width);
+      setPanelWidth((currentWidth) =>
+        currentWidth === width ? currentWidth : width
+      );
     };
 
     updateWidth();
@@ -187,13 +178,13 @@ export const ParallelTrack = forwardRef<
       animationRef,
       immediate: !didInitialPositionRef.current,
       index: safeIndex,
-      panelWidth: panelWidthRef.current,
+      panelWidth,
       prefersReducedMotion,
       settleTransitionEnabled,
       x,
     });
     didInitialPositionRef.current = true;
-  }, [panelWidthVersion, prefersReducedMotion, safeIndex, settleTransitionEnabled, x]);
+  }, [panelWidth, prefersReducedMotion, safeIndex, settleTransitionEnabled, x]);
 
   useEffect(
     () => () => {
@@ -211,7 +202,7 @@ export const ParallelTrack = forwardRef<
           animationRef,
           immediate: true,
           index: clamped,
-          panelWidth: panelWidthRef.current,
+          panelWidth,
           prefersReducedMotion,
           settleTransitionEnabled,
           x,
@@ -219,7 +210,14 @@ export const ParallelTrack = forwardRef<
         onActiveIndexChange(clamped);
       },
     }),
-    [onActiveIndexChange, prefersReducedMotion, safeCount, settleTransitionEnabled, x]
+    [
+      onActiveIndexChange,
+      panelWidth,
+      prefersReducedMotion,
+      safeCount,
+      settleTransitionEnabled,
+      x,
+    ]
   );
 
   const handleJumpClickCapture = (event: MouseEvent<HTMLDivElement>) => {
@@ -268,7 +266,7 @@ export const ParallelTrack = forwardRef<
         animationRef,
         immediate: false,
         index: safeIndex,
-        panelWidth: panelWidthRef.current,
+        panelWidth,
         prefersReducedMotion,
         settleTransitionEnabled,
         x,
@@ -291,7 +289,7 @@ export const ParallelTrack = forwardRef<
       animationRef,
       immediate: false,
       index: nextIndex,
-      panelWidth: panelWidthRef.current,
+      panelWidth,
       prefersReducedMotion,
       settleTransitionEnabled,
       x,
@@ -303,7 +301,7 @@ export const ParallelTrack = forwardRef<
   };
 
   const dragConstraints = {
-    left: -Math.max(0, safeCount - 1) * panelWidthRef.current,
+    left: -Math.max(0, safeCount - 1) * panelWidth,
     right: 0,
   };
 

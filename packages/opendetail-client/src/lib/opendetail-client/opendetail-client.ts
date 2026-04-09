@@ -198,7 +198,9 @@ class OpenDetailClientRequestError extends Error {
   }
 }
 
-const createFallbackPublicError = (): OpenDetailClientPublicError => ({
+const createFallbackPublicError = (
+  overrides: Partial<OpenDetailClientPublicError> = {}
+): OpenDetailClientPublicError => ({
   code: "request_failed",
   message: FALLBACK_ERROR_MESSAGE,
   param: null,
@@ -207,6 +209,7 @@ const createFallbackPublicError = (): OpenDetailClientPublicError => ({
   requestId: null,
   retryable: false,
   status: null,
+  ...overrides,
 });
 
 const isOpenDetailClientErrorCode = (
@@ -371,7 +374,9 @@ const resolveResponseErrorMessage = async (
     // Ignore invalid JSON error bodies and fall back to the default message.
   }
 
-  return createFallbackPublicError();
+  return createFallbackPublicError({
+    status: response.status,
+  });
 };
 
 const setClientStatus = ({
@@ -539,6 +544,7 @@ export const createOpenDetailClient = (
   const fetchImplementation = options.fetch ?? fetch;
   let status: OpenDetailClientStatus = "idle";
   let abortController: AbortController | null = null;
+  let currentStatusListener: OpenDetailClientHandlers["onStatusChange"];
 
   const setStatus = (nextStatus: OpenDetailClientStatus) => {
     status = nextStatus;
@@ -550,7 +556,16 @@ export const createOpenDetailClient = (
   const stop = () => {
     abortController?.abort();
     abortController = null;
-    status = "idle";
+
+    if (status === "idle") {
+      return;
+    }
+
+    setClientStatus({
+      nextStatus: "idle",
+      onStatusChange: currentStatusListener,
+      setStatus,
+    });
   };
 
   return {
@@ -562,6 +577,7 @@ export const createOpenDetailClient = (
     stop,
     submit: async (input, handlers) => {
       stop();
+      currentStatusListener = handlers?.onStatusChange;
 
       const nextAbortController = new AbortController();
       abortController = nextAbortController;

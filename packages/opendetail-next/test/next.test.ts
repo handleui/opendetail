@@ -220,6 +220,26 @@ describe("createNextRouteHandler", () => {
     }
   });
 
+  test("rejects oversized request bodies before parsing JSON", async () => {
+    const handler = createNextRouteHandler();
+    const json = vi.fn(async () => ({ question: "should not parse" }));
+    const response = await handler({
+      headers: new Headers({
+        "content-length": `${70 * 1024}`,
+        "content-type": "application/json",
+      }),
+      json,
+      method: "POST",
+    } as unknown as Request);
+
+    expect(response.status).toBe(400);
+    expect(json).not.toHaveBeenCalled();
+    await expect(response.json()).resolves.toMatchObject({
+      code: "invalid_request",
+      retryable: false,
+    });
+  });
+
   test("returns an actionable production error when the index is missing", async () => {
     const cwd = await createFixtureWorkspace("basic");
     vi.stubEnv("NODE_ENV", "production");
@@ -422,6 +442,26 @@ describe("renderNextSourceLink", () => {
           },
           target: {
             href: "javascript:alert(1)",
+          },
+        })
+      )
+    );
+
+    expect(html).not.toContain("javascript:alert(1)");
+    expect(html).not.toContain("<a");
+  });
+
+  test("drops whitespace-prefixed script hrefs", () => {
+    const html = renderToStaticMarkup(
+      createElement(() =>
+        renderNextSourceLink({
+          children: "Unsafe",
+          source: {
+            title: "Unsafe",
+            url: "/docs/unsafe",
+          },
+          target: {
+            href: " javascript:alert(1)",
           },
         })
       )

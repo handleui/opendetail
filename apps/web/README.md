@@ -7,7 +7,7 @@ This is the single public app for `opendetail`.
 - Host for generated shadcn registry JSON at `public/r`
 - Not the place for shared assistant runtime logic
 
-The backend and adapters stay in `packages/opendetail`. Registry source files live in `registry`.
+The backend and DX packages live under `packages/`, especially `packages/opendetail`, `packages/opendetail-next`, and `packages/opendetail-client`. Registry source files live in `registry`.
 
 ## Commands
 
@@ -30,7 +30,7 @@ Set `OPENAI_API_KEY` in `apps/web/.env.local` before starting the app.
 From the app root (`apps/web`), you can bootstrap OpenDetail files with:
 
 ```sh
-bunx opendetail setup --with-media
+bunx opendetail setup --mode fastest --with-media
 ```
 
 `bun run dev` runs the app through `openlogs` and `portless` on proxy port `443`.

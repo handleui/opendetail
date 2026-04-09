@@ -1,47 +1,48 @@
 ---
 title: Next.js
-description: Next.js App Router helpers — route handler, NDJSON streaming, and MDX source links.
+description: Next.js App Router helpers for the OpenDetail backend contract and safe source links.
 ---
 
-**`opendetail-next`** wraps the core runtime for **self-hosted** deployments on the Next.js App Router: a **POST** handler that validates the request body, streams **NDJSON**, and optional **`renderNextSourceLink`** for assistant citations in MDX.
+Use **`opendetail-next`** when your app backend is Next.js and you want the thinnest possible route adapter on top of OpenDetail. It is a good fit for the **Fastest** path, and it also works for **Branded** or **Headless** when Next.js is simply the server runtime you already have.
 
 ## Route handler
 
-The scaffolded route is a thin wrapper:
+The scaffolded route is just a wrapper around the backend contract:
 
 <CodeBlock lang="ts">{`import { createNextRoute } from "opendetail-next";
 
-export const { POST, runtime } = createNextRoute();
-`}</CodeBlock>
+export const { POST, runtime } = createNextRoute();`}</CodeBlock>
 
 Or wire the handler yourself:
 
 <CodeBlock lang="ts">{`import { createNextRouteHandler } from "opendetail-next";
 
 export const runtime = "nodejs";
-export const POST = createNextRouteHandler();
-`}</CodeBlock>
+export const POST = createNextRouteHandler();`}</CodeBlock>
 
-**Requirements**
+## What the route expects
+
+The route accepts `POST` requests with JSON like this:
+
+```json
+{ "question": "How do I configure public_path?" }
+```
+
+If the body is malformed, the handler returns JSON error data. If the answer can stream, the response uses NDJSON and emits the same event types as the rest of OpenDetail: `meta`, `sources`, `images`, `delta`, `done`, and `error`.
+
+That contract is what custom UIs and agents should rely on. The route adapter does not change the meaning of the stream; it only exposes it through Next.js.
+
+## Requirements
 
 - Node.js 18+
-- Route on the **Node.js** runtime (not Edge) for the default adapter
-- **`OPENAI_API_KEY`** set where the handler runs
-- **`.opendetail/index.json`** present after [`build`](/docs/cli#build)
+- `runtime = "nodejs"` for the default adapter
+- `OPENAI_API_KEY` available where the route runs
+- `.opendetail/index.json` present after a build
 
-`createNextRouteHandler` accepts the same options as [`createOpenDetail`](/docs/core#create-an-assistant) (`CreateOpenDetailOptions`) when you need custom `cwd`, `indexPath`, or client injection.
+`createNextRouteHandler` accepts the same core options as `createOpenDetail`, so you can override `cwd`, `indexPath`, or client injection when needed.
 
-## Request and response
+## Source links
 
-The handler accepts **POST** with JSON `{ "question": string }`. Malformed bodies return a JSON error.
+For docs sites, `renderNextSourceLink` renders local citations with `next/link` and keeps external URLs as safe anchors.
 
-Successful responses use **`application/x-ndjson; charset=utf-8`**. Event order and semantics match [Get started](/docs/quickstart#integration-modes) (meta, sources, images, delta, done, error). Initialization failures before streaming return JSON instead of NDJSON.
-
-## Source links in MDX
-
-For Fumadocs-style docs, pass **`renderNextSourceLink`** from **`opendetail-next`** into your assistant UI so local `/docs/...` citations use Next **`Link`** and external URLs stay safe:
-
-<CodeBlock lang="ts">{`import { renderNextSourceLink } from "opendetail-next";
-`}</CodeBlock>
-
-Use with **`resolveSourceTarget`** from [**opendetail-fumadocs**](/docs/fumadocs) when you need known-page URL allowlists.
+If your docs live at known page URLs, pair it with the helper from [`opendetail-fumadocs`](/docs/fumadocs) so source targets stay on allowed paths instead of inventing new links.

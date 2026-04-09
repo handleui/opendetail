@@ -1,51 +1,38 @@
 ---
 title: Fumadocs
-description: Optional preset for assistant citation links — known doc URLs, Next Link, and FumadocsAssistant.
+description: Optional citation-link helpers for docs sites with known page URLs.
 ---
 
-**`opendetail-fumadocs`** is **optional glue** for apps that already serve docs under predictable URLs (often **Fumadocs-style** `/docs/...` routes). It does **not** add a different assistant runtime: it supplies **`resolveSourceTarget`** helpers and a thin **`FumadocsAssistant`** wrapper around **`AssistantSidebar`** from **`opendetail-react`**, wired with **`renderNextSourceLink`** from **`opendetail-next`**.
+Use **`opendetail-fumadocs`** when your docs site already has predictable page URLs and you want OpenDetail citations to stay inside that known surface. It is optional glue, not a separate runtime.
 
-For **when to use this vs hand-wiring**, see [**Get started → Packages**](/docs/quickstart#packages).
+That makes it most useful in **Fastest** and **Branded** setups where the assistant should cite pages under stable `/docs/...` routes.
+
+## What it does
+
+- Resolves known local page paths into safe citation targets
+- Helps turn source references into links your docs site already understands
+- Works with `renderNextSourceLink` from [`opendetail-next`](/docs/next) when you want Next.js link handling
+
+## What it does not do
+
+- It does not change how OpenDetail indexes content
+- It does not change the backend contract
+- It does not replace `opendetail-react`, `opendetail-next`, or `opendetail`
 
 ## API
 
-- **`resolveFumadocsSourceTarget`** — Given `knownPageUrls` and a source (`kind: "local"` or `"remote"`), returns `{ external, href }` or `null` for unknown local paths.
-- **`createFumadocsSourceTargetResolver(knownPageUrls)`** — Returns a **`ResolveAssistantSourceTarget`** you pass to **`AssistantSidebar`** as **`resolveSourceTarget`**.
-- **`getFumadocsPageUrls(source)`** — Maps a Fumadocs-style source with **`getPages()`** to a flat list of URLs for the allowlist.
+- `resolveFumadocsSourceTarget` turns a source and a known page list into a safe link target or `null`
+- `createFumadocsSourceTargetResolver(knownPageUrls)` returns a resolver you can pass through your assistant wiring
+- `getFumadocsPageUrls(source)` extracts the set of page URLs from a Fumadocs-style source tree
 
 ## Convenience wrapper
 
-**`FumadocsAssistant`** (import from **`opendetail-fumadocs/assistant`**) bundles:
+`FumadocsAssistant` is the ergonomic wrapper when you already know you want the allowlist behavior. It bundles the assistant wiring with the citation resolver so you do not have to thread those pieces together by hand.
 
-- **`AssistantSidebar`** (with **`connection`** for endpoint/persistence when you pass those props)
-- **`renderNextSourceLink`** from **`opendetail-next`**
-- **`createFumadocsSourceTargetResolver(knownSourcePageUrls)`**
-
-Pass the same props you would to **`AssistantSidebar`**, plus **`knownSourcePageUrls`**. Site navigation chrome stays in **your** app (for example the demo’s **`Sidebar`** in **`apps/web`**), not in this package.
-
-<CodeBlock lang="ts">{`import { FumadocsAssistant } from "opendetail-fumadocs/assistant";
-
-<FumadocsAssistant
-  knownSourcePageUrls={["/docs", "/docs/quickstart", "/docs/core", /* … */]}
-  navigation={<YourNav />}
-  /* …AssistantSidebar props (e.g. endpoint, persistence) */
-/>;
-`}</CodeBlock>
+Use it when the docs URLs are stable and you want the assistant to stay inside that known map. If your site structure is more dynamic, wire the resolver directly instead.
 
 ## Wiring without the wrapper
 
-Collect the doc page URLs your site actually serves (same slugs as your MDX routes), then pass them as **`knownPageUrls`**:
+The direct path is still simple: collect the page URLs your site actually serves, create the resolver, and pass that into the assistant wiring.
 
-<CodeBlock lang="ts">{`import { createFumadocsSourceTargetResolver } from "opendetail-fumadocs";
-
-const resolveSourceTarget = createFumadocsSourceTargetResolver([
-  "/docs",
-  "/docs/quickstart",
-  "/docs/core",
-  // …
-]);
-`}</CodeBlock>
-
-Pair with **`renderNextSourceLink`** from [**opendetail-next**](/docs/next) so resolved targets render as **`next/link`** where appropriate.
-
-Local URLs must match a **known pathname** (no hash required for the allowlist match; hashes are preserved on output). Unknown paths like `/docs/old-page` resolve to **`null`** so the UI does not invent links.
+Local URLs must match known page paths. Unknown paths resolve to `null` so the UI does not invent links.

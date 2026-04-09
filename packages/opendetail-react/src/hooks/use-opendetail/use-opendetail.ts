@@ -1,16 +1,6 @@
 "use client";
 
 import {
-  type Dispatch,
-  type SetStateAction,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-
-import {
   createOpenDetailClient,
   type OpenDetailClientErrorCode,
   type OpenDetailClientErrorEvent,
@@ -20,12 +10,21 @@ import {
   type OpenDetailClientStatus,
   type OpenDetailClientStreamEvent,
   type OpenDetailTransportOptions,
-} from "../../lib/opendetail-client/opendetail-client";
+} from "opendetail-client";
+import {
+  type Dispatch,
+  type SetStateAction,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 const DEFAULT_ERROR_MESSAGE = "OpenDetail request failed.";
 const DEFAULT_PERSISTENCE_STORAGE = "local";
 const INTERRUPTED_RESPONSE_MESSAGE =
-  "Response interrupted after refresh. Ask again to continue.";
+  "Response interrupted before completion. Ask again to continue.";
 const OPENDETAIL_CLIENT_ERROR_CODES = [
   "invalid_request",
   "invalid_runtime",
@@ -775,7 +774,7 @@ export const useOpenDetail = (
   const stop = () => {
     setStatus("idle");
     finalizeActiveRequest({
-      interrupted: false,
+      interrupted: true,
     });
   };
 

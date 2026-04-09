@@ -5,9 +5,9 @@
     "---Get started---",
     "index",
     "quickstart",
+    "cli",
     "---Reference---",
     "core",
-    "cli",
     "react",
     "next",
     "fumadocs"

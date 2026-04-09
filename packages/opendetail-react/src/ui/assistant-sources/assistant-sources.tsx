@@ -29,25 +29,13 @@ export interface AssistantSourcesProps {
 const getClassName = (className?: string): string =>
   ["opendetail-sources", className].filter(Boolean).join(" ");
 
-const getHttpFaviconUrl = (href: string): string | null => {
-  try {
-    const parsed = new URL(href);
-
-    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
-      return null;
-    }
-
-    return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(parsed.hostname)}&sz=32`;
-  } catch {
-    return null;
-  }
-};
-
-const RemotePillFavicon = ({ href }: { href: string }) => {
-  const [failed, setFailed] = useState(false);
-  const faviconUrl = useMemo(() => getHttpFaviconUrl(href), [href]);
-
-  if (failed || !faviconUrl) {
+const SourcePillLeading = ({
+  item,
+}: {
+  item: AssistantSourceItem;
+  target: AssistantSourceTarget | null;
+}) => {
+  if (item.kind === "remote") {
     return (
       <span aria-hidden="true" className="opendetail-sources__pill-icon">
         <Globe
@@ -57,36 +45,6 @@ const RemotePillFavicon = ({ href }: { href: string }) => {
         />
       </span>
     );
-  }
-
-  return (
-    <span aria-hidden="true" className="opendetail-sources__pill-icon">
-      {/* biome-ignore lint/a11y/noNoninteractiveElementInteractions: swap to Globe when favicon fails to load */}
-      <img
-        alt=""
-        className="opendetail-sources__pill-favicon"
-        decoding="async"
-        height={14}
-        loading="lazy"
-        onError={() => setFailed(true)}
-        src={faviconUrl}
-        width={14}
-      />
-    </span>
-  );
-};
-
-const SourcePillLeading = ({
-  item,
-  target,
-}: {
-  item: AssistantSourceItem;
-  target: AssistantSourceTarget | null;
-}) => {
-  if (item.kind === "remote") {
-    const href = target?.href ?? item.url;
-
-    return <RemotePillFavicon href={href} />;
   }
 
   return (

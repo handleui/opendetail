@@ -15,7 +15,6 @@ export default defineConfig({
         "../opendetail/src/validation.ts"
       ),
       opendetail: resolveFromHere("../opendetail/src/index.ts"),
-      "opendetail-react": resolveFromHere("../opendetail-react/src/index.ts"),
     },
   },
 });

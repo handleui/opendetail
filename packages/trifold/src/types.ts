@@ -26,6 +26,10 @@ interface TrifoldSharedProps {
   leadingLinkOpensCenter?: boolean;
   /** CSS selector for clicks that move to the center column. Default `a[href]`. */
   leadingLinkSelector?: string;
+  /** Minimum horizontal drag distance in px required to switch columns. */
+  swipeDistanceThresholdPx?: number;
+  /** Minimum horizontal release velocity in px/s required to switch columns. */
+  swipeVelocityThresholdPxPerSec?: number;
   /**
    * When true (default), a **one-finger horizontal swipe** on the track moves between columns
    * (controlled drag pager). When false, horizontal swiping is disabled;
@@ -35,10 +39,6 @@ interface TrifoldSharedProps {
    * do not rely on the window/body to scroll the main content.
    */
   touchSwipeBetweenColumns?: boolean;
-  /** Minimum horizontal drag distance in px required to switch columns. */
-  swipeDistanceThresholdPx?: number;
-  /** Minimum horizontal release velocity in px/s required to switch columns. */
-  swipeVelocityThresholdPxPerSec?: number;
   trackClassName?: string;
 }
 

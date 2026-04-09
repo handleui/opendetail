@@ -132,9 +132,8 @@ describe("assistant source rendering", () => {
     expect(html).toContain("Configuration");
     expect(html).toContain("Fumadocs");
     expect(html).toContain("Vector Store File");
-    expect(html).toContain("opendetail-sources__pill-favicon");
-    expect(html).toContain("google.com/s2/favicons");
-    expect(html).toContain("fumadocs.dev");
+    expect(html).not.toContain("opendetail-sources__pill-favicon");
+    expect(html).not.toContain("google.com/s2/favicons");
   });
 
   test("normalizes cite SOURCE prose and [SOURCE n] into clickable [n] citations", () => {
@@ -243,5 +242,19 @@ describe("assistant source rendering", () => {
 
     expect(html).not.toContain("javascript:alert(1)");
     expect(html).not.toContain('<a class="opendetail-citation-link"');
+  });
+
+  test("drops whitespace-prefixed script hrefs", () => {
+    expect(isSafeAssistantSourceHref(" javascript:alert(1)", false)).toBe(
+      false
+    );
+    expect(
+      getDefaultAssistantSourceTarget({
+        id: "1",
+        kind: "local",
+        title: "Unsafe",
+        url: " javascript:alert(1)",
+      })
+    ).toBeNull();
   });
 });

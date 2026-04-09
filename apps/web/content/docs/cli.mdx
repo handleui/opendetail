@@ -1,11 +1,15 @@
 ---
 title: CLI
-description: The opendetail binary — install, build, setup, and doctor — without a global install.
+description: The opendetail binary for build, setup, doctor, and verify.
 ---
 
-The CLI ships in the [`opendetail`](https://www.npmjs.com/package/opendetail) package. Prefer **`npx`**, **`bunx`**, or **`pnpm dlx`** so you always run the version pinned by your project.
+The CLI ships in the [`opendetail`](https://www.npmjs.com/package/opendetail) package. Use `npx`, `bunx`, or `pnpm dlx` so you run the version pinned by your project.
 
-The **`opendetail`** package exposes **`build`** (index your docs), **`setup`** (scaffold config and route), and **`doctor`** (verify the setup).
+The CLI is organized around the same three adoption paths used in the docs:
+
+- **Fastest**: generate the route, config, and initial build.
+- **Branded**: keep the backend and build your own UI.
+- **Headless**: use the index and stream contract without assuming a local UI.
 
 ## Install and first run
 
@@ -13,38 +17,33 @@ The **`opendetail`** package exposes **`build`** (index your docs), **`setup`** 
 
 If that prints a version, the executable resolves correctly from your package manager.
 
-Running the CLI without a subcommand prints supported commands and example invocations (same sections below).
-
-### Typical flows
-
-- **Greenfield app:** [`opendetail setup`](#setup) to write `opendetail.toml`, scaffold the default route (self-hosted), and optionally run an initial index build.
-- **Docs changed:** [`opendetail build`](#build) to refresh `.opendetail/index.json`.
-- **Something looks wrong:** [`opendetail doctor`](#doctor) to verify config, index, route, and environment expectations.
-
 ## Command overview
 
 | Command | Purpose |
 | --- | --- |
 | `opendetail build` | Write `.opendetail/index.json` from your config and content globs. |
-| `opendetail setup` | Create `opendetail.toml`, optional route, optional first build. |
-| `opendetail doctor` | Check files and env for the selected integration mode. |
+| `opendetail setup` | Create config, optional route, and an initial build, using a mode first. |
+| `opendetail doctor` | Check config, index, route, and environment expectations. |
+| `opendetail verify` | Check semantic setup, and optionally verify a live NDJSON endpoint. |
 
-### One-liner usage
+### One-line usage
 
 <CodeBlock lang="bash">{`opendetail build [--config <path>] [--output <path>] [--cwd <path>]
-opendetail setup [--config <path>] [--route <path>] [--base-path <url>] [--include <glob>] [--media-include <glob>] [--with-media] [--skip-build] [--force] [--interactive] [--no-interactive] [--cwd <path>]
-opendetail doctor [--config <path>] [--route <path>] [--cwd <path>]
+opendetail setup [--mode fastest|branded|headless] [--config <path>] [--route <path>] [--base-path <url>] [--include <glob>] [--media-include <glob>] [--with-media] [--skip-build] [--force] [--interactive] [--no-interactive] [--cwd <path>]
+opendetail doctor [--mode fastest|branded|headless] [--config <path>] [--route <path>] [--cwd <path>]
+opendetail verify [--mode fastest|branded|headless] [--config <path>] [--route <path>] [--endpoint <url>] [--sample-question <text>] [--cwd <path>]
 `}</CodeBlock>
 
 ### Suggested order
 
-1. [`setup`](#setup) once per repo (or when you change integration mode).
-2. [`build`](#build) whenever docs or media globs change.
-3. [`doctor`](#doctor) when something fails or after upgrading packages.
+1. Run `setup` once per repo, or again when you change modes.
+2. Run `build` whenever docs or media globs change.
+3. Run `doctor` when something fails or after upgrading packages.
+4. Run `verify` when you want to confirm the stream contract end to end.
 
 ## build
 
-`opendetail build` is the **index build** step: it resolves paths from your config, walks the include globs, and writes **`.opendetail/index.json`** (or `--output`).
+`opendetail build` is the index build step. It resolves paths from your config, walks the include globs, and writes `.opendetail/index.json` unless you override the output path.
 
 ### Usage
 
@@ -67,25 +66,28 @@ opendetail doctor [--config <path>] [--route <path>] [--cwd <path>]
 
 ## setup
 
-`opendetail setup` writes the **standard project shape**: config, Next.js route, and initial index build.
+`opendetail setup` asks for the mode first, then writes the config and any files that match that mode.
 
 ### Usage
 
-<CodeBlock lang="bash">{`opendetail setup [--config <path>] [--route <path>] [--base-path <url>] [--include <glob>] [--media-include <glob>] [--with-media] [--skip-build] [--force] [--interactive] [--no-interactive] [--cwd <path>]
+<CodeBlock lang="bash">{`opendetail setup [--mode fastest|branded|headless] [--config <path>] [--route <path>] [--base-path <url>] [--include <glob>] [--media-include <glob>] [--with-media] [--skip-build] [--force] [--interactive] [--no-interactive] [--cwd <path>]
 `}</CodeBlock>
 
-### What it can write
+### Modes
 
-- **`opendetail.toml`**
-- In **self-hosted** mode, a route at `src/app/api/opendetail/route.ts` by default (override with `--route`)
-- **`.opendetail/index.json`** unless you pass `--skip-build`
+| Mode | What it means |
+| --- | --- |
+| `fastest` | OpenDetail writes the route, config, and first build for you. |
+| `branded` | You keep the backend contract and own the UI, usually with `opendetail-client` for transport. |
+| `headless` | You only want the backend index and stream contract. |
 
 ### Important flags
 
 | Flag | Meaning |
 | --- | --- |
+| `--mode` | Choose the adoption path up front. |
 | `--config` | Custom config path. |
-| `--route` | Custom route file path (self-hosted). |
+| `--route` | Custom route file path when the mode writes a route. |
 | `--base-path` | Public source URL base (default `/docs`). |
 | `--include` | Docs glob (default matches typical `content/**/*.{md,mdx}`). |
 | `--media-include` | Media glob when media is enabled. |
@@ -97,11 +99,15 @@ opendetail doctor [--config <path>] [--route <path>] [--cwd <path>]
 
 ### Examples
 
-<CopyCommand bun="bunx opendetail setup --with-media" npm="npx opendetail setup --with-media" />
+<CopyCommand bun="bunx opendetail setup --mode fastest" npm="npx opendetail setup --mode fastest" />
+
+<CopyCommand bun="bunx opendetail setup --mode branded" npm="npx opendetail setup --mode branded" />
+
+<CopyCommand bun="bunx opendetail setup --mode headless" npm="npx opendetail setup --mode headless" />
 
 ## doctor
 
-`opendetail doctor` runs a **checklist** and prints ✓ or ✗ for each item. It exits with an error if anything required is missing.
+`opendetail doctor` checks the setup and prints a clear result for each part. It exits with an error if anything required is missing.
 
 ### Usage
 
@@ -110,11 +116,33 @@ opendetail doctor [--config <path>] [--route <path>] [--cwd <path>]
 
 ### Expectations
 
-- **Config:** `opendetail.toml` (or `--config`) exists.
-- **Index:** `.opendetail/index.json` (or configured output) exists.
-- **Route:** the API route file exists at the configured path.
+- **Config:** `opendetail.toml` or `--config` exists and parses.
+- **Index:** `.opendetail/index.json` or the configured output exists.
+- **Route:** the route file exists when the selected mode expects one.
 - **Env:** `OPENAI_API_KEY` is set where the route runs.
+- **Mode fit:** the required package dependencies exist for the selected mode.
 
 ### Examples
 
 <CopyCommand bun="bunx opendetail doctor" npm="npx opendetail doctor" />
+
+## verify
+
+`opendetail verify` is the semantic setup check and optional live stream verifier. Use it after setup or after wiring a custom UI.
+
+### Usage
+
+<CodeBlock lang="bash">{`opendetail verify [--mode fastest|branded|headless] [--config <path>] [--route <path>] [--endpoint <url>] [--sample-question <text>] [--cwd <path>]
+`}</CodeBlock>
+
+### What it checks
+
+- Semantic setup checks.
+- When `--endpoint` is provided, a sample question and the returned NDJSON event order.
+- Whether the backend is usable by a custom UI client.
+
+### Examples
+
+<CopyCommand bun="bunx opendetail verify" npm="npx opendetail verify" />
+
+<CopyCommand bun="bunx opendetail verify --endpoint http://localhost:3000/api/opendetail" npm="npx opendetail verify --endpoint http://localhost:3000/api/opendetail" />

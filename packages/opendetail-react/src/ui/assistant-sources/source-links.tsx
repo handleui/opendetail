@@ -34,27 +34,29 @@ export type RenderAssistantSourceLink = (
 const hasUrlProtocol = (value: string): boolean =>
   URL_PROTOCOL_REGEX.test(value);
 
+const normalizeAssistantSourceHref = (href: string): string => href.trim();
+
 export const isSafeAssistantSourceHref = (
   href: string,
   external?: boolean
 ): boolean => {
-  if (!href) {
+  const normalizedHref = normalizeAssistantSourceHref(href);
+
+  if (!normalizedHref) {
     return false;
   }
-
-  const trimmed = href.trimStart();
 
   // Reject protocol-relative URLs (`//evil.example`) — they are not same-origin paths.
-  if (trimmed.startsWith("//")) {
+  if (normalizedHref.startsWith("//")) {
     return false;
   }
 
-  if (!hasUrlProtocol(href)) {
+  if (!hasUrlProtocol(normalizedHref)) {
     return true;
   }
 
   try {
-    const parsedUrl = new URL(href);
+    const parsedUrl = new URL(normalizedHref);
 
     if (external) {
       return SAFE_EXTERNAL_PROTOCOLS.has(parsedUrl.protocol);
@@ -86,7 +88,7 @@ export const getDefaultAssistantSourceTarget = (
     }
   }
 
-  const url = source.url;
+  const url = normalizeAssistantSourceHref(source.url);
 
   if (
     (url.startsWith("/") || url.startsWith("./") || url.startsWith("../")) &&
@@ -98,21 +100,21 @@ export const getDefaultAssistantSourceTarget = (
     };
   }
 
-  if (hasUrlProtocol(source.url)) {
+  if (hasUrlProtocol(url)) {
     return null;
   }
 
-  if (source.url.length === 0) {
+  if (url.length === 0) {
     return null;
   }
 
-  if (url.trimStart().startsWith("//")) {
+  if (url.startsWith("//")) {
     return null;
   }
 
   return {
     external: false,
-    href: source.url,
+    href: url,
   };
 };
 
@@ -132,7 +134,9 @@ export const renderAssistantSourceLink = ({
   target,
   title,
 }: RenderAssistantSourceLinkProps) => {
-  if (!isSafeAssistantSourceHref(target.href, target.external)) {
+  const normalizedHref = normalizeAssistantSourceHref(target.href);
+
+  if (!isSafeAssistantSourceHref(normalizedHref, target.external)) {
     return (
       <span className={className} title={title}>
         {children}
@@ -143,7 +147,7 @@ export const renderAssistantSourceLink = ({
   return (
     <a
       className={className}
-      href={target.href}
+      href={normalizedHref}
       referrerPolicy={target.external ? "no-referrer" : undefined}
       rel={target.external ? "noopener noreferrer" : undefined}
       target={target.external ? "_blank" : undefined}

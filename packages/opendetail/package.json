@@ -72,6 +72,7 @@
     "node": ">=18"
   },
   "dependencies": {
+    "@clack/prompts": "^0.10.1",
     "fast-glob": "^3.3.3",
     "github-slugger": "^2.0.0",
     "gray-matter": "^4.0.3",

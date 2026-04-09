@@ -69,18 +69,17 @@ export const panelIndexFromSwipeIntent = ({
   const velocityPassed =
     Math.abs(swipeVelocityPxPerSec) >= swipeVelocityThresholdPxPerSec;
 
-  if (!distancePassed && !velocityPassed) {
+  if (!(distancePassed || velocityPassed)) {
     return safeIndex;
   }
 
-  const direction =
-    distancePx === 0
-      ? swipeVelocityPxPerSec < 0
-        ? 1
-        : -1
-      : distancePx < 0
-        ? 1
-        : -1;
+  let direction = -1;
+
+  if (distancePx === 0) {
+    direction = swipeVelocityPxPerSec < 0 ? 1 : -1;
+  } else if (distancePx < 0) {
+    direction = 1;
+  }
 
   return clamp(safeIndex + direction, 0, maxIndex);
 };

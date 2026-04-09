@@ -13,20 +13,35 @@ Under the hood, it uses the OpenAI Responses API. The product value is not a new
 
 ## Quick start
 
-Install the package:
+OpenDetail now centers setup around three adoption paths:
+
+- **Fastest**: route + index + React assistant
+- **Branded**: route + index + your own UI using `opendetail-client`
+- **Headless**: index + runtime only
+
+Typical installs:
 
 ```bash
-npm i opendetail opendetail-next
+# Fastest
+npm i opendetail opendetail-next opendetail-react
+
+# Branded
+npm i opendetail opendetail-next opendetail-client
+
+# Headless
+npm i opendetail
 ```
 
-Bootstrap the current self-hosted path with one command:
+Bootstrap the path you want:
 
 ```bash
-bunx opendetail setup --with-media
+bunx opendetail setup --mode fastest --with-media
+bunx opendetail setup --mode branded --with-media
+bunx opendetail setup --mode headless
 ```
 
-That command can generate `opendetail.toml`, scaffold a Next.js route at
-`src/app/api/opendetail/route.ts`, and build `.opendetail/index.json`.
+Setup writes `opendetail.toml`, can scaffold a Next.js route at
+`src/app/api/opendetail/route.ts`, and can build `.opendetail/index.json`.
 
 If you prefer manual setup, create `opendetail.toml` in your app root:
 
@@ -174,18 +189,22 @@ The runtime returns at most 3 images per answer or stream.
 The package ships with a setup-focused CLI:
 
 ```bash
-# scaffold config + route + index
-bunx opendetail setup --with-media
+# scaffold config, optional route, and index using an adoption path
+bunx opendetail setup --mode fastest
 
 # rebuild index when content changes
 bunx opendetail build
 
-# run setup diagnostics
+# run semantic setup diagnostics
 bunx opendetail doctor
+
+# verify structure or a live stream endpoint
+bunx opendetail verify
 ```
 
 Useful setup flags:
 
+- `--mode <fastest|branded|headless>`: choose the adoption path first
 - `--cwd <path>`: advanced use for monorepos; most apps run this from project root
 - `--route <path>`: choose a custom Next.js route file
 - `--base-path <url>`: set generated source URL base path

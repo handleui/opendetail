@@ -5,6 +5,22 @@ description: Release history for OpenDetail, indexed for the assistant.
 
 Summaries align with the public changelog page. For full layout and dates, see the site changelog.
 
+## v0.8.0 — Path-based setup and cleaner package boundaries
+
+### Setup
+
+OpenDetail now explains adoption through **Fastest**, **Branded**, and **Headless**. The CLI matches that model with mode-first setup, a semantic **doctor**, and a new **verify** command for structural checks and optional live NDJSON validation.
+
+### Packages
+
+The NDJSON transport now lives in **`opendetail-client`**. **`opendetail-react`** is React-only, and **`opendetail-next`** stays focused on the Next.js route adapter and link helpers.
+
+### Hardening
+
+Public surfaces are tighter too: safer source-link handling, interrupted responses that no longer look complete, no third-party favicon lookups in the default sources UI, and an early request-size guard in the Next.js handler.
+
+**Changes:** Added **`opendetail-client`**; rewrote docs around the adoption-path model; tightened link safety and privacy defaults in the React and Next integrations.
+
 ## v0.5.0 — Docs index and streaming UX
 
 ### Build output

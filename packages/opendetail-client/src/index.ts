@@ -1,0 +1,20 @@
+// biome-ignore-all lint/performance/noBarrelFile: package entrypoint defines the public API surface.
+export {
+  createOpenDetailClient,
+  type OpenDetailClient,
+  type OpenDetailClientDoneEvent,
+  type OpenDetailClientErrorCode,
+  type OpenDetailClientErrorEvent,
+  type OpenDetailClientHandlers,
+  type OpenDetailClientImage,
+  type OpenDetailClientImagesEvent,
+  type OpenDetailClientMetaEvent,
+  type OpenDetailClientOptions,
+  type OpenDetailClientRequest,
+  type OpenDetailClientSource,
+  type OpenDetailClientSourcesEvent,
+  type OpenDetailClientStatus,
+  type OpenDetailClientStreamEvent,
+  type OpenDetailClientTitleEvent,
+  type OpenDetailTransportOptions,
+} from "./lib/opendetail-client/opendetail-client";

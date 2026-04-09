@@ -1,15 +1,16 @@
 {
-  "name": "opendetail-next",
-  "version": "0.7.0",
-  "description": "Next.js route and link integrations for OpenDetail.",
+  "name": "opendetail-client",
+  "version": "1.0.0",
+  "description": "Framework-agnostic NDJSON transport for OpenDetail.",
   "type": "module",
   "license": "MIT",
+  "sideEffects": false,
   "repository": {
     "type": "git",
     "url": "git+https://github.com/handleui/opendetail.git",
-    "directory": "packages/opendetail-next"
+    "directory": "packages/opendetail-client"
   },
-  "homepage": "https://github.com/handleui/opendetail/tree/main/packages/opendetail-next",
+  "homepage": "https://github.com/handleui/opendetail/tree/main/packages/opendetail-client",
   "bugs": {
     "url": "https://github.com/handleui/opendetail/issues"
   },
@@ -24,10 +25,6 @@
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
-    },
-    "./link": {
-      "types": "./dist/link.d.ts",
-      "default": "./dist/link.js"
     }
   },
   "scripts": {
@@ -38,18 +35,11 @@
     "prepack": "npm run build",
     "prepublishOnly": "npm run build && npm run check-types && npm run test && npm run publint"
   },
-  "peerDependencies": {
-    "next": "^16.0.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
-  },
-  "dependencies": {
-    "opendetail": "workspace:*"
+  "engines": {
+    "node": ">=18"
   },
   "devDependencies": {
     "@types/node": "^25.5.0",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
     "publint": "^0.3.18",
     "tsup": "^8.5.1",
     "typescript": "^6.0.2",

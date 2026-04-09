@@ -1,31 +1,37 @@
 ---
 title: React
-description: opendetail-react — integration approaches, useOpenDetail hook, HTTP client, UI components, and styling.
+description: React helpers for the Fastest and Branded paths, including the hook, assistant components, and the custom UI contract.
 ---
 
-Package: **`opendetail-react`**. For the Next.js route that serves the NDJSON stream, see [opendetail-next](/docs/next). For the citation link allowlist and `FumadocsAssistant`, see [opendetail-fumadocs](/docs/fumadocs).
+Use **`opendetail-react`** when you want OpenDetail in a React app. It gives you the browser state, the assistant components, and the wiring needed for the **Fastest** path. It also works well for the **Branded** path when you want your own layout but still want OpenDetail to manage retrieval and streaming.
 
-## Integration approaches
+If you are building a non-React client, use the transport client from `opendetail-client` or the Node engine in [`opendetail`](/docs/core).
 
-Pick the layer that matches how much UI you're building:
+## What this package is for
 
-| Approach | Primary API | When to use |
-| --- | --- | --- |
-| **Hook + your layout** | `useOpenDetail` | You control the entire shell and just need streaming state |
-| **HTTP client, no hook** | `createOpenDetailClient` | Vanilla JS, custom stores, non-React surfaces |
-| **Shell preset** | `AssistantSidebar` with `connection` | Drop-in column assistant; you supply navigation chrome |
-| **Citations as Next links** | `renderNextSourceLink` | Local `/docs/…` citations should use `next/link` |
-| **Known-page allowlist** | `opendetail-fumadocs` | You want to prevent citations from linking to unknown paths |
+- **Fastest**: use the ready-made assistant components and keep your effort low.
+- **Branded**: use the hook and primitives, then place them inside your own shell.
+- **Not this package**: if you only want the transport client with no React state, use `opendetail-client`.
 
-NDJSON route setup and Node requirements: [opendetail-next](/docs/next).
+## The custom UI contract
 
----
+OpenDetail keeps the frontend contract intentionally small.
 
-## Hook: useOpenDetail
+Your UI sends:
 
-`useOpenDetail` manages browser thread state and streams assistant responses from your `POST /api/opendetail` (or equivalent) route.
+```json
+{ "question": "..." }
+```
 
-### Basic usage
+The backend responds as a stream of NDJSON events. The important event types are `meta`, `sources`, `images`, `delta`, `done`, and `error`.
+
+The order matters: metadata can arrive first, sources and images can appear as the assistant grounds itself, `delta` carries streamed text, and `done` or `error` ends the turn. If the request cannot start, the backend returns JSON instead of NDJSON.
+
+That is the main thing a custom UI needs to know. Everything else is presentation.
+
+## `useOpenDetail`
+
+`useOpenDetail` manages browser state for a React chat surface. It tracks the current draft, message list, request status, and errors while it talks to your `/api/opendetail` route.
 
 <CodeBlock lang="ts">{`import { useOpenDetail } from "opendetail-react";
 
@@ -40,161 +46,29 @@ const {
   transport: { endpoint: "/api/opendetail" },
 });`}</CodeBlock>
 
-### Options
+Use the hook when you want to own the layout but not the transport logic.
 
-| Option | Meaning |
-| --- | --- |
-| `endpoint` | Shortcut for `transport.endpoint` (default `/api/opendetail`) |
-| `transport.endpoint` | Request URL |
-| `transport.headers` | Static headers or a function returning headers |
-| `transport.credentials` | Fetch credentials mode |
-| `transport.fetch` | Custom `fetch` implementation |
-| `persistence.key` | Storage key for thread state |
-| `persistence.storage` | `local` or `session`, default `local` |
+## Assistant components
 
-### Returned state
+The package also ships higher-level React pieces for the Fastest path:
 
-`messages`, `question`, `setQuestion`, `submit`, `stop`, `clearThread`, `status`, and error fields: `error`, `errorCode`, `errorRetryable`, `errorStatus`.
+- `AssistantSidebar` for a drop-in assistant panel
+- `AssistantModal` for modal presentation
+- `Thread`, `Composer`, `UserMessage`, `AssistantMessage`, `AssistantSources`, and `AssistantStatus` for smaller custom compositions
 
-Assistant messages track streamed text, sources, images, model, duration label, error metadata, and status: `pending` | `streaming` | `complete` | `error`.
+These pieces are convenience layers on top of the same backend contract. If you outgrow them, you can keep the contract and replace the UI.
 
-### Persistence
+## Source links
 
-When `persistence` is enabled, thread state and draft input are restored on refresh. Interrupted streams are marked honestly after page reload.
-
-Wire UI with **`Composer`** (`requestState={status}`), **`AssistantSidebar`** (`connection={{ endpoint, persistence }}`), or your own layout.
-
----
-
-## HTTP client: createOpenDetailClient
-
-Use **`createOpenDetailClient`** when you do not want the React hook — vanilla JS, a custom store, or non-React surfaces. It speaks the same `POST` body and `application/x-ndjson` stream.
-
-### Basic usage
-
-<CodeBlock lang="ts">{`import { createOpenDetailClient } from "opendetail-react";
-
-const client = createOpenDetailClient({
-  endpoint: "/api/opendetail",
-});
-
-await client.submit(
-  { question: "How do I install this?" },
-  {
-    onEvent(event) {
-      console.log(event);
-    },
-    onStatusChange(status) {
-      console.log(status);
-    },
-  }
-);`}</CodeBlock>
-
-### Client options
-
-| Option | Meaning |
-| --- | --- |
-| `endpoint` | Request URL, default `/api/opendetail` |
-| `headers` | Static or function returning headers |
-| `credentials` | Fetch credentials mode |
-| `fetch` | Custom fetch implementation |
-
-### Request
-
-<CodeBlock lang="json">{`{ "question": "..." }`}</CodeBlock>
-
-Headers sent: `accept: application/x-ndjson, application/json`, `content-type: application/json`.
-
-### Status and events
-
-Status follows `idle` → `pending` → `streaming` → `idle` or `error`.
-
-Stream event types: `meta`, `sources`, `images`, `delta`, `done`, `error`.
-
-Call `stop()` to abort the active request. Calling `submit()` while a request is active stops the previous one first.
-
----
-
-## UI components
-
-`opendetail-react` ships a layered set of React exports — use as much or as little as you need.
-
-### Layout
-
-- **`ConversationLayout`** — thread + composer regions; the structural foundation.
-- **`AssistantSidebar`** — full column assistant; accepts `connection` (`endpoint`, `persistence`, `sitePaths`, `transport`) for wiring to the streaming hook.
-- **`AssistantModal`** — same as `AssistantSidebar` but in a modal overlay.
-
-`AssistantSidebar` and `AssistantModal` are **recipes** that compose the primitives below into a drop-in experience. You can also wire the primitives yourself inside your own shell.
-
-### Conversation UI
-
-- **`Thread`** — message list region.
-- **`Composer`** — input area; accepts `requestState` to reflect streaming status.
-- **`UserMessage`** — renders a user turn.
-- **`AssistantMessage`** — renders a streamed assistant turn with text, sources, images, and error states.
-- **`AssistantSources`** — citation list extracted from a message.
-- **`AssistantStatus`** — thinking / error indicator (`variant="thinking"` or `variant="error"`).
-
-### Source link helpers
-
-**`renderNextSourceLink`** (from `opendetail-next`) — renders local `/docs/…` citations as `next/link` and external URLs as plain anchors. Pass this alongside a `resolveSourceTarget` function into `AssistantSidebar`.
-
----
+For docs sites, `renderNextSourceLink` from [`opendetail-next`](/docs/next) turns local citations into safe Next.js links and keeps remote URLs as regular anchors. If your docs site already has predictable page URLs, pair that with [`opendetail-fumadocs`](/docs/fumadocs) so citation targets stay on known pages.
 
 ## Styling
 
-`opendetail-react` ships CSS for the default **OpenDetail** system and the **Midnight** and **Signal** themes.
+`opendetail-react` includes a default visual system. Use it as-is for Fastest, or treat it as a base layer for Branded if you want to change the look without changing the contract.
 
-### Systems vs themes
+The important separation is this:
 
-A **system** is a complete UI identity: semantic class contract, layout, density, motion, and component anatomy. A **theme** is a palette layer on top of one system — same layout and components, different tokens.
+- changing tokens keeps you in the same system
+- changing structure means you are really building a custom UI
 
-- New colors → use a theme.
-- New chrome or structure → add a system.
-
-### Import order
-
-Import the base system stylesheet first, then optionally a theme:
-
-```css
-@import "opendetail-base.css";
-/* then one of: */
-@import "opendetail-midnight.css";
-@import "opendetail-signal.css";
-```
-
-Root elements use `data-od-system="opendetail"` where the layout marks the design system for theming.
-
-### Midnight
-
-Cooler dark palette. Semantic color tokens (background, foreground, accent) shift while structure stays the same.
-
-```css
-@import "opendetail-base.css";
-@import "opendetail-midnight.css";
-```
-
-### Signal
-
-Warmer accent and palette variant on the same base contract — layout and components unchanged.
-
-```css
-@import "opendetail-base.css";
-@import "opendetail-signal.css";
-```
-
-### Custom themes
-
-Override semantic CSS variables scoped to `data-od-system="opendetail"` without forking React primitives. Place your overrides after the base import:
-
-```css
-@import "opendetail-base.css";
-
-[data-od-system="opendetail"] {
-  --od-background: #0a0a0a;
-  --od-accent: #6ee7b7;
-}
-```
-
-Package paths follow your bundler's resolution for `opendetail-react` styles. See the [style README](https://github.com/handleui/opendetail/blob/main/packages/opendetail-react/src/styles/README.md) for the full token list.
+That distinction helps keep the product easier to reason about for both adopters and maintainers.
